@@ -13,7 +13,7 @@ node_modules/
 # production
 /build
 build/
-out
+
 # misc
 .DS_Store
 .env.local
