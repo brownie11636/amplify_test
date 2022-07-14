@@ -1,12 +1,12 @@
-name: React build
+name: Next.js deployment practice
+
 on:
-  push: # main Branch에서 push 이벤트가 일어났을 때만 실행
-    branches:
-      - main
+  push:
+    branches: [ main ]
 
 jobs:
-  build:
-    runs-on: ubuntu-18.04
+  continuous-deployment:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout source code. # 레포지토리 체크아웃
         uses: actions/checkout@master
