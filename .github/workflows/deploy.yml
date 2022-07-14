@@ -1,35 +1,28 @@
-name: Next.js deployment practice
-
+name: React build
 on:
-  push:
-    branches: [ main ]
+  push: # main Branch에서 push 이벤트가 일어났을 때만 실행
+    branches:
+      - main
 
 jobs:
-  continuous-deployment:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-18.04
     steps:
-      - name: Git Checkout
-        uses: actions/checkout@v2
+      - name: Checkout source code. # 레포지토리 체크아웃
+        uses: actions/checkout@master
+        
+      - name: Install Dependencies # 의존 파일 설치
+        run: npm install
 
-      - name: Use Node.js version 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
+      - name: Build # React Build
+        run: npm run build
 
-      - name: Build
-        run: |
-          npm install -g yarn
-          yarn install --frozen-lockfile
-          yarn build
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Deploy to S3
-        run: aws s3 cp \
-              --recursive \
-              --region ap-northeast-2 \
-              out s3://next-js-development
+        - name: Deploy # S3에 배포하기
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run:
+          aws s3 cp \
+            --recursive \
+            --region ap-northeast-2 \
+            out s3://next-js-development
