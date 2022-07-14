@@ -34,7 +34,7 @@ const MainBanner = () => {
                     <div className="container">
                         <div className="main-banner-content">
                             <h1>Welcome to PORTAL301</h1>
-                            <p>어쩌고저쩌고 환영하고 대충이러쿵저러쿵</p>
+                            <p>github - aws s3 chain test 0. 제발</p>
 
                             <div className="btn-box">
                                 <Link href="/index-4/#">
