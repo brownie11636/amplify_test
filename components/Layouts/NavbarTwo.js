@@ -1,32 +1,43 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import Link from '../../utils/ActiveLink';
+import { authcheck } from "../../service/authcheck";
+import { useCookies } from 'react-cookie';
 
-class Navbar extends Component {
+function Navbar() {
+
+    const [searchForm, setSearchForm] = useState(false)
+    const [display, setDisplay] = useState(false)
+    const [collapsed, setCollapsed] = useState(false)
+    const [isLogin, setIsLogin] = useState(false)
+    let _isMounted = false;
+
+    const [cookies, setCookie] = useCookies(['id'],['nickname']);
+
 
     // Search Form
-    state = {
-        searchForm: false,
-    };
-    handleSearchForm = () => {
-        this.setState( prevState => {
-            return {
-                searchForm: !prevState.searchForm
-            };
-        });
+    const handleSearchForm = () => {
+        setSearchForm((currnet) => {return !currnet})
+
     }
 
     // Navbar
-    _isMounted = false;
-    state = {
-        display: false,
-        collapsed: true
-    };
-    toggleNavbar = () => {
-        this.setState({
-            collapsed: !this.state.collapsed,
-        });
+    const toggleNavbar = () => {
+        setCollapsed((currnet) => {return !currnet})
+
     }
-    componentDidMount() {
+
+    useEffect(() => {
+
+        console.log('coki id?', cookies.id);
+
+        if(cookies.id !== undefined) {
+            console.log('cookies.id is not undefined!. login is true');
+            setIsLogin(true)
+        } else {
+            console.log('cookies.id is undefined. login is False');
+            setIsLogin(false)
+        }
+
         let elementId = document.getElementById("navbar");
         document.addEventListener("scroll", () => {
             if (window.scrollY > 170) {
@@ -35,15 +46,16 @@ class Navbar extends Component {
                 elementId.classList.remove("is-sticky");
             }
         });
-    }
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
+        return () => {
+            _isMounted = false;
+        };
+    }, []);
 
-    render() {
-        const { collapsed } = this.state;
-        const classOne = collapsed ? 'collapse navbar-collapse' : 'collapse navbar-collapse show';
-        const classTwo = collapsed ? 'navbar-toggler navbar-toggler-right collapsed' : 'navbar-toggler navbar-toggler-right';
+    
+    const classOne = collapsed ? 'collapse navbar-collapse' : 'collapse navbar-collapse show';
+    const classTwo = collapsed ? 'navbar-toggler navbar-toggler-right collapsed' : 'navbar-toggler navbar-toggler-right';
+
+
         return (
             <>
                <div id="navbar" className="navbar-area">
@@ -58,7 +70,7 @@ class Navbar extends Component {
                                 </Link>
 
                                 <button 
-                                    onClick={this.toggleNavbar} 
+                                    onClick={toggleNavbar} 
                                     className={classTwo}
                                     type="button" 
                                     data-toggle="collapse" 
@@ -75,7 +87,7 @@ class Navbar extends Component {
                                 <div className={classOne} id="navbarSupportedContent">
                                     <ul className="navbar-nav">
                                         <li className="nav-item">
-                                                    <Link href="/index-4" activeClassName="active">
+                                                    <Link href="/" activeClassName="active">
                                                         <a className="nav-link">Home - 준익</a>
                                                     </Link>
                                         </li>
@@ -97,6 +109,29 @@ class Navbar extends Component {
                                                 <a className="nav-link">Contact</a>
                                             </Link>
                                         </li>
+                                        {!isLogin? 
+                                        <li className="nav-item">
+                                        <Link href="/login" activeClassName="active">
+                                            <a className="nav-link">Log In</a>
+                                        </Link>
+                                        </li>:
+                                        <li className="nav-item">
+                                        <Link href="/logout" activeClassName="active">
+                                            <a className="nav-link">Log Out</a>
+                                        </Link>
+                                        </li>}
+                                        {/* <li className="nav-item">
+                                            <Link href="/login" activeClassName="active">
+                                                <a className="nav-link">Log In</a>
+                                            </Link>
+                                        </li>
+
+                                        <li className="nav-item">
+                                            <Link href="/logout" activeClassName="active">
+                                                <a className="nav-link">Log Out</a>
+                                            </Link>
+                                        </li> */}
+                                   
  
                                         {/* <li className="nav-item">
                                             <Link href="#">
@@ -300,22 +335,22 @@ class Navbar extends Component {
 
                                         <div className="option-item">
                                             <i 
-                                                onClick={this.handleSearchForm} 
+                                                onClick={handleSearchForm} 
                                                 className="search-btn flaticon-search"
                                                 style={{
-                                                    display: this.state.searchForm ? 'none' : 'block'
+                                                    display: searchForm ? 'none' : 'block'
                                                 }}
                                             ></i>
 
                                             <i 
-                                                onClick={this.handleSearchForm} 
-                                                className={`close-btn fas fa-times ${this.state.searchForm ? 'active' : ''}`}
+                                                onClick={handleSearchForm} 
+                                                className={`close-btn fas fa-times ${searchForm ? 'active' : ''}`}
                                             ></i>
                                             
                                             <div 
                                                 className="search-overlay search-popup"
                                                 style={{
-                                                    display: this.state.searchForm ? 'block' : 'none'
+                                                    display: searchForm ? 'block' : 'none'
                                                 }}
                                             >
                                                 <div className='search-box'>
@@ -340,7 +375,7 @@ class Navbar extends Component {
                 </div>
             </>
         );
-    }
+    
 }
 
 export default Navbar;

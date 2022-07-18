@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import Link from 'next/link';
 const { v4: uuidv4 } = require("uuid");
 
+const roomid = uuidv4()
+
 class ServicesContent extends Component {
+
+
     render() {
         return (
             <section className="services-area bg-f2f6f9 ptb-110">
@@ -15,6 +19,12 @@ class ServicesContent extends Component {
                                 </div>
 
                                 <h3>
+                                    {/* <Link href={{
+                                        pathname: `/socketchat/${roomid}`,
+                                        query: {
+                                            query_roomid: `${roomid}`,
+                                        }
+                                    }}> */}
                                     <Link href={`/socketchat/${uuidv4()}`}>
                                         <a>Socket Test</a>
                                     </Link>
@@ -30,8 +40,8 @@ class ServicesContent extends Component {
                                 </div>
 
                                 <h3>
-                                    <Link href="/service-details">
-                                        <a>Automatic Optimization</a>
+                                    <Link href="/webrtc">
+                                        <a>Web RTC</a>
                                     </Link>
                                 </h3>
                                 <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>

@@ -6,12 +6,14 @@ import Footer from "../../components/Layouts/Footer";
 import { useRouter } from "next/router";
 import SocketChat from "../../components/Services/SocketChat";
 
-export default function Detail({params}) {
+export default function Detail({}) {
     const router = useRouter();
-    //const [title, id] = params || []; //catch-all url params
+    //const [socknum, id] = params || []; //catch-all url params
+    //console.log('rt?',router.asPath);
+    const a = router.query.roomid
+    console.log('rt2?', router.query.query_roomid);
     console.log('rt?', router);
-    console.log('rt2?', router.query.roomid);
-    const roomID = router.query.roomid;
+    const roomID = router.query.query_roomid;
     return (
         <>
         <NavbarTwo />

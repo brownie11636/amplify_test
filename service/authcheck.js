@@ -3,13 +3,8 @@ import { useCookies } from "react-cookie";
 
 const APIPOINT = `https://localhost:3333/login/session_id`;
 
-export const authCheck = (async () => {
-  const [nickname, setNickname] = useState(" ");
-  const [cookies, removeCookie] = useCookies(["id"]);
-
-  console.log('hoiiiiiii');
-
-  const token = cookies.id;
+export const authcheck = async (cookies_id) => {
+  const token = cookies_id;
   const response = await (
     await fetch(APIPOINT, {
       method: "POST",
@@ -22,12 +17,10 @@ export const authCheck = (async () => {
     })
   ).json();
 
-  console.log("authcheck TF", cookies.nickname);
+  console.log("authcheck TF");
 
   if (response.result === "ok") {
     console.log("true returned");
     return true;
   } else return false;
-}, []);
-
-export const A = ['A','B'];
+}
