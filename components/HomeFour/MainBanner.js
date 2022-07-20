@@ -33,15 +33,15 @@ const MainBanner = () => {
                 <div className="main-banner item-bg1">
                     <div className="container">
                         <div className="main-banner-content">
-                            <h1>Welcome to PORTAL301</h1>
-                            <p>github - aws s3 chain test 0. 제발</p>
+                            <h1>문구1</h1>
+                            <p>문구 2</p>
 
                             <div className="btn-box">
                                 <Link href="/index-4/#">
-                                    <a className="btn btn-primary">대충 저런 버튼</a>
+                                    <a className="btn btn-primary">push it</a>
                                 </Link>
                                 <Link href="/index-4/#">
-                                    <a className="optional-btn">대충 이런 링크</a>
+                                    <a className="optional-btn">click me</a>
                                 </Link>
                             </div>
                         </div>

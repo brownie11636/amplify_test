@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Link from 'next/link';
+const { v4: uuidv4 } = require("uuid");
 
 class Services extends Component {
     render() {
@@ -19,11 +20,17 @@ class Services extends Component {
                                 </div>
 
                                 <h3>
-                                    <Link href="/service-details">
-                                        <a>Data Analysts</a>
+                                    {/* <Link href={{
+                                        pathname: `/socketchat/${roomid}`,
+                                        query: {
+                                            query_roomid: `${roomid}`,
+                                        }
+                                    }}> */}
+                                    <Link href={`/socketchat/${uuidv4()}`}>
+                                        <a>Socket Chat</a>
                                     </Link>
                                 </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+                                <p>We provide you chat using websocket. This provides less network latency.</p>
                             </div>
                         </div>
 
@@ -34,11 +41,11 @@ class Services extends Component {
                                 </div>
 
                                 <h3>
-                                    <Link href="/service-details">
-                                        <a>Automatic Optimization</a>
+                                    <Link href="/webrtc">
+                                        <a>Web RTC</a>
                                     </Link>
                                 </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+                                <p>We provide customized Web RTC. Try this test version!</p>
                             </div>
                         </div>
 
@@ -50,55 +57,10 @@ class Services extends Component {
 
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>Security & Surveillance</a>
+                                        <a>Comming Soon !</a>
                                     </Link>
                                 </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
-                            </div>
-                        </div>
-
-                        <div className="col-lg-4 col-sm-6">
-                            <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="flaticon-molecular"></i>
-                                </div>
-
-                                <h3>
-                                    <Link href="/service-details">
-                                        <a>Healthcare & Manufacturing</a>
-                                    </Link>
-                                </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
-                            </div>
-                        </div>
-
-                        <div className="col-lg-4 col-sm-6">
-                            <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="flaticon-gear"></i>
-                                </div>
-
-                                <h3>
-                                    <Link href="/service-details">
-                                        <a>Software Engineers</a>
-                                    </Link>
-                                </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
-                            </div>
-                        </div>
-
-                        <div className="col-lg-4 col-sm-6">
-                            <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="flaticon-ceo"></i>
-                                </div>
-
-                                <h3>
-                                    <Link href="/service-details">
-                                        <a>IT Professionals</a>
-                                    </Link>
-                                </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+                                <p>Comming Soon !</p>
                             </div>
                         </div>
                     </div>

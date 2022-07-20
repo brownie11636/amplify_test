@@ -10,10 +10,10 @@ import PricingCard from '../components/Common/PricingCard';
 import BlogPost from '../components/Common/BlogPost';
 import FreeTrialForm from '../components/Common/FreeTrialForm';
 import Footer from '../components/Layouts/Footer';
+
 //index4
 class Index4 extends Component {
-    render() {
-        return (
+    /* 원본 배치
             <>
                 <NavbarTwo />
                 <MainBanner />
@@ -25,6 +25,20 @@ class Index4 extends Component {
                 <PricingCard />
                 <BlogPost />
                 <FreeTrialForm />
+                <Footer />
+            </>
+    */
+    render() {
+        return (
+            <>
+                <NavbarTwo />
+                <MainBanner />
+                <About />
+                <Services />
+                <Webinar />
+                <PartnerContent />
+                <FeedbackSlider />
+                <BlogPost />
                 <Footer />
             </>
         );

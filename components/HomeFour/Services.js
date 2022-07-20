@@ -7,8 +7,8 @@ class Services extends Component {
             <section className="services-area bg-f2f6f9 ptb-110">
                 <div className="container">
                     <div className="section-title">
-                        <h2>We Offer Professional Solutions</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                        <h2>We Offer Professional Solutions(문구1)</h2>
+                        <p>문구2</p>
                     </div>
 
                     <div className="row">

@@ -26,10 +26,10 @@ class ServicesContent extends Component {
                                         }
                                     }}> */}
                                     <Link href={`/socketchat/${uuidv4()}`}>
-                                        <a>Socket Test</a>
+                                        <a>Socket Chat</a>
                                     </Link>
                                 </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+                                <p>We provide you chat using websocket. This provides less network latency.</p>
                             </div>
                         </div>
 
@@ -44,7 +44,7 @@ class ServicesContent extends Component {
                                         <a>Web RTC</a>
                                     </Link>
                                 </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+                                <p>We provide customized Web RTC. Try this test version!</p>
                             </div>
                         </div>
 
@@ -56,14 +56,14 @@ class ServicesContent extends Component {
 
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>Security & Surveillance</a>
+                                        <a>Comming Soon !</a>
                                     </Link>
                                 </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+                                <p>Comming Soon !</p>
                             </div>
                         </div>
 
-                        <div className="col-lg-4 col-sm-6">
+                        {/* <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
                                 <div className="icon">
                                     <i className="flaticon-molecular"></i>
@@ -71,7 +71,7 @@ class ServicesContent extends Component {
 
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>Healthcare & Manufacturing</a>
+                                        <a>Comming Soon !</a>
                                     </Link>
                                 </h3>
                                 <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
@@ -86,7 +86,7 @@ class ServicesContent extends Component {
 
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>Software Engineers</a>
+                                        <a>Comming Soon !</a>
                                     </Link>
                                 </h3>
                                 <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
@@ -101,7 +101,7 @@ class ServicesContent extends Component {
 
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>IT Professionals</a>
+                                        <a>Comming Soon !</a>
                                     </Link>
                                 </h3>
                                 <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
@@ -151,10 +151,10 @@ class ServicesContent extends Component {
                                 </h3>
                                 <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
                             </div>
-                        </div>
+                        </div> */}
  
                         {/* Pagination */}
-                        <div className="col-lg-12 col-sm-12">
+                        {/* <div className="col-lg-12 col-sm-12">
                             <div className="pagination-area">
                                 <Link href="#">
                                     <a className="prev page-numbers">
@@ -184,7 +184,7 @@ class ServicesContent extends Component {
                                     </a>
                                 </Link>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 

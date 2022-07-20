@@ -16,9 +16,9 @@ class About extends Component {
 
                         <div className="col-lg-6 col-md-12">
                             <div className="about-content">
-                                <h2>Engaging New Audiences Through Smart Approach</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea.</p>
-                                <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't.</p>
+                                <h2>문구 1</h2>
+                                <p>문구 2</p>
+                                <p>문구 3</p>
 
                                 <Link href="/about">
                                     <a className="btn btn-primary">Discover More</a>

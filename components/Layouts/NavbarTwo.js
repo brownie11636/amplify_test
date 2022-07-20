@@ -333,7 +333,7 @@ function Navbar() {
                                             </a>
                                         </Link> */}
 
-                                        <div className="option-item">
+                                        {/* <div className="option-item">
                                             <i 
                                                 onClick={handleSearchForm} 
                                                 className="search-btn flaticon-search"
@@ -366,7 +366,7 @@ function Navbar() {
                                                 
                                         <Link href="/contact">
                                             <a className="btn btn-primary">Schedule a Demo</a>
-                                        </Link>
+                                        </Link> */}
                                     </div>
                                 </div>
                             </nav>

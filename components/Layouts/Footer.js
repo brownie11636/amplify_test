@@ -14,9 +14,9 @@ class Footer extends Component {
                             <div className="single-footer-widget">
                                 <div className="logo">
                                     <a href="/">
-                                        <img src="/images/white-logo.png" alt="image" />
+                                        <img src="/images/main_logo.png" alt="image" />
                                     </a>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.</p>
+                                    
                                 </div>
 
                                 <ul className="social">
@@ -119,20 +119,20 @@ class Footer extends Component {
                                 <ul className="footer-contact-list">
                                     <li>
                                         <span>Address:</span> 
-                                        2750 Quadra Street <br /> Victoria, Canada
+                                        경기도 안산시 단원구 연수원로 87<br /> 창의관 210호
                                     </li>
                                     <li>
                                         <span>Email:</span>
-                                        bariton@gmail.com
+                                        jangjun_park@portal301.com
                                     </li>
                                     <li>
                                         <span>Phone:</span> 
-                                        +44 587 154756
+                                        +82 010-5609-9527
                                     </li>
-                                    <li>
+                                    {/* <li>
                                         <span>Fax:</span> 
                                         +44 785 4578964
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </div>
                         </div>

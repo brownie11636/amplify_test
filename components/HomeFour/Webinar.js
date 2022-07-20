@@ -21,8 +21,8 @@ class Webinar extends Component {
                     <div className="row m-0">
                         <div className="col-lg-6 p-0">
                             <div className="webinar-content">
-                                <h2>Check Out Our Latest Webinar</h2>
-                                <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage.</p>
+                                <h2>Check Out Our Latest Web(문구1)</h2>
+                                <p>문구 2</p>
 
                                 <Link href="/index-4/#">
                                     <a className="btn btn-primary">Watch More</a>

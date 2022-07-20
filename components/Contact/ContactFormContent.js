@@ -9,8 +9,6 @@ class ContactFormContent extends Component {
                 <div className="container">
                     <div className="section-title">
                         <span>Message Us</span>
-                        <h2>Drop us Message for any Query</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
                     </div>
 
                     <div className="contact-form">
@@ -32,9 +30,9 @@ class ContactFormContent extends Component {
                         <div className="contact-info-content">
                             <h3>Contact us by Phone Number or Email Address</h3>
                             <h2>
-                                <span className="number">+088 130 629 8615</span>
+                                <span className="number">+082 010 5609 9527</span>
                                 <span className="or">OR</span>
-                                <span className="email">hello@bariton.com</span>
+                                <span className="email">jangjun_park@portal301</span>
                             </h2>
 
                             <ul className="social">
