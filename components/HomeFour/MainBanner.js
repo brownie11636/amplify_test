@@ -33,7 +33,7 @@ const MainBanner = () => {
                 <div className="main-banner item-bg1">
                     <div className="container">
                         <div className="main-banner-content">
-                            <h1>문구 aaa1</h1>
+                            <h1>문구 aaaa1</h1>
                             <p>문구 2</p>
 
                             <div className="btn-box">
