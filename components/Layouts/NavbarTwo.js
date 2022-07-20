@@ -88,7 +88,7 @@ function Navbar() {
                                     <ul className="navbar-nav">
                                         <li className="nav-item">
                                                     <Link href="/" activeClassName="active">
-                                                        <a className="nav-link">Home - 준익</a>
+                                                        <a className="nav-link">Home</a>
                                                     </Link>
                                         </li>
 
