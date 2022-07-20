@@ -2,7 +2,7 @@ import { React, useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import Router from "next/router";
 import { authcheck } from "../../service/authcheck";
-
+import { loginPoint } from "../../service/API-AccessPoint";
 
 const MainLogin = () => {
 
@@ -38,7 +38,7 @@ const MainLogin = () => {
   
     const onButtonClick = async () => { //쿠키 작업 on. 근데 쿠키는 보안상 이슈가 있을수도? 언젠가는 JWT 사용하자
     
-      const response = await(await fetch("https://localhost:3333/login/session", {
+      const response = await(await fetch(loginPoint, {
         method: "POST",
         body: JSON.stringify({
             email: emailtext,

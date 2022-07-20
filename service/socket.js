@@ -1,7 +1,8 @@
 import { createContext } from "react";
 import socketIo from "socket.io-client";
+import {socketPoint} from "./API-AccessPoint";
 
-const ENDPOINT = `https://localhost:3333`;
+const ENDPOINT = socketPoint;
 export const socket = socketIo(ENDPOINT,{transports: ["websocket"]});
 //export const socket = socketIo(`https://localhost:3333`, { withCredentials: true });
 export const SocketContext = createContext(socket);

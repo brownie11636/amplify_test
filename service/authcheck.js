@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { useCookies } from "react-cookie";
+import {loginPoint} from "./API-AccessPoint";
 
-const APIPOINT = `https://localhost:3333/login/session_id`;
+const APIPOINT = loginPoint;
 
 export const authcheck = async (cookies_id) => {
   const token = cookies_id;
