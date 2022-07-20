@@ -12,7 +12,7 @@ import FreeTrialForm from '../components/Common/FreeTrialForm';
 import Footer from '../components/Layouts/Footer';
 
 //index4
-class Index4 extends Component {
+class Index extends Component {
     /* 원본 배치
             <>
                 <NavbarTwo />
@@ -45,4 +45,4 @@ class Index4 extends Component {
     }
 }
 
-export default Index4;
+export default Index;
