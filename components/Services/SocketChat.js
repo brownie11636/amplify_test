@@ -3,10 +3,13 @@ import styles from "../../styles/Chat.module.css";
 
 import { React, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { socket, SocketContext } from "../../service/socket";
+import { SocketContext } from "../../service/socket";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from 'react-cookie';
 import { authCheck } from "../../service/authcheck";
+
+import socketIo from "socket.io-client";
+const socket = socketIo('https://localhost:3333',{transports: ["websocket"]});
 
 const SocketChat = ( { roomID } ) => {
     const [isLogin,setIsLogin] = useState(true);
@@ -41,6 +44,9 @@ const SocketChat = ( { roomID } ) => {
         socket.disconnect();
       };
     }, []);
+
+    console.log('sock con??',socket.connected);
+
   
     // useEffect(() => {
     //   // edit by joonik ... async로 수정 필요할수도 있음. 아마 필요할듯?

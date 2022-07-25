@@ -5,8 +5,12 @@ import NavbarTwo from "../../components/Layouts/NavbarTwo";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
 
+import adapter from 'webrtc-adapter';
+
 export default function Cast() {
   
+    console.log('adapter.browserDetails.browser?', adapter.browserDetails.browser);
+
     //const [isLogin,setIsLogin] = useState(true);
     const localVideo = useRef();
     const remoteVideo = useRef();
@@ -255,9 +259,18 @@ export default function Cast() {
         }
     
         // pc.socketId = socketId;
+        console.log('debug 1')
         if(localVideo.current.srcObject){
-          pc.addStream(localVideo.current.srcObject); // 원래는 localstream임 이유는 모르겠는데 자꾸 값 반영이 안되서 이걸로 바꿈
+          console.log('debug 2')
+          localVideo.current.srcObject.getTracks().forEach(function (track) {
+            pc.addTrack(track, localVideo.current.srcObject);
+          });
+          //pc.addStream(localVideo.current.srcObject); // 원래는 localstream임 이유는 모르겠는데 자꾸 값 반영이 안되서 이걸로 바꿈
+          console.log('debug 3')
+
         }
+        console.log('debug 4')
+
         
         //setPcs(pcs.concat(`[${socketId}]: ${pc}`));
         //setPcs((current) => {`[${socketId}]: ${pc}`}, ...pcs);

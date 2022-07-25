@@ -4,9 +4,12 @@ import { socket, SocketContext } from "../../service/socket";
 import NavbarTwo from "../../components/Layouts/NavbarTwo";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
+import adapter from 'webrtc-adapter';
 
 export default function View() {
     let pc;
+
+    console.log('adapter.browserDetails.browser?', adapter.browserDetails.browser);
   
     const localVideo = useRef();
     const remoteVideo = useRef();
@@ -294,6 +297,7 @@ export default function View() {
         return event.stream;
       });
       remoteVideo.current.srcObject = event.stream;
+      console.log('remotevd@@@@@@', remoteVideo.current.srcObject)
     }
   
     function handleRemoteStreamRemoved(event) {
