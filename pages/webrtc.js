@@ -1,7 +1,7 @@
-import Link from "next/link";
 import NavbarTwo from "../components/Layouts/NavbarTwo";
 import PageBanner from "../components/Common/PageBanner";
 import Footer from "../components/Layouts/Footer";
+import WebRTCDetailsContent from "../components/Services/WebRTCDetailsContent"
 
 export default function WebRTC() {
   return (
@@ -9,21 +9,14 @@ export default function WebRTC() {
       <NavbarTwo />
 
       <PageBanner
-        pageTitle="Security & Surveillance"
+        pageTitle="WebRTC"
         homePageUrl="/"
         homePageText="Home"
         activePageText="Service Details"
         bgImgClass="item-bg2"
       />
 
-      <h1>WebRTC Main Page</h1>
-      <Link href="/webrtc/cast">
-        <h3>Cast</h3>
-      </Link>
-      <br />
-      <Link href="/webrtc/view">
-        <h3>View</h3>
-      </Link>
+      <WebRTCDetailsContent />
 
       <Footer />
     </>

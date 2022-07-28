@@ -7,7 +7,7 @@ function Navbar() {
 
     const [searchForm, setSearchForm] = useState(false)
     const [display, setDisplay] = useState(false)
-    const [collapsed, setCollapsed] = useState(false)
+    const [collapsed, setCollapsed] = useState(true)
     const [isLogin, setIsLogin] = useState(false)
     let _isMounted = false;
 
@@ -39,13 +39,16 @@ function Navbar() {
         }
 
         let elementId = document.getElementById("navbar");
-        document.addEventListener("scroll", () => {
-            if (window.scrollY > 170) {
-                elementId.classList.add("is-sticky");
-            } else {
-                elementId.classList.remove("is-sticky");
-            }
-        });
+        elementId.classList.add("is-sticky");
+        // document.addEventListener("scroll", () => {
+        //     if (window.scrollY > 170) {
+        //         elementId.classList.add("is-sticky");
+        //         console.log('add sticky')
+        //     } else {
+        //         elementId.classList.add("is-sticky");
+        //         console.log('remove sticky')
+        //     }
+        // });
         return () => {
             _isMounted = false;
         };
@@ -64,8 +67,8 @@ function Navbar() {
                             <nav className="navbar navbar-expand-md navbar-light">
                                 <Link href="/">
                                     <a className="navbar-brand">
-                                        <img src="/images/white-logo.png" className="main-logo" alt="logo" />
-                                        <img src="/images/black-logo.png" className="optional-logo" alt="logo" />
+                                        <img src="/images/main_logo3.png" className="main-logo" alt="logo" />
+                                        <img src="/images/main_logo3.png" className="optional-logo" alt="logo" />
                                     </a>
                                 </Link>
 

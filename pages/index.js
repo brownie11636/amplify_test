@@ -37,7 +37,7 @@ class Index extends Component {
                 <Services />
                 <Webinar />
                 <PartnerContent />
-                <FeedbackSlider />
+                {/* <FeedbackSlider /> */}
                 <BlogPost />
                 <Footer />
             </>

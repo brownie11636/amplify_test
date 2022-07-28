@@ -3,6 +3,7 @@ import { useCookies } from 'react-cookie';
 import Router from "next/router";
 import { authcheck } from "../../service/authcheck";
 import { loginPoint } from "../../service/API-AccessPoint";
+import styles from "../../styles/Login.module.css";
 
 const MainLogin = () => {
 
@@ -93,21 +94,21 @@ const MainLogin = () => {
   
     if(isLogin === false)
     return (
-      <div className="root">
-        <a href="/" className="logo"></a>
-        <div className="main-container">
+      <div className={styles.div.root}>
+        <a href="/" className={styles.logo}></a>
+        <div className={styles.main_container}>
           <h1>Welcome to portal301!</h1>
-          <div className="login-container">
-            <div className="input-container">
-              <input onChange={emailInput} value={emailtext} type="email" placeholder="이메일" class="id"></input>
-              <input onChange={pwInput} value={pwtext} type="password" placeholder="비밀번호" class="pw"></input>
+          <div className={styles.login_container}>
+            <div className={styles.input_container}>
+              <input className={styles.box} onChange={emailInput} value={emailtext} type="email" placeholder="이메일" class="id"></input>
+              <input className={styles.box} onChange={pwInput} value={pwtext} type="password" placeholder="비밀번호" class="pw"></input>
             </div>
-            <button onClick={onButtonClick}>로그인</button>
-            <button onClick={oneClickLogin}>바로 로그인(개발용)</button>
+            <button className={styles.button} onClick={onButtonClick}>로그인</button>
+            {/* <button onClick={oneClickLogin}>바로 로그인(개발용)</button> */}
           </div>
-          <span className="message">이메일과 비밀번호를 입력해주세요</span>
+          <span className={styles.message}>이메일과 비밀번호를 입력해주세요</span>
         </div>
-        <a href="/registration" className="registration-toggle">
+        <a href="/registration" className={styles.registration_toggle}>
           회원가입
         </a>
       </div>

@@ -33,15 +33,15 @@ const MainBanner = () => {
                 <div className="main-banner item-bg1">
                     <div className="container">
                         <div className="main-banner-content">
-                            <h1>문구 aaaa1</h1>
-                            <p>문구 2</p>
+                            <h1>Create your own XR contents!</h1>
+                            <p></p>
 
                             <div className="btn-box">
                                 <Link href="/index-4/#">
-                                    <a className="btn btn-primary">push it</a>
+                                    <a className="btn btn-primary">WebRTC production</a>
                                 </Link>
                                 <Link href="/index-4/#">
-                                    <a className="optional-btn">click me</a>
+                                    <a className="optional-btn">About Us</a>
                                 </Link>
                             </div>
                         </div>

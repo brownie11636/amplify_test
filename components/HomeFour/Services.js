@@ -9,31 +9,24 @@ class Services extends Component {
             <section className="services-area bg-f2f6f9 ptb-110">
                 <div className="container">
                     <div className="section-title">
-                        <h2>We Offer Professional Solutions(문구1)</h2>
-                        <p>문구2</p>
+                        <h2>We Offer Professional Solutions</h2>
                     </div>
 
                     <div className="row">
-                    <div className="col-lg-4 col-sm-6">
+                        {/* <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
                                 <div className="icon">
                                     <i className="flaticon-income"></i>
                                 </div>
 
                                 <h3>
-                                    {/* <Link href={{
-                                        pathname: `/socketchat/${roomid}`,
-                                        query: {
-                                            query_roomid: `${roomid}`,
-                                        }
-                                    }}> */}
                                     <Link href={`/socketchat/${uuidv4()}`}>
                                         <a>Socket Chat</a>
                                     </Link>
                                 </h3>
                                 <p>We provide you chat using websocket. This provides less network latency.</p>
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">

@@ -9,16 +9,16 @@ class About extends Component {
                     <div className="row align-items-center">
                         <div className="col-lg-6 col-md-12">
                             <div className="about-image">
-                                <img src="/images/about/about1.jpg" alt="image" />
-                                <img src="/images/about/about2.jpg" alt="image" />
+                                <img src="/images/robotic-arm4.png" alt="image" />
+                            {/* <img src="/images/gimbal.png" alt="image" /> */}
                             </div>
                         </div>
 
                         <div className="col-lg-6 col-md-12">
                             <div className="about-content">
-                                <h2>문구 1</h2>
-                                <p>문구 2</p>
-                                <p>문구 3</p>
+                                <h1>여러분들이 쉽게 컨텐츠를 제작 할 수 있도록 도와드리고 있어요!</h1>
+                                <p><br />우리는 모든 환경에서 사용할 수 있는 다양한 API 제공합니다</p>
+                                <p>우리는 고객님들이 필요로 하는곳 어디서든 조작이 가능합니다</p>
 
                                 <Link href="/about">
                                     <a className="btn btn-primary">Discover More</a>
