@@ -8,7 +8,9 @@ import adapter from 'webrtc-adapter';
 
 export default function View() {
     let pc;
-
+    let ServiceList;
+    let ServiceList2 = useRef();
+    
     console.log('adapter.browserDetails.browser?', adapter.browserDetails.browser);
   
     const localVideo = useRef();
@@ -18,19 +20,18 @@ export default function View() {
     const [remoteStream, setRemoteStream] = useState({});
 //    const [isChannelReady, setIsChannelReady] = useState(false);
     let isChannelReady = false;
-    const [selectList, setSelectList] = useState([
-      "tttt",
-      `socketId: asdadadadads`,
-      "grape",
-      "orange",
-    ]);
-    const [selected, setSelected] = useState();
+    const selected = useRef();
     const [isStarted, setIsStarted] = useState(false);
     const [isInitiator, setIsInitiator] = useState(false);
     const [query, setQuery] = useState([]);
-    const [serviceList, setServiceList] = useState({});
     const [turnReady, setTurnReady] = useState(false);
+
+    //const [serviceList, setServiceList] = useState({});
+    const serviceList = useRef({})
+    const [selectList, setSelectList] = useState([]);
   
+
+
     const pcConfig = {
       iceServers: [
         {
@@ -47,31 +48,17 @@ export default function View() {
   //   };
   
     const handleSelect = (e) => {
-      //console.log(e.target.value);
-      setSelected((current) => {
-        return e.target.value;
-      });
+      console.log(e.target.value);
+      selected.current = e.target.value;
     };
   
     const JoinService = () => {
-      let selectedProfile = serviceList.find(function(data){ return data.socketId === selected});
+      let selectedProfile = serviceList.current.find(function(data){
+        return data.sid === selected.current
+      });
       // memo by joonik 0710 ... filter 함수보다는 find함수가 더 효율적임
       console.log("selectedProfile? --> ", selectedProfile);
-      
-      socket.emit("Join_Service", selectedProfile);
-      if (selectedProfile.service.description === "tsSensor") {
-        console.log(`location.href='SensorMonitor.html'`);
-      } else if (selectedProfile.service.description === "Streamer") {
-        //  navigator.mediaDevices.getUserMedia({
-        //     audio: false,
-        //     video: true
-        //   })
-        //   .then(gotStream)
-        //   .catch(function(e) {
-        //     alert('getUserMedia() error: ' + e.name);
-        //   });
-        gotStream();
-      }
+      socket.emit("Join_Service", selectedProfile.sid);
     };
   
     const gotStream = () => {
@@ -82,8 +69,8 @@ export default function View() {
       // }
     };
   
-    const sendMessage = (message, destination) => {
-      let packet = { from: socket.id, to: destination, message: message };
+    const sendMessage = (message, destination=null) => {
+      let packet = {'from': socket.id, 'to':destination, 'message': message};
       console.log("Client sending message: ", packet);
       socket.emit("msg-v1", packet);
     };
@@ -112,21 +99,26 @@ export default function View() {
     }, []);
   
 
+
     useEffect(() => {
-        socket.on("q_result", function (q_result) {
-            console.log("query result:" + q_result);
-            for (const item of q_result) {
-              if (item.header === "ServiceList") {
-                setServiceList((current) => current = item.data);
-                const serviceListTMP = item.data; // hook을 쓰는게 맞는지, 이렇게 그냥 선언해서 넣는게 맞는지...
-        
-                for (const [key, value] of Object.entries(Object(serviceListTMP))) {
-                  console.log("list set up log", `${key}: ${value.socketId}`);
-                  setSelectList(selectList.concat(`${key}:${value.socketId}`));
-                }
-              }
+      socket.on('q_result', function(q_result) {
+        console.log('query result:' + q_result);
+        const qres = JSON.parse(q_result);
+        console.log(qres['header']);
+        console.log(qres['data']);
+
+      
+          if(qres.header==='ServiceList'){
+            //setServiceList(qres.data);
+            serviceList.current = qres.data;
+            let nextList = selectList;
+            for (const [key, value] of Object.entries(Object(serviceList.current))) {
+              console.log('list set up log',`${key}:${value.sid}`);
+              nextList = nextList.concat(`${key}:${value.sid}`);
             }
-          });
+            setSelectList(nextList);
+          }
+      });
         
           socket.on("created", function (room) {
             console.log("Created room " + room);
@@ -142,10 +134,29 @@ export default function View() {
             //setIsChannelReady(current => current = true);
             isChannelReady = true;
           });
-        
+
           socket.on("joined", function (room) {
-            console.log("joined: " + room);
+            console.log('join list', serviceList.current, 'selected', selected.current);
+            let targetProfile = serviceList.current.find(function(data){
+              return data.sid === selected.current
+            });
+            console.log("joined: " + targetProfile);
             //setIsChannelReady(current => current = true);
+            if (targetProfile.description === "tsSensor") {
+              console.log(`location.href='SensorMonitor.html'`);
+            } else if (targetProfile.description === "Streamer") {
+              console.log('stremer');
+              //  navigator.mediaDevices.getUserMedia({
+              //     audio: false,
+              //     video: true
+              //   })
+              //   .then(gotStream)
+              //   .catch(function(e) {
+              //     alert('getUserMedia() error: ' + e.name);
+              //   });
+              gotStream();
+            }
+
             isChannelReady = true;
           });
         
@@ -349,7 +360,7 @@ export default function View() {
           <div>
             <button onClick={JoinService}>Start Streaming</button>
             <button onClick={AudioToggle}>My Audio On/Off</button>
-            <select onChange={handleSelect} value={selected}>
+            <select onChange={handleSelect} value={selected.current}>
               {selectList.map((item) => (
               <option value={item.split(':')[1]} key={item}>
                   {item}

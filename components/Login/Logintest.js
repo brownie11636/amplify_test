@@ -8,7 +8,8 @@ const Logintest = () => {
     return (
         <div className={styles.wrap}>
         <div className={styles.login}>
-            <h2>Log-in</h2>
+            <h1>Log-In</h1>
+            <h5>Welcome to Portal301!</h5>
             <div className={styles.login_sns}>
             <li><a href=""><i className="fab fa-instagram"></i></a></li>
             <li><a href=""><i className="fab fa-facebook-f"></i></a></li>
@@ -18,15 +19,13 @@ const Logintest = () => {
                 <h4>E-mail</h4>
                 <input type="email" name="" id="" placeholder="Email" />
             </div>
-            <div className={styles.login_pw}>
+            <div className={styles.login_id}>
                 <h4>Password</h4>
                 <input type="password" name="" id="" placeholder="Password" />
             </div>
             <div className={styles.login_etc}>
-                <div className={styles.checkbox}>
-                <input type="checkbox" name="" id="" />
-                </div>
-                <div className={styles.forgot_pw}>
+
+                <div className={styles.login_pw}>
                 <a href="">Forgot Password?</a>
             </div>
             </div>

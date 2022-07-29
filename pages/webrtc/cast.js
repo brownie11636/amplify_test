@@ -20,7 +20,7 @@ export default function Cast() {
     //const [isChannelReady, setIsChannelReady] = useState(false);
     let isChannelReady = false;
 
-    const [selectList, setSelectList] = useState(["apple", "banana", "grape", "orange"]);
+    const [selectList, setSelectList] = useState([]);
     const [isStarted, setIsStarted] = useState(false);
     const [serviceList, setServiceList] = useState({});
   
@@ -129,20 +129,23 @@ export default function Cast() {
     useEffect(() => {
 
         socket.on('q_result', function(q_result) {
-            console.log('query result:' + q_result);
-            for(const item of q_result) {
-              if(item.header==='ServiceList'){
-                //setServiceList((current) => current = item.data);
-                const ServiceList = item.data; // hook을 쓰는게 맞는지, 이렇게 그냥 선언해서 넣는게 맞는지...
-                //console.log('아이템데이터bb',item.data);
-                //setSelectList(selectList.concat('hello'))
+            console.log('query result:' + typeof(q_result));
+            const qres = JSON.parse(q_result);
+            console.log(qres['header']);
+            console.log(qres['data']);
+
+          
+              if(qres.header==='ServiceList'){
+                const ServiceList = qres.data; // hook을 쓰는게 맞는지, 이렇게 그냥 선언해서 넣는게 맞는지...
+                let nextList = selectList;
                 for (const [key, value] of Object.entries(Object(ServiceList))) {
-                  console.log('list set up log',`${key}:${value.socketId}`);
-        
-                  setSelectList(selectList.concat(`${key}:${value.socketId}`));
+                  console.log('list set up log',`${key}:${value.sid}`);
+                  nextList = nextList.concat(`${key}:${value.sid}`);
+                  console.log(selectList);
+                  console.log(nextList);
                 }
+                setSelectList(nextList);
               }
-            }
           });
         
         
