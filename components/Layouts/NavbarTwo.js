@@ -3,7 +3,12 @@ import Link from '../../utils/ActiveLink';
 import { authcheck } from "../../service/authcheck";
 import { useCookies } from 'react-cookie';
 
+import {useSelector} from "react-redux";
+import {selectLogin} from "../../store/auth";
+
 function Navbar() {
+
+    const isLoggedIn = useSelector(selectLogin);
 
     const [searchForm, setSearchForm] = useState(false)
     const [display, setDisplay] = useState(false)
@@ -112,7 +117,7 @@ function Navbar() {
                                                 <a className="nav-link">Contact</a>
                                             </Link>
                                         </li>
-                                        {!isLogin? 
+                                        {!isLoggedIn? 
                                         <li className="nav-item">
                                         <Link href="/login" activeClassName="active">
                                             <a className="nav-link">Log In</a>
