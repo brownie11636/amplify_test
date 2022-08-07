@@ -7,7 +7,6 @@ import 'react-accessible-accordion/dist/fancy-example.css';
 import '../styles/style.css';
 import {Provider as ReduxProvider} from 'react-redux';
 import { persistStore } from "redux-persist";
-import { PersistGate } from "redux-persist/integration/react";
 
 import App from 'next/app';
 import Head from 'next/head';
@@ -32,6 +31,7 @@ export default class MyApp extends App {
             this.timerHandle = 0;
         }
     }
+
     render () {
         const { Component, pageProps } = this.props
         return (
@@ -58,4 +58,5 @@ export default class MyApp extends App {
             </>
         );
     }
+
 }
