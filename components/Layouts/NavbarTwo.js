@@ -96,16 +96,25 @@ export default function Navbar() {
                                                 <a className="nav-link">Contact</a>
                                             </Link>
                                         </li>
+
+                                        { !isLogin && 
+                                        <li className="nav-item">
+                                            <Link href="/registration" activeClassName="active">
+                                                <a className="nav-link">Registration</a>
+                                            </Link>
+                                        </li>
+                                        }
+
                                         {!isLogin? 
                                         <li className="nav-item">
-                                        <Link href="/login" activeClassName="active">
-                                            <a className="nav-link">Log In</a>
-                                        </Link>
+                                            <Link href="/login" activeClassName="active">
+                                                <a className="nav-link">Log In</a>
+                                            </Link>
                                         </li>:
                                         <li className="nav-item">
-                                        <Link href="/logout" activeClassName="active">
-                                            <a className="nav-link">Log Out</a>
-                                        </Link>
+                                            <Link href="/logout" activeClassName="active">
+                                                <a className="nav-link">Log Out</a>
+                                            </Link>
                                         </li>}
                                     </ul>
                                     <div className="others-options">

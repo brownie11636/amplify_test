@@ -2,17 +2,14 @@ import { React, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useCookies } from 'react-cookie';
 import styles from "/styles/logintest.module.css"
-import axios from "axios";
-
-import {useDispatch, useSelector} from "react-redux";
-import {loginAction, selectLogin} from "../../store/auth";
-
-axios.defaults.withCredentials = true;
+import Link from '../../utils/ActiveLink';
 
 export default function LoginComponent() {
 
     const router = useRouter();
     const [cookies, setCookie] = useCookies(['id']);
+    const [message, setMessage] = useState("이메일과 비밀번호를 입력해주세요");
+    const [messageColor, setMessageColor] = useState("black");
     const [email, setEmail] = useState("");
     const onChangeEmail = (event) => {
         setEmail(event.target.value);
@@ -41,17 +38,17 @@ export default function LoginComponent() {
             setCookie('id', data.id,  {maxAge: 2000});
             router.push("/");
         } else if (status === 400) {
-            document.querySelector("span.message").innerHTML = "잘못된 비밀번호입니다.";
-            document.querySelector("span.message").style.color = "red";                
+            setMessage("잘못된 비밀번호입니다.");
+            setMessageColor("red");
         } else if (status === 404) {
-            document.querySelector("span.message").innerHTML = "유저가 존재하지 않습니다";
-            document.querySelector("span.message").style.color = "red";                
+            setMessage("유저가 존재하지 않습니다");
+            setMessageColor("red");                
         } else if (status === 500) {
-            document.querySelector("span.message").innerHTML = "서버에 에러가 발생했습니다";
-            document.querySelector("span.message").style.color = "red";                
+            setMessage("서버에 에러가 발생했습니다");
+            setMessageColor("red");
         } else {
-            document.querySelector("span.message").innerHTML = "알 수 없는 오류가 발생했습니다";
-            document.querySelector("span.message").style.color = "red";      
+            setMessage("알 수 없는 오류가 발생했습니다");
+            setMessageColor("red");
         }
     }
 
@@ -74,15 +71,19 @@ export default function LoginComponent() {
                     <h4>Password</h4>
                     <input value={password} onChange={onChangePassword} type="password" placeholder="Password" />
                 </div>
-                <div className={styles.login_etc}>
-                    <div className={styles.login_pw}>
-                        <a href="">Forgot Password?</a>
-                    </div>
-                </div>
+
                 <div className={styles.submit}>
-                    <span class="message">이메일과 비밀번호를 입력해주세요</span>
+                    <span style={{color: messageColor}}>{message}</span>
                     <br></br>
                     <input type="submit" value="submit" onClick={loginSubmit}/>
+                </div>
+                <div className={styles.login_etc}>
+                    <Link href="/" activeClassName="active">
+                        <a style={{marginRight: 10}}>Forgot Password?</a>
+                    </Link>
+                    <Link href="/registration" activeClassName="active">
+                        <a >Create New Account</a>
+                    </Link>
                 </div>
             </div>
         </div>
