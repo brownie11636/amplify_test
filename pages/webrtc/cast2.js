@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import React from "react";
-import { socket, SocketContext } from "../../toServer/socket";
+import { socket, SocketContext } from "../../service/socket";
 import NavbarTwo from "../../components/Layouts/NavbarTwo";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";

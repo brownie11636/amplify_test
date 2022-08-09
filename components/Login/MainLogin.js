@@ -77,6 +77,8 @@ const MainLogin = () => {
             "Content-Type": "application/json"
         }
       })).json();
+
+      console.log('res : ', response);
   
       if(response.result === 'ok') {
         console.log("result from server : ", response.result);

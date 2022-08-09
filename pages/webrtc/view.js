@@ -1,5 +1,5 @@
 import { React, useEffect, useState, useRef } from "react";
-import { socket, SocketContext } from "../../service/socket";
+import { socket, SocketContext } from "../../toServer/socket";
 
 import NavbarTwo from "../../components/Layouts/NavbarTwo";
 import PageBanner from "../../components/Common/PageBanner";
@@ -7,22 +7,21 @@ import Footer from "../../components/Layouts/Footer";
 import adapter from 'webrtc-adapter';
 
 export default function View() {
-    let pc;
-    let ServiceList;
-    let ServiceList2 = useRef();
-    
+    const pc = useRef();
+
     console.log('adapter.browserDetails.browser?', adapter.browserDetails.browser);
   
     const localVideo = useRef();
     const remoteVideo = useRef();
     //const controlPanel = useRef();
     //const [localStream, setLocalStream] = useState({});
-    const [remoteStream, setRemoteStream] = useState({});
+    const remoteStream = useRef({});
 //    const [isChannelReady, setIsChannelReady] = useState(false);
     let isChannelReady = false;
     const selected = useRef();
+
     const [isStarted, setIsStarted] = useState(false);
-    const [isInitiator, setIsInitiator] = useState(false);
+    const isInitiator = useRef(false);
     const [query, setQuery] = useState([]);
     const [turnReady, setTurnReady] = useState(false);
 
@@ -54,10 +53,10 @@ export default function View() {
   
     const JoinService = () => {
       let selectedProfile = serviceList.current.find(function(data){
-        return data.sid === selected.current
+        console.log(data);
+        return data.sid === selected.current;
       });
       // memo by joonik 0710 ... filter 함수보다는 find함수가 더 효율적임
-      console.log("selectedProfile? --> ", selectedProfile);
       socket.emit("Join_Service", selectedProfile.sid);
     };
   
@@ -102,10 +101,7 @@ export default function View() {
 
     useEffect(() => {
       socket.on('q_result', function(q_result) {
-        console.log('query result:' + q_result);
         const qres = JSON.parse(q_result);
-        console.log(qres['header']);
-        console.log(qres['data']);
 
       
           if(qres.header==='ServiceList'){
@@ -136,11 +132,10 @@ export default function View() {
           });
 
           socket.on("joined", function (room) {
-            console.log('join list', serviceList.current, 'selected', selected.current);
             let targetProfile = serviceList.current.find(function(data){
               return data.sid === selected.current
             });
-            console.log("joined: " + targetProfile);
+            console.log("joined!");
             //setIsChannelReady(current => current = true);
             if (targetProfile.description === "tsSensor") {
               console.log(`location.href='SensorMonitor.html'`);
@@ -170,20 +165,24 @@ export default function View() {
             console.log("Client received message:", message);
             try {
               if (message.type === "offer") {
-                if (!isInitiator && !isStarted) {
+                console.log("check : offer")
+                if (!isInitiator.current && !isStarted) {
                   maybeStart();
                 }
-                pc.setRemoteDescription(new RTCSessionDescription(message));
+                pc.current.setRemoteDescription(new RTCSessionDescription(message));
                 doAnswer();
               } else if (message.type === "answer" && isStarted) {
-                pc.setRemoteDescription(new RTCSessionDescription(message));
+                console.log("check : answer");
+                pc.current.setRemoteDescription(new RTCSessionDescription(message));
               } else if (message.type === "candidate" && isStarted) {
+                console.log("check : candidate");
                 var candidate = new RTCIceCandidate({
                   sdpMLineIndex: message.label,
                   candidate: message.candidate,
                 });
-                pc.addIceCandidate(candidate);
+                pc.current.addIceCandidate(candidate);
               } else if (message === "bye" && isStarted) {
+                console.log("check : bye")
                 handleRemoteHangup();
               }
             } catch (e) {}
@@ -206,8 +205,8 @@ export default function View() {
           createPeerConnection();
           // pc.addStream(localStream);  // disabled by Joonhwa
           setIsStarted(true);
-          console.log("isInitiator", isInitiator);
-          if (isInitiator) {
+          console.log("isInitiator", isInitiator.current);
+          if (isInitiator.current) {
             doCall();
           }
         }
@@ -219,11 +218,13 @@ export default function View() {
     function createPeerConnection() {
       try {
         // pc = new RTCPeerConnection(null);
-        pc = new RTCPeerConnection(pcConfig); //Joonhwa
-        pc.onicecandidate = handleIceCandidate;
-        pc.onaddstream = handleRemoteStreamAdded;
-        pc.onremovestream = handleRemoteStreamRemoved;
-        console.log("Created RTCPeerConnnection", pc);
+        pc.current = new RTCPeerConnection(pcConfig); //Joonhwa
+        pc.current.onicecandidate = handleIceCandidate;
+        pc.current.onaddstream = handleRemoteStreamAdded;
+        pc.current.onremovestream = handleRemoteStreamRemoved;
+        // pc.connectionState = "connected";
+        // pc.iceConnectionState = "connected";
+        console.log("Created RTCPeerConnnection", pc.current);
       } catch (e) {
         console.log("Failed to create PeerConnection, exception: " + e.message);
         alert("Cannot create RTCPeerConnection object.");
@@ -251,12 +252,12 @@ export default function View() {
   
     function doCall() {
       console.log("Sending offer to peer");
-      pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+      pc.current.createOffer(setLocalAndSendMessage, handleCreateOfferError);
     }
   
     function doAnswer() {
       console.log("Sending answer to peer.");
-      pc.createAnswer().then(
+      pc.current.createAnswer().then(
         setLocalAndSendMessage,
         onCreateSessionDescriptionError
       );
@@ -264,7 +265,7 @@ export default function View() {
   
     function setLocalAndSendMessage(sessionDescription) {
         console.log('sdp what?', sessionDescription);
-      pc.setLocalDescription(sessionDescription);
+        pc.current.setLocalDescription(sessionDescription);
       console.log("setLocalAndSendMessage sending message", sessionDescription);
       sendMessage(sessionDescription);
     }
@@ -304,9 +305,10 @@ export default function View() {
   
     function handleRemoteStreamAdded(event) {
       console.log("Remote stream added. event.stream?>>>", event.stream);
-      setRemoteStream((current) => {
-        return event.stream;
-      });
+      remoteStream.current = event.stream
+      // setRemoteStream((current) => {
+      //   return event.stream;
+      // });
       remoteVideo.current.srcObject = event.stream;
       console.log('remotevd@@@@@@', remoteVideo.current.srcObject)
     }
@@ -324,13 +326,13 @@ export default function View() {
     function handleRemoteHangup() {
       console.log("Session terminated.");
       stop();
-      setIsInitiator(true);
+      isInitiator.current = true;
     }
   
     function stop() {
       setIsStarted(false);
-      pc.close();
-      pc = null;
+      pc.current.close();
+      pc.current = null;
     }
   
     return (
@@ -349,12 +351,16 @@ export default function View() {
             <video
               ref={localVideo}
               id="localVideo"
-              autoPlay muted playsInline
+              autoPlay
+              muted
+              playsInline
             ></video>
             <video
               ref={remoteVideo}
               id="remoteVideo"
-              autoPlay muted playsInline
+              autoPlay
+              muted
+              playsInline
             ></video>
           </div>
           <div>

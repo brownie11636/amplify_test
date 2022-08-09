@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect } from 'react';
 import Link from '../../utils/ActiveLink';
-import { authcheck } from "../../service/authcheck";
+import { authcheck } from "../../toServer/authcheck";
 import { useCookies } from 'react-cookie';
 
 function Navbar() {
