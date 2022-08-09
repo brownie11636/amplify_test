@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import NavbarTwo from "../components/Layouts/NavbarTwo";
 import Footer from "../components/Layouts/Footer";
-import LoginComponent from "../components/Login/LoginComponent";
+import Registration from "../components/registration/Registration";
 
 export default function Login({}) {
 
@@ -10,9 +10,9 @@ export default function Login({}) {
         <NavbarTwo />
 
         
-        <LoginComponent />
+        <Registration />
   
         <Footer />
-      </>
+      </> 
     );
 }
