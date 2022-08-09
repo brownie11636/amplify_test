@@ -3,8 +3,7 @@ import NavbarTwo from "../components/Layouts/NavbarTwo";
 import PageBanner from "../components/Common/PageBanner";
 import Footer from "../components/Layouts/Footer";
 import MainLogin from "../components/Login/MainLogin";
-import Logintest from "../components/Login/Logintest";
-
+import LoginComponent from "../components/Login/LoginComponent";
 
 export default function Login({}) {
 
@@ -13,7 +12,7 @@ export default function Login({}) {
         <NavbarTwo />
 
         
-        <Logintest />
+        <LoginComponent />
   
         <Footer />
       </>
