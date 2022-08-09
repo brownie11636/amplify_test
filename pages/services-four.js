@@ -10,7 +10,6 @@ import Footer from '../components/Layouts/Footer';
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { socket, SocketContext } from "../service/socket";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from 'react-cookie';
 

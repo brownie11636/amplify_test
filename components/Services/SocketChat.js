@@ -3,10 +3,10 @@ import styles from "../../styles/Chat.module.css";
 
 import { React, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { SocketContext } from "../../service/socket";
+import { SocketContext } from "../../toServer/socket";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from 'react-cookie';
-import { authCheck } from "../../service/authcheck";
+//import { authCheck } from "../../service/authcheck";
 
 import socketIo from "socket.io-client";
 const socket = socketIo('https://localhost:3333',{transports: ["websocket"]});
