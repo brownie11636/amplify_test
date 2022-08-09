@@ -86,6 +86,8 @@ export const App = () => {
       //   room: "1234",
       // });
     } catch (e) {
+      console.log(pcRef.current);
+
       console.error(e);
     }
   };

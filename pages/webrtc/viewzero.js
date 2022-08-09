@@ -158,6 +158,7 @@ export const App = () => {
     //if (!(pcRef.current && socketRef.current)) return;
     try {
       pcsRef.current[from] = new RTCPeerConnection(pc_config);
+      console.log(pcRef.current);
 
       pcRef.current.onicecandidate = (e) => {
         if (e.candidate) {
