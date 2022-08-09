@@ -97,6 +97,7 @@ export const App = () => {
         return data.sid === selected.current;
     });
     console.log(selectedProfile);
+    console.log(selectedProfile);
     socketRef.current.emit("Join_Service", selectedProfile.sid);
 
     //if (!(pcRef.current && socketRef.current)) return;

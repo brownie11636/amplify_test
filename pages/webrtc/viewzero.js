@@ -39,6 +39,7 @@ export const App = () => {
 
   const sendMessage = (message, destination) => {
     console.log("send message(emit msg-v1)", message.type, destination);
+    console.log("send message(emit msg-v1)", message.type, destination);
     let packet = { from: socketRef.current.id, to: destination, message: message };
     //console.log('Client sending message: ', packet);
     socketRef.current.emit("msg-v1", packet);
