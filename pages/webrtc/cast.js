@@ -155,9 +155,10 @@ export default function Cast() {
                 const ServiceList = qres.data; // hook을 쓰는게 맞는지, 이렇게 그냥 선언해서 넣는게 맞는지...
                 let nextList = selectList;
                 for (const [key, value] of Object.entries(Object(ServiceList))) {
-
+                  console.log('list set up log',`${key}:${value.sid}`);
                   nextList = nextList.concat(`${key}:${value.sid}`);
-
+                  console.log(selectList);
+                  console.log(nextList);
                 }
                 setSelectList(nextList);
               }
