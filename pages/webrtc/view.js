@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
+import NavbarTwo from "../../components/Layouts/NavbarTwo";
+import PageBanner from "../../components/Common/PageBanner";
+import Footer from "../../components/Layouts/Footer";
 
 const pc_config = {
   iceServers: [
@@ -404,18 +407,18 @@ export const App = () => {
 
 
   return (
-    <div>
-      <video
-        style={{
-          width: 240,
-          height: 240,
-          margin: 5,
-          backgroundColor: "black",
-        }}
-        muted
-        ref={localVideoRef}
-        autoPlay
+    <>
+      <NavbarTwo />
+
+      <PageBanner
+        pageTitle="Security & Surveillance"
+        homePageUrl="/"
+        homePageText="Home"
+        activePageText="Service Details"
+        bgImgClass="item-bg2"
       />
+    
+    <div>
       <video
         id="remotevideo"
         style={{
@@ -437,6 +440,8 @@ export const App = () => {
             ))}
             </select>
     </div>
+    <Footer />
+    </>
   );
 };
 
