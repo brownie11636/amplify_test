@@ -1,106 +1,313 @@
-import { React, useEffect, useState, useRef } from "react";
-import { socket, SocketContext } from "../../toServer/socket";
+import React, { useEffect, useRef, useState } from "react";
+import io from "socket.io-client";
 
-import NavbarTwo from "../../components/Layouts/NavbarTwo";
-import PageBanner from "../../components/Common/PageBanner";
-import Footer from "../../components/Layouts/Footer";
-import adapter from 'webrtc-adapter';
+const pc_config = {
+  iceServers: [
+    // {
+    //   urls: 'stun:[STUN_IP]:[PORT]',
+    //   'credentials': '[YOR CREDENTIALS]',
+    //   'username': '[USERNAME]'
+    // },
+    {
+      urls: "stun:stun.l.google.com:19302",
+    },
+  ],
+};
+const SOCKET_SERVER_URL = "https://192.168.0.12:3333";
+// const socketRef = io(SOCKET_SERVER_URL,{W
+//     transports: ["websocket"] // HTTP long-polling is disabled
+//     }
+// );
 
-export default function View() {
-    const pc = useRef();
+export const App = () => {
+  const socketRef = useRef();
+  const pcRef = useRef();
+  const pcsRef = useRef({});
 
-    console.log('adapter.browserDetails.browser?', adapter.browserDetails.browser);
+
+
+  const socketFrom = useRef();
+
+  const localVideoRef = useRef(null);
+  const remoteVideoRef = useRef(null);
+
+  const serviceProfile = useRef();
+  const selected = useRef();
+  const serviceList = useRef();
+  const [selectList, setSelectList] = useState([]);
   
-    const localVideo = useRef();
-    const remoteVideo = useRef();
-    //const controlPanel = useRef();
-    //const [localStream, setLocalStream] = useState({});
-    const remoteStream = useRef({});
-//    const [isChannelReady, setIsChannelReady] = useState(false);
-    let isChannelReady = false;
-    const selected = useRef();
 
-    const [isStarted, setIsStarted] = useState(false);
-    const isInitiator = useRef(false);
-    const [query, setQuery] = useState([]);
-    const [turnReady, setTurnReady] = useState(false);
+  const sendMessage = (message, destination) => {
+    console.log("send message(emit msg-v1)", message.type, destination);
+    console.log("send message(emit msg-v1)", message.type, destination);
+    let packet = { from: socketRef.current.id, to: destination, message: message };
+    //console.log('Client sending message: ', packet);
+    socketRef.current.emit("msg-v1", packet);
+  };
 
-    //const [serviceList, setServiceList] = useState({});
-    const serviceList = useRef({})
-    const [selectList, setSelectList] = useState([]);
-  
-
-
-    const pcConfig = {
-      iceServers: [
-        {
-          urls: "turn:3.38.108.27",
-          username: "usr",
-          credential: "pass",
-        },
-      ],
-    };
-  
-  //   const sdpConstraints = {
-  //     offerToReceiveAudio: true,//set to false by Joonhwa 
-  //     offerToReceiveVideo: true //set to false by Joonhwa 
-  //   };
-  
-    const handleSelect = (e) => {
-      console.log(e.target.value);
-      selected.current = e.target.value;
-    };
-  
-    const JoinService = () => {
-      let selectedProfile = serviceList.current.find(function(data){
-        console.log(data);
-        return data.sid === selected.current;
+  const setVideoTracks = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
       });
-      // memo by joonik 0710 ... filter 함수보다는 find함수가 더 효율적임
-      socket.emit("Join_Service", selectedProfile.sid);
-    };
+      if (localVideoRef.current) localVideoRef.current.srcObject = stream;
+      // if (!(pcRef.current && socketRef.current)) return;
+      stream.getTracks().forEach((track) => {
+        if (!pcRef.current) return;
+        pcRef.current.addTrack(track, stream);
+      });
+      // pcRef.current.onicecandidate = (e) => {
+      //   if (e.candidate) {
+      //     if (!socketRef.current) return;
+      //     console.log("onicecandidate");
+      //     //socketRef.current.emit("candidate", e.candidate);
+      //     sendMessage({
+      //       type: 'candidate',
+      //       label: e.candidate.sdpMLineIndex,
+      //       id: e.candidate.sdpMid,
+      //       candidate: e.candidate.candidate
+      //     }, socketFrom.current);
+      //   }
+      // };
+      // pcRef.current.oniceconnectionstatechange = (e) => {
+      //   console.log('oniceconnectionstatechange : ', e.target.connectionState);
+      // };
+
+      socketRef.current.emit("Start_Service", {
+        socketId: socketRef.current.id,
+        room: "room:" + socketRef.current.id,
+        type: "Device_1",
+        description: "Streamer",
+        contents: "jooonik", //contents 수정필요!!!!!!!!!!!!!!!!!!
+      });
+      sendMessage('got user media', null);
+
+      // socketRef.current.emit("join_room", {
+      //   room: "1234",
+      // });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const createOffer = async () => {
+    console.log("create offer");
+    let selectedProfile = serviceList.current.find(function(data){
+        //console.log(data);
+        return data.sid === selected.current;
+    });
+    console.log(selectedProfile);
+    socketRef.current.emit("Join_Service", selectedProfile.sid);
+
+    //if (!(pcRef.current && socketRef.current)) return;
+    try {
+      const sdp = await pcRef.current.createOffer({
+        offerToReceiveAudio: true,
+        offerToReceiveVideo: true,
+      });
+      await pcRef.current.setLocalDescription(new RTCSessionDescription(sdp));
+
+      console.log(pcRef.current.iceGatheringState);
+      pcRef.current.oniceconnectionstatechange = (e) => {
+        console.log('oniceconnectionstatechange : ', e.target.connectionState);
+      };
+      //socketRef.current.emit("offer", sdp);
+      sendMessage(sdp, selectedProfile.sid);
+      socketFrom.current = selectedProfile.sid;
+      //socketRef.current.emit("offer", sdp);
+
+    } catch (e) {
+      console.log('errrrrrrrrr');
+      console.error(e);
+    }
+  };
+
+  const reOffer = async () => { 
+    try {
+      const sdp = await pcRef.current.createOffer({
+        offerToReceiveAudio: true,
+        offerToReceiveVideo: true,
+      });
+      await pcRef.current.setLocalDescription(new RTCSessionDescription(sdp));
+
+      console.log(pcRef.current.iceGatheringState);
+      pcRef.current.oniceconnectionstatechange = (e) => {
+        console.log('oniceconnectionstatechange : ', e.target.connectionState);
+      };
+      //socketRef.current.emit("offer", sdp);
+      sendMessage(sdp, socketFrom.current);
+      socketRef.current.emit("offer", sdp);
+
+    } catch (e) {
+      console.log('errrrrrrrrr');
+      console.error(e);
+    }
+  }
+
+  // function sleep(ms) {
+  //   const wakeUpTime = Date.now() + ms;
+  //   while (Date.now() < wakeUpTime) {}
+  // }
+
+  const onCreateSessionDescriptionError = (error) => {
+    console.log('Failed to create session description: ' + error.toString());
+  }
   
-    const gotStream = () => {
-      console.log("Adding local stream.");
-      sendMessage("connection request");
-      // if (isInitiator) { // isInitiator set to true when a room is created(socket).
-      //   maybeStart();
-      // }
-    };
-  
-    const sendMessage = (message, destination=null) => {
-      let packet = {'from': socket.id, 'to':destination, 'message': message};
-      console.log("Client sending message: ", packet);
-      socket.emit("msg-v1", packet);
-    };
-  
-    const AudioToggle = () => {
-      console.log("Audio Toggle");
-      //maybeStart(null); //delete?
-      //console.log(localStream.getAudioTracks()[0].enabled);
-      //localStream.getAudioTracks()[0].enabled = !localStream.getAudioTracks()[0].enabled;
-    };
-  
-    useEffect(() => {
-      setQuery(
-        query.concat({
-          header: "ServiceList",
-          filter: {},
-        })
-      );
-    //   console.log("query?", query);
-    //   socket.emit("q_service", query);
-      let querya = new Array({
+
+  const createAnswer = async (sdp, from) => { //getoffer & doAnswer
+    //if (!(pcRef.current && socketRef.current)) return;
+    try {
+      pcsRef.current[from] = new RTCPeerConnection(pc_config);
+
+      pcRef.current.onicecandidate = (e) => {
+        if (e.candidate) {
+          if (!socketRef.current) return;
+          console.log("onicecandidate");
+          //socketRef.current.emit("candidate", e.candidate);
+          sendMessage({
+            type: 'candidate',
+            label: e.candidate.sdpMLineIndex,
+            id: e.candidate.sdpMid,
+            candidate: e.candidate.candidate
+          }, from);
+        }
+      };
+      pcRef.current.oniceconnectionstatechange = (e) => {
+        console.log('oniceconnectionstatechange : ', e.target.connectionState);
+      };
+
+      pcsRef.current = {...pcsRef.current, [from]: pcRef.current};
+
+
+
+      await pcsRef.current[from].setRemoteDescription(new RTCSessionDescription(sdp));
+//      await pcsRef.current[from].setRemoteDescription(new RTCSessionDescription(sdp));
+      console.log("answer set remote description success", pcsRef.current);
+//       const mySdp = await pcRef.current.createAnswer({
+//         offerToReceiveVideo: true,
+//         offerToReceiveAudio: true,
+//       });
+//       console.log("create answer");
+//       await pcRef.current.setLocalDescription(new RTCSessionDescription(mySdp));
+// //      await pcsRef.current[from].setLocalDescription(new RTCSessionDescription(mySdp));
+//       pcsRef.current = {...pcsRef.current, [from]: pcRef.current};
+//       sendMessage(mySdp, from);
+      //socketRef.current.emit("answer", mySdp);
+
+      pcsRef.current[from].createAnswer().then( async (sessionDescription) =>{
+        await pcsRef.current[from].setLocalDescription(sessionDescription);
+          console.log('setLocalAndSendMessage sending message', sessionDescription);
+          sendMessage(sessionDescription, from);
+        }, onCreateSessionDescriptionError);
+
+      //pcsRef.current = {...pcsRef.current, [packet.from]: pcRef.current};
+
+
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  function handleRemoteStreamAdded(event) {
+    console.log("Remote stream added. event.stream?>>>", event.stream);
+    remoteVideoRef.current.srcObject = event.stream;
+  }
+
+  const [query, setQuery] = useState([]);
+
+  useEffect(() => {
+
+    setQuery(
+    query.concat({
         header: "ServiceList",
         filter: {},
-      })
-      socket.emit("q_service", querya);
-    }, []);
-  
+    })
+    );
 
+    let querya = new Array({
+      header: "ServiceList",
+      filter: {},
+    })
 
-    useEffect(() => {
-      socket.on('q_result', function(q_result) {
+    socketRef.current = io(SOCKET_SERVER_URL, {
+      transports: ["websocket"],
+    });
+    // const socketRef = io(SOCKET_SERVER_URL,{
+    //     transports: ["websocket"] // HTTP long-polling is disabled
+    //     }
+    // );
+    if (socketRef.current.connected) {
+      console.log("connected");
+    } else {
+      console.log("not conn");
+    }
+
+    socketRef.current.emit("q_service", querya);
+
+    pcRef.current = new RTCPeerConnection(pc_config);
+    serviceProfile.current =   {
+        socketId: socketRef.current.id,
+        room: "room:" + socketRef.current.id,
+        type: "Device_1",
+        description: "Streamer",
+        contents: "jooonik", //contents 수정필요!!!!!!!!!!!!!!!!!!
+      };
+
+    socketRef.current.on("all_users", (allUsers) => {
+      console.log("alluser", allUsers.length, allUsers);
+      // if (allUsers.length > 0) {
+      //   createOffer();
+      // }
+    });
+
+    socketRef.current.on("user-connected", (data) => {
+      console.log('"user-connected"', data);
+      //createOffer();
+      // if (data > 0) {
+      //     createOffer();
+      //   }
+    });
+
+    socketRef.current.on("getOffer", (sdp) => {
+      //console.log(sdp);
+      console.log("get offer");
+      createAnswer(sdp);
+    });
+
+    socketRef.current.on("getAnswer", (sdp) => {
+      console.log("get answer");
+      if (!pcRef.current) return;
+      pcRef.current.setRemoteDescription(new RTCSessionDescription(sdp));
+      pcRef.current.onaddstream = handleRemoteStreamAdded;
+      // pcRef.current.ontrack = (ev) => {
+      //     console.log("add remotetrack success");
+      //     if (remoteVideoRef.current) {
+      //       remoteVideoRef.current.srcObject = ev.streams[0];
+      //     }
+      //   };
+      //console.log(sdp);
+    });
+
+    socketRef.current.on("getCandidate", async (candidate) => {
+      if (!pcRef.current) return;
+      await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+      console.log("candidate add success");
+    });
+
+    socketRef.current.on("joined", function (room, socketTo) {
+        reOffer();
+        console.log("joined!");
+    });
+
+    socketRef.current.on('join', function (room){
+      console.log('Another peer made a request to join room ' + room);
+      console.log('This peer is the initiator of room ' + room + '!');
+      //setIsChannelReady(true);
+      //isChannelReady = true;
+    });
+
+    socketRef.current.on('q_result', function(q_result) {
         const qres = JSON.parse(q_result);
 
       
@@ -109,274 +316,128 @@ export default function View() {
             serviceList.current = qres.data;
             let nextList = selectList;
             for (const [key, value] of Object.entries(Object(serviceList.current))) {
-              console.log('list set up log',`${key}:${value.sid}`);
+              //console.log('list set up log',`${key}:${value.sid}`);
               nextList = nextList.concat(`${key}:${value.sid}`);
             }
             setSelectList(nextList);
           }
       });
-        
-          socket.on("created", function (room) {
-            console.log("Created room " + room);
-          });
-        
-          socket.on("full", function (room) {
-            console.log("Room " + room + " is full");
-          });
-        
-          socket.on("join", function (room) {
-            console.log("Another peer made a request to join room " + room);
-            console.log("This peer is the initiator of room " + room + "!");
-            //setIsChannelReady(current => current = true);
-            isChannelReady = true;
-          });
 
-          socket.on("joined", function (room) {
-            let targetProfile = serviceList.current.find(function(data){
-              return data.sid === selected.current
-            });
-            console.log("joined!");
-            //setIsChannelReady(current => current = true);
-            if (targetProfile.description === "tsSensor") {
-              console.log(`location.href='SensorMonitor.html'`);
-            } else if (targetProfile.description === "Streamer") {
-              console.log('stremer');
-              //  navigator.mediaDevices.getUserMedia({
-              //     audio: false,
-              //     video: true
-              //   })
-              //   .then(gotStream)
-              //   .catch(function(e) {
-              //     alert('getUserMedia() error: ' + e.name);
-              //   });
-              gotStream();
+    socketRef.current.on('msg-v1', async (packet) => {
+        console.log('------------------msg-v1 ', packet.message.type ,'-------------------');
+        let message = packet.message;
+        console.log('msg from', packet.from);
+        console.log('Client received message:', message);
+        socketFrom.current = packet.from;
+        // let socketId = "arbitary socketID";
+        try{
+          if (message === 'connection request') {
+            //RTCClientList.push({'socketId':packet.from});
+            console.log('check : connection request');      
+          } else if (message.type === 'offer') {
+            // pcsRef.current[packet.from].onicecandidate = (e) => {
+            //   if (e.candidate) {
+            //     if (!socketRef.current) return;
+            //     console.log("onicecandidate");
+            //     //socketRef.current.emit("candidate", e.candidate);
+            //     sendMessage({
+            //       type: 'candidate',
+            //       label: e.candidate.sdpMLineIndex,
+            //       id: e.candidate.sdpMid,
+            //       candidate: e.candidate.candidate
+            //     }, socketFrom.current);
+            //   }
+            // };
+            // pcsRef.current[packet.from].oniceconnectionstatechange = (e) => {
+            //   console.log('oniceconnectionstatechange : ', e.target.connectionState);
+            // };
+
+
+            // await pcRef.current.setRemoteDescription(new RTCSessionDescription(message));
+
+            // pcsRef.current = {...pcsRef.current, [packet.from]: pcRef.current};
+
+            console.log('check : offer', message);
+            createAnswer(message, packet.from);
+          } else if (message.type === 'answer') {
+            if (!pcRef.current) return;
+            console.log('signalingStat', pcRef.current.signalingState);
+            if(pcRef.current.signalingState !== 'stable') {
+              console.log('set the pcRef : ', pcRef.current);
+              pcRef.current.setRemoteDescription(new RTCSessionDescription(message));
+              pcRef.current.onaddstream = handleRemoteStreamAdded;
             }
-
-            isChannelReady = true;
-          });
-        
-          socket.on("log", function (array) {
-            console.log.apply(console, array);
-          });
-    
-          socket.on("msg-v1", function (packet) {
-            let message = packet.message;
-            console.log('msg-v1 in!');
-            console.log("Client received message:", message);
-            try {
-              if (message.type === "offer") {
-                console.log("check : offer")
-                if (!isInitiator.current && !isStarted) {
-                  maybeStart();
-                }
-                pc.current.setRemoteDescription(new RTCSessionDescription(message));
-                doAnswer();
-              } else if (message.type === "answer" && isStarted) {
-                console.log("check : answer");
-                pc.current.setRemoteDescription(new RTCSessionDescription(message));
-              } else if (message.type === "candidate" && isStarted) {
-                console.log("check : candidate");
-                var candidate = new RTCIceCandidate({
-                  sdpMLineIndex: message.label,
-                  candidate: message.candidate,
-                });
-                pc.current.addIceCandidate(candidate);
-              } else if (message === "bye" && isStarted) {
-                console.log("check : bye")
-                handleRemoteHangup();
-              }
-            } catch (e) {}
-          });
-
-    }, [socket]);
-
-
-
-    const maybeStart = () => {
-        console.log(
-          ">>>>>>> maybeStart() ",
-          isStarted,
-          `localStream << 변수 주석처리함`,
-          isChannelReady
-        );
-        // if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) { // disabled by Joonhwa
-        if (!isStarted && isChannelReady) {
-          console.log(">>>>>> creating peer connection");
-          createPeerConnection();
-          // pc.addStream(localStream);  // disabled by Joonhwa
-          setIsStarted(true);
-          console.log("isInitiator", isInitiator.current);
-          if (isInitiator.current) {
-            doCall();
+            console.log('set the pcRef2 : ', pcRef.current);      
+          } else if (message.type === 'candidate') {
+            console.log('check : candi');
+          } else if (message === 'bye') {
           }
+
+        }catch(e){
+          console.log('eeeeeeeeeeee', e);
         }
-      };
+      });
+
+      
+
+    //setVideoTracks();
+
+    return () => {
+      if (socketRef.current) {
+        //   socketRef.current.disconnect();
+      }
+      if (pcRef.current) {
+        //   pcRef.current.close();
+      }
+    };
+  }, []);
+
+  const handleSelect = (e) => {
+    console.log(e.target.value);
+    selected.current = e.target.value;
+  };
+
+  const debugcode = () => {
+    reOffer(socketFrom.current);
+    console.log(pcRef.current.iceGatheringState);
+  }
 
 
-
-  
-    function createPeerConnection() {
-      try {
-        // pc = new RTCPeerConnection(null);
-        pc.current = new RTCPeerConnection(pcConfig); //Joonhwa
-        pc.current.onicecandidate = handleIceCandidate;
-        pc.current.onaddstream = handleRemoteStreamAdded;
-        pc.current.onremovestream = handleRemoteStreamRemoved;
-        // pc.connectionState = "connected";
-        // pc.iceConnectionState = "connected";
-        console.log("Created RTCPeerConnnection", pc.current);
-      } catch (e) {
-        console.log("Failed to create PeerConnection, exception: " + e.message);
-        alert("Cannot create RTCPeerConnection object.");
-        return;
-      }
-    }
-  
-    function handleIceCandidate(event) {
-      console.log("icecandidate event: ", event);
-      if (event.candidate) {
-        sendMessage({
-          type: "candidate",
-          label: event.candidate.sdpMLineIndex,
-          id: event.candidate.sdpMid,
-          candidate: event.candidate.candidate,
-        });
-      } else {
-        console.log("End of candidates.");
-      }
-    }
-  
-    function handleCreateOfferError(event) {
-      console.log("createOffer() error: ", event);
-    }
-  
-    function doCall() {
-      console.log("Sending offer to peer");
-      pc.current.createOffer(setLocalAndSendMessage, handleCreateOfferError);
-    }
-  
-    function doAnswer() {
-      console.log("Sending answer to peer.");
-      pc.current.createAnswer().then(
-        setLocalAndSendMessage,
-        onCreateSessionDescriptionError
-      );
-    }
-  
-    function setLocalAndSendMessage(sessionDescription) {
-        console.log('sdp what?', sessionDescription);
-        pc.current.setLocalDescription(sessionDescription);
-      console.log("setLocalAndSendMessage sending message", sessionDescription);
-      sendMessage(sessionDescription);
-    }
-  
-    function onCreateSessionDescriptionError(error) {
-      console.log("Failed to create session description: " + error.toString());
-    }
-  
-    function requestTurn(turnURL) {
-      var turnExists = false;
-      for (var i in pcConfig.iceServers) {
-        if (pcConfig.iceServers[i].urls.substr(0, 5) === "turn:") {
-          turnExists = true;
-          setTurnReady(true);
-          break;
-        }
-      }
-      if (!turnExists) {
-        console.log("Getting TURN server from ", turnURL);
-        // No TURN server. Get one from computeengineondemand.appspot.com:
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState === 4 && xhr.status === 200) {
-            var turnServer = JSON.parse(xhr.responseText);
-            console.log("Got TURN server: ", turnServer);
-            pcConfig.iceServers.push({
-              urls: "turn:" + turnServer.username + "@" + turnServer.turn,
-              credential: turnServer.password,
-            });
-            setTurnReady(true);
-          }
-        };
-        xhr.open("GET", turnURL, true);
-        xhr.send();
-      }
-    }
-  
-    function handleRemoteStreamAdded(event) {
-      console.log("Remote stream added. event.stream?>>>", event.stream);
-      remoteStream.current = event.stream
-      // setRemoteStream((current) => {
-      //   return event.stream;
-      // });
-      remoteVideo.current.srcObject = event.stream;
-      console.log('remotevd@@@@@@', remoteVideo.current.srcObject)
-    }
-  
-    function handleRemoteStreamRemoved(event) {
-      console.log("Remote stream removed. Event: ", event);
-    }
-  
-  //   function hangup() {
-  //     console.log("Hanging up.");
-  //     stop();
-  //     sendMessage("bye");
-  //   }
-  
-    function handleRemoteHangup() {
-      console.log("Session terminated.");
-      stop();
-      isInitiator.current = true;
-    }
-  
-    function stop() {
-      setIsStarted(false);
-      pc.current.close();
-      pc.current = null;
-    }
-  
-    return (
-      <>
-      <NavbarTwo />
-
-            <PageBanner
-            pageTitle="Security & Surveillance"
-            homePageUrl="/"
-            homePageText="Home"
-            activePageText="Service Details"
-            bgImgClass="item-bg2"
-            />
-        <SocketContext.Provider value={socket}>
-          <div id="videos">
-            <video
-              ref={localVideo}
-              id="localVideo"
-              autoPlay
-              muted
-              playsInline
-            ></video>
-            <video
-              ref={remoteVideo}
-              id="remoteVideo"
-              autoPlay
-              muted
-              playsInline
-            ></video>
-          </div>
-          <div>
-            <button onClick={JoinService}>Start Streaming</button>
-            <button onClick={AudioToggle}>My Audio On/Off</button>
-            <select onChange={handleSelect} value={selected.current}>
+  return (
+    <div>
+      <video
+        style={{
+          width: 240,
+          height: 240,
+          margin: 5,
+          backgroundColor: "black",
+        }}
+        muted
+        ref={localVideoRef}
+        autoPlay
+      />
+      <video
+        id="remotevideo"
+        style={{
+          width: 240,
+          height: 240,
+          margin: 5,
+          backgroundColor: "black",
+        }}
+        ref={remoteVideoRef}
+        autoPlay
+      />
+      <button onClick={createOffer}>Join Streaming</button>
+      <button onClick={debugcode}>console debug</button>
+      <select onChange={handleSelect} value={selected.current}>
               {selectList.map((item) => (
               <option value={item.split(':')[1]} key={item}>
                   {item}
               </option>
             ))}
             </select>
-          </div>
-        </SocketContext.Provider>
+    </div>
+  );
+};
 
-        <Footer />
-      </>
-    );
-  }
+export default App;
