@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { useCookies } from 'react-cookie';
 import styles from "/styles/logintest.module.css"
 import Link from '../../utils/ActiveLink';
+import { loginPoint } from "../../toServer/API-AccessPoint";
+
 
 export default function LoginComponent() {
 
@@ -21,6 +23,7 @@ export default function LoginComponent() {
     };
 
     async function loginSubmit() {
+        //https://api.portal301.com/login/session
         const response = await fetch("https://localhost:3333/login/session", {
             method: "POST",
             body: JSON.stringify({
