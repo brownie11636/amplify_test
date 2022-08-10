@@ -3,6 +3,7 @@ import io from "socket.io-client";
 import NavbarTwo from "../../components/Layouts/NavbarTwo";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
+import {socketPoint} from "../../toServer/API-AccessPoint";
 
 const pc_config = {
   iceServers: [
@@ -16,7 +17,7 @@ const pc_config = {
     },
   ],
 };
-const SOCKET_SERVER_URL = "https://192.168.0.12:3333";
+const SOCKET_SERVER_URL = socketPoint;
 // const socketRef = io(SOCKET_SERVER_URL,{W
 //     transports: ["websocket"] // HTTP long-polling is disabled
 //     }
