@@ -1,13 +1,19 @@
 import React, { Component, useState, useEffect } from 'react';
 import Link from '../../utils/ActiveLink';
 import { useCookies } from 'react-cookie';
+import {useDispatch, useSelector} from "react-redux";
+import {isLoginAction, idAction, nicknameAction, selectIslogin, selectId, selectNickname} from "../../store/auth";
 
 export default function Navbar() {
+    const dispatch = useDispatch();
+
+    const isLoggedIn = useSelector(selectIslogin);
+    const nickname = useSelector(selectNickname);
+
     const [collapsed, setCollapsed] = useState(true)
-    const [isLogin, setIsLogin] = useState(false)
     let _isMounted = false;
 
-    const [cookies, setCookie] = useCookies(['id']);
+    const [cookies, setCookie] = useCookies(['id', 'nickname']);
     
     // Navbar
     const toggleNavbar = () => {
@@ -17,27 +23,21 @@ export default function Navbar() {
     useEffect(() => {
 
         if (cookies.id !== 'undefined') {
-            setIsLogin(true)
+            dispatch(isLoginAction(true));
+            dispatch(idAction(cookies.id));
+            dispatch(nicknameAction(cookies.nickname));
         } else {
-            setIsLogin(false)
+            dispatch(isLoginAction(false));
+            dispatch(idAction(""));
+            dispatch(nicknameAction(""));
         }
 
         let elementId = document.getElementById("navbar");
         elementId.classList.add("is-sticky");
-        // document.addEventListener("scroll", () => {
-        //     if (window.scrollY > 170) {
-        //         elementId.classList.add("is-sticky");
-        //         console.log('add sticky')
-        //     } else {
-        //         elementId.classList.add("is-sticky");
-        //         console.log('remove sticky')
-        //     }
-        // });
         return () => {
             _isMounted = false;
         };
     }, []);
-
     
     const classOne = collapsed ? 'collapse navbar-collapse' : 'collapse navbar-collapse show';
     const classTwo = collapsed ? 'navbar-toggler navbar-toggler-right collapsed' : 'navbar-toggler navbar-toggler-right';
@@ -97,7 +97,7 @@ export default function Navbar() {
                                             </Link>
                                         </li>
 
-                                        {!isLogin? 
+                                        {!isLoggedIn? 
                                         <li className="nav-item">
                                         <Link href="/registration" activeClassName="active">
                                             <a className="nav-link">Registration</a>
@@ -105,11 +105,11 @@ export default function Navbar() {
                                         </li>:
                                         <li className="nav-item">
                                             <Link href="/mypage" activeClassName="active">
-                                                <a className="nav-link">Mypage</a>
+                                                <a className="nav-link">{nickname}님</a>
                                             </Link>
                                         </li>}
 
-                                        {!isLogin? 
+                                        {!isLoggedIn? 
                                         <li className="nav-item">
                                             <Link href="/login" activeClassName="active">
                                                 <a className="nav-link">Log In</a>

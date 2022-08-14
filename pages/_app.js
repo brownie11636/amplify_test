@@ -12,6 +12,10 @@ import React from 'react';
 import Loader from '../components/Shared/Loader'; 
 import GoTop from '../components/Shared/GoTop';
 
+import {Provider as ReduxProvider} from 'react-redux';
+import {store} from "../store";
+
+
 export default class MyApp extends App {
     // Preloader
     state = {
@@ -31,6 +35,7 @@ export default class MyApp extends App {
         const { Component, pageProps } = this.props
         return (
             <>
+                <ReduxProvider store={store}>
                 {/* <PersistGate loading={null} persistor={persistor}> */}
                     <Head>
                             <meta 
@@ -48,6 +53,7 @@ export default class MyApp extends App {
                     {/* Go Top Button */}
                     <GoTop scrollStepInPx="50" delayInMs="10.50" />
                 {/* </PersistGate> */}
+                </ReduxProvider>
             </>
         );
     }

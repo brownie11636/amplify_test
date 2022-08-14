@@ -39,6 +39,7 @@ export default function LoginComponent() {
         let status = response.status;
         if (status === 200) {
             setCookie('id', data.id,  {maxAge: 2000});
+            setCookie('nickname', data.nickname,  {maxAge: 2000});
             router.push("/");
         } else if (status === 400) {
             setMessage("잘못된 비밀번호입니다.");
