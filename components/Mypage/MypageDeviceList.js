@@ -12,30 +12,42 @@ export default function MypageDeviceList() {
     const id = useSelector(selectId);
     const nickname = useSelector(selectNickname);
 
-    useEffect(async () => {
-        let response = await fetch("https://localhost:3333/mypage/deviceList", {
-            method: "POST",
-            body: JSON.stringify({
-                id,
-            }),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const data = await response.json();
+    const [deviceList, setDeviceList] = useState({});
 
-        let status = response.status;
-        if (status === 200) {
-            for (let key in data) {
-                console.log(data[key]);
-            };
-        } else {
+    useEffect(() => {
+        async function fetchData() {
+            let response = await fetch("https://localhost:3333/mypage/deviceList", {
+                method: "POST",
+                body: JSON.stringify({
+                    id,
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            const data = await response.json();
             console.log(data);
-        };
-        
+            let status = response.status;
+            if (status === 200) {
+                setDeviceList(data);
+            }
+        }
+        fetchData();
     }, []);
 
+    const deviceComponents = [];
+    for (const key in deviceList) {
+        deviceComponents.push(
+            <li>
+                <span>Device name: {deviceList[key].name} / </span>
+                <span>Device type: {deviceList[key].type}</span>
+            </li>
+        );
+    }
+
     return(
-        <div></div>
+        <ul>
+            {deviceComponents}
+        </ul>
     );
 } 
