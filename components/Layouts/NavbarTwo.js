@@ -97,13 +97,17 @@ export default function Navbar() {
                                             </Link>
                                         </li>
 
-                                        { !isLogin && 
+                                        {!isLogin? 
                                         <li className="nav-item">
-                                            <Link href="/registration" activeClassName="active">
-                                                <a className="nav-link">Registration</a>
+                                        <Link href="/registration" activeClassName="active">
+                                            <a className="nav-link">Registration</a>
+                                        </Link>
+                                        </li>:
+                                        <li className="nav-item">
+                                            <Link href="/mypage" activeClassName="active">
+                                                <a className="nav-link">Mypage</a>
                                             </Link>
-                                        </li>
-                                        }
+                                        </li>}
 
                                         {!isLogin? 
                                         <li className="nav-item">

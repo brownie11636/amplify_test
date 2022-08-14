@@ -2,7 +2,7 @@ import { React, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styles from "/styles/registrationTest.module.css"
 
-export default function LoginComponent() {
+export default function RegistrationRoot() {
 
     const router = useRouter();
     const [isEmail, setIsEmail] = useState(false);

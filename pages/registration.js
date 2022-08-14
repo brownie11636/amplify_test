@@ -1,17 +1,14 @@
 import React from "react";
 import NavbarTwo from "../components/Layouts/NavbarTwo";
 import Footer from "../components/Layouts/Footer";
-import Registration from "../components/registration/Registration";
+import RegistrationRoot from "../components/Registration/RegistrationRoot";
 
-export default function Login({}) {
+export default function Registration({}) {
 
     return (
         <>
         <NavbarTwo />
-
-        
-        <Registration />
-  
+        <RegistrationRoot />
         <Footer />
       </> 
     );
