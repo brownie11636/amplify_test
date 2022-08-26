@@ -18,6 +18,8 @@ export default function MypageAddDeviceContainer() {
         setdeviceName(event.target.value);
     };
 
+    console.log('masterid?', master_id);
+
     const addDevice = async () => {
         const response = await fetch("https://localhost:3333/mypage/addDevice", {
             method: "POST",

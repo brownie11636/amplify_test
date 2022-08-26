@@ -23,6 +23,7 @@ export default function LoginComponent() {
     };
 
     async function loginSubmit() {
+        console.log('loginSubmit func');
         //https://api.portal301.com/login/session
         const response = await fetch("https://localhost:3333/login/session", {
             method: "POST",
@@ -38,6 +39,7 @@ export default function LoginComponent() {
 
         let status = response.status;
         if (status === 200) {
+            console.log(data);
             setCookie('id', data.id,  {maxAge: 2000});
             setCookie('nickname', data.nickname,  {maxAge: 2000});
             router.push("/");

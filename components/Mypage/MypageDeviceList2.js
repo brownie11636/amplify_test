@@ -7,12 +7,15 @@ import { loginPoint } from "../../toServer/API-AccessPoint";
 
 import {useDispatch, useSelector} from "react-redux";
 import {isLoginAction, idAction, nicknameAction, selectIslogin, selectId, selectNickname} from "../../store/auth";
+import MypageGroupList from "./MypageGroupList";
 
-export default function MypageDeviceList() {
+
+export default function MypageDeviceList2() {
     const id = useSelector(selectId);
     const nickname = useSelector(selectNickname);
 
-    const [deviceList, setDeviceList] = useState({});
+    const [deviceList, setDeviceList] = useState([]);
+    const [checked, setChecked] = useState([]);
 
     useEffect(() => {
         async function fetchData() {
@@ -26,32 +29,54 @@ export default function MypageDeviceList() {
                 }
             });
             const data = await response.json();
-            console.log(data);
+            console.log('fetch data?', data);
             let status = response.status;
             if (status === 200) {
                 setDeviceList(data);
             }
         }
         fetchData();
+        console.log('deviceList? ', deviceList);
     }, []);
+
 
     const deviceComponents = [];
     for (const key in deviceList) {
         deviceComponents.push(
             <li>
-                <span>Device name: {deviceList[key].name} / </span>
+                <span input type="checkbox">Device name: {deviceList[key].name} / </span>
                 <span>Device type: {deviceList[key].type}</span>
             </li>
         );
     }
 
-    const inviteCode = () => {
-
-    }
+    const handleCheck = (event) => {
+        let updatedList = [...checked];
+        if (event.target.checked) {
+          updatedList = [...checked, event.target.value];
+        } else {
+          updatedList.splice(checked.indexOf(event.target.value), 1);
+        }
+        setChecked(updatedList);
+        console.log('checked?', checked);
+      };
 
     return(
-        <ul>
-            {deviceComponents}
-        </ul>
+        <>
+        <div>
+        {deviceList.map((item) => (
+            <div key={item.id}>
+              <div>
+              <input onChange={handleCheck} value={item.id} type="checkbox" />
+              <span>{item.name} : {item.type}</span>
+              </div>
+            </div>
+         ))}
+         </div>
+        <MypageGroupList checkedList={checked}/>
+
+         </>
     );
+
+    
 } 
