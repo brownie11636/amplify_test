@@ -36,7 +36,7 @@ export default function MypageDeviceList2() {
             }
         }
         fetchData();
-        console.log('deviceList? ', deviceList);
+        console.log('deviceList?2', deviceList);
     }, []);
 
 
