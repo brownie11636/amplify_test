@@ -11,10 +11,14 @@ import {isLoginAction, idAction, nicknameAction, selectIslogin, selectId, select
 export default function MypageDeviceList() {
     const id = useSelector(selectId);
     const nickname = useSelector(selectNickname);
+    const [cookies, setCookie] = useCookies(['id', 'nickname']);
 
     const [deviceList, setDeviceList] = useState({});
 
     useEffect(() => {
+
+        const id = cookies.id; // 0827 edit by joonik. refresh 하면 redux state가 정상적으로 로드되지 않는 문제 때문에 일단은 쿠키로 대체
+
         async function fetchData() {
             let response = await fetch("https://localhost:3333/mypage/deviceList_async", {
                 method: "POST",
@@ -25,7 +29,9 @@ export default function MypageDeviceList() {
                     "Content-Type": "application/json"
                 }
             });
+            
             const data = await response.json();
+            console.log('api params id', cookies.id);
             console.log(data);
             let status = response.status;
             if (status === 200) {

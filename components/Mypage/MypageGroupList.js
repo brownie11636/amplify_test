@@ -5,6 +5,7 @@ import styles from "/styles/MypageRoot.module.css";
 import Link from "../../utils/ActiveLink";
 import { loginPoint } from "../../toServer/API-AccessPoint";
 import styles2 from "/styles/logintest.module.css";
+import MypageCreateGroup from "../../components/Mypage/MypageCreateGroup";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -18,6 +19,7 @@ import {
 
 export default function MypageGroupList( {checkedList}) {
   //use selelsmdandkandkan mypage sdaasdkjaldna;sdjckandda abcasdas nickname
+  const [cookies, setCookie] = useCookies(['id', 'nickname']);
 
   //let checkedList = props.checkedList;
   let devices = checkedList;
@@ -28,26 +30,29 @@ export default function MypageGroupList( {checkedList}) {
   const [group_id, setGroup_id] = useState("");
   const user_id = useSelector(selectId);
 
-  useEffect(() => {
-    async function fetchData() {
-      //deviceList
-      let response = await fetch("https://localhost:3333/mypage/groupList", {
-        method: "POST",
-        body: JSON.stringify({
-          user_id,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      console.log(data);
-      let status = response.status;
-      if (status === 200) {
-        setDeviceList(data);
-        setMygroupsList(data);
-      }
+  async function fetchData() {
+    //deviceList
+    const user_id = cookies.id; // 0827 edit by joonik. refresh 하면 redux state가 정상적으로 로드되지 않는 문제 때문에 일단은 쿠키로 대체
+
+    let response = await fetch("https://localhost:3333/mypage/groupList", {
+      method: "POST",
+      body: JSON.stringify({
+        user_id,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    console.log(data);
+    let status = response.status;
+    if (status === 200) {
+      setDeviceList(data);
+      setMygroupsList(data);
     }
+  }
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -66,21 +71,27 @@ export default function MypageGroupList( {checkedList}) {
     console.log('data?', data);
     let status = response.status;
     if (status === 200) {
+      alert('그룹에 디바이스 추가 완료!');
       // setDeviceList(data);
       // setMygroupsList(data);
     }
+    else {
+      alert('somethings wrong!');
+    }
   }
 
-  const groupComponents = [];
-  for (const key in mygroupsList) {
-    groupComponents.push(
-      <li>
-        <span>Master User : {mygroupsList[key].master_nickname} / </span>
-        <span>Group Name : {mygroupsList[key].group_nickname}</span>
-        <p onClick={inviteCode}>초대 링크 만들기</p>
-      </li>
-    );
-  }
+  // const groupComponents = [];
+  // for (const key in mygroupsList) {
+  //   groupComponents.push(
+  //     <>
+  //     <li>
+  //       <span>Master User : {mygroupsList[key].master_nickname} / </span>
+  //       <span>Group Name : {mygroupsList[key].group_nickname}</span>
+  //       <p onClick={inviteCode}>초대 링크 만들기</p>
+  //     </li>
+  //     </>
+  //   );
+  // }
 
   const handleSelect = (e) => {
     console.log(e.target.value);
@@ -100,14 +111,19 @@ export default function MypageGroupList( {checkedList}) {
       </div>
       <div>
         <ul>
-          {groupComponents}{" "}
+          {mygroupsList.map((item) => (
+            <li value={item.group_id} key={item.group_id}>
+              [Master] {item.master_nickname} - [Group Name] {item.group_nickname} 
+              <p onClick={inviteCode}>초대 링크 만들기</p>
+            </li>
+          ))}
         </ul>
       </div>
       <div>
         <select onChange={handleSelect} value={group_id}>
           {mygroupsList.map((item) => (
             <option value={item.group_id} key={item.group_id}>
-              {item.group_id}
+              {item.group_nickname}
             </option>
           ))}
         </select>
@@ -117,8 +133,8 @@ export default function MypageGroupList( {checkedList}) {
           type="submit"
           value="선택한 디바이스를 그룹에 추가"
         />
-        <p onClick={inviteCode}>초대 링크 만들기</p>
       </div>
+      <MypageCreateGroup fetchData={fetchData}/>
     </>
   );
 }

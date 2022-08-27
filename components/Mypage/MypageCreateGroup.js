@@ -16,7 +16,7 @@ import {
   selectNickname,
 } from "../../store/auth";
 
-export default function MypageCreateGroup() {
+export default function MypageCreateGroup({fetchData}) {
   //use selelsmdandkandkan mypage sdaasdkjaldna;sdjckandda abcasdas nickname
 
   const nickname = useSelector(selectNickname);
@@ -41,14 +41,19 @@ export default function MypageCreateGroup() {
     let status = response.status;
     if (status === 200) {
       console.log('response', response);
+      console.log('200');
 
-        console.log('200');
+      fetchData();
+
     } else if (status === 404) {
-        console.log('404');
+      alert('404 error');
+      console.log('404');
     } else if (status === 400) {
-        console.log('400');
+      alert('400 error');
+      console.log('400');
     } else if (status === 500) {
-        console.log('500');
+      alert('500 error');
+      console.log('500');
     }
   };
 

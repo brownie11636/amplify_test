@@ -23,10 +23,12 @@ export default function Navbar() {
     useEffect(() => {
 
         if (cookies.id !== 'undefined') {
+            console.log('cookies.id', cookies.id);
             dispatch(isLoginAction(true));
             dispatch(idAction(cookies.id));
             dispatch(nicknameAction(cookies.nickname));
         } else {
+            console.log('cookies.id', cookies.id);
             dispatch(isLoginAction(false));
             dispatch(idAction(""));
             dispatch(nicknameAction(""));

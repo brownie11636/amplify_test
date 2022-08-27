@@ -22,7 +22,7 @@ export default function GroupManage({}) {
             <MypageAddDeviceContainer />
             <MypageDeviceList2 />
             {/* <MypageGroupList /> */}
-            <MypageCreateGroup />
+            {/* <MypageCreateGroup /> */}
           </div>
         </div>
         <Footer />
