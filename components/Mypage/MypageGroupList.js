@@ -6,6 +6,7 @@ import Link from "../../utils/ActiveLink";
 import { loginPoint } from "../../toServer/API-AccessPoint";
 import styles2 from "/styles/logintest.module.css";
 import MypageCreateGroup from "../../components/Mypage/MypageCreateGroup";
+const { v4: uuidv4 } = require("uuid");
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -98,8 +99,31 @@ export default function MypageGroupList( {checkedList}) {
     setGroup_id(e.target.value);
   };
 
-  const inviteCode = () => {
-    console.log('invite code 구현중...', mygroupsList);
+  const inviteCode = async (groupId) => {
+    
+    const date = new Date();
+    date.setDate(date.getDate() + 1);
+    const expiration = date.toISOString();
+    const identifier = uuidv4();
+
+    let response = await fetch("https://localhost:3333/mypage/createGroupInviteLink", {
+      method: "POST",
+      body: JSON.stringify({
+        groupId, expiration, identifier
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    console.log('data?', data);
+    let status = response.status;
+    if (status === 200) {
+      alert("초대링크 생성 완료: " + identifier);
+    }
+    else {
+      alert('somethings wrong!');
+    }
   };
 
   return (
@@ -114,7 +138,7 @@ export default function MypageGroupList( {checkedList}) {
           {mygroupsList.map((item) => (
             <li value={item.group_id} key={item.group_id}>
               [Master] {item.master_nickname} - [Group Name] {item.group_nickname} 
-              <p onClick={inviteCode}>초대 링크 만들기</p>
+              <div onClick={() => {inviteCode(item.group_id);}} > 초대 링크 만들기</div>
             </li>
           ))}
         </ul>
