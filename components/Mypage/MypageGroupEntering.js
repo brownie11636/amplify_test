@@ -27,7 +27,6 @@ export default function MypageGroupEntering({fetchData}) {
 
   const groupEntering = async () => {
     const date = new Date().toISOString();
-    console.log(date);
 
     const response = await fetch("https://localhost:3333/mypage/groupEntering", {
         method: "POST",
@@ -39,39 +38,24 @@ export default function MypageGroupEntering({fetchData}) {
         }
     });
 
-    // const data = await response.json();
-
+    const data = await response.json();
     let status = response.status;
     if (status === 200) {
-      console.log('response', response);
-      console.log('200');
-      console.log(response.message)
+      console.log("Entering to " + data.group_id);
 
       fetchData();
 
     } else if (status === 404) {
-      alert('404 error');
-      console.log('404');
-    } else if (status === 400) {
-      alert('400 error');
-      console.log('400');
-    } else if (status === 400) {
-      alert('409 error');
-      console.log('409');
-    } else if (status === 500) {
-      alert('500 error');
-      console.log('500');
+      alert(data.err);
     }
   };
 
   const handleIdentifierInput = (e) => {
     setIdentifier(e.target.value);
-    console.log(identifier);
   }
 
   const handlePasswordInput = (e) => {
     setGroup_password(e.target.value);
-    console.log(group_password);
   }
 
   return (
