@@ -6,6 +6,7 @@ import Link from "../../utils/ActiveLink";
 import { loginPoint } from "../../toServer/API-AccessPoint";
 import styles2 from "/styles/logintest.module.css";
 import MypageCreateGroup from "../../components/Mypage/MypageCreateGroup";
+import MypageGroupEntering from "../../components/Mypage/MypageGroupEntering";
 const { v4: uuidv4 } = require("uuid");
 
 import { useDispatch, useSelector } from "react-redux";
@@ -159,6 +160,7 @@ export default function MypageGroupList( {checkedList}) {
         />
       </div>
       <MypageCreateGroup fetchData={fetchData}/>
+      <MypageGroupEntering fetchData={fetchData}/>
     </>
   );
 }
