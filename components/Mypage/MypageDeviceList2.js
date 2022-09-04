@@ -94,7 +94,7 @@ export default function MypageDeviceList2() {
             </div>
          ))}
          </div>
-        <MypageGroupList checkedList={checked}/>
+        <MypageGroupList checkedList={checked} viewOption={'all'}/>
          </>
     );
 

@@ -28,11 +28,11 @@ export default function MypageNavbar() {
                 </Link>
             </div>
             <div className={styles.linkContainer}>
-                <Link href="/mypage/accountManagement">
-                    <a className={currentRoute === "/mypage/accountManagement" 
+                <Link href="/mypage/useDevice">
+                    <a className={currentRoute === "/mypage/useDevice" 
                         ? styles.active
                         : styles.nonActive}>
-                        내 계정 관리
+                        디바이스 사용하기
                     </a>
                 </Link>
             </div>           
