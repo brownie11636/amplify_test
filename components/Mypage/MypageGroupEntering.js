@@ -45,7 +45,7 @@ export default function MypageGroupEntering({fetchData}) {
 
       fetchData();
 
-    } else if (status === 404) {
+    } else {
       alert(data.err);
     }
   };
