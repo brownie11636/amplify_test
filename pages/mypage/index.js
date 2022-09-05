@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import NavbarTwo from "../../components/Layouts/NavbarTwo";
 import Footer from "../../components/Layouts/Footer";
 import MypageAddDeviceContainer from "../../components/Mypage/MypageAddDeviceContainer";
-import MypageDeviceList from "../../components/Mypage/MypageDeviceList";
 import MypageNavbar from "../../components/Mypage/MypageNavbar";
+import MypageDeviceList from "../../components/Mypage/MypageDeviceList";
 
 export default function Mypage({}) {
 

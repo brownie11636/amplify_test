@@ -42,9 +42,7 @@ export default function MypageGroupEntering({fetchData}) {
     let status = response.status;
     if (status === 200) {
       console.log("Entering to " + data.group_id);
-
       fetchData();
-
     } else {
       alert(data.err);
     }

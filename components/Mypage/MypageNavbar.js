@@ -20,22 +20,23 @@ export default function MypageNavbar() {
             </div>
             <div className={styles.linkContainer}>
                 <Link href="/mypage/group">
-                    <a className={currentRoute === "/mypage/group" 
+                    <a className={currentRoute === "/mypage/group_n" 
                         ? styles.active
                         : styles.nonActive}>
-                        디바이스 그룹 관리
+                        디바이스 그룹관리
                     </a>
                 </Link>
-            </div>
+            </div>           
             <div className={styles.linkContainer}>
                 <Link href="/mypage/useDevice">
-                    <a className={currentRoute === "/mypage/useDevice" 
+                    <a className={currentRoute === "/mypage/useDevice_n" 
                         ? styles.active
                         : styles.nonActive}>
                         디바이스 사용하기
                     </a>
                 </Link>
             </div>           
+
         </div>
     );
 }

@@ -5,8 +5,7 @@ import styles from "/styles/MypageRoot.module.css";
 import Link from "../../utils/ActiveLink";
 import { loginPoint } from "../../toServer/API-AccessPoint";
 import styles2 from "/styles/logintest.module.css";
-import MypageCreateGroup from "../../components/Mypage/MypageCreateGroup";
-import MypageGroupEntering from "../../components/Mypage/MypageGroupEntering";
+
 const { v4: uuidv4 } = require("uuid");
 
 import { useDispatch, useSelector } from "react-redux";
@@ -31,9 +30,7 @@ export default function MypageDeviceListByGroup( {groupID}) {
   const user_id = useSelector(selectId);
 
   async function fetchData() {
-
     const group_id = groupID;
-    console.log('api groupid?', group_id);
 
     let response = await fetch("https://localhost:3333/mypage/groupDeviceList", {
       method: "POST",
