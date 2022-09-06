@@ -25,10 +25,10 @@ class About extends Component {
                 <AboutContact />
                 <Services />
                 <Team />
-                <PartnerContent />
+                {/* <PartnerContent />
                 <FeedbackSlider />
-                <PricingCard />
-                <FreeTrialForm />
+                <PricingCard /> */}
+                {/* <FreeTrialForm /> */}
                 <Footer/>
             </>
         );

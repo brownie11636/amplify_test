@@ -3769,15 +3769,15 @@ Page Title Area CSS
 }
 
 .page-title-area.item-bg1 {
-  background-image: url(/images/page-title-bg1.jpg);
+  background-image: url(/images/banner-2/main_banner.jpg);
 }
 
 .page-title-area.item-bg2 {
-  background-image: url(/images/page-title-bg2.jpg);
+  background-image: url(/images/banner-2/main_banner.jpg);
 }
 
 .page-title-area.item-bg3 {
-  background-image: url(/images/page-title-bg3.jpg);
+  background-image: url(/images/banner-2/main_banner.jpg);
 }
 
 .page-title-content h2 {
@@ -5504,8 +5504,8 @@ Main Banner Area CSS
 =================================================*/
 .home-slides .main-banner {
   height: auto;
-  padding-top: 310px;
-  padding-bottom: 220px;
+  padding-top: 200px;
+  padding-bottom: 150px;
 }
 
 .home-slides .main-banner .main-banner-content {
@@ -5519,13 +5519,13 @@ Main Banner Area CSS
 }
 
 .home-slides .main-banner.item-bg1 {
-  background-image: url(/images/portal_intro1.jpg);
+  background-image: url(/images/banner-2/main_banner.jpg);
   /* background-image: url(/images/main-banner-bg1.jpg); */
 }
 
 .home-slides .main-banner.item-bg2 {
   /* background-image: url(/images/portal_intro1.jpg); */
-  background-image: url(/images/main-banner-bg2.jpg);
+  background-image: url(/images/banner-2/main_banner.jpg);
 }
 
 .home-slides.owl-theme .owl-nav {

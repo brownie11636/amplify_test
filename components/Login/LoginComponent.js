@@ -1,7 +1,8 @@
 import { React, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useCookies } from 'react-cookie';
-import styles from "/styles/logintest.module.css"
+//import styles from "/styles/logintest.module.css"
+import styles from "/styles/login2.module.css"
 import Link from '../../utils/ActiveLink';
 import { loginPoint } from "../../toServer/API-AccessPoint";
 
@@ -62,8 +63,7 @@ export default function LoginComponent() {
 
         <div className={styles.wrap}>
             <div className={styles.login}>
-                <h1>Log-In</h1>
-                <h5>Welcome to Portal301!</h5>
+                <h1>Welcome to Portal301 !</h1>
                 <div className={styles.login_sns}>
                     <li><a href=""><i className="fab fa-instagram"></i></a></li>
                     <li><a href=""><i className="fab fa-facebook-f"></i></a></li>

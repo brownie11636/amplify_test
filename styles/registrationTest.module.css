@@ -15,13 +15,14 @@
   }
   
   .wrap {
-    margin-top: 55px;
+    margin-top: 0px;
     width: 100%;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.1);
+    background: white;
+    /* background: rgba(0, 0, 0, 0.1); */
   }
   
   .login {

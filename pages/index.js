@@ -33,12 +33,12 @@ class Index extends Component {
             <>
                 <NavbarTwo />
                 <MainBanner />
-                <About />
-                <Services />
                 <Webinar />
-                <PartnerContent />
+                {/* <About /> */}
+                <Services />
+                {/* <PartnerContent /> */}
                 {/* <FeedbackSlider /> */}
-                <BlogPost />
+                {/* <BlogPost /> */}
                 <Footer />
             </>
         );

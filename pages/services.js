@@ -21,7 +21,7 @@ class Services extends Component {
 
                 <ServicesContent />
 
-                <FeedbackSlider />
+                {/* <FeedbackSlider /> */}
                 
                 <Footer />
             </>

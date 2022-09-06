@@ -49,7 +49,7 @@ class Footer extends Component {
                                 <h3>Services</h3>
 
                                 <ul className="footer-services-list">
-                                    <li>
+                                    {/* <li>
                                         <Link href="/service-details">
                                             <a>Product Engineering</a>
                                         </Link>
@@ -73,7 +73,7 @@ class Footer extends Component {
                                         <Link href="/service-details">
                                             <a>Mobile Applications</a>
                                         </Link>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </div>
                         </div>
@@ -88,11 +88,11 @@ class Footer extends Component {
                                             <a>About Us</a>
                                         </Link>
                                     </li>
-                                    <li>
+                                    {/* <li>
                                         <Link href="/blog">
                                             <a>Blog</a>
                                         </Link>
-                                    </li>
+                                    </li> */}
                                     <li>
                                         <Link href="/contact">
                                             <a>Contact</a>
@@ -103,11 +103,11 @@ class Footer extends Component {
                                             <a>Services</a>
                                         </Link>
                                     </li>
-                                    <li>
+                                    {/* <li>
                                         <Link href="/pricing">
                                             <a>Pricing</a>
                                         </Link>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </div>
                         </div>

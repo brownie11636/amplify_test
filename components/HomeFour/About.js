@@ -17,8 +17,8 @@ class About extends Component {
                         <div className="col-lg-6 col-md-12">
                             <div className="about-content">
                                 <h1>여러분들이 쉽게 컨텐츠를 제작 할 수 있도록 도와드리고 있어요!</h1>
-                                <p><br />우리는 모든 환경에서 사용할 수 있는 다양한 API 제공합니다</p>
-                                <p>우리는 고객님들이 필요로 하는곳 어디서든 조작이 가능합니다</p>
+                                <p><br />우리는 모든 환경에서 사용할 수 있는 다양한 API 제공합니다.
+                                고객님들이 필요로 하는곳 어디서든 조작이 가능합니다</p>
 
                                 <Link href="/about">
                                     <a className="btn btn-primary">Discover More</a>

@@ -21,8 +21,11 @@ class Webinar extends Component {
                     <div className="row m-0">
                         <div className="col-lg-6 p-0">
                             <div className="webinar-content">
-                                <h2>Check Out Our Latest Web(문구1)</h2>
-                                <p>문구 2</p>
+                                <h2>PORTAL ARM</h2>
+                                <p>Finger tracking 기술을 이용해 원격으로 Robot Arm을 제어합니다.
+                                    스마트폰의 어플리케이션이 Finger tracking을 통해 얻은 데이터를 이용해
+                                    Robot Arm을 사용자의 움직임과 동일하게 움직이도록 합니다.
+                                </p>
 
                                 <Link href="/index-4/#">
                                     <a className="btn btn-primary">Watch More</a>
