@@ -23,6 +23,12 @@ export default function LoginComponent() {
         setPassword(event.target.value);
     };
 
+    const onKeyPress = (e) => {
+        if(e.key=='Enter') {
+            loginSubmit();
+        }
+    }
+
     async function loginSubmit() {
         console.log('loginSubmit func');
         //https://api.portal301.com/login/session
@@ -81,7 +87,7 @@ export default function LoginComponent() {
                 <div className={styles.submit}>
                     <span style={{color: messageColor}}>{message}</span>
                     <br></br>
-                    <input type="submit" value="submit" onClick={loginSubmit}/>
+                    <input type="submit" onKeyPress={onKeyPress} value="submit" onClick={loginSubmit}/>
                 </div>
                 <div className={styles.login_etc}>
                     <Link href="/" activeClassName="active">

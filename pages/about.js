@@ -24,7 +24,7 @@ class About extends Component {
                 />  
                 <AboutContact />
                 <Services />
-                <Team />
+                {/* <Team /> */}
                 {/* <PartnerContent />
                 <FeedbackSlider />
                 <PricingCard /> */}

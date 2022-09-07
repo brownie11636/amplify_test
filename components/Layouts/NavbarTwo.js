@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useRef } from 'react';
 import Link from '../../utils/ActiveLink';
 import { useCookies } from 'react-cookie';
 import {useDispatch, useSelector} from "react-redux";
@@ -8,6 +8,7 @@ export default function Navbar() {
     const dispatch = useDispatch();
 
     const isLoggedIn = useSelector(selectIslogin);
+    const isSignIn = useRef();
     const nickname = useSelector(selectNickname);
 
     const [collapsed, setCollapsed] = useState(true)
@@ -22,17 +23,27 @@ export default function Navbar() {
 
     useEffect(() => {
 
-        if (cookies.id !== 'undefined') {
-            console.log('cookies.id', cookies.id);
-            dispatch(isLoginAction(true));
-            dispatch(idAction(cookies.id));
-            dispatch(nicknameAction(cookies.nickname));
-        } else {
-            console.log('cookies.id', cookies.id);
+        console.log('cookies.id:',cookies.id);
+
+        if(cookies.id === 'undefined') {
+            console.log('aaaaaaaaa', typeof(cookies.id));
+        }
+
+        if (cookies.id === undefined || cookies.id === 'undefined') {
+            console.log('cookies.id222', cookies.id);
+            isSignIn.current = false;
             dispatch(isLoginAction(false));
             dispatch(idAction(""));
             dispatch(nicknameAction(""));
+        } else {
+            console.log('cookies.id111', cookies.id);
+            isSignIn.current = true;
+            dispatch(isLoginAction(true));
+            dispatch(idAction(cookies.id));
+            dispatch(nicknameAction(cookies.nickname));
         }
+
+        console.log('is?', isSignIn.current);
 
         let elementId = document.getElementById("navbar");
         elementId.classList.add("is-sticky");
@@ -99,24 +110,28 @@ export default function Navbar() {
                                             </Link>
                                         </li>
 
-                                        {!isLoggedIn? 
+                                        {isSignIn.current === false
+                                        ?
                                         <li className="nav-item">
                                         <Link href="/registration" activeClassName="active">
                                             <a className="nav-link">Registration</a>
                                         </Link>
-                                        </li>:
+                                        </li>
+                                        :
                                         <li className="nav-item">
                                             <Link href="/mypage" activeClassName="active">
                                                 <a className="nav-link">{nickname}님</a>
                                             </Link>
                                         </li>}
 
-                                        {!isLoggedIn? 
+                                        {isSignIn.current === false
+                                        ? 
                                         <li className="nav-item">
                                             <Link href="/login" activeClassName="active">
                                                 <a className="nav-link">Log In</a>
                                             </Link>
-                                        </li>:
+                                        </li>
+                                        :
                                         <li className="nav-item">
                                             <Link href="/logout" activeClassName="active">
                                                 <a className="nav-link">Log Out</a>
