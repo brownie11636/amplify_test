@@ -37,10 +37,10 @@ const MainBanner = () => {
                             <p></p>
 
                             <div className="btn-box">
-                                <Link href="/index-4/#">
+                                <Link href="#">
                                     <a className="btn btn-primary">WebRTC production</a>
                                 </Link>
-                                <Link href="/index-4/#">
+                                <Link href="#">
                                     <a className="optional-btn">About Us</a>
                                 </Link>
                             </div>
