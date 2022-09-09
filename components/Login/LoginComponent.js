@@ -24,10 +24,19 @@ export default function LoginComponent() {
     };
 
     const onKeyPress = (e) => {
-        if(e.key=='Enter') {
+        if(e.key==='Enter') {
+            console.log('Press Enter');
             loginSubmit();
         }
     }
+
+    useEffect(() => {
+
+        if(cookies.id === 'undefined' || cookies.id === undefined) {
+            console.log('lg component err');
+        }
+
+    }, []);
 
     async function loginSubmit() {
         console.log('loginSubmit func');
@@ -67,7 +76,7 @@ export default function LoginComponent() {
 
     return(
 
-        <div className={styles.wrap}>
+        <div className={styles.wrap} onKeyPress={onKeyPress}>
             <div className={styles.login}>
                 <h1>Welcome to Portal301 !</h1>
                 <div className={styles.login_sns}>
@@ -87,7 +96,7 @@ export default function LoginComponent() {
                 <div className={styles.submit}>
                     <span style={{color: messageColor}}>{message}</span>
                     <br></br>
-                    <input type="submit" onKeyPress={onKeyPress} value="submit" onClick={loginSubmit}/>
+                    <input type="submit" value="submit" onClick={loginSubmit}/>
                 </div>
                 <div className={styles.login_etc}>
                     <Link href="/" activeClassName="active">

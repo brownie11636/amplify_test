@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useRef } from 'react';
+import React, { Component, useState, useEffect, useRef, componentWillMount } from 'react';
 import Link from '../../utils/ActiveLink';
 import { useCookies } from 'react-cookie';
 import {useDispatch, useSelector} from "react-redux";
@@ -13,13 +13,16 @@ export default function Navbar() {
 
     const [collapsed, setCollapsed] = useState(true)
     let _isMounted = false;
-
     const [cookies, setCookie] = useCookies(['id', 'nickname']);
-    
+
+
+    //componentWillMount 
     // Navbar
     const toggleNavbar = () => {
         setCollapsed((currnet) => {return !currnet})
     }
+
+    const SingInComponents = [];
 
     useEffect(() => {
 
@@ -30,31 +33,46 @@ export default function Navbar() {
         }
 
         if (cookies.id === undefined || cookies.id === 'undefined') {
-            console.log('cookies.id222', cookies.id);
             isSignIn.current = false;
             dispatch(isLoginAction(false));
+            // SingInComponents.push(
+            //     <li>
+            //         <span>Device name: {deviceList[key].name} / </span>
+            //         <span>Device type: {deviceList[key].type}</span>
+            //     </li>
+            // );
             dispatch(idAction(""));
             dispatch(nicknameAction(""));
         } else {
-            console.log('cookies.id111', cookies.id);
             isSignIn.current = true;
             dispatch(isLoginAction(true));
             dispatch(idAction(cookies.id));
             dispatch(nicknameAction(cookies.nickname));
         }
 
+        // for (const key in deviceList) {
+        // SingInComponents.push(
+        //     <li className="nav-item">
+        //         <Link href="/login" activeClassName="active">
+        //             <a className="nav-link">Log In</a>
+        //         </Link>
+        //     </li>
+        // );
+        // }
+
         console.log('is?', isSignIn.current);
 
         let elementId = document.getElementById("navbar");
         elementId.classList.add("is-sticky");
+
         return () => {
             _isMounted = false;
         };
+
     }, []);
     
     const classOne = collapsed ? 'collapse navbar-collapse' : 'collapse navbar-collapse show';
     const classTwo = collapsed ? 'navbar-toggler navbar-toggler-right collapsed' : 'navbar-toggler navbar-toggler-right';
-
 
         return (
             <>
@@ -110,7 +128,7 @@ export default function Navbar() {
                                             </Link>
                                         </li>
 
-                                        {isSignIn.current === false
+                                        {isLoggedIn === false
                                         ?
                                         <li className="nav-item">
                                         <Link href="/registration" activeClassName="active">
@@ -124,7 +142,7 @@ export default function Navbar() {
                                             </Link>
                                         </li>}
 
-                                        {isSignIn.current === false
+                                        {isLoggedIn === false
                                         ? 
                                         <li className="nav-item">
                                             <Link href="/login" activeClassName="active">

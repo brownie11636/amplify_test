@@ -32,7 +32,7 @@ class Webinar extends Component {
 
                         <div className="col-lg-6 p-0">
                             <div className="webinar-video-image">
-                                <img src="/images/woman.jpg" alt="image" />
+                                <img src="/images/robotic-arm.png" alt="image" />
 
                                 <div
                                     onClick={e => {e.preventDefault(); this.openModal()}}
