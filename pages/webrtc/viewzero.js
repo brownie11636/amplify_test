@@ -24,8 +24,6 @@ export const App = () => {
   const pcRef = useRef();
   const pcsRef = useRef({});
 
-
-
   const socketFrom = useRef();
 
   const localVideoRef = useRef(null);
