@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
-import NavbarTwo from "../../components/Layouts/NavbarTwo";
+import Header from "../../components/Layouts/Header";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
 import {socketPoint} from "../../toServer/API-AccessPoint";
@@ -409,7 +409,7 @@ export const App = () => {
 
   return (
     <>
-      <NavbarTwo />
+      <Header />
 
       <PageBanner
         pageTitle="Security & Surveillance"

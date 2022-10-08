@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import NavbarTwo from '../components/Layouts/NavbarTwo';
+import Header from '../components/Layouts/Header';
 import PageBanner from '../components/Common/PageBanner';
 // import FaqContent from '../components/Faq/FaqContent';
 import Footer from '../components/Layouts/Footer';
@@ -9,7 +9,7 @@ class Device extends Component {
     render() {
         return (
             <>
-                <NavbarTwo />
+                <Header />
 
                 <PageBanner 
                     pageTitle="Device List" 

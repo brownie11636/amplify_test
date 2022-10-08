@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import NavbarTwo from "../../components/Layouts/NavbarTwo";
+import Header from "../../components/Layouts/Header";
 import Footer from "../../components/Layouts/Footer";
 import MypageAddDeviceContainer from "../../components/Mypage/MypageAddDeviceContainer";
 import MypageNavbar from "../../components/Mypage/MypageNavbar";
@@ -9,7 +9,7 @@ export default function Mypage({}) {
 
     return (
         <>
-        <NavbarTwo />
+        <Header />
         <div style={{display: "flex", flexDirection: "row", height: "100%", minHeight: 720}}>
           <MypageNavbar />
           <div style={{display: "flex", flexDirection: "column", alignItems: "center", width: "100%", height: "100%"}}>

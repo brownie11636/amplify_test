@@ -1,7 +1,7 @@
 import { React, useEffect, useState, useRef } from "react";
 import { socket, SocketContext } from "../../toServer/socket";
 
-import NavbarTwo from "../../components/Layouts/NavbarTwo";
+import Header from "../../components/Layouts/Header";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
 import adapter from 'webrtc-adapter';
@@ -337,7 +337,7 @@ export default function View() {
   
     return (
       <>
-      <NavbarTwo />
+      <Header />
 
             <PageBanner
             pageTitle="Security & Surveillance"

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import NavbarTwo from '../components/Layouts/NavbarTwo';
+import Header from "../components/Layouts/Header";
 import PageBanner from '../components/Common/PageBanner';
 import Footer from '../components/Layouts/Footer';
 
@@ -7,7 +7,7 @@ class ProjectsDetails extends Component {
     render() {
         return (
             <React.Fragment>
-                <NavbarTwo />
+                <Header />
                 <PageBanner 
                     pageTitle="Projects Details" 
                     homePageUrl="/" 

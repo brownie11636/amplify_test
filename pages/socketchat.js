@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import NavbarTwo from "../components/Layouts/NavbarTwo";
+import Header from "../components/Layouts/Header";
 import PageBanner from "../components/Common/PageBanner";
 import ServiceDetailsContent from "../components/Services/ServiceDetailsContent";
 import SocketChat from "../components/Services/SocketChat";
@@ -7,7 +7,7 @@ import Footer from "../components/Layouts/Footer";
 const socketchat = () => {
   return (
     <>
-      <NavbarTwo />
+      <Header />
 
       <PageBanner
         pageTitle="Security & Surveillance"

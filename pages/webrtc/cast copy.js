@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import React from "react";
 import { socket, SocketContext } from "../../toServer/socket";
-import NavbarTwo from "../../components/Layouts/NavbarTwo";
+import Header from "../../components/Layouts/Header";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
 
@@ -398,7 +398,7 @@ export default function Cast() {
     return (
         <>
 
-<NavbarTwo />
+<Header />
 
 <PageBanner
   pageTitle="Security & Surveillance"
