@@ -29,10 +29,9 @@ class ServicesContent extends Component {
                                         <a>Socket Chat</a>
                                     </Link>
                                 </h3>
-                                <p>TeleDAQ</p>
+                                <p>Under Construction</p>
                             </div>
                         </div>
-
                         <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
                                 <div className="icon">
@@ -41,7 +40,21 @@ class ServicesContent extends Component {
 
                                 <h3>
                                     <Link href="/webrtc">
-                                        <a>Web RTC</a>
+                                        <a>Sensor IoT</a>
+                                    </Link>
+                                </h3>
+                                <p>Online Sensor Management</p>
+                            </div>
+                        </div>
+                        <div className="col-lg-4 col-sm-6">
+                            <div className="single-services-box">
+                                <div className="icon">
+                                    <i className="flaticon-automatic"></i>
+                                </div>
+
+                                <h3>
+                                    <Link href="/webrtc">
+                                        <a>WebRTC</a>
                                     </Link>
                                 </h3>
                                 <p>Basic WebRTC</p>
@@ -69,7 +82,7 @@ class ServicesContent extends Component {
 
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>MonkeyEye</a>
+                                        <a>Monkey-Eye</a>
                                     </Link>
                                 </h3>
                                 <p>Camera Robot Teleoperation</p>

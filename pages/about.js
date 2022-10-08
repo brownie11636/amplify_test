@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import NavbarTwo from '../components/Layouts/NavbarTwo';
+import Header from '../components/Layouts/Header';
 import PageBanner from '../components/Common/PageBanner';
-import AboutContact from '../components/About/AboutContent';
+// import AboutContact from '../components/About/AboutContent';
 import Services from '../components/HomeOne/Services';
 import Team from '../components/Common/Team';
 import PartnerContent from '../components/Common/PartnerContent';
@@ -14,7 +14,7 @@ class About extends Component {
     render() {
         return (
             <>
-                <NavbarTwo />
+                <Header />
                 <PageBanner 
                     pageTitle="About Us" 
                     homePageUrl="/" 
@@ -22,7 +22,7 @@ class About extends Component {
                     activePageText="About Us" 
                     bgImgClass="item-bg1" 
                 />  
-                <AboutContact />
+                {/* <AboutContact /> */}
                 <Services />
                 {/* <Team /> */}
                 {/* <PartnerContent />
