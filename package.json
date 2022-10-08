@@ -4,7 +4,7 @@
     "description": "Bariton - IT Machine Learning React Next Template",
     "main": "index.js",
     "scripts": {
-        "dev": "next dev",
+        "dev": "next dev -p 3333",
         "build": "next build && next export",
         "start": "next start",
         "export": "next export"

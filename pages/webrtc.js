@@ -1,4 +1,4 @@
-import NavbarTwo from "../components/Layouts/NavbarTwo";
+import Header from "../components/Layouts/Header";
 import PageBanner from "../components/Common/PageBanner";
 import Footer from "../components/Layouts/Footer";
 import WebRTCDetailsContent from "../components/Services/WebRTCDetailsContent"
@@ -6,7 +6,7 @@ import WebRTCDetailsContent from "../components/Services/WebRTCDetailsContent"
 export default function WebRTC() {
   return (
     <>
-      <NavbarTwo />
+      <Header />
 
       <PageBanner
         pageTitle="WebRTC"

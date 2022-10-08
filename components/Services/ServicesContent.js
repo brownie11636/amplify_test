@@ -29,7 +29,7 @@ class ServicesContent extends Component {
                                         <a>Socket Chat</a>
                                     </Link>
                                 </h3>
-                                <p>We provide you chat using websocket. This provides less network latency.</p>
+                                <p>TeleDAQ</p>
                             </div>
                         </div>
 
@@ -44,10 +44,9 @@ class ServicesContent extends Component {
                                         <a>Web RTC</a>
                                     </Link>
                                 </h3>
-                                <p>We provide customized Web RTC. Try this test version!</p>
+                                <p>Basic WebRTC</p>
                             </div>
                         </div>
-
                         <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
                                 <div className="icon">
@@ -56,135 +55,26 @@ class ServicesContent extends Component {
 
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>Comming Soon !</a>
+                                        <a>TeleSyncArm</a>
                                     </Link>
                                 </h3>
-                                <p>Comming Soon !</p>
+                                <p>Robot Arm Teleoperation</p>
                             </div>
                         </div>
-
-                        {/* <div className="col-lg-4 col-sm-6">
-                            <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="flaticon-molecular"></i>
-                                </div>
-
-                                <h3>
-                                    <Link href="/service-details">
-                                        <a>Comming Soon !</a>
-                                    </Link>
-                                </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
-                            </div>
-                        </div>
-
                         <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
                                 <div className="icon">
-                                    <i className="flaticon-gear"></i>
+                                    <i className="flaticon-locked"></i>
                                 </div>
 
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>Comming Soon !</a>
+                                        <a>MonkeyEye</a>
                                     </Link>
                                 </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+                                <p>Camera Robot Teleoperation</p>
                             </div>
                         </div>
-
-                        <div className="col-lg-4 col-sm-6">
-                            <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="flaticon-ceo"></i>
-                                </div>
-
-                                <h3>
-                                    <Link href="/service-details">
-                                        <a>Comming Soon !</a>
-                                    </Link>
-                                </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
-                            </div>
-                        </div>
-
-                        <div className="col-lg-4 col-sm-6">
-                            <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="fas fa-database"></i>
-                                </div>
-
-                                <h3>
-                                    <Link href="/service-details">
-                                        <a>Data Visualization</a>
-                                    </Link>
-                                </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
-                            </div>
-                        </div>
-
-                        <div className="col-lg-4 col-sm-6">
-                            <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="fas fa-chart-line"></i>
-                                </div>
-
-                                <h3>
-                                    <Link href="/service-details">
-                                        <a>Big Data Strategy</a>
-                                    </Link>
-                                </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
-                            </div>
-                        </div>
-
-                        <div className="col-lg-4 col-sm-6">
-                            <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="fas fa-project-diagram"></i>
-                                </div>
-
-                                <h3>
-                                    <Link href="/service-details">
-                                        <a>Machine Learning Data </a>
-                                    </Link>
-                                </h3>
-                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
-                            </div>
-                        </div> */}
- 
-                        {/* Pagination */}
-                        {/* <div className="col-lg-12 col-sm-12">
-                            <div className="pagination-area">
-                                <Link href="#">
-                                    <a className="prev page-numbers">
-                                        <i className="fas fa-angle-double-left"></i>
-                                    </a>
-                                </Link>
-
-                                <Link href="#">
-                                    <a className="page-numbers">1</a>
-                                </Link>
-
-                                <Link href="#">
-                                    <a className="page-numbers current">2</a>
-                                </Link>
-
-                                <Link href="#">
-                                    <a className="page-numbers">3</a>
-                                </Link>
-
-                                <Link href="#">
-                                    <a className="page-numbers">4</a>
-                                </Link>
-
-                                <Link href="#">
-                                    <a className="next page-numbers">
-                                        <i className="fas fa-angle-double-right"></i>
-                                    </a>
-                                </Link>
-                            </div>
-                        </div> */}
                     </div>
                 </div>
 

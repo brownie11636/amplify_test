@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import NavbarTwo from "../components/Layouts/NavbarTwo";
+import Header from "../components/Layouts/Header";
 import Footer from "../components/Layouts/Footer";
 import LoginComponent from "../components/Login/LoginComponent";
 import PageBanner from '../components/Common/PageBanner';
@@ -7,8 +7,8 @@ import PageBanner from '../components/Common/PageBanner';
 export default function Login({}) {
 
     return (
-        <>
-        <NavbarTwo />
+      <>
+        <Header />
 
         <PageBanner 
                     pageTitle="Sign-In" 

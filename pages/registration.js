@@ -1,5 +1,5 @@
 import React from "react";
-import NavbarTwo from "../components/Layouts/NavbarTwo";
+import Header from "../components/Layouts/Header";
 import Footer from "../components/Layouts/Footer";
 import RegistrationRoot from "../components/Registration/RegistrationRoot";
 import PageBanner from '../components/Common/PageBanner';
@@ -8,7 +8,7 @@ export default function Registration({}) {
 
     return (
         <>
-        <NavbarTwo />
+        <Header />
         <PageBanner 
                     pageTitle="Registration" 
                     homePageUrl="/" 

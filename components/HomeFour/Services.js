@@ -2,31 +2,36 @@ import React, { Component } from 'react';
 import Link from 'next/link';
 const { v4: uuidv4 } = require("uuid");
 
+const roomid = uuidv4()
 
-class Services extends Component {
+class ServicesContent extends Component {
+
+
     render() {
         return (
             <section className="services-area bg-f2f6f9 ptb-110">
                 <div className="container">
-                    <div className="section-title">
-                        <h2>Portal301 Service를 체험해보세요!</h2>
-                    </div>
-
                     <div className="row">
-                        {/* <div className="col-lg-4 col-sm-6">
+                        <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
                                 <div className="icon">
                                     <i className="flaticon-income"></i>
                                 </div>
 
                                 <h3>
+                                    {/* <Link href={{
+                                        pathname: `/socketchat/${roomid}`,
+                                        query: {
+                                            query_roomid: `${roomid}`,
+                                        }
+                                    }}> */}
                                     <Link href={`/socketchat/${uuidv4()}`}>
                                         <a>Socket Chat</a>
                                     </Link>
                                 </h3>
-                                <p>We provide you chat using websocket. This provides less network latency.</p>
+                                <p>TeleDAQ</p>
                             </div>
-                        </div> */}
+                        </div>
 
                         <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
@@ -39,10 +44,9 @@ class Services extends Component {
                                         <a>Web RTC</a>
                                     </Link>
                                 </h3>
-                                <p>We provide customized Web RTC. Try this test version!</p>
+                                <p>Basic WebRTC</p>
                             </div>
                         </div>
-
                         <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
                                 <div className="icon">
@@ -51,10 +55,24 @@ class Services extends Component {
 
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>Comming Soon !</a>
+                                        <a>TeleSyncArm</a>
                                     </Link>
                                 </h3>
-                                <p>Comming Soon !</p>
+                                <p>Robot Arm Teleoperation</p>
+                            </div>
+                        </div>
+                        <div className="col-lg-4 col-sm-6">
+                            <div className="single-services-box">
+                                <div className="icon">
+                                    <i className="flaticon-locked"></i>
+                                </div>
+
+                                <h3>
+                                    <Link href="/service-details">
+                                        <a>MonkeyEye</a>
+                                    </Link>
+                                </h3>
+                                <p>Camera Robot Teleoperation</p>
                             </div>
                         </div>
                     </div>
@@ -96,4 +114,4 @@ class Services extends Component {
     }
 }
 
-export default Services;
+export default ServicesContent;

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import NavbarTwo from "../../components/Layouts/NavbarTwo";
+import Header from "../../components/Layouts/Header";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
 
@@ -16,7 +16,7 @@ export default function Detail({}) {
     const roomID = router.query.query_roomid;
     return (
         <>
-        <NavbarTwo />
+        <Header />
   
         <PageBanner
           pageTitle="Security & Surveillance"

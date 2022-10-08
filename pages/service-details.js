@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import NavbarTwo from '../components/Layouts/NavbarTwo';
+import Header from '../components/Layouts/Header';
 import PageBanner from '../components/Common/PageBanner';
 import ServiceDetailsContent from '../components/Services/ServiceDetailsContent';
 import Footer from '../components/Layouts/Footer';
@@ -8,7 +8,7 @@ class ServiceDetails extends Component {
     render() {
         return (
             <>
-                <NavbarTwo />
+                <Header />
 
                 <PageBanner 
                     pageTitle="Security & Surveillance" 
