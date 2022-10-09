@@ -117,8 +117,8 @@ class Footer extends Component {
 
                                 <div className="footer-contact-list">
                                     <div className="title">Contacts</div>
-                                    <div className="info">Email: jangjun_park@portal301.com</div> 
-                                    <div className="info">Phone: +82 10-5609-9527</div>
+                                    <div className="info"><strong>Email:</strong> jangjun_park@portal301.com</div> 
+                                    <div className="info"><strong>Phone:</strong> +82 10-5609-9527</div>
                                 </div>
                             </div>
                         </div>
@@ -141,7 +141,7 @@ class Footer extends Component {
                                     </li> */}
                                     <li>
                                         <Link href="/">
-                                            <a>PORTAL301 Co.,Ltd.</a>
+                                            <a>© Copyright PORTAL301 All Rights Reserved.</a>
                                         </Link>
                                     </li>
                                 </ul>

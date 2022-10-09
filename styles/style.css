@@ -410,12 +410,23 @@ Preloader Area CSS
 Navbar Area CSS
 =================================================*/
 .navbar-brand {
-  padding-top: 0;
-  padding-bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  padding-top: 10px;
+  
+}
+.navbar-brand img.main-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding-top: 11px;
+  padding-bottom: 2px;
+  
 }
 
 .navbar-brand img.optional-logo {
   display: none;
+  padding-left: 5px;
 }
 
 .main-nav {
@@ -4999,7 +5010,7 @@ Footer Area CSS
   content: '';
   position: absolute;
   margin-top: 30px;
-  width: 85px;
+  width: 83px;
   height: 3px;
   background: #646eff;
 }
@@ -5028,6 +5039,7 @@ Footer Area CSS
   margin: auto;
   padding-top: 20px;
   padding-bottom: 20px;
+  
 }
 
 .copyright-area p {
@@ -5048,16 +5060,16 @@ Footer Area CSS
   padding-left: 0;
   margin-bottom: 0;
   list-style-type: none;
-  text-align: right;
+  text-align: center;
 }
 
 .copyright-area ul li {
-  display: inline-block;
-  margin-left: auto;
+   display: inline-block;
+  margin-left: 25px;
   position: relative;
   color: #ffffff;
   font-size: 15px;
-  width: auto;
+  line-height: initial;
 }
 
 .copyright-area ul li a {
