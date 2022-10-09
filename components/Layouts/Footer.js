@@ -19,7 +19,7 @@ class Footer extends Component {
                                     
                                 </div>
 
-                                <ul className="social">
+                                {/* <ul className="social">
                                     <li> 
                                         <a href="https://www.facebook.com/" target="_blank">
                                             <i className="flaticon-facebook-letter-logo"></i>
@@ -40,7 +40,7 @@ class Footer extends Component {
                                             <i className="flaticon-youtube-play-button"></i>
                                         </a>
                                     </li>
-                                </ul>
+                                </ul> */}
                             </div>
                         </div>
 
