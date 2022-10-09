@@ -99,11 +99,30 @@ class ServicesContent extends Component {
                         <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
                                 <div className='panel'>
+                                    <div className="icon">
                                     <Link href="/service-details">
-                                        <div className="icon">
                                             <i className="flaticon-locked"></i>
-                                        </div>
                                     </Link>
+                                    </div>
+                                    <div className="option">
+                                        <div className="btn-box">
+                                            <div>
+                                                <Link href="/webrtc/cast">
+                                                    <a className="btn btn-primary">Enroll Robot</a>
+                                                </Link>
+                                            </div>
+                                            <div>
+                                                <Link href="/monkey-eye/operate">
+                                                    <a className="btn btn-primary">Operate Robot</a>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
                                 </div>
                                 <h3>
                                     <Link href="/service-details">
