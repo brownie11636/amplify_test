@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { Donut } from 'react-dial-knob'
 
 export default function DonutKnob() {
-    // const [value, setValue] = useState(0)
+    const [value, setValue] = useState(0)
     return <Donut
-        diameter={200}
+        diameter={100}
         min={0}
         max={100}
         step={1}
