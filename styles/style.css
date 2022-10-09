@@ -410,12 +410,23 @@ Preloader Area CSS
 Navbar Area CSS
 =================================================*/
 .navbar-brand {
-  padding-top: 0;
-  padding-bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  padding-top: 10px;
+  
+}
+.navbar-brand img.main-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding-top: 11px;
+  padding-bottom: 2px;
+  
 }
 
 .navbar-brand img.optional-logo {
   display: none;
+  padding-left: 5px;
 }
 
 .main-nav {
@@ -4858,13 +4869,14 @@ Footer Area CSS
 =================================================*/
 .footer-area {
   position: relative;
-  z-index: 1;
-  padding-top: 100px;
-  background-color: #15171a;
+  flex: 2;
+  margin: auto;
+  background-color: #fff;
 }
 
 .single-footer-widget {
-  margin-bottom: 30px;
+  margin: auto;
+  text-align: center;
 }
 
 .single-footer-widget .logo {
@@ -4919,24 +4931,6 @@ Footer Area CSS
   color: #ffffff;
 }
 
-.single-footer-widget h3 {
-  margin-bottom: 23px;
-  color: #ffffff;
-  position: relative;
-  padding-bottom: 6px;
-  font-size: 23px;
-  font-weight: 700;
-}
-
-.single-footer-widget h3::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 40px;
-  height: 2px;
-  background: #646eff;
-}
 
 .single-footer-widget .footer-services-list {
   padding-left: 0;
@@ -4989,17 +4983,38 @@ Footer Area CSS
 }
 
 .single-footer-widget .footer-contact-list {
-  padding-left: 0;
-  margin-bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-family: "Dosis", sans-serif;
   list-style-type: none;
 }
 
-.single-footer-widget .footer-contact-list li {
-  margin-bottom: 12px;
-  color: #ffffff;
-  font-size: 14px;
+.single-footer-widget .footer-contact-list .info {
+  margin: 10px;
+  color: #000000;
+  font-size: 23px;
   line-height: 1.7;
+  font-weight: 400;
+  width: auto;
 }
+.single-footer-widget .footer-contact-list .title{
+  margin-bottom: 1px;
+  color: #000000;
+  font-size: 23px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.single-footer-widget .footer-contact-list .title::before {
+  content: '';
+  position: absolute;
+  margin-top: 30px;
+  width: 83px;
+  height: 3px;
+  background: #646eff;
+}
+
 
 .single-footer-widget .footer-contact-list li a {
   display: inline-block;
@@ -5021,9 +5036,10 @@ Footer Area CSS
 
 .copyright-area {
   background-color: #000000;
-  margin-top: 70px;
+  margin: auto;
   padding-top: 20px;
   padding-bottom: 20px;
+  
 }
 
 .copyright-area p {
@@ -5044,15 +5060,15 @@ Footer Area CSS
   padding-left: 0;
   margin-bottom: 0;
   list-style-type: none;
-  text-align: right;
+  text-align: center;
 }
 
 .copyright-area ul li {
-  display: inline-block;
+   display: inline-block;
   margin-left: 25px;
   position: relative;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 15px;
   line-height: initial;
 }
 

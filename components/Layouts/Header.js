@@ -79,10 +79,10 @@ export default function Header() {
                <div id="navbar" className="navbar-area">
                     <div className="main-nav">
                         <div className="container">
-                            <nav className="navbar navbar-expand-md navbar-light">
+                            <div className="navbar navbar-expand-md navbar-light">
                                 <Link href="/">
                                     <a className="navbar-brand">
-                                        <img src="/images/main_logo3.png" className="main-logo" alt="logo" />
+                                        <img src="/images/main_bar.png" className="main-bar" alt="logo" />
                                         <img src="/images/main_logo3.png" className="optional-logo" alt="logo" />
                                     </a>
                                 </Link>
@@ -135,7 +135,7 @@ export default function Header() {
                                     <div className="others-options">
                                     </div>
                                 </div>
-                            </nav>
+                            </div>
                         </div>
                     </div>
                 </div>
