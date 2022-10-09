@@ -160,7 +160,8 @@ textarea.form-control {
   border-radius: 30px;
   -webkit-transition: 0.5s;
   transition: 0.5s;
-  padding: 10px 32px 12px;
+  padding: 8px 32px 8px;
+  margin-block: 1px;
   position: relative;
   z-index: 1;
   opacity: 1 !important;
@@ -1957,14 +1958,36 @@ Services Area CSS
 .single-services-box {
   background-color: #ffffff;
   margin-bottom: 30px;
-  padding: 30px 25px;
+  padding: 30px 30px;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  position: relative;
+}
+.single-services-box .panel {
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 0px 0px;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  position: relative;
+}
+.single-services-box .panel .option {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  margin-bottom: 0px;
+  margin-left:20px;
+  margin-right:20px;
+  padding: 0px 10px;
   -webkit-transition: 0.5s;
   transition: 0.5s;
   position: relative;
 }
 
 .single-services-box .icon {
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   background-color: #ffe4d9;
   border-radius: 5px;
   width: 75px;
@@ -1974,7 +1997,9 @@ Services Area CSS
   text-align: center;
   color: #646eff;
 }
-
+.single-services-box .icon:hover {
+  cursor: pointer;
+}
 .single-services-box .icon i {
   font-size: 35px;
   line-height: 75px;

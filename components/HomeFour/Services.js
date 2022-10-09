@@ -14,10 +14,11 @@ class ServicesContent extends Component {
                     <div className="row">
                         <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="flaticon-income"></i>
+                                <div className='panel'>
+                                    <div className="icon">
+                                        <i className="flaticon-income"></i>
+                                    </div>
                                 </div>
-
                                 <h3>
                                     {/* <Link href={{
                                         pathname: `/socketchat/${roomid}`,
@@ -34,10 +35,11 @@ class ServicesContent extends Component {
                         </div>
                         <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="flaticon-automatic"></i>
+                                <div className='panel'>
+                                    <div className="icon">
+                                        <i className="flaticon-automatic"></i>
+                                    </div>
                                 </div>
-
                                 <h3>
                                     <Link href="/webrtc">
                                         <a>Sensor IoT</a>
@@ -48,8 +50,27 @@ class ServicesContent extends Component {
                         </div>
                         <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="flaticon-automatic"></i>
+                                <div className='panel'>
+                                    <div className="icon">
+                                        <Link href="/webrtc">
+                                            <i className="flaticon-automatic"></i>
+                                        </Link>
+                                    </div>
+                                    <div className="option">
+                                        <div className="btn-box">
+                                            <div>
+                                                <Link href="/webrtc/cast">
+                                                    <a className="btn btn-primary">Start Stream</a>
+                                                </Link>
+                                            </div>
+                                            <div>
+                                                <Link href="/webrtc/view">
+                                                    <a className="btn btn-primary">View Stream</a>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
 
                                 <h3>
@@ -62,10 +83,11 @@ class ServicesContent extends Component {
                         </div>
                         <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="flaticon-locked"></i>
+                                <div className='panel'>
+                                    <div className="icon">
+                                        <i className="flaticon-locked"></i>
+                                    </div>
                                 </div>
-
                                 <h3>
                                     <Link href="/service-details">
                                         <a>TeleSyncArm</a>
@@ -76,10 +98,13 @@ class ServicesContent extends Component {
                         </div>
                         <div className="col-lg-4 col-sm-6">
                             <div className="single-services-box">
-                                <div className="icon">
-                                    <i className="flaticon-locked"></i>
+                                <div className='panel'>
+                                    <Link href="/service-details">
+                                        <div className="icon">
+                                            <i className="flaticon-locked"></i>
+                                        </div>
+                                    </Link>
                                 </div>
-
                                 <h3>
                                     <Link href="/service-details">
                                         <a>Monkey-Eye</a>
