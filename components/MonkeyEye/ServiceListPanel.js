@@ -18,6 +18,7 @@ export default function ServiceListPanel(props) {
     return (
         <section className="services-area bg-f2f6f9 ptb-110">
         <div className="container">
+            <h3>Select Service Profile</h3>
             <div className="row">
                 {profileListComponents}
             </div>

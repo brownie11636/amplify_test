@@ -7,9 +7,11 @@ import { SocketContext } from "../../toServer/socket";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from 'react-cookie';
 //import { authCheck } from "../../service/authcheck";
+import {socketPoint} from "../../toServer/API-AccessPoint";
 
+const SOCKET_SERVER_URL = socketPoint;
 import socketIo from "socket.io-client";
-const socket = socketIo('https://localhost:3333',{transports: ["websocket"]});
+const socket = socketIo(SOCKET_SERVER_URL,{transports: ["websocket"]});
 
 const SocketChat = ( { roomID } ) => {
     const [isLogin,setIsLogin] = useState(true);

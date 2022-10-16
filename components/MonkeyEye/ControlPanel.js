@@ -13,19 +13,6 @@ export function ControlPanel(props) {
         <div className="container">
             <div className="row">
                 <div className="col-lg-4 col-sm-6">
-                    <div className="single-services-box">
-                        <div className='panel'>
-                            <div className="icon">
-                                <i className="flaticon-income"></i>
-                            </div>
-                        </div>
-                        <h3>
-
-                        </h3>
-                        <p>Under Construction</p>
-                    </div>
-                </div>
-                <div className="col-lg-4 col-sm-6">
 
                     <div className="controller">
                         <div className="knob-box">

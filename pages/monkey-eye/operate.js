@@ -49,14 +49,14 @@ export const App = () => {
     socketRef.current.emit("msg-v1", packet);
   };
 
-  const createOffer = async () => {
-    console.log("create offer");
-    let selectedProfile = serviceList.current.find(function(data){
-        //console.log(data);
-        return data.sid === selected.current;
-    });
-    console.log(selectedProfile);
-    socketRef.current.emit("Join_Service", selectedProfile.sid);
+  const createOffer = async (targetProfile) => {
+    // console.log("create offer");
+    // let targetProfile = serviceList.current.find(function(data){
+    //     //console.log(data);
+    //     return data.sid === selected.current;
+    // });
+    console.log(targetProfile);
+    socketRef.current.emit("Join_Service", targetProfile.sid);
 
     //if (!(pcRef.current && socketRef.current)) return;
     try {
@@ -71,8 +71,8 @@ export const App = () => {
         console.log('oniceconnectionstatechange : ', e.target.connectionState);
       };
       //socketRef.current.emit("offer", sdp);
-      sendMessage(sdp, selectedProfile.sid);
-      socketFrom.current = selectedProfile.sid;
+      sendMessage(sdp, targetProfile.sid);
+      socketFrom.current = targetProfile.sid;
       //socketRef.current.emit("offer", sdp);
 
     } catch (e) {
@@ -363,6 +363,7 @@ export const App = () => {
   const onProfileSelect = (profile) =>{
     // socketRef.current.emit("msg-v1", value);
 
+    createOffer(profile);
     console.log("Selected profile:",profile.nickname)
   }
   return (
@@ -389,15 +390,15 @@ export const App = () => {
           ref={remoteVideoRef}
           autoPlay
         />
-        <button onClick={createOffer}>Join Streaming</button>
         <button onClick={debugcode}>console debug</button>
+        {/* <button onClick={createOffer}>Join Streaming</button>
         <select onChange={handleSelect} value={selected.current}>
                 {selectList.map((item) => (
                 <option value={item.split(':')[1]} key={item}>
                     {item}
                 </option>
               ))}
-              </select>
+              </select> */}
       </div>
       <ControlPanel onChange={onNewCommand}/>
       <ServiceListPanel profileList={profileList} onProfileSelect={onProfileSelect}/>
