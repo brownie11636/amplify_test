@@ -1,103 +1,97 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Knobtest from './Knobtest';
 
-class ControlPanel extends Component {
-    constructor(props){
-        super(props);
-    }
+export function ControlPanel(props) {
     
-
-    render() {
-        const onChange = (value)=>{
-            this.props.onChange(value);
-            console.log("panel:",value);
-        }
-            return (
-            <section className="services-area bg-f2f6f9 ptb-110">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-4 col-sm-6">
-                            <div className="single-services-box">
-                                <div className='panel'>
-                                    <div className="icon">
-                                        <i className="flaticon-income"></i>
-                                    </div>
-                                </div>
-                                <h3>
-
-                                </h3>
-                                <p>Under Construction</p>
+    const onChange = (value)=>{
+        props.onChange(value);
+        console.log("panel:",value);
+    }
+    return (
+    <section className="services-area bg-f2f6f9 ptb-110">
+        <div className="container">
+            <div className="row">
+                <div className="col-lg-4 col-sm-6">
+                    <div className="single-services-box">
+                        <div className='panel'>
+                            <div className="icon">
+                                <i className="flaticon-income"></i>
                             </div>
                         </div>
-                        <div className="col-lg-4 col-sm-6">
+                        <h3>
 
-                            <div className="controller">
-                                <div className="knob-box">
-                                    <Knobtest onChange={onChange} value={50} label={"height"}/>
-                                </div>
-                                <div className="knob-box">
-                                    <Knobtest onChange={onChange} value={80} label={"length"}/>
-                                </div>
-                                <div className="knob-box">
-                                    <Knobtest onChange={onChange} value={90} label={"theta0"}/>
-                                </div>
-                                <div className="knob-box">
-                                    <Knobtest onChange={onChange} value={90} label={"theta1"}/>
-                                </div>
-                            </div>
-                            <div className="indicator">
-                                <div className="knob-box">
-                                    <Knobtest onChange={onChange} value={50}/>
-                                </div>
-                                <div className="knob-box">
-                                    <Knobtest onChange={onChange} value={50}/>
-                                </div>
-                                <div className="knob-box">
-                                    <Knobtest onChange={onChange} value={50}/>
-                                </div>
-                                <div className="knob-box">
-                                    <Knobtest onChange={onChange} value={50}/>
-                                </div>
-                            </div>
+                        </h3>
+                        <p>Under Construction</p>
+                    </div>
+                </div>
+                <div className="col-lg-4 col-sm-6">
+
+                    <div className="controller">
+                        <div className="knob-box">
+                            <Knobtest onChange={onChange} value={50} label={"height"}/>
+                        </div>
+                        <div className="knob-box">
+                            <Knobtest onChange={onChange} value={80} label={"length"}/>
+                        </div>
+                        <div className="knob-box">
+                            <Knobtest onChange={onChange} value={90} label={"theta0"}/>
+                        </div>
+                        <div className="knob-box">
+                            <Knobtest onChange={onChange} value={90} label={"theta1"}/>
+                        </div>
+                    </div>
+                    <div className="indicator">
+                        <div className="knob-box">
+                            <Knobtest onChange={onChange} value={50}/>
+                        </div>
+                        <div className="knob-box">
+                            <Knobtest onChange={onChange} value={50}/>
+                        </div>
+                        <div className="knob-box">
+                            <Knobtest onChange={onChange} value={50}/>
+                        </div>
+                        <div className="knob-box">
+                            <Knobtest onChange={onChange} value={50}/>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                {/* Shape Images */}
-                <div className="shape-img2">
-                    <img src="/images/shape/shape2.svg" alt="image" />
-                </div>
-                <div className="shape-img3">
-                    <img src="/images/shape/shape3.png" alt="image" />
-                </div>
-                <div className="shape-img4">
-                    <img src="/images/shape/shape4.svg" alt="image" />
-                </div>
-                <div className="shape-img5">
-                    <img src="/images/shape/shape5.svg" alt="image" />
-                </div>
-                <div className="shape-img3">
-                    <img src="/images/shape/shape3.png" alt="image" />
-                </div>
-                <div className="dot-shape1">
-                    <img src="/images/shape/dot1.png" alt="image" />
-                </div>
-                <div className="dot-shape2">
-                    <img src="/images/shape/dot3.png" alt="image" />
-                </div>
-                <div className="dot-shape2">
-                    <img src="/images/shape/dot4.png" alt="image" />
-                </div>
-                <div className="dot-shape2">
-                    <img src="/images/shape/dot5.png" alt="image" />
-                </div>
-                <div className="dot-shape2">
-                    <img src="/images/shape/dot6.png" alt="image" />
-                </div>
-            </section>
-        );
-    }
+        {/* Shape Images */}
+        <div className="shape-img2">
+            <img src="/images/shape/shape2.svg" alt="image" />
+        </div>
+        <div className="shape-img3">
+            <img src="/images/shape/shape3.png" alt="image" />
+        </div>
+        <div className="shape-img4">
+            <img src="/images/shape/shape4.svg" alt="image" />
+        </div>
+        <div className="shape-img5">
+            <img src="/images/shape/shape5.svg" alt="image" />
+        </div>
+        <div className="shape-img3">
+            <img src="/images/shape/shape3.png" alt="image" />
+        </div>
+        <div className="dot-shape1">
+            <img src="/images/shape/dot1.png" alt="image" />
+        </div>
+        <div className="dot-shape2">
+            <img src="/images/shape/dot3.png" alt="image" />
+        </div>
+        <div className="dot-shape2">
+            <img src="/images/shape/dot4.png" alt="image" />
+        </div>
+        <div className="dot-shape2">
+            <img src="/images/shape/dot5.png" alt="image" />
+        </div>
+        <div className="dot-shape2">
+            <img src="/images/shape/dot6.png" alt="image" />
+        </div>
+    </section>
+);
 }
 
 export default ControlPanel;

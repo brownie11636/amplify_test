@@ -4,7 +4,7 @@ import Header from "../../components/Layouts/Header";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
 import ControlPanel from "../../components/MonkeyEye/ControlPanel";
-import ServiceList from "../../components/MonkeyEye/ServiceList"
+import ServiceListPanel from "../../components/MonkeyEye/ServiceListPanel";
 import {socketPoint} from "../../toServer/API-AccessPoint";
 
 
@@ -37,10 +37,12 @@ export const App = () => {
   const serviceProfile = useRef();
   const selected = useRef();
   const serviceList = useRef();
+  const [profileList, setProfileList] = useState([]);
   const [selectList, setSelectList] = useState([]);
+
+
   
   const sendMessage = (message, destination) => {
-    console.log("send message(emit msg-v1)", message.type, destination);
     console.log("send message(emit msg-v1)", message.type, destination);
     let packet = { from: socketRef.current.id, to: destination, message: message };
     //console.log('Client sending message: ', packet);
@@ -74,7 +76,6 @@ export const App = () => {
       //socketRef.current.emit("offer", sdp);
 
     } catch (e) {
-      console.log('errrrrrrrrr');
       console.error(e);
     }
   };
@@ -96,7 +97,6 @@ export const App = () => {
       socketRef.current.emit("offer", sdp);
 
     } catch (e) {
-      console.log('errrrrrrrrr');
       console.error(e);
     }
   }
@@ -260,19 +260,18 @@ export const App = () => {
 
     socketRef.current.on('q_result', function(q_result) {
         const qres = JSON.parse(q_result);
-
-      
-          if(qres.header==='ServiceList'){
-            //setServiceList(qres.data);
-            serviceList.current = qres.data;
-            let nextList = selectList;
-            for (const [key, value] of Object.entries(Object(serviceList.current))) {
-              //console.log('list set up log',`${key}:${value.sid}`);
-              nextList = nextList.concat(`${key}:${value.sid}`);
-            }
-            setSelectList(nextList);
+        if(qres.header==='ServiceList'){
+          //setServiceList(qres.data);
+          serviceList.current = qres.data;
+          setProfileList(qres.data);
+          let nextList = selectList;
+          for (const [key, value] of Object.entries(Object(serviceList.current))) {
+            //console.log('list set up log',`${key}:${value.sid}`);
+            nextList = nextList.concat(`${key}:${value.sid}`);
           }
-      });
+          setSelectList(nextList);
+        }
+    });
 
     socketRef.current.on('msg-v1', async (packet) => {
         console.log('------------------msg-v1 ', packet.message.type ,'-------------------');
@@ -361,6 +360,11 @@ export const App = () => {
     console.log("operate:",value)
   }
 
+  const onServiceListChange = (list) =>{
+    // socketRef.current.emit("msg-v1", value);
+
+    // console.log("operate-service list:",value)
+  }
   return (
     <>
       <Header />
@@ -396,7 +400,7 @@ export const App = () => {
               </select>
       </div>
       <ControlPanel onChange={onNewCommand}/>
-      <ServiceList/>
+      <ServiceListPanel profileList={profileList} onSelect={onServiceListChange}/>
       <Footer />
     </>
   );
