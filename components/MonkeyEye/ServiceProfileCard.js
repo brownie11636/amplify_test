@@ -2,9 +2,14 @@ import React from 'react';
 import Link from 'next/link';
 
 export default function ServiceProfile(props){
+
+    const onClick = () => {
+        props.onSelect(props.profile);
+    }
+
     return(
         <div className="col-lg-4 col-sm-6">
-            <div className="single-services-box">
+            <div onClick={onClick} className="single-services-box">
                 <div className='panel'>
                     <div className="icon">
                         <i className="flaticon-automatic"></i>
@@ -12,10 +17,10 @@ export default function ServiceProfile(props){
                 </div>
                 <h3>
                     <Link href="/webrtc">
-                        <a>{props.name}</a>
+                        <a>{props.profile.nickname}</a>
                     </Link>
                 </h3>
-                <p>SID: {props.sid}</p>
+                <p>SID: {props.profile.sid}</p>
             </div>
         </div>
     )

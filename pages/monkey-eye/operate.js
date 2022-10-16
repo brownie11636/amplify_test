@@ -360,10 +360,10 @@ export const App = () => {
     console.log("operate:",value)
   }
 
-  const onServiceListChange = (list) =>{
+  const onProfileSelect = (profile) =>{
     // socketRef.current.emit("msg-v1", value);
 
-    // console.log("operate-service list:",value)
+    console.log("Selected profile:",profile.nickname)
   }
   return (
     <>
@@ -400,7 +400,7 @@ export const App = () => {
               </select>
       </div>
       <ControlPanel onChange={onNewCommand}/>
-      <ServiceListPanel profileList={profileList} onSelect={onServiceListChange}/>
+      <ServiceListPanel profileList={profileList} onProfileSelect={onProfileSelect}/>
       <Footer />
     </>
   );

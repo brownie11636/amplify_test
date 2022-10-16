@@ -1,19 +1,18 @@
 import React from 'react';
-import ServiceProfile from './ServiceProfile';
+import ServiceProfileCard from './ServiceProfileCard';
 
-export function ServiceListPanel(props) {
-    const onSelect = (list)=>{
-        props.onSelect(list)
+export default function ServiceListPanel(props) {
+    const onProfileSelect = (profile)=>{
+        props.onProfileSelect(profile)
     }
-
     
-    console.log("profile list")
-    console.log(props.profileList)
+    // console.log("profile list")
+    // console.log(props.profileList)
 
     const profileList=props.profileList;
     const profileListComponents = [];
     for(const profile of profileList){
-        profileListComponents.push(<ServiceProfile name={profile.nickname} sid={profile.sid} />)
+        profileListComponents.push(<ServiceProfileCard onSelect={onProfileSelect} profile={profile} />)
     }
 
     return (
@@ -58,4 +57,3 @@ export function ServiceListPanel(props) {
         </section>
     );
 }
-export default ServiceListPanel;
