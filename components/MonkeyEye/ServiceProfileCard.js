@@ -8,19 +8,17 @@ export default function ServiceProfile(props){
     }
 
     return(
-        <div className="col-lg-4 col-sm-6">
-            <div onClick={onClick} className="single-services-box">
-                <div className='panel'>
-                    <div className="icon">
-                        <i className="flaticon-automatic"></i>
-                    </div>
+        <div onClick={onClick} className="service-profile-card">
+            <div className='frame'>
+                <div className="icon">
+                    <i className="flaticon-automatic"></i>
                 </div>
-                <h3>
-                    <Link href="/webrtc">
+                <div className="info">
+                    <h3>
                         <a>{props.profile.nickname}</a>
-                    </Link>
-                </h3>
-                <p>SID: {props.profile.sid}</p>
+                    </h3>
+                    <p>SID: {props.profile.sid}</p>
+                </div>
             </div>
         </div>
     )

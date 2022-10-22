@@ -377,31 +377,49 @@ export const App = () => {
         activePageText="Teleoperation"
         bgImgClass="item-bg2"
       />
-    
-      <div>
-        <video
-          id="remotevideo"
-          style={{
-            width: 360,
-            height: 360,
-            margin: 5,
-            backgroundColor: "gray",
-          }}
-          ref={remoteVideoRef}
-          autoPlay
-        />
-        <button onClick={debugcode}>console debug</button>
-        {/* <button onClick={createOffer}>Join Streaming</button>
-        <select onChange={handleSelect} value={selected.current}>
-                {selectList.map((item) => (
-                <option value={item.split(':')[1]} key={item}>
-                    {item}
-                </option>
-              ))}
-              </select> */}
+      <div className="base-frame bg-f2f6f9">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-6 col-sm-8">
+              <div className="video-area">
+                <video
+                  id="remotevideo"
+                  style={{
+                    width: 360,
+                    height: 360,
+                    margin: 5,
+                    backgroundColor: "gray",
+                  }}
+                  ref={remoteVideoRef}
+                  autoPlay
+                />
+                <div>
+                  <button onClick={debugcode}>console debug</button>
+                  {/* <button onClick={createOffer}>Join Streaming</button>
+                  <select onChange={handleSelect} value={selected.current}>
+                          {selectList.map((item) => (
+                          <option value={item.split(':')[1]} key={item}>
+                              {item}
+                          </option>
+                        ))}
+                        </select> */}
+
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-6 col-sm-8">
+              <div className="service-list-area">
+                <ServiceListPanel profileList={profileList} onProfileSelect={onProfileSelect}/>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* <div className="col-lg-4 col-sm-6">
+
+        </div> */}
       </div>
+
       <ControlPanel onChange={onNewCommand}/>
-      <ServiceListPanel profileList={profileList} onProfileSelect={onProfileSelect}/>
       <Footer />
     </>
   );
