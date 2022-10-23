@@ -41,7 +41,7 @@ class ServicesContent extends Component {
                                     </div>
                                 </div>
                                 <h3>
-                                    <Link href="/webrtc">
+                                    <Link href="/sensorIoT">
                                         <a>Sensor IoT</a>
                                     </Link>
                                 </h3>
