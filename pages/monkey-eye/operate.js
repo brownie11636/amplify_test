@@ -4,7 +4,7 @@ import Header from "../../components/Layouts/Header";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
 import ControlPanel from "../../components/MonkeyEye/ControlPanel";
-import ServiceListPanel from "../../components/MonkeyEye/ServiceListPanel";
+import ServiceListPanel from "../../components/ServiceProfile/ServiceListPanel";
 import {socketPoint} from "../../toServer/API-AccessPoint";
 
 
