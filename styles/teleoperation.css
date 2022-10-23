@@ -1,22 +1,26 @@
-.control-panel{
+.control-area{
+    position: relative;
     background-color: #1c1945;
     width: 100%;
     padding: 30px;
 }
 
 .single-knob{
-    padding: 10px;
+    margin: 10px;
+    width: max-content;
 }
-
-.controller{
+.single-knob-indicator{
+    margin: 3px;
+    width: max-content;
+}
+.control-panel{
     position: relative;
     display: flex;
     border-radius: 20px;
     border: 2px solid white;
-    width: auto;
     padding: 2em;
     background-color: #1c1945;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 .title{
     position: absolute;
@@ -33,13 +37,30 @@
     text-align: center;
   }
 
+.controller{
+    position: relative;
+    display: flex;
+    border-radius: 20px;
+    border: 2px solid white;
+    width: max-content;
+    padding: 2em;
+    background-color: #1c1945;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
 
 .indicator{
     position: relative;
     display: flex;
     border-radius: 20px;
     border: 2px solid white;
-    width: auto;
-    padding: 2em;
+    width: max-content;
+    height: max-content;
+    padding: 1em;
+    margin-inline: 1em;
     background-color: #1c1945;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-left: 20px;
 }

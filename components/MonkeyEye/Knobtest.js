@@ -24,7 +24,7 @@ export default function DonutKnob(props) {
   return (
     <div className="single-knob">
       <DynamicDonut
-        diameter={200}
+        diameter={150}
         min={0}
         max={100}
         step={1}
