@@ -1,6 +1,45 @@
-.controller{
-    display: flex;
+.control-panel{
+    background-color: #1c1945;
+    width: 100%;
+    padding: 30px;
 }
-.indicator{
+
+.single-knob{
+    padding: 10px;
+}
+
+.controller{
+    position: relative;
     display: flex;
+    border-radius: 20px;
+    border: 2px solid white;
+    width: auto;
+    padding: 2em;
+    background-color: #1c1945;
+    margin-bottom: 30px;
+}
+.title{
+    position: absolute;
+    color: white;
+    background-color: #1c1945;
+    /* background-color: white; */
+    top: -25px;
+    left: 1em;
+    width: 6em;
+    height: 1em;
+    padding-bottom: 1.5em;
+    font-weight: bolder;
+    font-size: 30px;
+    text-align: center;
+  }
+
+
+.indicator{
+    position: relative;
+    display: flex;
+    border-radius: 20px;
+    border: 2px solid white;
+    width: auto;
+    padding: 2em;
+    background-color: #1c1945;
 }

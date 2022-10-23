@@ -22,21 +22,26 @@ export default function DonutKnob(props) {
   }
 
   return (
-    <>
+    <div className="single-knob">
       <DynamicDonut
-        diameter={150}
+        diameter={200}
         min={0}
         max={100}
         step={1}
         value={value}
         theme={{
-          donutColor: 'blue'
+          donutColor: 'white',
+          bgrColor: "gray",
+          maxedBgrColor: "red",
+          centerColor: "#1c1945",
+          centerFocusedColor: "#13112e",     
+          donutThickness: 3
         }}
         onValueChange={onValueChange}
         ariaLabelledBy={'my-label'}
       >
               <label id={'my-label'}>{props.label}</label>
       </DynamicDonut>
-    </>
+    </div>
   )
 }
