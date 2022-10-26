@@ -1,8 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Device } from 'mediasoup-client';
 import io from 'socket.io-client';
-import { socketPoint } from "../../toServer/API-AccessPoint";
+import { MediaSoupSocketPoint } from "../../toServer/API-AccessPoint";
 import socket from 'socket.io-client/lib/socket';
+import Header from '../../components/Layouts/Header';
+import PageBanner from '../../components/Common/PageBanner';
+import Footer from '../../components/Layouts/Footer';
 
 function Publish(props) {
     const localVideo = useRef();
@@ -263,7 +266,7 @@ function Publish(props) {
     }
 
     const connectSocket = () => {
-        socketRef.current = io(socketPoint, {
+        socketRef.current = io(MediaSoupSocketPoint, {
             transports: ["websocket"],
         });
                 
@@ -304,6 +307,16 @@ function Publish(props) {
     };
 
     return (
+        <>
+        <Header />
+    
+        <PageBanner
+          pageTitle="MediaSoup"
+          homePageUrl="/"
+          homePageText="MediaSoup"
+          activePageText="Publish"
+          bgImgClass="item-bg2"
+        />
         <div>
             <div>
                 <input
@@ -358,6 +371,8 @@ function Publish(props) {
                 ></video>
             </div>
         </div>
+        <Footer />
+        </>
     );
 }
 

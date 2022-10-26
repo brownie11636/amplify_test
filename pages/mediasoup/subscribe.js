@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Device } from 'mediasoup-client';
 import io from 'socket.io-client';
-import { socketPoint } from "../../toServer/API-AccessPoint";
+import { MediaSoupSocketPoint } from "../../toServer/API-AccessPoint";
+import Header from '../../components/Layouts/Header';
+import PageBanner from '../../components/Common/PageBanner';
+import Footer from '../../components/Layouts/Footer';
 
 function Subscribe(props) {
     const remoteVideo = useRef();
@@ -24,6 +27,12 @@ function Subscribe(props) {
     useEffect(() => {
 
         connectSocket();
+        async function firstCallList() {
+            const { allRouters } = await sendRequest('serviceList',{})
+            console.log('allrouters?', allRouters);
+            listUpdate(allRouters);
+        }
+        firstCallList();
 
     }, [])
 
@@ -293,7 +302,7 @@ function Subscribe(props) {
 
     const connectSocket = () => {
 
-        socketRef.current = io(socketPoint, {
+        socketRef.current = io(MediaSoupSocketPoint, {
             transports: ["websocket"],
         });
 
@@ -397,6 +406,16 @@ function Subscribe(props) {
     }
 
     return (
+        <>
+        <Header />
+    
+        <PageBanner
+          pageTitle="MediaSoup"
+          homePageUrl="/"
+          homePageText="MediaSoup"
+          activePageText="Subscribe"
+          bgImgClass="item-bg2"
+        />
         <div>
             <button disabled={isSubscribed} onClick={handleSubscribe}>
                 Subscribe
@@ -430,6 +449,9 @@ function Subscribe(props) {
 
             </div>
         </div>
+        <Footer />
+        </>
+
     );
 }
 

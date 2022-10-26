@@ -52,6 +52,39 @@ class ServicesContent extends Component {
                             <div className="single-services-box">
                                 <div className='panel'>
                                     <div className="icon">
+                                        <Link href="/mediasoup">
+                                            <i className="flaticon-automatic"></i>
+                                        </Link>
+                                    </div>
+                                    <div className="option">
+                                        <div className="btn-box">
+                                            <div>
+                                                <Link href="/mediasoup/publish">
+                                                    <a className="btn btn-primary">Publish</a>
+                                                </Link>
+                                            </div>
+                                            <div>
+                                                <Link href="/mediasoup/subscribe">
+                                                    <a className="btn btn-primary">Subscribe</a>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <h3>
+                                    <Link href="/webrtc">
+                                        <a>MediaSoup</a>
+                                    </Link>
+                                </h3>
+                                <p>Prototyping on mediasoup</p>
+                            </div>
+                        </div>
+                        <div className="col-lg-4 col-sm-6">
+                            <div className="single-services-box">
+                                <div className='panel'>
+                                    <div className="icon">
                                         <Link href="/webrtc">
                                             <i className="flaticon-automatic"></i>
                                         </Link>
