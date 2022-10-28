@@ -3,7 +3,7 @@
 export const socketPoint = `https://api.portal301.com/`;
 export const loginPoint = `https://api.portal301.com/login/session_id`;
 export const logoutPoint = `https://api.portal301.com/login/session`;
-export const MediaSoupSocketPoint = `https://3.34.139.14:3333`;
+export const MediaSoupSocketPoint = `https://52.78.151.91:3333`;
 
 // Development and testing
 //export const socketPoint = `https://192.168.56.1:3333`;
