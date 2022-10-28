@@ -54,7 +54,7 @@ function Subscribe(props) {
             //console.log('list set up log',`${key}:${value.sid}`);
             nextList = nextList.concat(`${key}:${value.socketid}`);
         }
-        setSelectList(nextList);
+        setSelectList((current) => nextList);
 
     }
 
@@ -105,12 +105,12 @@ function Subscribe(props) {
     // ============ UI button ==========
 
     async function handleSubscribe() {
-        //if (!socketRef.current) {
-        // await connectSocket().catch((err) => {
-        //     console.error(err);
-        //     return;
-        // });
-        // }
+        if (!socketRef.current) {
+        await connectSocket().catch((err) => {
+            console.error(err);
+            return;
+        });
+        }
 
         const socketid = selected;
 
@@ -225,7 +225,7 @@ function Subscribe(props) {
 
         removeAllRemoteVideo();
 
-        disconnectSocket();
+        //disconnectSocket();
         setIsSubscribed(false);
     }
 
@@ -311,7 +311,6 @@ function Subscribe(props) {
 
             socket.on('listUpdate', function (list) {
                 listUpdate(list);
-                console.log('listUpdate..');
             });
 
             socket.on('connect', function (evt) {
