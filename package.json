@@ -4,7 +4,7 @@
     "description": "Bariton - IT Machine Learning React Next Template",
     "main": "index.js",
     "scripts": {
-        "dev": "next dev -p 3333",
+        "dev": "next dev -p 3000",
         "build": "next build && next export",
         "start": "next start",
         "export": "next export"
@@ -19,6 +19,7 @@
         "axios": "^0.20.0",
         "caddy": "^0.0.13",
         "install": "^0.13.0",
+        "mediasoup-client": "^3.6.58",
         "next": "^12.1.5",
         "next-auth": "^4.10.3",
         "next-redux-wrapper": "^7.0.5",

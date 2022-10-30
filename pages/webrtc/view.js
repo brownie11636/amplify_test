@@ -325,7 +325,7 @@ export const App = () => {
             }
             setSelectList(nextList);
           }
-      });
+    });
 
     socketRef.current.on('msg-v1', async (packet) => {
         console.log('------------------msg-v1 ', packet.message.type ,'-------------------');
@@ -439,7 +439,7 @@ export const App = () => {
                   {item}
               </option>
             ))}
-            </select>
+      </select>
     </div>
     <Footer />
     </>
