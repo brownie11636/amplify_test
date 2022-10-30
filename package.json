@@ -46,5 +46,8 @@
         "sweetalert2-react-content": "^3.3.3",
         "uuid": "^8.3.2",
         "webrtc-adapter": "^8.1.1"
+    },
+    "devDependencies": {
+        "typescript": "^4.8.4"
     }
 }
