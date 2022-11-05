@@ -12,7 +12,7 @@ export default function ServiceListPanel(props) {
     const profileList=props.profileList;
     const profileListComponents = [];
     for(const profile of profileList){
-        profileListComponents.push(<ServiceProfileCard onSelect={onProfileSelect} profile={profile} />)
+        profileListComponents.push(<ServiceProfileCard key={Math.random()} onSelect={onProfileSelect} profile={profile} />)
     }
 
     return (

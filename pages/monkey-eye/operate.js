@@ -11,17 +11,19 @@ import {socketPoint} from "../../toServer/API-AccessPoint";
 
 const pc_config = {
   iceServers: [
-    // {
-    //   urls: 'stun:[STUN_IP]:[PORT]',
-    //   'credentials': '[YOR CREDENTIALS]',
-    //   'username': '[USERNAME]'
-    // },
     {
+      "urls": "turn:3.35.133.246",
+      "username":"user",
+      "credential":"pass"
+    },
+   {
       urls: "stun:stun.l.google.com:19302",
     },
   ],
 };
-const SOCKET_SERVER_URL = socketPoint;
+
+// const SOCKET_SERVER_URL = socketPoint;
+const SOCKET_SERVER_URL = "https://192.168.0.22:3333";
 // const socketRef = io(SOCKET_SERVER_URL,{W
 //     transports: ["websocket"] // HTTP long-polling is disabled
 //     }
@@ -39,24 +41,29 @@ export const App = () => {
   const serviceList = useRef();
   const [profileList, setProfileList] = useState([]);
   const [selectList, setSelectList] = useState([]);
-
+  let [targetProfile, setTargetProfile] = useState({});
 
   
   const sendMessage = (message, destination) => {
-    console.log("send message(emit msg-v1)", message.type, destination);
+    console.log("send message(emit msg-v1)", message, destination);
     let packet = { from: socketRef.current.id, to: destination, message: message };
     //console.log('Client sending message: ', packet);
     socketRef.current.emit("msg-v1", packet);
   };
 
-  const createOffer = async (targetProfile) => {
+  const JoinRTCService = async (profile) => {
+    console.log(profile);
+    socketRef.current.emit("Join_Service", profile.sid);
+  };
+
+  const createOffer = async (profile) => {
     // console.log("create offer");
     // let targetProfile = serviceList.current.find(function(data){
     //     //console.log(data);
     //     return data.sid === selected.current;
     // });
-    console.log(targetProfile);
-    socketRef.current.emit("Join_Service", targetProfile.sid);
+    console.log(profile);
+    socketRef.current.emit("Join_Service", profile.sid);
 
     //if (!(pcRef.current && socketRef.current)) return;
     try {
@@ -247,8 +254,14 @@ export const App = () => {
     });
 
     socketRef.current.on("joined", function (room, socketTo) {
-        reOffer();
-        console.log("joined!");
+      // if(targetProfile.description === 'Streamer'){
+        sendMessage("connection request");
+        console.log("connection request")
+      // }
+
+
+        // reOffer();
+        // console.log("joined",room,socketTo);
     });
 
     socketRef.current.on('join', function (room){
@@ -363,8 +376,10 @@ export const App = () => {
   const onProfileSelect = (profile) =>{
     // socketRef.current.emit("msg-v1", value);
 
-    createOffer(profile);
-    console.log("Selected profile:",profile.nickname)
+    setTargetProfile(profile);
+    JoinRTCService(profile);
+    // createOffer(profile);
+    console.log("Selected profile:",profile)
   }
   return (
     <>
