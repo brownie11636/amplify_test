@@ -22,8 +22,8 @@ const pc_config = {
   ],
 };
 
-const SOCKET_SERVER_URL = socketPoint;
-// const SOCKET_SERVER_URL = "https://192.168.0.22:3333";
+// const SOCKET_SERVER_URL = socketPoint;
+const SOCKET_SERVER_URL = "https://192.168.0.22:3333";
 // const socketRef = io(SOCKET_SERVER_URL,{W
 //     transports: ["websocket"] // HTTP long-polling is disabled
 //     }
@@ -112,8 +112,47 @@ export const App = () => {
     console.log('Failed to create session description: ' + error.toString());
   }
   
-
   const createAnswer = async (sdp, from) => { //getoffer & doAnswer
+    //if (!(pcRef.current && socketRef.current)) return;
+    try {
+      pcRef.current = new RTCPeerConnection(pc_config);
+
+      pcRef.current.onicecandidate = (e) => {
+        if (e.candidate) {
+          if (!socketRef.current) return;
+          console.log("onicecandidate");
+          //socketRef.current.emit("candidate", e.candidate);
+          sendMessage({
+            type: 'candidate',
+            label: e.candidate.sdpMLineIndex,
+            id: e.candidate.sdpMid,
+            candidate: e.candidate.candidate
+          }, from);
+        }else{
+          console.log('End of candidates')
+        }
+      };
+      pcRef.onaddstream = handleRemoteStreamAdded;
+      pcRef.onremovestream = handleRemoteStreamRemoved;
+
+      await pcRef.current.setRemoteDescription(new RTCSessionDescription(sdp));
+      console.log("answer set remote description success", pcRef.current);
+      console.log("sending answer to peer")
+
+      pcRef.current.createAnswer().then( async (sessionDescription) =>{
+        await pcRef.current.setLocalDescription(sessionDescription);
+          console.log('setLocalAndSendMessage sending message', sessionDescription);
+          sendMessage(sessionDescription, from);
+        }, onCreateSessionDescriptionError);
+
+      //pcsRef.current = {...pcsRef.current, [packet.from]: pcRef.current};
+
+
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  const createAnswer_old = async (sdp, from) => { //getoffer & doAnswer
     //if (!(pcRef.current && socketRef.current)) return;
     try {
       pcsRef.current[from] = new RTCPeerConnection(pc_config);
@@ -129,6 +168,8 @@ export const App = () => {
             id: e.candidate.sdpMid,
             candidate: e.candidate.candidate
           }, from);
+        }else{
+          console.log('End of candidates')
         }
       };
       pcRef.current.oniceconnectionstatechange = (e) => {
@@ -170,6 +211,9 @@ export const App = () => {
   function handleRemoteStreamAdded(event) {
     console.log("Remote stream added. event.stream?>>>", event.stream);
     remoteVideoRef.current.srcObject = event.stream;
+  }
+  function handleRemoteStreamRemoved(event) {
+    console.log("Remote stream removed. Event:", event);
   }
 
   const [query, setQuery] = useState([]);
@@ -298,28 +342,6 @@ export const App = () => {
             //RTCClientList.push({'socketId':packet.from});
             console.log('check : connection request');      
           } else if (message.type === 'offer') {
-            // pcsRef.current[packet.from].onicecandidate = (e) => {
-            //   if (e.candidate) {
-            //     if (!socketRef.current) return;
-            //     console.log("onicecandidate");
-            //     //socketRef.current.emit("candidate", e.candidate);
-            //     sendMessage({
-            //       type: 'candidate',
-            //       label: e.candidate.sdpMLineIndex,
-            //       id: e.candidate.sdpMid,
-            //       candidate: e.candidate.candidate
-            //     }, socketFrom.current);
-            //   }
-            // };
-            // pcsRef.current[packet.from].oniceconnectionstatechange = (e) => {
-            //   console.log('oniceconnectionstatechange : ', e.target.connectionState);
-            // };
-
-
-            // await pcRef.current.setRemoteDescription(new RTCSessionDescription(message));
-
-            // pcsRef.current = {...pcsRef.current, [packet.from]: pcRef.current};
-
             console.log('check : offer', message);
             createAnswer(message, packet.from);
           } else if (message.type === 'answer') {
@@ -333,11 +355,17 @@ export const App = () => {
             console.log('set the pcRef2 : ', pcRef.current);      
           } else if (message.type === 'candidate') {
             console.log('check : candi');
+            let candidate = new RTCIceCandidate({
+              sdpMLineIndex: message.label,
+              candidate: message.candidate
+            });
+            pcRef.current.addIceCandidate(candidate);
+
           } else if (message === 'bye') {
           }
 
         }catch(e){
-          console.log('eeeeeeeeeeee', e);
+          console.log('error', e);
         }
     });
 

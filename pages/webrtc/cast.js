@@ -373,7 +373,7 @@ export const App = () => {
             }
             console.log('set the pcRef2 : ', pcRef.current);      
           } else if (message.type === 'candidate') {
-            console.log('check : candi');
+            console.log('check : candi---1');
           } else if (message === 'bye') {
           }
 
