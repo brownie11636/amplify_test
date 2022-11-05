@@ -86,36 +86,28 @@ export const App = () => {
           setSelectList(nextList);
         }
     });
-    // const [chartData, setChartData] = useState([{
-    //   "id": "japan",
-    //   "color": "hsl(135, 70%, 50%)",
-    //   "data":[{x:0,y:0},{x:10,y:10},{x:20,y:20},{x:30,y:10},{x:40,y:30}]
-    // }])
   
     socketRef.current.on('msg-v0', async (packet) => {
         console.log('msg-v0: ', JSON.parse(packet));
         const rxData = JSON.parse(packet).data;
-        let buf = [];
+        let buf = {"ch0":[],"ch1":[],"ch2":[],"ch3":[],"ch4":[]}
+        let dataset=[];
+        for(const ch in buf){
+          dataset.push({"id":ch,"data":buf[ch]})
+        }
+
         for(const item of rxData){
           const obj=JSON.parse(item.data);
           const key=Object.keys(obj)[0];
           const data = obj[key].data;
           const t0 = obj[key].t0;
           console.log(data);
-          if(key==="ch1"){
-            for(const value of data){
-              buf.push({x:t0,y:value})
-            }
-          }
+          data.forEach((value, i) => {
+            buf[key].push({x:t0+i*40,y:value});    
+          });
         }
         console.log("buf:",buf);
-        let dataset=[
-          {
-            "id":"ch1",
-            "color":"hsl(135, 70%, 50%)",
-            data:buf
-          },
-        ];
+
         setChartData(dataset);
         // try{
         //   if (message === 'connection request') {
@@ -135,22 +127,9 @@ export const App = () => {
     });
 
 
-    let txPacket = {
-      _H:"DREQ",
-      TSID:"test_0000_0000_0000",
-    }
-    socketRef.current.emit("msg-v0", txPacket);
-
-
-    //setVideoTracks();
+    
 
     return () => {
-      if (socketRef.current) {
-        //   socketRef.current.disconnect();
-      }
-      if (pcRef.current) {
-        //   pcRef.current.close();
-      }
     };
   }, []);
 
@@ -162,9 +141,11 @@ export const App = () => {
   }
 
   const onProfileSelect = (profile) =>{
-    // socketRef.current.emit("msg-v1", value);
-
-    // createOffer(profile);
+    let txPacket = {
+      _H:"DREQ",
+      TSID:"test_0000_0000_0000",
+    }
+    socketRef.current.emit("msg-v0", txPacket);
     console.log("Selected profile:",profile.nickname)
   }
 
