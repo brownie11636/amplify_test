@@ -22,8 +22,8 @@ const pc_config = {
   ],
 };
 
-// const SOCKET_SERVER_URL = socketPoint;
-const SOCKET_SERVER_URL = "https://192.168.0.22:3333";
+const SOCKET_SERVER_URL = socketPoint;
+// const SOCKET_SERVER_URL = "https://192.168.0.22:3333";
 // const socketRef = io(SOCKET_SERVER_URL,{W
 //     transports: ["websocket"] // HTTP long-polling is disabled
 //     }
