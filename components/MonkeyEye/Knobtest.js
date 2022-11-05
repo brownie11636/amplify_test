@@ -15,6 +15,7 @@ export default function DonutKnob(props) {
     setRender(true); 
   },[])
 
+  
   const onValueChange = (newVal) => {
     setValue(newVal);
     props.onChange(newVal);

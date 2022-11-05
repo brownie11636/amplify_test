@@ -5,7 +5,8 @@ import ServiceListPanel from "../ServiceProfile/ServiceListPanel";
 import {socketPoint} from "../../toServer/API-AccessPoint";
 
 
-const SOCKET_SERVER_URL = socketPoint;
+// const SOCKET_SERVER_URL = socketPoint;
+const SOCKET_SERVER_URL = "https://192.168.0.22:3333";
 // const socketRef = io(SOCKET_SERVER_URL,{W
 //     transports: ["websocket"] // HTTP long-polling is disabled
 //     }
@@ -21,6 +22,11 @@ export const App = () => {
   const [profileList, setProfileList] = useState([]);
   const [selectList, setSelectList] = useState([]);
 
+  const [chartData, setChartData] = useState([{
+    "id": "japan",
+    "color": "hsl(135, 70%, 50%)",
+    "data":[{x:0,y:0},{x:10,y:10},{x:20,y:20},{x:30,y:10},{x:40,y:30}]
+  }])
 
   
   const sendMessage = (message, destination) => {
@@ -58,34 +64,12 @@ export const App = () => {
 
     socketRef.current.emit("q_service", querya);
 
-    serviceProfile.current =   {
-        socketId: socketRef.current.id,
-        room: "room:" + socketRef.current.id,
-        type: "Device_1",
-        description: "Streamer",
-        contents: "jooonik", //contents 수정필요!!!!!!!!!!!!!!!!!!
-      };
-
-    socketRef.current.on("all_users", (allUsers) => {
-      console.log("alluser", allUsers.length, allUsers);
-      // if (allUsers.length > 0) {
-      //   createOffer();
-      // }
-    });
-
     socketRef.current.on("user-connected", (data) => {
       console.log('"user-connected"', data);
     });
 
     socketRef.current.on("joined", function (room, socketTo) {
         console.log("joined!");
-    });
-
-    socketRef.current.on('join', function (room){
-      console.log('Another peer made a request to join room ' + room);
-      console.log('This peer is the initiator of room ' + room + '!');
-      //setIsChannelReady(true);
-      //isChannelReady = true;
     });
 
     socketRef.current.on('q_result', function(q_result) {
@@ -102,31 +86,61 @@ export const App = () => {
           setSelectList(nextList);
         }
     });
-
-    socketRef.current.on('msg-v1', async (packet) => {
-        console.log('------------------msg-v1 ', packet.message.type ,'-------------------');
-        let message = packet.message;
-        console.log('msg from', packet.from);
-        console.log('Client received message:', message);
-        socketFrom.current = packet.from;
-        // let socketId = "arbitary socketID";
-        try{
-          if (message === 'connection request') {
-            //RTCClientList.push({'socketId':packet.from});
-            console.log('check : connection request');      
-          } else if (message.type === 'candidate') {
-            console.log('check : candi');
-          } else if (message === 'bye') {
+    // const [chartData, setChartData] = useState([{
+    //   "id": "japan",
+    //   "color": "hsl(135, 70%, 50%)",
+    //   "data":[{x:0,y:0},{x:10,y:10},{x:20,y:20},{x:30,y:10},{x:40,y:30}]
+    // }])
+  
+    socketRef.current.on('msg-v0', async (packet) => {
+        console.log('msg-v0: ', JSON.parse(packet));
+        const rxData = JSON.parse(packet).data;
+        let buf = [];
+        for(const item of rxData){
+          const obj=JSON.parse(item.data);
+          const key=Object.keys(obj)[0];
+          const data = obj[key].data;
+          const t0 = obj[key].t0;
+          console.log(data);
+          if(key==="ch1"){
+            for(const value of data){
+              buf.push({x:t0,y:value})
+            }
           }
-
-        }catch(e){
-          console.log('error', e);
         }
+        console.log("buf:",buf);
+        let dataset=[
+          {
+            "id":"ch1",
+            "color":"hsl(135, 70%, 50%)",
+            data:buf
+          },
+        ];
+        setChartData(dataset);
+        // try{
+        //   if (message === 'connection request') {
+        //     //RTCClientList.push({'socketId':packet.from});
+        //     console.log('check : connection request');      
+        //   } else if (message.type === 'candidate') {
+        //     console.log('check : candi');
+        //   } else if (message === 'bye') {
+        //   }
+        // }catch(e){
+        //   console.log('error', e);
+        // }
     });
 
     socketRef.current.on('log', function(message) {
       console.log(message);
     });
+
+
+    let txPacket = {
+      _H:"DREQ",
+      TSID:"test_0000_0000_0000",
+    }
+    socketRef.current.emit("msg-v0", txPacket);
+
 
     //setVideoTracks();
 
@@ -153,6 +167,9 @@ export const App = () => {
     // createOffer(profile);
     console.log("Selected profile:",profile.nickname)
   }
+
+
+
   return (
     <>
       <div className="base-frame bg-f2f6f9">
@@ -170,7 +187,7 @@ export const App = () => {
         </div> */}
         </div>
         <div style={{height:500}}>
-            <LineChart/>
+            <LineChart data={chartData}/>
         </div>
     </>
   );
