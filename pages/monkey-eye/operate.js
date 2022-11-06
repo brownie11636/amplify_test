@@ -35,12 +35,18 @@ export const App = () => {
   const [selectList, setSelectList] = useState([]);
   let [targetProfile, setTargetProfile] = useState({});
 
+  const [txPacket,setTxPacket] = useState();
   
   const sendMessage = (message, destination) => {
     console.log("send message(emit msg-v1)", message, destination);
     let packet = { from: socketRef.current.id, to: destination, message: message };
     //console.log('Client sending message: ', packet);
     socketRef.current.emit("msg-v1", packet);
+  };
+  const sendMessageV2 = (message, destination) => {
+    console.log("send message(emit msg-v1)", message, destination);
+    let packet = { from: socketRef.current.id, to: destination, message: message };
+    socketRef.current.emit("msg-v2", packet);
   };
 
   const JoinRTCService = async (profile) => {
@@ -203,16 +209,31 @@ export const App = () => {
     };
   }, []);
 
-  const onNewCommand = (value) => {
-    socketRef.current.emit("msg-v1", value);
-
-    console.log("operate:",value)
+  const onNewCommand = (command) => {
+    const packet = JSON.stringify({type:"DUP",data:command})
+    setTxPacket(packet)
+    // socketRef.current.emit("msg-v2", packet);
+    sendMessageV2(packet, null)
+    console.log("operate:",packet)
   }
 
   const onProfileSelect = (profile) =>{
     setTargetProfile(profile);
     JoinRTCService(profile);
     console.log("Selected profile:",profile)
+  }
+
+  const onClickStartButton = ()=>{
+    const packet = JSON.stringify({type:"CONFIG",data:{"record":"START"}})
+    setTxPacket(packet)
+    sendMessageV2(packet, null)
+    console.log("operate:",packet)
+  }
+  const onClickSaveButton = ()=>{
+    const packet = JSON.stringify({type:"CONFIG",data:{"record":"WRITE"}})
+    setTxPacket(packet)
+    sendMessageV2(packet, null)
+    console.log("operate:",packet)
   }
   return (
     <>
@@ -256,6 +277,8 @@ export const App = () => {
       </div>
 
       <ControlPanel onChange={onNewCommand}/>
+      <button onClick={onClickStartButton}>Start Motion recording</button>
+      <button onClick={onClickSaveButton}>Save Motion recording</button>
       <Footer />
     </>
   );

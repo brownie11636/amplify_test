@@ -15,11 +15,11 @@ export default function Indicator(props) {
     setRender(true); 
   },[])
 
-  const onValueChange = (newVal) => {
-    setValue(newVal);
-    props.onChange(newVal);
-    console.log("changed")
-  }
+  // const onValueChange = (newVal) => {
+  //   setValue(newVal);
+  //   props.onChange(newVal);
+  //   console.log("changed")
+  // }
 
   return (
     <div className="single-knob-indicator">
@@ -37,7 +37,7 @@ export default function Indicator(props) {
           centerFocusedColor: "#13112e",     
           donutThickness: 3
         }}
-        onValueChange={onValueChange}
+        // onValueChange={onValueChange}
         ariaLabelledBy={'my-label'}
       >
               <label id={'my-label'}>{props.label}</label>

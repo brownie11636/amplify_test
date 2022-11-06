@@ -4,10 +4,15 @@ import Knobtest from './Knobtest';
 import Indicator from './Knob_Indicator';
 
 export function ControlPanel(props) {
-    
-    const onChange = (value)=>{
-        props.onChange(value);
-        console.log("panel:",value);
+    let obj={arm:{0:50,1:90,2:90,3:0}}
+    const [cmd,setCmd]= useState(obj);
+
+
+    const onCommandChange = (id, value)=>{
+        obj = cmd;
+        obj.arm[id]=value;
+        setCmd(obj);
+        props.onChange(cmd);
     }
     return (
     <section className="services-area bg-f2f6f9 ptb-110">
@@ -20,16 +25,16 @@ export function ControlPanel(props) {
                             <div className="controller">
                                 <label className="title">Control</label>
                                 <div className="knob-box">
-                                    <Knobtest onChange={onChange} value={50} label={"height"}/>
+                                    <Knobtest onChange={onCommandChange} id={0} value={cmd.arm[0]} label={"height"}/>
                                 </div>
                                 <div className="knob-box">
-                                    <Knobtest onChange={onChange} value={80} label={"length"}/>
+                                    <Knobtest onChange={onCommandChange} id={1} value={cmd.arm[1]} label={"length"}/>
                                 </div>
                                 <div className="knob-box">
-                                    <Knobtest onChange={onChange} value={90} label={"theta0"}/>
+                                    <Knobtest onChange={onCommandChange} id={2} value={cmd.arm[2]} label={"theta0"}/>
                                 </div>
                                 <div className="knob-box">
-                                    <Knobtest onChange={onChange} value={90} label={"theta1"}/>
+                                    <Knobtest onChange={onCommandChange} id={3} value={cmd.arm[3]} label={"theta1"}/>
                                 </div>
                             </div>                        
                         </div>                        
@@ -37,16 +42,16 @@ export function ControlPanel(props) {
                             <div className="indicator">
                                 <label className="title">indicator</label>
                                 <div className="knob-box">
-                                    <Indicator onChange={onChange} value={50}/>
+                                    <Indicator value={50}/>
                                 </div>
                                 <div className="knob-box">
-                                    <Indicator onChange={onChange} value={50}/>
+                                    <Indicator value={50}/>
                                 </div>
                                 <div className="knob-box">
-                                    <Indicator onChange={onChange} value={50}/>
+                                    <Indicator value={50}/>
                                 </div>
                                 <div className="knob-box">
-                                    <Indicator onChange={onChange} value={50}/>
+                                    <Indicator value={50}/>
                                 </div>
                             </div>
                         </div>
