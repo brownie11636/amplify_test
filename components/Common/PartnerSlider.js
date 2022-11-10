@@ -103,10 +103,10 @@ const PartnerSlider = () => {
                 </OwlCarousel> : ''}
             </div>
 
-            <div className="dot-shape1"><img src="/images/shape/dot1.png" alt="image" /></div>
+            {/* <div className="dot-shape1"><img src="/images/shape/dot1.png" alt="image" /></div>
             <div className="shape-img2"><img src="/images/shape/shape2.svg" alt="image" /></div>
             <div className="shape-img4"><img src="/images/shape/shape4.svg" alt="image" /></div>
-            <div className="shape-img5"><img src="/images/shape/shape5.svg" alt="image" /></div>
+            <div className="shape-img5"><img src="/images/shape/shape5.svg" alt="image" /></div> */}
         </div>
     )
 }

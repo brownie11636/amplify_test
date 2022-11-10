@@ -272,7 +272,7 @@ class BlogThreeGrid extends Component {
                 </div>
  
                 {/* Shape Images */}
-                <div className="shape-img2">
+                {/* <div className="shape-img2">
                     <img src="/images/shape/shape2.svg" alt="image" />
                 </div>
                 <div className="shape-img3">
@@ -304,7 +304,7 @@ class BlogThreeGrid extends Component {
                 </div>
                 <div className="dot-shape2">
                     <img src="/images/shape/dot6.png" alt="image" />
-                </div>
+                </div> */}
             </section>
         );
     }
