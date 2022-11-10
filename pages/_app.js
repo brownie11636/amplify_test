@@ -18,19 +18,20 @@ import {store} from "../store";
 
 
 export default class MyApp extends App {
-    // Preloader
-    state = {
-        loading: true
-    };
-    componentDidMount() {
-        this.timerHandle = setTimeout(() => this.setState({ loading: false }), 2000); 
-    }
-    componentWillUnmount() {
-        if (this.timerHandle) {
-            clearTimeout(this.timerHandle);
-            this.timerHandle = 0;
-        }
-    }
+    // // Preloader
+    // state = {
+    //     loading: true
+    // };
+    // componentDidMount() {
+    //     this.timerHandle = setTimeout(() => this.setState({ loading: false }), 2000); 
+    //     this.timerHandle = setTimeout(() => this.setState({ loading: false }), 0); 
+    // }
+    // componentWillUnmount() {
+    //     if (this.timerHandle) {
+    //         clearTimeout(this.timerHandle);
+    //         this.timerHandle = 0;
+    //     }
+    // }
 
     render () {
         const { Component, pageProps } = this.props
@@ -49,7 +50,7 @@ export default class MyApp extends App {
                     <Component {...pageProps} />
                         
                     {/* Preloader */}
-                    <Loader loading={this.state.loading} />
+                    {/* <Loader loading={this.state.loading} /> */}
 
                     {/* Go Top Button */}
                     <GoTop scrollStepInPx="50" delayInMs="10.50" />
