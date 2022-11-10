@@ -52,7 +52,7 @@ class MainBoardDescription extends Component {
                 </div>
 
                 {/* Shape Images */}
-                <div className="shape-img1">
+                {/* <div className="shape-img1">
                     <img src="/images/shape/shape1.png" alt="image" />
                 </div>
                 <div className="shape-img2">
@@ -75,7 +75,7 @@ class MainBoardDescription extends Component {
                 </div>
                 <div className="dot-shape2">
                     <img src="/images/shape/dot2.png" alt="image" />
-                </div>
+                </div> */}
             </section>
         );
     }

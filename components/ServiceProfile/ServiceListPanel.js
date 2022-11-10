@@ -26,7 +26,7 @@ export default function ServiceListPanel(props) {
             </div>
 
             {/* Shape Images */}
-            <div className="shape-img2">
+            {/* <div className="shape-img2">
                 <img src="/images/shape/shape2.svg" alt="image" />
             </div>
             <div className="shape-img3">
@@ -55,7 +55,7 @@ export default function ServiceListPanel(props) {
             </div>
             <div className="dot-shape2">
                 <img src="/images/shape/dot6.png" alt="image" />
-            </div>
+            </div> */}
         </div>
     );
 }
