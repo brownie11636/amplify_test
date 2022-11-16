@@ -122,7 +122,7 @@ class ServicesContent extends Component {
                                     </div>
                                 </div>
                                 <h3>
-                                    <Link href="/service-details">
+                                    <Link href="/teleoperation">
                                         <a>TeleSyncArm</a>
                                     </Link>
                                 </h3>
