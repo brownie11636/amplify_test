@@ -49,6 +49,8 @@ export default class MyApp extends App {
 
                     <Component {...pageProps} />
                         
+                    
+                        
                     {/* Preloader */}
                     {/* <Loader loading={this.state.loading} /> */}
 
