@@ -3913,12 +3913,16 @@ Page Title Area CSS
 .page-title-area {
   position: relative;
   z-index: 1;
-  padding-top: 210px;
-  padding-bottom: 140px;
+  /* padding-top: 210px; */
+  padding-top: 150px;
+  /* padding-bottom: 140px; */
+  padding-bottom: 50px;
   background-color: #000000;
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
+  /* height: 50px; */
+
 }
 
 .page-title-area::before {
