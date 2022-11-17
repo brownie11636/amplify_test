@@ -7,6 +7,7 @@ import { VRButton, ARButton, XR, Controllers, Hands } from '@react-three/xr'
 import styles from "./Scene.module.css"
 
 const Blob = dynamic(() => import('./Blob'), { ssr: false })
+const RobotArm = dynamic(() => import('./robotArm'), { ssr: false })
 
 export default function Scene() {
   // Everything defined in here will persist between route changes, only children are swapped
@@ -24,7 +25,8 @@ export default function Scene() {
           <Controllers />
           <Hands />
 
-          <Blob route='/' position-y={-0.75} />
+          {/* <Blob route='/' position-y={-0.75} /> */}
+          <RobotArm />
 
           <Preload all />
           <OrbitControls />
@@ -61,6 +63,3 @@ function Environment() {
   return null
 }
 
-function VRRobotArm(props) {
-  
-}

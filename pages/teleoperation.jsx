@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import ReactDOM from 'react-dom';
 import dynamic from 'next/dynamic'
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Preload } from '@react-three/drei'
 import Header from "../components/Layouts/Header";
 import PageBanner from "../components/Common/PageBanner";
 import Footer from "../components/Layouts/Footer";
