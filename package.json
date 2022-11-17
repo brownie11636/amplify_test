@@ -22,6 +22,7 @@
         "axios": "^0.20.0",
         "caddy": "^0.0.13",
         "install": "^0.13.0",
+        "leva": "^0.9.34",
         "mediasoup-client": "^3.6.58",
         "next": "^12.1.5",
         "next-auth": "^4.10.3",

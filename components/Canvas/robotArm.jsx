@@ -1,11 +1,13 @@
 import dynamic from 'next/dynamic'
 import * as THREE from 'three'
-import { Suspense, useRef, useEffect } from 'react'
+import { Suspense, useRef, useMemo, useEffect} from 'react'
 import { Canvas, useThree, useLoader } from '@react-three/fiber'
 import { OrbitControls, Preload, Html } from '@react-three/drei'
 import { VRButton, ARButton, XR, Controllers, Hands } from '@react-three/xr'
 import styles from "./Scene.module.css"
 import {STLLoader} from 'three/examples/jsm/loaders/STLLoader';
+import { Leva, useControls } from 'leva'
+
 
 // const Model = lazy(() => import('./Model'));
 // const Model = dynamic(() => import('./Model'), { ssr: false })
@@ -24,32 +26,42 @@ export default function RobotArm() {
     [0, - (armLength[4]+0.04), 0],
   ];
 
-  const armInfo = [{
-    STLUrl: '/stls/base_binary.stl', 
-    pos:[0,0,0],
-    rot:[0, -90 * THREE.MathUtils.DEG2RAD, 0],
-    attach: 'base',
-  }];
+  const options = useMemo(() => {
+    return {
+      rotX:{ value: 0, min: -3.14, max: 3.14, step: 0.1 },
+      rotY:{ value: 0, min: -3.14, max: 3.14, step: 0.1 },
+      rotZ:{ value: 0, min: -3.14, max: 3.14, step: 0.1 },
+    }
+  })
+
+  const armRot = [];
+  for (let i=0; i<7; i++){
+    if (i === 0) armRot[i] = useControls('base', options);
+    else armRot[i] = useControls(`Arm ${i-1}`,options);
+  }
+
+
+  const armInfos = [];
   for (let i=0; i<7; i++){
     if (i === 0){
-      // armInfo[i] = {
-      //   STLUrl: '/stls/base_binary.stl', 
-      //   pos:[0,0,0],
-      //   rot:[0, -90 * THREE.MathUtils.DEG2RAD, 0],
-      // }
+      armInfos[i] = {
+        STLUrl: '/stls/base_binary.stl', 
+        pos:[0,0,0],
+        rot:[0, -90 * THREE.MathUtils.DEG2RAD, 0],
+      }
     } else {
-      armInfo.push({
+      armInfos.push({
         STLUrl: `/stls/arm${i-1}_binary.stl`,
         rot: [0, 0, 0],
         pos: [0, 0, 0],
-        attach: `${armInfo[i-1].attach}-${i-1}`,
+        // attach: `${armInfo[i-1].attach}-${i-1}`,
       })
       // console.log(armInfo[i].attach);
       if ( i > 1 ) {
-        armInfo[i].pos = [0, armLength[i-2], 0];
+        armInfos[i].pos = [0, armLength[i-2], 0];
       }
     }
-    console.log(armInfo[i]);
+    console.log(armInfos[i]);
   }
 
   const STLUrl = ['/stls/base_binary.stl'];
@@ -69,13 +81,13 @@ export default function RobotArm() {
             info={info}
             />
       ))} */}
-      <Model info={armInfo[0]}>
-        <Model info={armInfo[1]}>
-          <Model info={armInfo[2]}>
-            <Model info={armInfo[3]}>
-              <Model info={armInfo[4]}>
-                <Model info={armInfo[5]}>
-                  <Model info={armInfo[6]} />
+      <Model info={armInfos[0]} rot={[armRot[0].rotX,armRot[0].rotY,armRot[0].rotZ]}>
+        <Model info={armInfos[1]} rot={[armRot[1].rotX,armRot[1].rotY,armRot[1].rotZ]}>
+          <Model info={armInfos[2]} rot={[armRot[2].rotX,armRot[2].rotY,armRot[2].rotZ]}>
+            <Model info={armInfos[3]} rot={[armRot[3].rotX,armRot[3].rotY,armRot[3].rotZ]}>
+              <Model info={armInfos[4]} rot={[armRot[4].rotX,armRot[4].rotY,armRot[4].rotZ]}>
+                <Model info={armInfos[5]} rot={[armRot[5].rotX,armRot[5].rotY,armRot[5].rotZ]}>
+                  <Model info={armInfos[6]} rot={[armRot[6].rotX,armRot[6].rotY,armRot[6].rotZ]} />
                 </Model>
               </Model>
             </Model>
@@ -87,7 +99,7 @@ export default function RobotArm() {
 }
 
 // const Model = (props) => {
-const Model = ({info, children, ...props}) => {
+const Model = ({info, rot, children, ...props}) => {
   const geom = useLoader(STLLoader, info.STLUrl);
   const ref = useRef();
   // const {camera} = useThree();
@@ -97,16 +109,16 @@ const Model = ({info, children, ...props}) => {
   // });
 
   return (
-      <mesh ref={ref} position={info.pos} rotation={info.rot} >
-        <primitive object={geom} attach="geometry"/>
-        <meshPhongMaterial 
-          color='0xb0bef0'
-          specular='0x111111' 
-          shininess='200' 
-          transparent 
-          opacity='0.9' 
-        />
-        {children}
-      </mesh>
+    <mesh ref={ref} position={info.pos} rotation={rot} >
+      <primitive object={geom} attach="geometry"/>
+      <meshPhongMaterial 
+        color='0xb0bef0'
+        specular='0x111111' 
+        shininess='200' 
+        transparent 
+        opacity='0.9' 
+      />
+      {children}
+    </mesh>
   );
 };
