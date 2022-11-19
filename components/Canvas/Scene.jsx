@@ -1,16 +1,40 @@
 import dynamic from 'next/dynamic'
 import * as THREE from 'three'
-import { Suspense } from 'react'
-import { Canvas, useThree, useLoader } from '@react-three/fiber'
+import { Suspense, useMemo, useRef } from 'react'
+import { Canvas, useThree, useFrame, useLoader } from '@react-three/fiber'
 import { OrbitControls, Preload, Html } from '@react-three/drei'
 import { VRButton, ARButton, XR, Controllers, Hands } from '@react-three/xr'
 import styles from "./Scene.module.css"
+import { Leva, useControls } from 'leva'
+
 
 const Blob = dynamic(() => import('./Blob'), { ssr: false })
 const RobotArm = dynamic(() => import('./RobotArm'), { ssr: false })
 
 export default function Scene() {
   // Everything defined in here will persist between route changes, only children are swapped
+
+  const options = useMemo(() => {
+    return {
+      rotX:{ value: 0, min: -3.14, max: 3.14, step: 0.1 },
+      rotY:{ value: 0, min: -3.14, max: 3.14, step: 0.1 },
+      rotZ:{ value: 0, min: -3.14, max: 3.14, step: 0.1 },
+    }
+  })
+
+  const armRot = [];
+  for (let i=0; i<7; i++){
+    if (i === 0) armRot[i] = useControls('base', options);
+    else armRot[i] = useControls(`Arm ${i-1}`,options);
+  }
+
+  const myRobot = useRef();
+
+  // useFrame((_, delta) => {      //
+  //   myRobot.current.armRot[2].rotX += 0.1 * delta;
+  // })
+
+
   return (
     <div className={styles.canvasContainer}>
       <VRButton />
@@ -26,12 +50,13 @@ export default function Scene() {
           <Hands />
 
           {/* <Blob route='/' position-y={-0.75} /> */}
-          <RobotArm />
+          <RobotArm ref={myRobot} armRot={armRot}/>
 
           <Preload all />
           <OrbitControls />
         </XR>
       </Canvas>
+      <Leva />
     </div>
   )
 }

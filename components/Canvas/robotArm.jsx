@@ -14,7 +14,7 @@ import { Leva, useControls } from 'leva'
 
 //TODO: Model을 재귀함수로 불러와서 depth별로 추가해주는 방식으로 변경하면 좋을듯
 
-export default function RobotArm() {
+export default function RobotArm({armRot,...props}) {
   // Everything defined in here will persist between route changes, only children are swapped
   const armLength = [0.12525, 0.16, 0.0368, 0.1117, 0.06478, 0.119] //base, and arm 0~5 (meter)
   
@@ -26,20 +26,9 @@ export default function RobotArm() {
     [0, - (armLength[4]+0.04), 0],
   ];
 
-  const options = useMemo(() => {
-    return {
-      rotX:{ value: 0, min: -3.14, max: 3.14, step: 0.1 },
-      rotY:{ value: 0, min: -3.14, max: 3.14, step: 0.1 },
-      rotZ:{ value: 0, min: -3.14, max: 3.14, step: 0.1 },
-    }
+  useFrame((_, delta) => {      //
+    myRobot.current.armRot[2].rotX += 0.1 * delta;
   })
-
-  const armRot = [];
-  for (let i=0; i<7; i++){
-    if (i === 0) armRot[i] = useControls('base', options);
-    else armRot[i] = useControls(`Arm ${i-1}`,options);
-  }
-
 
   const armInfos = [];
   for (let i=0; i<7; i++){
@@ -47,12 +36,10 @@ export default function RobotArm() {
       armInfos[i] = {
         STLUrl: '/stls/base_binary.stl', 
         pos:[0,0,0],
-        rot:[0, -90 * THREE.MathUtils.DEG2RAD, 0],
       }
     } else {
       armInfos.push({
         STLUrl: `/stls/arm${i-1}_binary.stl`,
-        rot: [0, 0, 0],
         pos: [0, 0, 0],
         // attach: `${armInfo[i-1].attach}-${i-1}`,
       })
