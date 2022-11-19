@@ -3,11 +3,11 @@ import * as THREE from 'three'
 import { Suspense, useRef, useState, useMemo, useEffect} from 'react'
 import { Canvas, useThree, useLoader, useFrame } from '@react-three/fiber'
 import { OrbitControls, Preload, Html } from '@react-three/drei'
-import { VRButton, ARButton, XR, Controllers, Hands, useController } from '@react-three/xr'
+import { VRButton, ARButton, XR, Controllers, Hands, useController, useXR } from '@react-three/xr'
 import styles from "./Scene.module.css"
 import {STLLoader} from 'three/examples/jsm/loaders/STLLoader';
 import { Leva, useControls } from 'leva'
-
+import * as myGamepadInput from '../../libs/XR/myGamepadInput'
 
 // const Model = lazy(() => import('./Model'));
 // const Model = dynamic(() => import('./Model'), { ssr: false })
@@ -16,6 +16,24 @@ import { Leva, useControls } from 'leva'
 
 export default function RobotArm({armRot, ...props}) {
   // Everything defined in here will persist between route changes, only children are swapped
+
+  const {
+    // An array of connected `XRController`
+    controllers,
+    // Whether the XR device is presenting in an XR session
+    isPresenting,
+    // Whether hand tracking inputs are active
+    isHandTracking,
+    // A THREE.Group representing the XR viewer or player
+    player,
+    // The active `XRSession`
+    session,
+    // `XRSession` foveation. This can be configured as `foveation` on <XR>. Default is `0`
+    foveation,
+    // `XRSession` reference-space type. This can be configured as `referenceSpace` on <XR>. Default is `local-floor`
+    referenceSpace
+  } = useXR();
+
   const armLength = [0.12525, 0.16, 0.0368, 0.1117, 0.06478, 0.119] //base, and arm 0~5 (meter)
   
   const geometry = [
@@ -26,19 +44,27 @@ export default function RobotArm({armRot, ...props}) {
     [0, - (armLength[4]+0.04), 0],
   ];
 
-  const myRobot1 = useRef();
-
+  const myRobot1 = useRef();  
+  const initialGamepadInput = myGamepadInput.create();
   let [angleTest, setAngleTest] = useState(0);
+  let [angleTest2, setAngleTest2] = useState(0);
+  let [gamepadInput, setGamepadInput] = useState(initialGamepadInput);
 
   const rightController = useController('right');
+
 
   useFrame((_, delta) => {      //
 
     if (!rightController) {
-      setAngleTest(angleTest + 0.3 * delta);
+      setAngleTest(angleTest + 0.5 * delta);
       return
     }
+
     setAngleTest(rightController.grip.position.x);
+    setGamepadInput(myGamepadInput.get(session, gamepadInput));
+    console.log(gamepadInput.right.new.buttons[0]);
+    setAngleTest2(gamepadInput.right.new.buttons[0]);
+
 
     // console.log(rightController.grip);
   })
@@ -82,9 +108,10 @@ export default function RobotArm({armRot, ...props}) {
             />
       ))} */}
       <Model info={armInfos[0]} rot={[armRot[0].rotX,armRot[0].rotY,armRot[0].rotZ]}>
-        <Model ref={myRobot1} info={armInfos[1]} rot={[0, angleTest, 0]}>
+        <Model info={armInfos[1]} rot={[0, angleTest, 0]}>
         {/* <Model ref={myRobot1} info={armInfos[1]} rot={[armRot[1].rotX,armRot[1].rotY,armRot[1].rotZ]}> */}
-          <Model info={armInfos[2]} rot={[armRot[2].rotX,armRot[2].rotY,armRot[2].rotZ]}>
+          <Model ref={myRobot1} info={armInfos[2]} rot={[angleTest2, 0, 0]}>
+          {/* <Model info={armInfos[2]} rot={[armRot[2].rotX, armRot[2].rotY, armRot[2].rotZ]}> */}
             <Model info={armInfos[3]} rot={[armRot[3].rotX,armRot[3].rotY,armRot[3].rotZ]}>
               <Model info={armInfos[4]} rot={[armRot[4].rotX,armRot[4].rotY,armRot[4].rotZ]}>
                 <Model info={armInfos[5]} rot={[armRot[5].rotX,armRot[5].rotY,armRot[5].rotZ]}>
