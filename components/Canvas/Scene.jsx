@@ -1,9 +1,9 @@
 import dynamic from 'next/dynamic'
 import * as THREE from 'three'
-import { Suspense, useMemo, useRef } from 'react'
+import { Suspense, useState, useMemo, useRef } from 'react'
 import { Canvas, useThree, useFrame, useLoader } from '@react-three/fiber'
 import { OrbitControls, Preload, Html } from '@react-three/drei'
-import { VRButton, ARButton, XR, Controllers, Hands } from '@react-three/xr'
+import { VRButton, ARButton, XR, Controllers, Hands, useController } from '@react-three/xr'
 import styles from "./Scene.module.css"
 import { Leva, useControls } from 'leva'
 
@@ -28,11 +28,6 @@ export default function Scene() {
     else armRot[i] = useControls(`Arm ${i-1}`,options);
   }
 
-  const myRobot = useRef();
-
-  // useFrame((_, delta) => {      //
-  //   myRobot.current.armRot[2].rotX += 0.1 * delta;
-  // })
 
 
   return (
@@ -50,7 +45,7 @@ export default function Scene() {
           <Hands />
 
           {/* <Blob route='/' position-y={-0.75} /> */}
-          <RobotArm ref={myRobot} armRot={armRot}/>
+          <RobotArm attach='robot' armRot={armRot} />
 
           <Preload all />
           <OrbitControls />
