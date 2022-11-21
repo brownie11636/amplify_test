@@ -244,6 +244,7 @@ export const App = () => {
     if (socketRef.current.connected) {
       console.log("connected");
     } else {
+      console.log(SOCKET_SERVER_URL);
       console.log("not conn");
     }
 
