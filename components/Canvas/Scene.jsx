@@ -65,7 +65,7 @@ export default function Scene() {
             <Hands />
 
             {/* <Blob route='/' position-y={-0.75} /> */}
-            <RobotArm attach='robot' armRot={armRot} />
+            <RobotArm armRot={armRot} />
 
             <Preload all />
             <OrbitControls />
