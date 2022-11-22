@@ -64,10 +64,10 @@ export default function Scene() {
             <Controllers />
             <Hands />
 
-            {/* <Blob route='/' position-y={-0.75} /> */}
-            <Suspense fallback={null}>
+            <Blob route='/' position-y={-0.75} />
+            {/* <Suspense fallback={null}>
               <RobotArm armRot={armRot} />             
-            </Suspense>
+            </Suspense> */}
 
             <Preload all />
             <OrbitControls />
