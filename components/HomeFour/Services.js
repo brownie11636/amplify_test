@@ -74,7 +74,7 @@ class ServicesContent extends Component {
                                 </div>
 
                                 <h3>
-                                    <Link href="/webrtc">
+                                    <Link href="/mediasoup">
                                         <a>MediaSoup</a>
                                     </Link>
                                 </h3>
@@ -85,7 +85,7 @@ class ServicesContent extends Component {
                             <div className="single-services-box">
                                 <div className='panel'>
                                     <div className="icon">
-                                        <Link href="/webrtc">
+                                        <Link href="/mediasoup">
                                             <i className="flaticon-automatic"></i>
                                         </Link>
                                     </div>

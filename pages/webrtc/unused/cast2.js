@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import React from "react";
-import { socket, SocketContext } from "../../toServer/socket";
-import Header from "../../components/Layouts/Header";
-import PageBanner from "../../components/Common/PageBanner";
-import Footer from "../../components/Layouts/Footer";
+import { socket, SocketContext } from "../../../toServer/socket";
+import Header from "../../../components/Layouts/Header";
+import PageBanner from "../../../components/Common/PageBanner";
+import Footer from "../../../components/Layouts/Footer";
 
 import adapter from 'webrtc-adapter';
 
