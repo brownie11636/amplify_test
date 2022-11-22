@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic'
 import * as THREE from 'three'
-import { Suspense, useState, useMemo, useRef } from 'react'
+import { Suspense, useEffect, useState, useMemo, useRef } from 'react'
 import { Canvas, useThree, useFrame, useLoader } from '@react-three/fiber'
 import { OrbitControls, Preload, Html } from '@react-three/drei'
 import { VRButton, ARButton, XR, Controllers, Hands, useController } from '@react-three/xr'
@@ -28,31 +28,51 @@ export default function Scene() {
     else armRot[i] = useControls(`Arm ${i-1}`,options);
   }
 
+  const [isAR, setIsAR] = useState(' ');
+  const [isVR, setIsVR] = useState(' ');
+  const [isWeb, setIsWeb] = useState(' ');
+
+  useEffect( () => {
+    checkXR();
+    console.log(isAR);
+    console.log(isVR);
+    console.log(isWeb);
+  },[])
+
+  async function checkXR() {
+    // if(navigator.xr == undefined) setIsWeb('just web');
+    // let isAR = await navigator.xr.isSessionSupported( 'immersive-ar');
+    // if(isAR) setIsAR('webAR');
+    // let isVR = await navigator.xr.isSessionSupported( 'immersive-vr');
+    // if(isVR) setIsVR('webVR');
+    console.log(navigator.xr);
+    console.log(navigator);
+  }
 
 
   return (
-    <div className={styles.canvasContainer}>
-      <VRButton />
-      <Canvas>
-        <directionalLight intensity={0.75} />
-        <ambientLight intensity={0.75} />
-        <Suspense fallback={null}>
-          <Environment />
-        </Suspense>
+      <div className={styles.canvasContainer}>
+        <VRButton />
+        <Canvas>
+          <XR>
+            <directionalLight intensity={0.75} />
+            <ambientLight intensity={0.75} />
+            <Suspense fallback={null}>
+              <Environment />
+            </Suspense>
 
-        <XR>
-          <Controllers />
-          <Hands />
+            <Controllers />
+            <Hands />
 
-          {/* <Blob route='/' position-y={-0.75} /> */}
-          <RobotArm attach='robot' armRot={armRot} />
+            {/* <Blob route='/' position-y={-0.75} /> */}
+            <RobotArm attach='robot' armRot={armRot} />
 
-          <Preload all />
-          <OrbitControls />
-        </XR>
-      </Canvas>
-      <Leva />
-    </div>
+            <Preload all />
+            <OrbitControls />
+          </XR>
+        </Canvas>
+        <Leva />
+      </div>
   )
 }
 
