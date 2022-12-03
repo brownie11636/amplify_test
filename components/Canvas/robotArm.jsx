@@ -8,16 +8,14 @@ import styles from "./Scene.module.css"
 import {STLLoader} from 'three/examples/jsm/loaders/STLLoader';
 import { Leva, useControls } from 'leva'
 import * as myGamepadInput from '../../libs/XR/myGamepadInput'
-import { Kinematics } from '../../libs/kinematics'
+import { Kinematics } from '../../libs/kinematics_YS'
 
 // const Model = lazy(() => import('./Model'));
 // const Model = dynamic(() => import('./Model'), { ssr: false })
 
 //TODO: Model을 재귀함수로 불러와서 depth별로 추가해주는 방식으로 변경하면 좋을듯
     // Model을 forwardRef로? 
-    //calculateAngles 검토 및 적용
-    //VR button이 오큘러스 쓰고 하면 VR unsupported가 뜸
-    //code sandbox 예제는 안그러니까 탐색해보자
+    // sendmessage 적용 ()
 
 const RAD2DEG = THREE.MathUtils.RAD2DEG;
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
@@ -46,7 +44,7 @@ export default function RobotArm({armRot, ...props}) {
 
   //robotArm geometry
   const XRRatio = 0.4;   // real scale / virtual scale 
-  const robotPos = [0.1, 0.1, 0.05];
+  const robotPos = [0.1, 0.3, 0.05];
   // let VRRobotPos = robotPos.map(el => el/XRRatio);
   const VRRobotPos = new THREE.Vector3(robotPos[0], robotPos[1], robotPos[2]);
   VRRobotPos.multiplyScalar( 1/XRRatio );
@@ -62,14 +60,21 @@ export default function RobotArm({armRot, ...props}) {
   const RobotKin = new Kinematics(geometry)
 
   const rightController = useController('right');
-  const initialAngles = [0,0,-90*DEG2RAD,0,-90*DEG2RAD,0];
+  const initialAngles = [0,0,-90*DEG2RAD,0,0,0];
+  // const initialAngles = [0,0,-90*DEG2RAD,0,-90*DEG2RAD,0];
 
-  const myRobot1 = useRef(null);  
+  const robotArm = useRef(null);  
+  // robotBase.current.scale.setScalar( 1/XRRatio );
+
   const initialGamepadInput = myGamepadInput.create();
   const [angleTest, setAngleTest] = useState(0);
   const [angleTest2, setAngleTest2] = useState(0);
   const [gamepadInput, setGamepadInput] = useState(initialGamepadInput);
   const [angles,setAngles] = useState(initialAngles);
+  const [recordOn, setRecordOn] = useState(false);
+  const [endEffectControl, setEndEffectControl] = useState(0);
+  const [prevControllerPos, setPrevControllerPos] = useState(null);
+  const [velocity, setVelocity] = useState(null);
 
 
   useFrame((_, delta) => {      //
@@ -78,23 +83,65 @@ export default function RobotArm({armRot, ...props}) {
       // setAngleTest(angleTest + 0.5 * delta);
       return
     }
-    
-
     // setAngleTest(rightController.grip.position.x);
     setGamepadInput(myGamepadInput.get(session, gamepadInput));
+
+
     // console.log(gamepadInput.right.new.buttons[0]);
-    setAngles(
-      calculateRobotAngles(rightController, XRRatio, VRRobotPos, RobotKin)
-      .map((angle,i)=> angle+initialAngles[i])
-    );
-    // setAngleTest2(gamepadInput.right.new.buttons[0]);
-    // myRobot1.current.rotation = [angleTest2, 0, 0];
-    // setAngles([
+    if (gamepadInput.right.new.buttons[1] > 0.7){     //squeeze button: 0 ~ 1      trigger in webXR emulator
 
-    // ])
+      //set Transparency
+      if(gamepadInput.right.prev.buttons[1] < 0.7){
+        robotArm.current.traverse((obj)=>{
+          if (obj.isMesh) obj.material.opacity = 0.6;
+        });
+      }
+
+      //control of endEffect
+      if (gamepadInput.right.new.buttons[0] > 0.5){
+        if (endEffectControl < 0.53 ) setEndEffectControl(endEffectControl + 0.01);
+      } else if (endEffectControl >= 0.02 ) setEndEffectControl(endEffectControl - 0.01);
+
+      //operating virtual arm
+      setAngles(
+        calculateRobotAngles(rightController.controller, XRRatio, VRRobotPos, RobotKin)
+        .map((angle,i)=> angle + initialAngles[i])
+      );
+
+      //get velocity
+      let P = new THREE.Vector3
+      if(prevControllerPos){
+        let dist = rightController.controller.getWorldPosition(P).sub(prevControllerPos).length();
+        // setVelocity(dist/delta);
+        setVelocity(dist/delta);
+        // console.log(velocity);
+      }
+      setPrevControllerPos(rightController.controller.getWorldPosition(P));
+      // console.log(prevControllerPos);
+    } else if(gamepadInput.right.prev.buttons[1] > 0.7){
+      //get back opacity
+      robotArm.current.traverse((obj)=>{
+        if (obj.isMesh) obj.material.opacity = 0.85;
+      });      
+    }
+
+    //record data
+    //send message part is incompleted
+    if ((gamepadInput.right.new.buttons[5] !== gamepadInput.right.prev.buttons[5])  //button B: 0 or 1
+      && (gamepadInput.right.new.buttons[5] > 0.8)){
+        console.log("button ON!")
+        setRecordOn(!recordOn);
+        let [recordCMD, color] = recordOn? ["START",'#ddaaaa']:["WRITE","#b0bef0"];
+
+        // if (target_robot_profile !== undefined && target_robot_profile !== null) {
+        //   sendMessage2(JSON.stringify({type:"CONFIG",data:{record: recordCMD}}));    
+        // }
+        robotArm.current.traverse((obj)=>{
+          if (obj.isMesh) obj.material.color.set(color);
+        });
+
+      }
     
-
-
     // console.log(rightController.grip);
   })
 
@@ -103,7 +150,8 @@ export default function RobotArm({armRot, ...props}) {
     if (i === 0){
       armInfos[i] = {
         STLUrl: '/stls/base_binary.stl', 
-        pos:[0,0,0],
+        pos:[0, 0, 0]
+        // pos:[VRRobotPos.x, VRRobotPos.y, VRRobotPos.z],
       }
     } else {
       armInfos.push({
@@ -125,7 +173,7 @@ export default function RobotArm({armRot, ...props}) {
   }
 
   return (
-    <group>
+    <group position={VRRobotPos} scale ={ 1/XRRatio } ref={robotArm}>
       {/* <Model url={STLUrl[1]}  />  */}
       {/* {STLUrl.map((url, index) => (
         <Model key={index} url={url}  />
@@ -143,13 +191,13 @@ export default function RobotArm({armRot, ...props}) {
               <Model info={armInfos[4]} rotation={[armRot[4].rotX,armRot[4].rotY,armRot[4].rotZ]}>
                 <Model info={armInfos[5]} rotation={[armRot[5].rotX,armRot[5].rotY,armRot[5].rotZ]}>
                   <Model info={armInfos[6]} rotation={[armRot[6].rotX,armRot[6].rotY,armRot[6].rotZ]}/> */}
-      <Model info={armInfos[0]} rotation={[0, -90*THREE.MathUtils.DEG2RAD,0]}>
-        <Model info={armInfos[1]} rotation={[0,angles[0],0]}>
-          <Model info={armInfos[2]} rotation={[angles[1],0,0]}>
-            <Model info={armInfos[3]} rotation={[angles[2],0,0]}>
-              <Model info={armInfos[4]} rotation={[0,angles[3],0]}>
-                <Model info={armInfos[5]} rotation={[angles[4],0,0]}>
-                  <Model info={armInfos[6]} rotation={[0,angles[5],0]}/>
+      <Model info={armInfos[0]} rotation={[0, -90*THREE.MathUtils.DEG2RAD,0]} >
+        <Model info={armInfos[1]} rotation={[0, angles[0], 0]}>
+          <Model info={armInfos[2]} rotation={[angles[1], 0, 0]}>
+            <Model info={armInfos[3]} rotation={[angles[2], 0, 0]}>
+              <Model info={armInfos[4]} rotation={[0, angles[3], 0]}>
+                <Model info={armInfos[5]} rotation={[angles[4], 0, 0]}>
+                  <Model info={armInfos[6]} rotation={[0, angles[5], 0]}/>
                 </Model>
               </Model>
             </Model>
@@ -174,11 +222,11 @@ const Model = ({info, children, rotation, ...props}) => {
     <mesh ref={ref} position={info.pos} rotation={rotation}>
       <primitive object={geom} attach="geometry"/>
       <meshPhongMaterial 
-        color='0xb0bef0'
-        specular='0x111111' 
+        color='#b0bef0'   //0xb0bef0로 쓰면 안됨
+        specular='#111111' 
         shininess='200' 
         transparent 
-        opacity='0.9' 
+        opacity='0.85' 
       />
       {children}
     </mesh>
@@ -186,47 +234,33 @@ const Model = ({info, children, rotation, ...props}) => {
 };
 
 
-function calculateRobotAngles(target,XRRatio,VRRobotPos,RobotKin){
+function calculateRobotAngles(target, XRRatio, VRRobotPos, RobotKin){
   // let Q = target.quaternion;
-  let Tp = new THREE.Vector3();
-  target.getWorldPosition(Tp)
-  Tp.sub(VRRobotPos); // calibration
-  Tp.multiplyScalar(XRRatio);   //calibration
-  // testArm.position.set(-Tp.z,Tp.y,Tp.x);    //rotate on Y axis
+  let P = new THREE.Vector3();
+  let E= target.rotation;
+  target.getWorldPosition(P)
+  P.sub(VRRobotPos); // calibration
+  P.multiplyScalar(XRRatio);   //calibration
 
-  // let Tq= new THREE.Quaternion();   
-  // target.getWorldQuaternion(Tq);    
-  // testArm.rotation.setFromQuaternion(Tq);   
-  // testArm.rotateOnWorldAxis(new THREE.Vector3(0,1,0),-Math.PI/2);   //rotate on Y axis
-  
-  // let Q = new THREE.Quaternion();
-  // let E = new THREE.Euler();
-  // let E2 = new THREE.Euler(0, -Math.PI/2, 0, 'XYZ');    
-  // testArm.getWorldQuaternion(Q);
-  // let P = new THREE.Vector3();
-  // testArm.getWorldPosition(P);
-  // let Qi = new THREE.Quaternion();
-  // Qi.setFromEuler(E2);
-  // Qi.invert();
-  // Q.multiply(Qi);
-  // E.setFromQuaternion(Q);
-  let Te= target.rotation;
+  // console.log( P );
+  // console.log( E );
 
   let calbirated6Dof = [
-    Tp.x,
-    Tp.y,
-    Tp.z,
-    Te.x,
-    Te.y,
-    Te.z
+    P.x,
+    P.y,
+    P.z,
+    E.x,
+    E.y,
+    E.z
   ];
   
   let angles = RobotKin.inverse(...calbirated6Dof);
 
   // targetProfile.position.set(10*Tp.x,10*Tp.y,10*Tp.z);
   // targetProfile.setRotationFromQu aternion(Tq)
-  console.log(angles);
-  // robotArmJ4.position.set( RobotKin.J_now[4][2] * 10, RobotKin.J_now[4][1] *10, - RobotKin.J_now[4][0] *10);
+
+  // console.log(angles);
+  // robotArmJ4.position.set( RobotKin.J_now[4][0], RobotKin.J_now[4][1], RobotKin.J_now[4][2]);
 
   return angles;
 

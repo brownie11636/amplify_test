@@ -9,7 +9,7 @@ import { Leva, useControls } from 'leva'
 
 
 const Blob = dynamic(() => import('./Blob'), { ssr: false })
-// const RobotArm = dynamic(() => import('./RobotArm'), { ssr: false })
+const RobotArm = dynamic(() => import('./RobotArm'), { ssr: false })
 
 export default function Scene() {
   // Everything defined in here will persist between route changes, only children are swapped
@@ -33,10 +33,10 @@ export default function Scene() {
   const [isWeb, setIsWeb] = useState(' ');
 
   useEffect( () => {
-    checkXR();
-    console.log(isAR);
-    console.log(isVR);
-    console.log(isWeb);
+    // checkXR();
+    // console.log(isAR);
+    // console.log(isVR);
+    // console.log(isWeb);
   },[])
 
   async function checkXR() {
@@ -45,8 +45,8 @@ export default function Scene() {
     // if(isAR) setIsAR('webAR');
     // let isVR = await navigator.xr.isSessionSupported( 'immersive-vr');
     // if(isVR) setIsVR('webVR');
-    console.log(navigator.xr);
-    console.log(navigator);
+    // console.log(navigator.xr);
+    // console.log(navigator);
   }
 
 
@@ -64,10 +64,10 @@ export default function Scene() {
             <Controllers />
             <Hands />
 
-            <Blob route='/' position-y={-0.75} />
-            {/* <Suspense fallback={null}>
+            {/* <Blob route='/' position-y={-0.75} /> */}
+            {/* <Suspense fallback={null}> */}
               <RobotArm armRot={armRot} />             
-            </Suspense> */}
+            {/* </Suspense> */}
 
             <Preload all />
             <OrbitControls />
