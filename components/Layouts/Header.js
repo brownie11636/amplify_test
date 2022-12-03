@@ -82,7 +82,8 @@ export default function Header() {
                             <div className="navbar navbar-expand-md navbar-light">
                                 <Link href="/">
                                     <a className="navbar-brand">
-                                        <img src="/images/main_bar.png" className="main-bar" alt="logo" />
+                                        {/* hamburger menu (three line)*/}
+                                        {/* <img src="/images/main_bar.png" className="main-bar" alt="logo" /> */}
                                         <img src="/images/main_logo3.png" className="optional-logo" alt="logo" />
                                     </a>
                                 </Link>
