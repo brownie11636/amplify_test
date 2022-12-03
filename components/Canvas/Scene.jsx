@@ -9,7 +9,7 @@ import { Leva, useControls } from 'leva'
 
 
 const Blob = dynamic(() => import('./Blob'), { ssr: false })
-const RobotArm = dynamic(() => import('./RobotArm'), { ssr: false })
+const RobotArm = dynamic(() => import('./Robot_arm'), { ssr: false })
 
 export default function Scene() {
   // Everything defined in here will persist between route changes, only children are swapped
