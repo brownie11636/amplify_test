@@ -18,6 +18,20 @@ class MainBoardDescription extends Component {
                             <div className="about-content"> 
                                 <div className="row">
                                     <div className="about-text">
+                                        <h2>
+                                            누구나, 언제, 어디서나, <br/>
+                                            안전하고 손쉬운 로봇 활용
+                                            {/* 이부분 h3는 너무 작고 h2는 너무 큰거같음 */}
+                                        </h2>
+                                        {/* 문구 좀 고치고 싶음 ㅎ */}
+                                        <h4>
+                                            전문가의 영역이었던 로봇 제어, <br/>
+                                            첨단 XR 기술을 통해 손쉽게 만나보세요.
+                                        </h4>
+                                        <p/>
+                                        <p/>
+                                    </div>
+                                    <div className="about-text">
                                         <h3>로봇 텔레오퍼레이션</h3>
                                         Robot Teleoperation
                                         <p>

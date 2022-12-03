@@ -1604,8 +1604,8 @@ About Area CSS
 .about-text h3 {
   margin-bottom: 0;
   text-transform: capitalize;
-  font-size: 23px;
-  font-weight: 700;
+  /* font-size: 23px;
+  font-weight: 700; */
 }
 
 .about-text p {
