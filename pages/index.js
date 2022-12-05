@@ -21,7 +21,7 @@ class Index extends Component {
             <>
                 <Header/>
                 <MainBoardDescription/>
-                <Services />
+                {/* <Services /> */}
                 {/* <MainBoardWebRTC /> */}
                 {/* <Webinar /> */}
                 {/* <About /> */}
