@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Suspense } from 'react'
 import dynamic from 'next/dynamic'
+import styles from "./MonkeyEye.module.css"
 
 // import { Donut } from 'react-dial-knob'
 
@@ -22,7 +23,7 @@ export default function Indicator(props) {
   // }
 
   return (
-    <div className="single-knob-indicator">
+    <div className={styles.singleKnobIndicator}>
       <DynamicDonut
         diameter={80}
         min={0}

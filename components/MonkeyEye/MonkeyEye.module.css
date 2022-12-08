@@ -1,19 +1,19 @@
-.control-area{
+.controlArea{
     position: relative;
     background-color: #1c1945;
     width: 100%;
     padding: 30px;
 }
 
-.single-knob{
+.singleKnob{
     margin: 10px;
     width: max-content;
 }
-.single-knob-indicator{
+.singleKnobIndicator{
     margin: 3px;
     width: max-content;
 }
-.control-panel{
+.controlPanel{
     position: relative;
     display: flex;
     border-radius: 20px;
