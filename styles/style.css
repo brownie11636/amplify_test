@@ -1522,6 +1522,16 @@ About Area CSS
 
 .about-content {
   padding-left: 25px;
+
+}
+
+.about-content > .row {
+  justify-content: center;
+  display:flex;
+}
+
+.about-content .row .about-text{
+  width:450px;
 }
 
 .about-content h2 {
@@ -1601,11 +1611,34 @@ About Area CSS
   margin-top: 60px;
 }
 
+.about-text .row {
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.about-text .row .col-lg-4, .about-text .row .col-md-12{
+  max-width: 300px;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+  /* justify-content: center; */
+  /* text-align: center; */
+
+}
+
+.about-text img {
+  display: block;
+  margin: auto;
+  margin-bottom: 1rem;
+  height: 130px;
+  padding-top: 30px;
+}
+ 
 .about-text h3 {
   margin-bottom: 0;
   text-transform: capitalize;
   /* font-size: 23px;
   font-weight: 700; */
+  text-align: center;
 }
 
 .about-text p {
