@@ -20,7 +20,7 @@ class MainBoardDescription extends Component {
                                     <div className="about-text">
                                         <h2>
                                             누구나, 언제, 어디서나, <br/>
-                                            안전하고 손쉬운 <br/> 로봇 활용
+                                            안전하고 손쉬운 로봇 활용
                                             {/* 이부분 h3는 너무 작고 h2는 너무 큰거같음 */}
                                         </h2>
                                         {/* 문구 좀 고치고 싶음 ㅎ */}
@@ -70,7 +70,7 @@ class MainBoardDescription extends Component {
                                     </div>
                                 </div>
 
-                                <div className="about-text">
+                                {/* <div className="about-text">
                                     <br/>
                                     <br/>
 
@@ -91,7 +91,7 @@ class MainBoardDescription extends Component {
                                         단순하게 여겨지지만 자동화가 어려운 다양한 수작업 영역의 노동자도 부족해진다.</p>
                                     <p/>
 
-                                </div>
+                                </div> */}
                             {/* </div> */}
                         </div>
                     </div>
