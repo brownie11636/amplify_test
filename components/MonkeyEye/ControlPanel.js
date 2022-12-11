@@ -6,13 +6,13 @@ import styles from "./MonkeyEye.module.css"
 
 
 export function ControlPanel(props) {
-    let obj={arm:{0:50,1:90,2:90,3:0}}
+    let obj={pos:{0:50,1:90,2:90,3:0}}
     const [cmd,setCmd]= useState(obj);
 
 
     const onCommandChange = (id, value)=>{
         obj = cmd;
-        obj.arm[id]=value;
+        obj.pos[id]=value;
         setCmd(obj);
         props.onChange(cmd);
     }
@@ -27,16 +27,16 @@ export function ControlPanel(props) {
                             <div className={styles.controller}>
                                 <label className={styles.title}>Control</label>
                                 <div className={styles.knobBox}>
-                                    <Knobtest onChange={onCommandChange} id={0} value={cmd.arm[0]} label={"height"}/>
+                                    <Knobtest onChange={onCommandChange} id={0} value={cmd.pos[0]} label={"height"}/>
                                 </div>
                                 <div className={styles.knobBox}>
-                                    <Knobtest onChange={onCommandChange} id={1} value={cmd.arm[1]} label={"length"}/>
+                                    <Knobtest onChange={onCommandChange} id={1} value={cmd.pos[1]} label={"length"}/>
                                 </div>
                                 <div className={styles.knobBox}>
-                                    <Knobtest onChange={onCommandChange} id={2} value={cmd.arm[2]} label={"theta0"}/>
+                                    <Knobtest onChange={onCommandChange} id={2} value={cmd.pos[2]} label={"theta0"}/>
                                 </div>
                                 <div className={styles.knobBox}>
-                                    <Knobtest onChange={onCommandChange} id={3} value={cmd.arm[3]} label={"theta1"}/>
+                                    <Knobtest onChange={onCommandChange} id={3} value={cmd.pos[3]} label={"theta1"}/>
                                 </div>
                             </div>                        
                         </div>                        
