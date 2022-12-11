@@ -235,6 +235,28 @@ export const App = () => {
     sendMessageV2(packet, null)
     console.log("operate:",packet)
   }
+
+  const onClickCalibrationButton = ()=>{
+    const packet = JSON.stringify({type:"SIG",data:{"type":"modeRobot","mode":"calibration"}})
+    setTxPacket(packet)
+    sendMessageV2(packet, null)
+    console.log("operate:",packet)
+  }
+
+  const onClickOperationButton = ()=>{
+    const packet = JSON.stringify({type:"SIG",data:{"type":"modeRobot","mode":"operation"}})
+    setTxPacket(packet)
+    sendMessageV2(packet, null)
+    console.log("operate:",packet)
+  }
+
+  const onClickTerminationButton = ()=>{
+    const packet = JSON.stringify({type:"SIG",data:{"type":"modeRobot","mode":"termination"}})
+    setTxPacket(packet)
+    sendMessageV2(packet, null)
+    console.log("operate:",packet)
+  }
+
   return (
     <>
       <Header />
@@ -275,7 +297,11 @@ export const App = () => {
 
         </div> */}
       </div>
-
+      <div >
+        <button onClick={onClickCalibrationButton}>calibration</button>
+        <button onClick={onClickOperationButton}>operation</button>
+        <button onClick={onClickTerminationButton}>termination</button>
+      </div>
       <ControlPanel onChange={onNewCommand}/>
       <button onClick={onClickStartButton}>Start Motion recording</button>
       <button onClick={onClickSaveButton}>Save Motion recording</button>
