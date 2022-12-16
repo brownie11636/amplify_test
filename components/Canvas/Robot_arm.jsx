@@ -149,13 +149,13 @@ export default function RobotArm({armRot, ...props}) {
   for (let i=0; i<7; i++){
     if (i === 0){
       armInfos[i] = {
-        STLUrl: '/stls/base_binary.stl', 
+        STLUrl: '/stls/base_binary.STL', 
         pos:[0, 0, 0]
         // pos:[VRRobotPos.x, VRRobotPos.y, VRRobotPos.z],
       }
     } else {
       armInfos.push({
-        STLUrl: `/stls/arm${i-1}_binary.stl`,
+        STLUrl: `/stls/arm${i-1}_binary.STL`,
         pos: [0, 0, 0],
         // attach: `${armInfo[i-1].attach}-${i-1}`,
       })
@@ -167,10 +167,10 @@ export default function RobotArm({armRot, ...props}) {
     // console.log(armInfos[i]);
   }
 
-  const STLUrl = ['/stls/base_binary.stl'];
-  for (let i = 0; i < armLength.length;  i++ ) {
-    STLUrl.push(`/stls/arm${i}_binary.stl`);
-  }
+  // const STLUrl = ['/stls/base_binary.stl'];
+  // for (let i = 0; i < armLength.length;  i++ ) {
+  //   STLUrl.push(`/stls/arm${i}_binary.stl`);
+  // }
 
   return (
     <group position={VRRobotPos} scale ={ 1/XRRatio } ref={robotArm}>
