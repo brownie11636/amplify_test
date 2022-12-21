@@ -10,9 +10,9 @@ export default function ServiceProfile(props){
     return(
         <div onClick={onClick} className="service-profile-card">
             <div className='frame'>
-                <div className="icon">
+                {/* <div className="icon">
                     <i className="flaticon-automatic"></i>
-                </div>
+                </div> */}
                 <div className="info">
                     <h3>
                         <a>{props.profile.nickname}</a>
