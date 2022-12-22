@@ -270,8 +270,7 @@ export const App = () => {
       />
       <div className="base-frame bg-f2f6f9">
         <div className="container">
-          <div className="row">
-            <div className="col-lg-6 col-sm-8">
+          {/* <div className="row"> */}
               <div className="video-area">
                 <video
                   id="remotevideo"
@@ -285,26 +284,24 @@ export const App = () => {
                   autoPlay
                 />
               </div>
-            </div>
-            <div className="col-lg-6 col-sm-8">
+              <div >
+                <button onClick={onClickCalibrationButton}>calibration</button>
+                <button onClick={onClickOperationButton}>operation</button>
+                <button onClick={onClickTerminationButton}>termination</button>
+              </div>
+              <ControlPanel onChange={onNewCommand}/>
+              <button onClick={onClickStartButton}>Start Motion recording</button>
+              <button onClick={onClickSaveButton}>Save Motion recording</button>
               <div className="service-list-area">
                 <ServiceListPanel profileList={profileList} onProfileSelect={onProfileSelect}/>
               </div>
-            </div>
-          </div>
+          {/* </div> */}
         </div>
         {/* <div className="col-lg-4 col-sm-6">
 
         </div> */}
       </div>
-      <div >
-        <button onClick={onClickCalibrationButton}>calibration</button>
-        <button onClick={onClickOperationButton}>operation</button>
-        <button onClick={onClickTerminationButton}>termination</button>
-      </div>
-      <ControlPanel onChange={onNewCommand}/>
-      <button onClick={onClickStartButton}>Start Motion recording</button>
-      <button onClick={onClickSaveButton}>Save Motion recording</button>
+
       <Footer />
     </>
   );
