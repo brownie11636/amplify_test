@@ -268,38 +268,33 @@ export const App = () => {
         activePageText="Teleoperation"
         bgImgClass="item-bg2"
       />
-      <div className="base-frame bg-f2f6f9">
-        <div className="container">
-          {/* <div className="row"> */}
-              <div className="video-area">
-                <video
-                  id="remotevideo"
-                  style={{
-                    width: 360,
-                    height: 360,
-                    margin: 5,
-                    backgroundColor: "gray",
-                  }}
-                  ref={remoteVideoRef}
-                  autoPlay
-                />
-              </div>
-              <div >
-                <button onClick={onClickCalibrationButton}>calibration</button>
-                <button onClick={onClickOperationButton}>operation</button>
-                <button onClick={onClickTerminationButton}>termination</button>
-              </div>
-              <ControlPanel onChange={onNewCommand}/>
-              <button onClick={onClickStartButton}>Start Motion recording</button>
-              <button onClick={onClickSaveButton}>Save Motion recording</button>
-              <div className="service-list-area">
-                <ServiceListPanel profileList={profileList} onProfileSelect={onProfileSelect}/>
-              </div>
-          {/* </div> */}
+      <div className="base-frame bg-f2f6f9">  
+        <div className="operate-container">
+          <div className="video-area">
+            <video
+              id="remotevideo"
+              style={{
+                width: 360,
+                height: 360,
+                margin: 5,
+                backgroundColor: "gray",
+              }}
+              ref={remoteVideoRef}
+              autoPlay
+            />
+          </div>
+          <div >
+            <button onClick={onClickCalibrationButton}>calibration</button>
+            <button onClick={onClickOperationButton}>operation</button>
+            <button onClick={onClickTerminationButton}>termination</button>
+          </div>
+          <ControlPanel onChange={onNewCommand}/>
+          <button onClick={onClickStartButton}>Start Motion recording</button>
+          <button onClick={onClickSaveButton}>Save Motion recording</button>
+          <div className="service-list-area">
+            <ServiceListPanel profileList={profileList} onProfileSelect={onProfileSelect}/>
+          </div>
         </div>
-        {/* <div className="col-lg-4 col-sm-6">
-
-        </div> */}
       </div>
 
       <Footer />

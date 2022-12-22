@@ -1,13 +1,14 @@
 .controlArea{
     position: relative;
     background-color: #1c1945;
-    width: 100%;
+    width:100%;
+    max-width: 860px;
     padding: 30px;
 }
 
 .singleKnob{
     margin: 10px;
-    width: max-content;
+    /* width: max-content; */
 }
 .singleKnobIndicator{
     margin: 3px;
@@ -15,7 +16,7 @@
 }
 .controlPanel{
     position: relative;
-    display: flex;
+    /* display: flex; */
     border-radius: 20px;
     border: 2px solid white;
     padding: 2em;
@@ -40,9 +41,11 @@
 .controller{
     position: relative;
     display: flex;
+    flex-wrap: wrap;
+    width:100%;
+    max-width: 740px;
     border-radius: 20px;
     border: 2px solid white;
-    width: max-content;
     padding: 2em;
     background-color: #1c1945;
     margin-top: 20px;
@@ -63,4 +66,15 @@
     margin-top: 20px;
     margin-bottom: 10px;
     margin-left: 20px;
+}
+
+.test1{
+    display:flex;
+    flex-wrap:wrap;
+    width: 1200px;
+
+}
+
+.testItem {
+    width: 400px;
 }
