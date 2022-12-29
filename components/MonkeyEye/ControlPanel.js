@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Knobtest from './Knobtest';
+import KnobHeight from './Knob_Height';
 import Indicator from './Knob_Indicator';
 import styles from "./MonkeyEye.module.css"
 
@@ -26,7 +27,7 @@ export function ControlPanel(props) {
                     {/* <div class="container">
                         <div class="row"> */}
                             <div className={styles.knobBox}>
-                                <Knobtest onChange={onCommandChange} id={0} value={cmd.pos[0]} label={"height"}/>
+                                <KnobHeight onChange={onCommandChange} id={0} value={cmd.pos[0]} label={"height"}/>
                             </div>
                             <div className={styles.knobBox}>
                                 <Knobtest onChange={onCommandChange} id={1} value={cmd.pos[1]} label={"length"}/>
