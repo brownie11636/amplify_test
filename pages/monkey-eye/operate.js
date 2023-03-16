@@ -35,6 +35,10 @@ export const App = () => {
   const [selectList, setSelectList] = useState([]);
   let [targetProfile, setTargetProfile] = useState({});
 
+  const dataChannelRef = useRef(undefined);
+
+  
+
   const [txPacket,setTxPacket] = useState();
   
   const sendMessage = (message, destination) => {
@@ -44,7 +48,7 @@ export const App = () => {
     socketRef.current.emit("msg-v1", packet);
   };
   const sendMessageV2 = (message, destination) => {
-    console.log("send message(emit msg-v1)", message, destination);
+    console.log("send message(emit msg-v2)", message, destination);
     let packet = { from: socketRef.current.id, to: destination, message: message };
     socketRef.current.emit("msg-v2", packet);
   };
@@ -62,6 +66,17 @@ export const App = () => {
     //if (!(pcRef.current && socketRef.current)) return;
     try {
       pcRef.current = new RTCPeerConnection(pc_config);
+
+
+      pcRef.current.ondatachannel = (event) => {
+        const channel = event.channel;
+          channel.onopen = (event) => {
+          channel.send('Hi back!');
+        }
+        channel.onmessage = (event) => {
+          console.log(event.data);
+        }
+      }
 
       pcRef.current.onicecandidate = (e) => {
         if (e.candidate) {
@@ -257,6 +272,10 @@ export const App = () => {
     console.log("operate:",packet)
   }
 
+  const stateCheck = () => {
+    console.log('connection state?', pcRef.current.connectionState);
+  }
+
   return (
     <>
       <Header />
@@ -287,6 +306,7 @@ export const App = () => {
             <button onClick={onClickCalibrationButton}>calibration</button>
             <button onClick={onClickOperationButton}>operation</button>
             <button onClick={onClickTerminationButton}>termination</button>
+            <button onClick={stateCheck}>state-check</button>
           </div>
           <ControlPanel onChange={onNewCommand}/>
           <button onClick={onClickStartButton}>Start Motion recording</button>

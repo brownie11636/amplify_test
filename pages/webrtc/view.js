@@ -3,105 +3,59 @@ import io from "socket.io-client";
 import Header from "../../components/Layouts/Header";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
-import {socketPoint} from "../../toServer/API-AccessPoint";
+import { socketPoint } from "../../toServer/API-AccessPoint";
+import ServiceListPanel2 from "../../components/ServiceProfile/ServiceListPanel2";
+import ServiceListPanel from "../../components/ServiceProfile/ServiceListPanel";
+import RTCvideo from "../../components/Services/VideoPanel";
+import RTCvideo2 from "../../components/Services/VideoPanel2";
+import 'bootstrap/dist/css/bootstrap.css';
+
+const BSON = require('bson');
 
 const pc_config = {
   iceServers: [
-    // {
-    //   urls: 'stun:[STUN_IP]:[PORT]',
-    //   'credentials': '[YOR CREDENTIALS]',
-    //   'username': '[USERNAME]'
-    // },
     {
       urls: "stun:stun.l.google.com:19302",
     },
   ],
 };
 const SOCKET_SERVER_URL = socketPoint;
-// const socketRef = io(SOCKET_SERVER_URL,{W
-//     transports: ["websocket"] // HTTP long-polling is disabled
-//     }
-// );
 
 export const App = () => {
+
+  // ------------------- 컴포넌트 분리 작업 중...
+  const [targetProfile, setTargetProfile] = useState({});
+  const [profileList, setProfileList] = useState([]);
+
+  const setStream = (stream) => {
+    remoteVideoRef.current = stream;
+  }
+  // -------------------
   const socketRef = useRef();
   const pcRef = useRef();
-  const pcsRef = useRef({});
-
-
 
   const socketFrom = useRef();
 
-  const localVideoRef = useRef(null);
-  const remoteVideoRef = useRef(null);
+  const remoteVideoRef = useRef(undefined);
 
   const serviceProfile = useRef();
-  const selected = useRef();
-  const serviceList = useRef();
+  const selected = useRef();  
   const [selectList, setSelectList] = useState([]);
-  
 
   const sendMessage = (message, destination) => {
-    console.log("send message(emit msg-v1)", message.type, destination);
     console.log("send message(emit msg-v1)", message.type, destination);
     let packet = { from: socketRef.current.id, to: destination, message: message };
     //console.log('Client sending message: ', packet);
     socketRef.current.emit("msg-v1", packet);
   };
 
-  const setVideoTracks = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-      if (localVideoRef.current) localVideoRef.current.srcObject = stream;
-      // if (!(pcRef.current && socketRef.current)) return;
-      stream.getTracks().forEach((track) => {
-        if (!pcRef.current) return;
-        pcRef.current.addTrack(track, stream);
-      });
-      // pcRef.current.onicecandidate = (e) => {
-      //   if (e.candidate) {
-      //     if (!socketRef.current) return;
-      //     console.log("onicecandidate");
-      //     //socketRef.current.emit("candidate", e.candidate);
-      //     sendMessage({
-      //       type: 'candidate',
-      //       label: e.candidate.sdpMLineIndex,
-      //       id: e.candidate.sdpMid,
-      //       candidate: e.candidate.candidate
-      //     }, socketFrom.current);
-      //   }
-      // };
-      // pcRef.current.oniceconnectionstatechange = (e) => {
-      //   console.log('oniceconnectionstatechange : ', e.target.connectionState);
-      // };
-
-      socketRef.current.emit("Start_Service", {
-        socketId: socketRef.current.id,
-        room: "room:" + socketRef.current.id,
-        type: "Device_1",
-        description: "Streamer",
-        contents: "jooonik", //contents 수정필요!!!!!!!!!!!!!!!!!!
-      });
-      sendMessage('got user media', null);
-
-      // socketRef.current.emit("join_room", {
-      //   room: "1234",
-      // });
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   const createOffer = async () => {
-    console.log("create offer");
-    let selectedProfile = serviceList.current.find(function(data){
-        //console.log(data);
-        return data.sid === selected.current;
+    let selectedProfile = profileList.find(function (data) {
+      return data.sid === targetProfile;
     });
-    console.log(selectedProfile);
+    console.log('selectedProfile ?', selectedProfile);
+    console.log("create offer & send offer to ", selectedProfile.sid);
+
     socketRef.current.emit("Join_Service", selectedProfile.sid);
 
     //if (!(pcRef.current && socketRef.current)) return;
@@ -111,111 +65,22 @@ export const App = () => {
         offerToReceiveVideo: true,
       });
       await pcRef.current.setLocalDescription(new RTCSessionDescription(sdp));
-
-      console.log(pcRef.current.iceGatheringState);
-      pcRef.current.oniceconnectionstatechange = (e) => {
-        console.log('oniceconnectionstatechange : ', e.target.connectionState);
-      };
-      //socketRef.current.emit("offer", sdp);
+      console.log('oooooooo >', sdp);
       sendMessage(sdp, selectedProfile.sid);
       socketFrom.current = selectedProfile.sid;
-      //socketRef.current.emit("offer", sdp);
 
     } catch (e) {
-      console.log('errrrrrrrrr');
       console.error(e);
     }
   };
-
-  const reOffer = async () => { 
-    try {
-      const sdp = await pcRef.current.createOffer({
-        offerToReceiveAudio: true,
-        offerToReceiveVideo: true,
-      });
-      await pcRef.current.setLocalDescription(new RTCSessionDescription(sdp));
-
-      console.log(pcRef.current.iceGatheringState);
-      pcRef.current.oniceconnectionstatechange = (e) => {
-        console.log('oniceconnectionstatechange : ', e.target.connectionState);
-      };
-      //socketRef.current.emit("offer", sdp);
-      sendMessage(sdp, socketFrom.current);
-      socketRef.current.emit("offer", sdp);
-
-    } catch (e) {
-      console.log('errrrrrrrrr');
-      console.error(e);
-    }
-  }
-
-  // function sleep(ms) {
-  //   const wakeUpTime = Date.now() + ms;
-  //   while (Date.now() < wakeUpTime) {}
-  // }
 
   const onCreateSessionDescriptionError = (error) => {
     console.log('Failed to create session description: ' + error.toString());
   }
-  
-
-  const createAnswer = async (sdp, from) => { //getoffer & doAnswer
-    //if (!(pcRef.current && socketRef.current)) return;
-    try {
-      pcsRef.current[from] = new RTCPeerConnection(pc_config);
-
-      pcRef.current.onicecandidate = (e) => {
-        if (e.candidate) {
-          if (!socketRef.current) return;
-          console.log("onicecandidate");
-          //socketRef.current.emit("candidate", e.candidate);
-          sendMessage({
-            type: 'candidate',
-            label: e.candidate.sdpMLineIndex,
-            id: e.candidate.sdpMid,
-            candidate: e.candidate.candidate
-          }, from);
-        }
-      };
-      pcRef.current.oniceconnectionstatechange = (e) => {
-        console.log('oniceconnectionstatechange : ', e.target.connectionState);
-      };
-
-      pcsRef.current = {...pcsRef.current, [from]: pcRef.current};
-
-
-
-      await pcsRef.current[from].setRemoteDescription(new RTCSessionDescription(sdp));
-//      await pcsRef.current[from].setRemoteDescription(new RTCSessionDescription(sdp));
-      console.log("answer set remote description success", pcsRef.current);
-//       const mySdp = await pcRef.current.createAnswer({
-//         offerToReceiveVideo: true,
-//         offerToReceiveAudio: true,
-//       });
-//       console.log("create answer");
-//       await pcRef.current.setLocalDescription(new RTCSessionDescription(mySdp));
-// //      await pcsRef.current[from].setLocalDescription(new RTCSessionDescription(mySdp));
-//       pcsRef.current = {...pcsRef.current, [from]: pcRef.current};
-//       sendMessage(mySdp, from);
-      //socketRef.current.emit("answer", mySdp);
-
-      pcsRef.current[from].createAnswer().then( async (sessionDescription) =>{
-        await pcsRef.current[from].setLocalDescription(sessionDescription);
-          console.log('setLocalAndSendMessage sending message', sessionDescription);
-          sendMessage(sessionDescription, from);
-        }, onCreateSessionDescriptionError);
-
-      //pcsRef.current = {...pcsRef.current, [packet.from]: pcRef.current};
-
-
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   function handleRemoteStreamAdded(event) {
     console.log("Remote stream added. event.stream?>>>", event.stream);
-    remoteVideoRef.current.srcObject = event.stream;
+    //remoteVideoRef.current.srcObject = event.stream;
   }
 
   const [query, setQuery] = useState([]);
@@ -223,10 +88,10 @@ export const App = () => {
   useEffect(() => {
 
     setQuery(
-    query.concat({
+      query.concat({
         header: "ServiceList",
         filter: {},
-    })
+      })
     );
 
     let querya = new Array({
@@ -234,157 +99,107 @@ export const App = () => {
       filter: {},
     })
 
+
     socketRef.current = io(SOCKET_SERVER_URL, {
       transports: ["websocket"],
     });
-    // const socketRef = io(SOCKET_SERVER_URL,{
-    //     transports: ["websocket"] // HTTP long-polling is disabled
-    //     }
-    // );
+
     if (socketRef.current.connected) {
-      console.log("connected");
+      console.log("connected socket \n my socket id > ", socketRef.current.id);
     } else {
-      console.log("not conn");
+      console.log("not connected socket");
     }
 
     socketRef.current.emit("q_service", querya);
 
     pcRef.current = new RTCPeerConnection(pc_config);
-    serviceProfile.current =   {
-        socketId: socketRef.current.id,
-        room: "room:" + socketRef.current.id,
-        type: "Device_1",
-        description: "Streamer",
-        contents: "jooonik", //contents 수정필요!!!!!!!!!!!!!!!!!!
-      };
-
-    socketRef.current.on("all_users", (allUsers) => {
-      console.log("alluser", allUsers.length, allUsers);
-      // if (allUsers.length > 0) {
-      //   createOffer();
-      // }
-    });
-
-    socketRef.current.on("user-connected", (data) => {
-      console.log('"user-connected"', data);
-      //createOffer();
-      // if (data > 0) {
-      //     createOffer();
-      //   }
-    });
-
-    socketRef.current.on("getOffer", (sdp) => {
-      //console.log(sdp);
-      console.log("get offer");
-      createAnswer(sdp);
-    });
-
-    socketRef.current.on("getAnswer", (sdp) => {
-      console.log("get answer");
-      if (!pcRef.current) return;
-      pcRef.current.setRemoteDescription(new RTCSessionDescription(sdp));
-      pcRef.current.onaddstream = handleRemoteStreamAdded;
-      // pcRef.current.ontrack = (ev) => {
-      //     console.log("add remotetrack success");
-      //     if (remoteVideoRef.current) {
-      //       remoteVideoRef.current.srcObject = ev.streams[0];
-      //     }
-      //   };
-      //console.log(sdp);
-    });
-
-    socketRef.current.on("getCandidate", async (candidate) => {
-      if (!pcRef.current) return;
-      await pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
-      console.log("candidate add success");
-    });
+    serviceProfile.current = {
+      socketId: socketRef.current.id,
+      room: "room:" + socketRef.current.id,
+      type: "Device_1",
+      description: "Streamer",
+      contents: "jooonik", //contents 수정필요!!!!!!!!!!!!!!!!!!
+    };
 
     socketRef.current.on("joined", function (room, socketTo) {
-        reOffer();
-        console.log("joined!");
+      //reOffer();
+      console.log("joined!");
     });
 
-    socketRef.current.on('join', function (room){
+    socketRef.current.on('join', function (room) {
       console.log('Another peer made a request to join room ' + room);
       console.log('This peer is the initiator of room ' + room + '!');
       //setIsChannelReady(true);
       //isChannelReady = true;
     });
 
-    socketRef.current.on('q_result', function(q_result) {
-        const qres = JSON.parse(q_result);
+    socketRef.current.on('q_result', function (q_result) {
 
-      
-          if(qres.header==='ServiceList'){
-            //setServiceList(qres.data);
-            serviceList.current = qres.data;
-            let nextList = selectList;
-            for (const [key, value] of Object.entries(Object(serviceList.current))) {
-              //console.log('list set up log',`${key}:${value.sid}`);
-              nextList = nextList.concat(`${key}:${value.sid}`);
-            }
-            setSelectList(nextList);
-          }
+      if (socketRef.current.connected) {
+        console.log("connected socket \n my socket id > ", socketRef.current.id);
+      } else {
+        console.log("not connected socket");
+      }
+
+      const qres = JSON.parse(q_result);
+      console.log('list >', qres);
+
+
+      if (qres.header === 'ServiceList') {
+        //setServiceList(qres.data);
+        //serviceList.current = qres.data;
+        let nextList = selectList;
+        for (const [key, value] of Object.entries(Object(qres.data))) {
+          //console.log('list set up log',`${key}:${value.sid}`);
+          nextList = nextList.concat(`${key}:${value.sid}`);
+        }
+        setSelectList(nextList);
+        setProfileList(qres.data);
+      }
     });
 
     socketRef.current.on('msg-v1', async (packet) => {
-        console.log('------------------msg-v1 ', packet.message.type ,'-------------------');
-        let message = packet.message;
-        console.log('msg from', packet.from);
-        console.log('Client received message:', message);
-        socketFrom.current = packet.from;
-        // let socketId = "arbitary socketID";
-        try{
-          if (message === 'connection request') {
-            //RTCClientList.push({'socketId':packet.from});
-            console.log('check : connection request');      
-          } else if (message.type === 'offer') {
-            // pcsRef.current[packet.from].onicecandidate = (e) => {
-            //   if (e.candidate) {
-            //     if (!socketRef.current) return;
-            //     console.log("onicecandidate");
-            //     //socketRef.current.emit("candidate", e.candidate);
-            //     sendMessage({
-            //       type: 'candidate',
-            //       label: e.candidate.sdpMLineIndex,
-            //       id: e.candidate.sdpMid,
-            //       candidate: e.candidate.candidate
-            //     }, socketFrom.current);
-            //   }
-            // };
-            // pcsRef.current[packet.from].oniceconnectionstatechange = (e) => {
-            //   console.log('oniceconnectionstatechange : ', e.target.connectionState);
-            // };
+      console.log('------------------msg-v1 ', packet.message.type, '-------------------');
+      let message = packet.message;
+      console.log('msg from', packet.from);
+      console.log('Client received message:', message);
+      socketFrom.current = packet.from;
+      // let socketId = "arbitary socketID";
+      try {
+        if (message === 'connection request') {
+          console.log('check : connection request');
+        } else if (message.type === 'offer') {
+          console.log('Viewer just do nothing in this msg type!');
+        } else if (message.type === 'answer') {
 
-
-            // await pcRef.current.setRemoteDescription(new RTCSessionDescription(message));
-
-            // pcsRef.current = {...pcsRef.current, [packet.from]: pcRef.current};
-
-            console.log('check : offer', message);
-            createAnswer(message, packet.from);
-          } else if (message.type === 'answer') {
-            if (!pcRef.current) return;
-            console.log('signalingStat', pcRef.current.signalingState);
-            if(pcRef.current.signalingState !== 'stable') {
-              console.log('set the pcRef : ', pcRef.current);
-              pcRef.current.setRemoteDescription(new RTCSessionDescription(message));
-              pcRef.current.onaddstream = handleRemoteStreamAdded;
-            }
-            console.log('set the pcRef2 : ', pcRef.current);      
-          } else if (message.type === 'candidate') {
-            console.log('check : candi');
-          } else if (message === 'bye') {
+          if (!pcRef.current) return;
+          console.log('signalingStat', pcRef.current.signalingState);
+          if (pcRef.current.signalingState !== 'stable') {
+            console.log('set the pcRef : ', pcRef.current);
+            pcRef.current.setRemoteDescription(new RTCSessionDescription(message));
+            pcRef.current.onaddstream = handleRemoteStreamAdded;
           }
+          pcRef.current.ontrack = (ev) => {
+            console.log("add remotetrack success");
+            if (remoteVideoRef.current) {
+              remoteVideoRef.current.srcObject = ev.streams[0];
+            }
+          };
 
-        }catch(e){
-          console.log('eeeeeeeeeeee', e);
+          //sendMessage({type:'viewer ready'}, packet.from);
+
+          console.log('set the pcRef2 : ', pcRef.current);
+
+        } else if (message.type === 'candidate') {
+        } else if (message.type === 'convey stream') {
+          // console.log('convey stream. stream? >>', message);
+          // remoteVideoRef.current.srcObject = BSON.deserialize(message.stream);
         }
-      });
 
-      
-
-    //setVideoTracks();
+      } catch (e) {
+        console.log('err in msg-v1!', e);
+      }
+    });
 
     return () => {
       if (socketRef.current) {
@@ -397,13 +212,18 @@ export const App = () => {
   }, []);
 
   const handleSelect = (e) => {
+    console.log(targetProfile.sid);
     console.log(e.target.value);
     selected.current = e.target.value;
+    setTargetProfile(e.target.value)
   };
 
   const debugcode = () => {
-    reOffer(socketFrom.current);
-    console.log(pcRef.current.iceGatheringState);
+    console.log(pcRef.current);
+    console.log(remoteVideoRef.current.srcObject);
+    console.log(remoteVideoRef.current)
+    const tmp = remoteVideoRef.current.srcObject;
+    remoteVideoRef.current.srcObject = tmp;
   }
 
 
@@ -412,15 +232,15 @@ export const App = () => {
       <Header />
 
       <PageBanner
-        pageTitle="Security & Surveillance"
+        pageTitle="You are Viewer!"
         homePageUrl="/"
         homePageText="Home"
-        activePageText="Service Details"
+        activePageText="WebRTC-View"
         bgImgClass="item-bg2"
       />
-    
-    <div>
-      <video
+      {/* <RTCvideo stream={remoteVideoRef.current}/> */}
+      <div>
+        {/* <video
         id="remotevideo"
         style={{
           width: 240,
@@ -430,18 +250,45 @@ export const App = () => {
         }}
         ref={remoteVideoRef}
         autoPlay
-      />
-      <button onClick={createOffer}>Join Streaming</button>
-      <button onClick={debugcode}>console debug</button>
-      <select onChange={handleSelect} value={selected.current}>
-              {selectList.map((item) => (
-              <option value={item.split(':')[1]} key={item}>
-                  {item}
-              </option>
-            ))}
-      </select>
-    </div>
-    <Footer />
+      /> */}
+        <div class="row">
+          <div class="col-md-4">
+
+          </div>
+          <div class="col-md-4">
+
+            <RTCvideo2 stream={remoteVideoRef.current} setStream={setStream} />
+
+            <div class="col">
+
+              <div class="col-md-4">
+                <select class="form-control" style={{ width: '400px' }} onChange={handleSelect} value={targetProfile}>
+                  {profileList.map((item) => (
+                    <option value={item.sid} key={item.sid}>
+                      {item.sid}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <button type="button" class="btn btn-primary" onClick={createOffer}>Join Streaming</button>
+              <button type="button" class="btn btn-primary" onClick={debugcode}>console debug</button>
+
+            </div>
+
+          </div>
+          <div class="col-md-4" style={{ height: '450px', overflow: 'scroll' }}>
+            <ServiceListPanel profileList={profileList} onProfileSelect={setTargetProfile} />
+          </div>
+        </div>
+
+        {/* {rendVideo(remoteVideoRef.current, setStream)} */}
+        {/* {testv} */}
+        {/* {remoteVideoRef.current === undefined ? undefined :  <RTCvideo stream={remoteVideoRef.current.srcObject} setStream={setStream}/>} */}
+        {/* <ServiceListPanel profileList={profileList} onProfileSelect={setTargetProfile}/> */}
+        {/* <ServiceListPanel2 onProfileSelect={setTargetProfile}/> */}
+      </div>
+      <Footer />
     </>
   );
 };

@@ -46,7 +46,7 @@ export default function RobotArm({armRot, ...props}) {
   const XRRatio = 0.4;   // real scale / virtual scale 
   const robotPos = [0.1, 0.3, 0.05];
   // let VRRobotPos = robotPos.map(el => el/XRRatio);
-  const VRRobotPos = new THREE.Vector3(robotPos[0], robotPos[1], robotPos[2]);
+  const VRRobotPos = new THREE.Vector3(robotPos[0], robotPos[1], robotPos[2]); // 로봇 최초 포지션 설정
   VRRobotPos.multiplyScalar( 1/XRRatio );
   
   const geometry = [
@@ -87,9 +87,8 @@ export default function RobotArm({armRot, ...props}) {
     setGamepadInput(myGamepadInput.get(session, gamepadInput));
 
 
-    // console.log(gamepadInput.right.new.buttons[0]);
-    if (gamepadInput.right.new.buttons[1] > 0.7){     //squeeze button: 0 ~ 1      trigger in webXR emulator
-
+    console.log(gamepadInput.right.new.buttons[0]);
+    if (gamepadInput.right.new.buttons[0] > 0.7){     //squeeze button: 0 ~ 1      trigger in webXR emulator
       //set Transparency
       if(gamepadInput.right.prev.buttons[1] < 0.7){
         robotArm.current.traverse((obj)=>{
@@ -108,6 +107,8 @@ export default function RobotArm({armRot, ...props}) {
         .map((angle,i)=> angle + initialAngles[i])
       );
 
+      sendMessage2(JSON.stringify(msg_v2));
+
       //get velocity
       let P = new THREE.Vector3
       if(prevControllerPos){
@@ -118,7 +119,7 @@ export default function RobotArm({armRot, ...props}) {
       }
       setPrevControllerPos(rightController.controller.getWorldPosition(P));
       // console.log(prevControllerPos);
-    } else if(gamepadInput.right.prev.buttons[1] > 0.7){
+    } else if(gamepadInput.right.prev.buttons[0] > 0.7){
       //get back opacity
       robotArm.current.traverse((obj)=>{
         if (obj.isMesh) obj.material.opacity = 0.85;
