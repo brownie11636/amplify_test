@@ -27,8 +27,8 @@ class BlogCommentsArea extends Component {
                             </div>
 
                             <div className="reply">
-                                <Link href="/blog-details/#">
-                                    <a className="comment-reply-link">Reply</a>
+                                <Link href="/blog-details/#" className="comment-reply-link">
+                                    Reply
                                 </Link>
                             </div>
                         </article>
@@ -55,8 +55,8 @@ class BlogCommentsArea extends Component {
                                     </div>
 
                                     <div className="reply">
-                                        <Link href="/blog-details/#">
-                                            <a className="comment-reply-link">Reply</a>
+                                        <Link href="/blog-details/#" className="comment-reply-link">
+                                            Reply
                                         </Link>
                                     </div>
                                 </article>
@@ -83,8 +83,8 @@ class BlogCommentsArea extends Component {
                                             </div>
 
                                             <div className="reply">
-                                                <Link href="/blog-details/#">
-                                                    <a className="comment-reply-link">Reply</a>
+                                                <Link href="/blog-details/#" className="comment-reply-link">
+                                                    Reply
                                                 </Link>
                                             </div>
                                         </article>
@@ -113,8 +113,8 @@ class BlogCommentsArea extends Component {
                             </div>
 
                             <div className="reply">
-                                <Link href="/blog-details/#">
-                                    <a className="comment-reply-link">Reply</a>
+                                <Link href="/blog-details/#" className="comment-reply-link">
+                                    Reply
                                 </Link>
                             </div>
                         </article>
@@ -139,8 +139,8 @@ class BlogCommentsArea extends Component {
                                     </div>
 
                                     <div className="reply">
-                                        <Link href="/blog-details/#">
-                                            <a className="comment-reply-link">Reply</a>
+                                        <Link href="/blog-details/#" className="comment-reply-link">
+                                            Reply
                                         </Link>
                                     </div>
                                 </article>

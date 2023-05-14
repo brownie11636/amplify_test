@@ -13,12 +13,12 @@ class MainBanner extends Component {
                                 <p>ML today are able to supply needful of help, information, and positive experience of maintaining intimacy with customers. Eventually, chatbot ideas bring a pleasant experience of all these qualities into the conversation.</p>
 
                                 <div className="btn-box">
-                                    <Link href="/contact">
-                                        <a className="btn btn-primary">Schedule A Demo</a>
+                                    <Link href="/contact" className="btn btn-primary">
+                                        Schedule A Demo
                                     </Link>
 
-                                    <Link href="/contact">
-                                        <a className="optional-btn">Get Started Free</a>
+                                    <Link href="/contact" className="optional-btn">
+                                        Get Started Free
                                     </Link>
                                 </div>
                             </div>
@@ -37,7 +37,7 @@ class MainBanner extends Component {
 
                                     <h3>
                                         <Link href="/service-details">
-                                            <a>Robotic Process Automation</a>
+                                            Robotic Process Automation
                                         </Link>
                                     </h3>
                                     <p>Lorem ipsum dolor consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore. Ut enim ad minim veniam.</p>
@@ -52,7 +52,7 @@ class MainBanner extends Component {
 
                                     <h3>
                                         <Link href="/service-details">
-                                            <a>Cognitive Automation</a>
+                                            Cognitive Automation
                                         </Link>
                                     </h3>
                                     <p>Lorem ipsum dolor consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore. Ut enim ad minim veniam.</p>
@@ -67,7 +67,7 @@ class MainBanner extends Component {
 
                                     <h3>
                                         <Link href="/service-details">
-                                            <a>Cognitive Engagement</a>
+                                            Cognitive Engagement
                                         </Link>
                                     </h3>
                                     <p>Lorem ipsum dolor consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore. Ut enim ad minim veniam.</p>

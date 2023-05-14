@@ -66,7 +66,7 @@ class ComingSoon extends Component {
                                     <div className="d-table-cell">
                                         <div className="logo">
                                             <Link href="/">
-                                                <a><img src="/images/black-logo.png" alt="logo" /></a>
+                                                <img src="/images/black-logo.png" alt="logo" />
                                             </Link>
                                         </div>
                                         

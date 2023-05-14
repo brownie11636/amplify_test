@@ -20,8 +20,8 @@ class About extends Component {
                                 <p><br />우리는 모든 환경에서 사용할 수 있는 다양한 API 제공합니다.
                                 고객님들이 필요로 하는곳 어디서든 조작이 가능합니다</p>
 
-                                <Link href="/about">
-                                    <a className="btn btn-primary">Discover More</a>
+                                <Link href="/about" className="btn btn-primary">
+                                    Discover More
                                 </Link>
                             </div>
                         </div>

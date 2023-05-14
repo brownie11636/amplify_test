@@ -24,50 +24,48 @@ const MainBanner = () => {
         setDisplay(true);
     }, [])
 
-    return (
-        <>
-            {display ? <OwlCarousel 
-                className="home-slides owl-carousel owl-theme"
-                {...options}
-            > 
-                <div className="main-banner item-bg1">
-                    <div className="container">
-                        <div className="main-banner-content">
-                            <h1>Create your own XR contents!</h1>
-                            <p></p>
+    return <>
+        {display ? <OwlCarousel 
+            className="home-slides owl-carousel owl-theme"
+            {...options}
+        > 
+            <div className="main-banner item-bg1">
+                <div className="container">
+                    <div className="main-banner-content">
+                        <h1>Create your own XR contents!</h1>
+                        <p></p>
 
-                            <div className="btn-box">
-                                <Link href="#">
-                                    <a className="btn btn-primary">WebRTC production</a>
-                                </Link>
-                                <Link href="#">
-                                    <a className="optional-btn">About Us</a>
-                                </Link>
-                            </div>
+                        <div className="btn-box">
+                            <Link href="#" className="btn btn-primary">
+                                WebRTC production
+                            </Link>
+                            <Link href="#" className="optional-btn">
+                                About Us
+                            </Link>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* <div className="main-banner item-bg2">
-                    <div className="container">
-                        <div className="main-banner-content">
-                            <h1>World’s Leading Mabbbbbchine Learning Company</h1>
-                            <p>ML today are able to supply needful of help, information, and positive experience of maintaining intimacy with customers. Eventually, chatbot ideas bring a pleasant experience of all these qualities into the conversation.</p>
-                            
-                            <div className="btn-box">
-                                <Link href="/index-4/#">
-                                    <a className="btn btn-primary">Schedule a Demo</a>
-                                </Link>
-                                <Link href="/index-4/#">
-                                    <a className="optional-btn">Get Started Free</a>
-                                </Link>
-                            </div>
+            {/* <div className="main-banner item-bg2">
+                <div className="container">
+                    <div className="main-banner-content">
+                        <h1>World’s Leading Mabbbbbchine Learning Company</h1>
+                        <p>ML today are able to supply needful of help, information, and positive experience of maintaining intimacy with customers. Eventually, chatbot ideas bring a pleasant experience of all these qualities into the conversation.</p>
+                        
+                        <div className="btn-box">
+                            <Link href="/index-4/#">
+                                <a className="btn btn-primary">Schedule a Demo</a>
+                            </Link>
+                            <Link href="/index-4/#">
+                                <a className="optional-btn">Get Started Free</a>
+                            </Link>
                         </div>
                     </div>
-                </div> */}
-            </OwlCarousel> : ''}
-        </>
-    )
+                </div>
+            </div> */}
+        </OwlCarousel> : ''}
+    </>;
 }
 
 export default MainBanner;

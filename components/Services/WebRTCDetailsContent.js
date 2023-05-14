@@ -12,8 +12,8 @@ class WebRTCDetailsContent extends Component {
                             <p>WebRTC를 통해 스트리머가 되어보세요!</p>
 
                             <div className="btn-box">
-                                    <Link href="/webrtc/cast">
-                                    <a className="btn btn-primary">Become a Streamer</a>
+                                    <Link href="/webrtc/cast" className="btn btn-primary">
+                                    Become a Streamer
                                     </Link>
                             </div>
                         </div>
@@ -28,8 +28,8 @@ class WebRTCDetailsContent extends Component {
                             <h3>Viewer</h3>
                             <p>다른 스트리머를 시청해보세요!</p>
                             <div className="btn-box">
-                                    <Link href="/webrtc/view">
-                                    <a className="btn btn-primary">Become a Viewer</a>
+                                    <Link href="/webrtc/view" className="btn btn-primary">
+                                    Become a Viewer
                                     </Link>
                             </div>
 

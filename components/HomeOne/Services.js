@@ -27,7 +27,7 @@ class Services extends Component {
                                         }
                                     }}> */}
                                     <Link href={`/socketchat/${uuidv4()}`}>
-                                        <a>Socket Chat</a>
+                                        Socket Chat
                                     </Link>
                                 </h3>
                                 <p>We provide you chat using websocket. This provides less network latency.</p>
@@ -42,7 +42,7 @@ class Services extends Component {
 
                                 <h3>
                                     <Link href="/webrtc">
-                                        <a>Web RTC</a>
+                                        Web RTC
                                     </Link>
                                 </h3>
                                 <p>We provide customized Web RTC. Try this test version!</p>
@@ -57,7 +57,7 @@ class Services extends Component {
 
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>Comming Soon !</a>
+                                        Comming Soon !
                                     </Link>
                                 </h3>
                                 <p>Comming Soon !</p>

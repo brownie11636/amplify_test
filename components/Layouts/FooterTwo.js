@@ -49,27 +49,27 @@ class FooterTwo extends Component {
                                 <ul className="footer-services-list">
                                     <li>
                                         <Link href="/service-details">
-                                            <a>Product Engineering</a>
+                                            Product Engineering
                                         </Link>
                                     </li>
                                     <li>
                                         <Link href="/service-details">
-                                            <a>UX/UI Design</a>
+                                            UX/UI Design
                                         </Link>
                                     </li>
                                     <li>
                                         <Link href="/service-details">
-                                            <a>Big Data Analysis</a>
+                                            Big Data Analysis
                                         </Link>
                                     </li>
                                     <li>
                                         <Link href="/service-details">
-                                            <a>Desktop Applications</a>
+                                            Desktop Applications
                                         </Link>
                                     </li>
                                     <li>
                                         <Link href="/service-details">
-                                            <a>Mobile Applications</a>
+                                            Mobile Applications
                                         </Link>
                                     </li>
                                 </ul>
@@ -83,27 +83,27 @@ class FooterTwo extends Component {
                                 <ul className="quick-links-list">
                                     <li>
                                         <Link href="/about">
-                                            <a>About Us</a>
+                                            About Us
                                         </Link>
                                     </li>
                                     <li>
                                         <Link href="/blog">
-                                            <a>Blog</a>
+                                            Blog
                                         </Link>
                                     </li>
                                     <li>
                                         <Link href="/contact">
-                                            <a>Contact</a>
+                                            Contact
                                         </Link>
                                     </li>
                                     <li>
                                         <Link href="/services">
-                                            <a>Services</a>
+                                            Services
                                         </Link>
                                     </li>
                                     <li>
                                         <Link href="/pricing">
-                                            <a>Pricing</a>
+                                            Pricing
                                         </Link>
                                     </li>
                                 </ul>
@@ -148,12 +148,12 @@ class FooterTwo extends Component {
                                 <ul>
                                     <li>
                                         <Link href="/privacy-policy">
-                                            <a>Privacy Policy</a>
+                                            Privacy Policy
                                         </Link>
                                     </li>
                                     <li>
                                         <Link href="/terms-conditions">
-                                            <a>Terms & Conditions</a>
+                                            Terms & Conditions
                                         </Link>
                                     </li>
                                 </ul>

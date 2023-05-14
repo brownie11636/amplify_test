@@ -25,7 +25,7 @@ class BlogDetailsContent extends Component {
                                             <li>
                                                 <span>Posted By:</span> 
                                                 <Link href="/blog-details/#">
-                                                    <a>John Anderson</a>
+                                                    John Anderson
                                                 </Link>
                                             </li>
                                         </ul>
@@ -83,36 +83,36 @@ class BlogDetailsContent extends Component {
                                         <span><i className="fas fa-bookmark"></i></span>
 
                                         <Link href="/blog-details/#">
-                                            <a>Fashion</a>
+                                            Fashion
                                         </Link>
                                         <Link href="/blog-details/#">
-                                            <a>Games</a>
+                                            Games
                                         </Link>
                                         <Link href="/blog-details/#">
-                                            <a>Travel</a>
+                                            Travel
                                         </Link>
                                     </div>
 
                                     <div className="article-share">
                                         <ul className="social">
                                             <li>
-                                                <Link href="/blog-details/#">
-                                                    <a target="_blank"><i className="fab fa-facebook-f"></i></a>
+                                                <Link href="/blog-details/#" target="_blank">
+                                                    <i className="fab fa-facebook-f"></i>
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link href="/blog-details/#">
-                                                    <a target="_blank"><i className="fab fa-twitter"></i></a>
+                                                <Link href="/blog-details/#" target="_blank">
+                                                    <i className="fab fa-twitter"></i>
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link href="/blog-details/#">
-                                                    <a target="_blank"><i className="fab fa-linkedin-in"></i></a>
+                                                <Link href="/blog-details/#" target="_blank">
+                                                    <i className="fab fa-linkedin-in"></i>
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link href="/blog-details/#">
-                                                    <a target="_blank"><i className="fab fa-instagram"></i></a>
+                                                <Link href="/blog-details/#" target="_blank">
+                                                    <i className="fab fa-instagram"></i>
                                                 </Link>
                                             </li>
                                         </ul>

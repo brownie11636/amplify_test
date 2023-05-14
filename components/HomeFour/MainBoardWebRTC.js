@@ -24,37 +24,35 @@ const MainBoardWebRTC = () => {
         setDisplay(true);
     }, [])
 
-    return (
-        <>
-            {display ? 
-            // <OwlCarousel 
-            //     className="home-slides owl-carousel owl-theme"
-            //     {...options}
-            // > 
-                <div className="main-banner item-bg1">
-                    <div className="container">
-                        <div className="main-banner-content">
-                            <h1>Tele-Operation</h1>
-                            <p></p>
+    return <>
+        {display ? 
+        // <OwlCarousel 
+        //     className="home-slides owl-carousel owl-theme"
+        //     {...options}
+        // > 
+            <div className="main-banner item-bg1">
+                <div className="container">
+                    <div className="main-banner-content">
+                        <h1>Tele-Operation</h1>
+                        <p></p>
 
-                            <div className="btn-box">
-                                <Link href="#">
-                                    <a className="btn btn-primary">WebRTC production</a>
-                                </Link>
-                                <Link href="#">
-                                    <a className="optional-btn">About Us</a>
-                                </Link>
-                                <Link href="#">
-                                    <a className="btn btn-primary">See Us</a>
-                                </Link>
-                            </div>
+                        <div className="btn-box">
+                            <Link href="#" className="btn btn-primary">
+                                WebRTC production
+                            </Link>
+                            <Link href="#" className="optional-btn">
+                                About Us
+                            </Link>
+                            <Link href="#" className="btn btn-primary">
+                                See Us
+                            </Link>
                         </div>
                     </div>
                 </div>
-            // </OwlCarousel>
-             : ''}
-        </>
-    )
+            </div>
+        // </OwlCarousel>
+         : ''}
+    </>;
 }
 
 export default MainBoardWebRTC;

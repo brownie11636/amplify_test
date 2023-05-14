@@ -14,9 +14,9 @@ class BlogWithRightSidebar extends Component {
                                     <div className="single-blog-post">
                                         <div className="entry-thumbnail">
                                             <Link href="/blog-details">
-                                                <a>
-                                                    <img src="/images/blog/blog1.jpg" alt="image" />
-                                                </a>
+
+                                                <img src="/images/blog/blog1.jpg" alt="image" />
+
                                             </Link>
                                         </div>
 
@@ -25,7 +25,7 @@ class BlogWithRightSidebar extends Component {
                                                 <ul>
                                                     <li>
                                                         <Link href="/blog2/#">
-                                                            <a>Admin</a>
+                                                            Admin
                                                         </Link>
                                                     </li>
                                                     <li>March 10, 2020</li>
@@ -34,16 +34,15 @@ class BlogWithRightSidebar extends Component {
 
                                             <h3>
                                                 <Link href="/blog-details">
-                                                    <a>Making Peace With The Feast Or Famine Of Freelancing</a>
+                                                    Making Peace With The Feast Or Famine Of Freelancing
                                                 </Link>
                                             </h3>
 
                                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...</p>
                                             
-                                            <Link href="/blog-details">
-                                                <a className="learn-more-btn">
-                                                    Read More <i className="flaticon-add"></i>
-                                                </a>
+                                            <Link href="/blog-details" className="learn-more-btn">
+                                                Read More<i className="flaticon-add"></i>
+
                                             </Link>
                                         </div>
                                     </div>
@@ -53,9 +52,9 @@ class BlogWithRightSidebar extends Component {
                                     <div className="single-blog-post">
                                         <div className="entry-thumbnail">
                                             <Link href="/blog-details">
-                                                <a>
-                                                    <img src="/images/blog/blog2.jpg" alt="image" />
-                                                </a>
+
+                                                <img src="/images/blog/blog2.jpg" alt="image" />
+
                                             </Link>
                                         </div>
 
@@ -64,7 +63,7 @@ class BlogWithRightSidebar extends Component {
                                                 <ul>
                                                     <li>
                                                         <Link href="/blog2/#">
-                                                            <a>Admin</a>
+                                                            Admin
                                                         </Link>
                                                     </li>
                                                     <li>March 11, 2020</li>
@@ -73,15 +72,14 @@ class BlogWithRightSidebar extends Component {
 
                                             <h3>
                                                 <Link href="/blog-details">
-                                                    <a>I Used The Web For A Day On A 50 MB Budget</a>
+                                                    I Used The Web For A Day On A 50 MB Budget
                                                 </Link>
                                             </h3>
                                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...</p>
                                             
-                                            <Link href="/blog-details">
-                                                <a className="learn-more-btn">
-                                                    Read More <i className="flaticon-add"></i>
-                                                </a>
+                                            <Link href="/blog-details" className="learn-more-btn">
+                                                Read More<i className="flaticon-add"></i>
+
                                             </Link>
                                         </div>
                                     </div>
@@ -91,9 +89,9 @@ class BlogWithRightSidebar extends Component {
                                     <div className="single-blog-post">
                                         <div className="entry-thumbnail">
                                             <Link href="/blog-details">
-                                                <a>
-                                                    <img src="/images/blog/blog3.jpg" alt="image" />
-                                                </a>
+
+                                                <img src="/images/blog/blog3.jpg" alt="image" />
+
                                             </Link>
                                         </div>
 
@@ -102,7 +100,7 @@ class BlogWithRightSidebar extends Component {
                                                 <ul>
                                                     <li>
                                                         <Link href="/blog2/#">
-                                                            <a>Admin</a>
+                                                            Admin
                                                         </Link>
                                                     </li>
                                                     <li>March 12, 2020</li>
@@ -111,15 +109,14 @@ class BlogWithRightSidebar extends Component {
 
                                             <h3>
                                                 <Link href="/blog-details">
-                                                    <a>Here are the 5 most telling signs of micromanagement</a>
+                                                    Here are the 5 most telling signs of micromanagement
                                                 </Link>
                                             </h3>
                                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...</p>
                                             
-                                            <Link href="/blog-details">
-                                                <a className="learn-more-btn">
-                                                    Read More <i className="flaticon-add"></i>
-                                                </a>
+                                            <Link href="/blog-details" className="learn-more-btn">
+                                                Read More<i className="flaticon-add"></i>
+
                                             </Link>
                                         </div>
                                     </div>
@@ -129,9 +126,9 @@ class BlogWithRightSidebar extends Component {
                                     <div className="single-blog-post">
                                         <div className="entry-thumbnail">
                                             <Link href="/blog-details">
-                                                <a>
-                                                    <img src="/images/blog/blog4.jpg" alt="image" />
-                                                </a>
+
+                                                <img src="/images/blog/blog4.jpg" alt="image" />
+
                                             </Link>
                                         </div>
 
@@ -140,7 +137,7 @@ class BlogWithRightSidebar extends Component {
                                                 <ul>
                                                     <li>
                                                         <Link href="/blog2/#">
-                                                            <a>Admin</a>
+                                                            Admin
                                                         </Link>
                                                     </li>
                                                     <li>March 13, 2020</li>
@@ -149,15 +146,14 @@ class BlogWithRightSidebar extends Component {
 
                                             <h3>
                                                 <Link href="/blog-details">
-                                                    <a>Add And Show Image With Size From Elementor Widget</a>
+                                                    Add And Show Image With Size From Elementor Widget
                                                 </Link>
                                             </h3>
                                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...</p>
                                             
-                                            <Link href="/blog-details">
-                                                <a className="learn-more-btn">
-                                                    Read More <i className="flaticon-add"></i>
-                                                </a>
+                                            <Link href="/blog-details" className="learn-more-btn">
+                                                Read More<i className="flaticon-add"></i>
+
                                             </Link>
                                         </div>
                                     </div>
@@ -167,9 +163,9 @@ class BlogWithRightSidebar extends Component {
                                     <div className="single-blog-post">
                                         <div className="entry-thumbnail">
                                             <Link href="/blog-details">
-                                                <a>
-                                                    <img src="/images/blog/blog5.jpg" alt="image" />
-                                                </a>
+
+                                                <img src="/images/blog/blog5.jpg" alt="image" />
+
                                             </Link>
                                         </div>
 
@@ -178,7 +174,7 @@ class BlogWithRightSidebar extends Component {
                                                 <ul>
                                                     <li>
                                                         <Link href="/blog2/#">
-                                                            <a>Admin</a>
+                                                            Admin
                                                         </Link>
                                                     </li>
                                                     <li>March 14, 2020</li>
@@ -187,15 +183,14 @@ class BlogWithRightSidebar extends Component {
 
                                             <h3>
                                                 <Link href="/blog-details">
-                                                    <a>How To The Active Menu Based On URL In Next.JS?</a>
+                                                    How To The Active Menu Based On URL In Next.JS?
                                                 </Link>
                                             </h3>
                                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...</p>
                                             
-                                            <Link href="/blog-details">
-                                                <a className="learn-more-btn">
-                                                    Read More <i className="flaticon-add"></i>
-                                                </a>
+                                            <Link href="/blog-details" className="learn-more-btn">
+                                                Read More<i className="flaticon-add"></i>
+
                                             </Link>
                                         </div>
                                     </div>
@@ -205,9 +200,9 @@ class BlogWithRightSidebar extends Component {
                                     <div className="single-blog-post">
                                         <div className="entry-thumbnail">
                                             <Link href="/blog-details">
-                                                <a>
-                                                    <img src="/images/blog/blog6.jpg" alt="image" />
-                                                </a>
+
+                                                <img src="/images/blog/blog6.jpg" alt="image" />
+
                                             </Link>
                                         </div>
 
@@ -216,7 +211,7 @@ class BlogWithRightSidebar extends Component {
                                                 <ul>
                                                     <li>
                                                         <Link href="/blog2/#">
-                                                            <a>Admin</a>
+                                                            Admin
                                                         </Link>
                                                     </li>
                                                     <li>March 14, 2020</li>
@@ -225,15 +220,14 @@ class BlogWithRightSidebar extends Component {
 
                                             <h3>
                                                 <Link href="/blog-details">
-                                                    <a>Instagram Feed Add To Your WordPress Site</a>
+                                                    Instagram Feed Add To Your WordPress Site
                                                 </Link>
                                             </h3>
                                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...</p>
                                             
-                                            <Link href="/blog-details">
-                                                <a className="learn-more-btn">
-                                                    Read More <i className="flaticon-add"></i>
-                                                </a>
+                                            <Link href="/blog-details" className="learn-more-btn">
+                                                Read More<i className="flaticon-add"></i>
+
                                             </Link>
                                         </div>
                                     </div>
@@ -242,32 +236,32 @@ class BlogWithRightSidebar extends Component {
                                 {/* Pagination */}
                                 <div className="col-lg-12 col-sm-12">
                                     <div className="pagination-area">
-                                        <Link href="/blog2/#">
-                                            <a className="prev page-numbers">
-                                                <i className="fas fa-angle-double-left"></i>
-                                            </a>
+                                        <Link href="/blog2/#" className="prev page-numbers">
+
+                                            <i className="fas fa-angle-double-left"></i>
+
                                         </Link>
 
-                                        <Link href="/blog2/#">
-                                            <a className="page-numbers">1</a>
+                                        <Link href="/blog2/#" className="page-numbers">
+                                            1
                                         </Link>
 
-                                        <Link href="/blog2/#">
-                                            <a className="page-numbers current">2</a>
+                                        <Link href="/blog2/#" className="page-numbers current">
+                                            2
                                         </Link>
 
-                                        <Link href="/blog2/#">
-                                            <a className="page-numbers">3</a>
+                                        <Link href="/blog2/#" className="page-numbers">
+                                            3
                                         </Link>
 
-                                        <Link href="/blog2/#">
-                                            <a className="page-numbers">4</a>
+                                        <Link href="/blog2/#" className="page-numbers">
+                                            4
                                         </Link>
 
-                                        <Link href="/blog2/#">
-                                            <a className="next page-numbers">
-                                                <i className="fas fa-angle-double-right"></i>
-                                            </a>
+                                        <Link href="/blog2/#" className="next page-numbers">
+
+                                            <i className="fas fa-angle-double-right"></i>
+
                                         </Link>
                                     </div>
                                 </div>

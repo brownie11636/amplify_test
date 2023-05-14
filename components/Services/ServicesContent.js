@@ -26,7 +26,7 @@ class ServicesContent extends Component {
                                         }
                                     }}> */}
                                     <Link href={`/socketchat/${uuidv4()}`}>
-                                        <a>Socket Chat</a>
+                                        Socket Chat
                                     </Link>
                                 </h3>
                                 <p>TeleDAQ</p>
@@ -41,7 +41,7 @@ class ServicesContent extends Component {
 
                                 <h3>
                                     <Link href="/webrtc">
-                                        <a>Web RTC</a>
+                                        Web RTC
                                     </Link>
                                 </h3>
                                 <p>Basic WebRTC</p>
@@ -55,7 +55,7 @@ class ServicesContent extends Component {
 
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>TeleSyncArm</a>
+                                        TeleSyncArm
                                     </Link>
                                 </h3>
                                 <p>Robot Arm Teleoperation</p>
@@ -69,7 +69,7 @@ class ServicesContent extends Component {
 
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>MonkeyEye</a>
+                                        MonkeyEye
                                     </Link>
                                 </h3>
                                 <p>Camera Robot Teleoperation</p>

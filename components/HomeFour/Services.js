@@ -27,7 +27,7 @@ class ServicesContent extends Component {
                                         }
                                     }}> */}
                                     <Link href={`/socketchat/${uuidv4()}`}>
-                                        <a>Socket Chat</a>
+                                        Socket Chat
                                     </Link>
                                 </h3>
                                 <p>Under Construction</p>
@@ -42,7 +42,7 @@ class ServicesContent extends Component {
                                 </div>
                                 <h3>
                                     <Link href="/sensorIoT">
-                                        <a>Sensor IoT</a>
+                                        Sensor IoT
                                     </Link>
                                 </h3>
                                 <p>Online Sensor Management</p>
@@ -52,20 +52,20 @@ class ServicesContent extends Component {
                             <div className="single-services-box">
                                 <div className='panel'>
                                     <div className="icon">
-                                        <Link href="/mediasoup">
+                                        <Link href="/mediasoup" legacyBehavior>
                                             <i className="flaticon-automatic"></i>
                                         </Link>
                                     </div>
                                     <div className="option">
                                         <div className="btn-box">
                                             <div>
-                                                <Link href="/mediasoup/publish">
-                                                    <a className="btn btn-primary">Publish</a>
+                                                <Link href="/mediasoup/publish" className="btn btn-primary">
+                                                    Publish
                                                 </Link>
                                             </div>
                                             <div>
-                                                <Link href="/mediasoup/subscribe">
-                                                    <a className="btn btn-primary">Subscribe</a>
+                                                <Link href="/mediasoup/subscribe" className="btn btn-primary">
+                                                    Subscribe
                                                 </Link>
                                             </div>
                                         </div>
@@ -75,7 +75,7 @@ class ServicesContent extends Component {
 
                                 <h3>
                                     <Link href="/mediasoup">
-                                        <a>MediaSoup</a>
+                                        MediaSoup
                                     </Link>
                                 </h3>
                                 <p>Prototyping on mediasoup</p>
@@ -85,20 +85,20 @@ class ServicesContent extends Component {
                             <div className="single-services-box">
                                 <div className='panel'>
                                     <div className="icon">
-                                        <Link href="/mediasoup">
+                                        <Link href="/mediasoup" legacyBehavior>
                                             <i className="flaticon-automatic"></i>
                                         </Link>
                                     </div>
                                     <div className="option">
                                         <div className="btn-box">
                                             <div>
-                                                <Link href="/webrtc/cast">
-                                                    <a className="btn btn-primary">Start Stream</a>
+                                                <Link href="/webrtc/cast" className="btn btn-primary">
+                                                    Start Stream
                                                 </Link>
                                             </div>
                                             <div>
-                                                <Link href="/webrtc/view">
-                                                    <a className="btn btn-primary">View Stream</a>
+                                                <Link href="/webrtc/view" className="btn btn-primary">
+                                                    View Stream
                                                 </Link>
                                             </div>
                                         </div>
@@ -108,7 +108,7 @@ class ServicesContent extends Component {
 
                                 <h3>
                                     <Link href="/webrtc">
-                                        <a>WebRTC</a>
+                                        WebRTC
                                     </Link>
                                 </h3>
                                 <p>Basic WebRTC</p>
@@ -123,7 +123,7 @@ class ServicesContent extends Component {
                                 </div>
                                 <h3>
                                     <Link href="/teleoperation">
-                                        <a>TeleSyncArm</a>
+                                        TeleSyncArm
                                     </Link>
                                 </h3>
                                 <p>Robot Arm Teleoperation</p>
@@ -133,20 +133,20 @@ class ServicesContent extends Component {
                             <div className="single-services-box">
                                 <div className='panel'>
                                     <div className="icon">
-                                    <Link href="/service-details">
+                                    <Link href="/service-details" legacyBehavior>
                                             <i className="flaticon-locked"></i>
                                     </Link>
                                     </div>
                                     <div className="option">
                                         <div className="btn-box">
                                             <div>
-                                                <Link href="/webrtc/cast">
-                                                    <a className="btn btn-primary">Enroll Robot</a>
+                                                <Link href="/webrtc/cast" className="btn btn-primary">
+                                                    Enroll Robot
                                                 </Link>
                                             </div>
                                             <div>
-                                                <Link href="/monkey-eye/operate">
-                                                    <a className="btn btn-primary">Operate Robot</a>
+                                                <Link href="/monkey-eye/operate" className="btn btn-primary">
+                                                    Operate Robot
                                                 </Link>
                                             </div>
                                         </div>
@@ -159,7 +159,7 @@ class ServicesContent extends Component {
                                 </div>
                                 <h3>
                                     <Link href="/service-details">
-                                        <a>Monkey-Eye</a>
+                                        Monkey-Eye
                                     </Link>
                                 </h3>
                                 <p>Camera Robot Teleoperation</p>

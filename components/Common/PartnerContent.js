@@ -13,74 +13,74 @@ class PartnerContent extends Component {
 
                     <div className="customers-partner-list">
                         <div className="partner-item">
-                            <Link href="/partner">
-                                <a target="_blank">
-                                    <img src="/images/partner/partner1.png" alt="image" />
-                                </a>
+                            <Link href="/partner" target="_blank">
+
+                                <img src="/images/partner/partner1.png" alt="image" />
+
                             </Link>
                         </div>
 
                         <div className="partner-item">
-                            <Link href="/partner">
-                                <a target="_blank">
-                                    <img src="/images/partner/partner2.png" alt="image" />
-                                </a>
+                            <Link href="/partner" target="_blank">
+
+                                <img src="/images/partner/partner2.png" alt="image" />
+
                             </Link>
                         </div>
 
                         <div className="partner-item">
-                            <Link href="/partner">
-                                <a target="_blank">
-                                    <img src="/images/partner/partner3.png" alt="image" />
-                                </a>
+                            <Link href="/partner" target="_blank">
+
+                                <img src="/images/partner/partner3.png" alt="image" />
+
                             </Link>
                         </div>
 
                         <div className="partner-item">
-                            <Link href="/partner">
-                                <a target="_blank">
-                                    <img src="/images/partner/partner4.png" alt="image" />
-                                </a>
+                            <Link href="/partner" target="_blank">
+
+                                <img src="/images/partner/partner4.png" alt="image" />
+
                             </Link>
                         </div>
 
                         <div className="partner-item">
-                            <Link href="/partner">
-                                <a target="_blank">
-                                    <img src="/images/partner/partner5.png" alt="image" />
-                                </a>
+                            <Link href="/partner" target="_blank">
+
+                                <img src="/images/partner/partner5.png" alt="image" />
+
                             </Link>
                         </div>
 
                         <div className="partner-item">
-                            <Link href="/partner">
-                                <a target="_blank">
-                                    <img src="/images/partner/partner6.png" alt="image" />
-                                </a>
+                            <Link href="/partner" target="_blank">
+
+                                <img src="/images/partner/partner6.png" alt="image" />
+
                             </Link>
                         </div>
 
                         <div className="partner-item">
-                            <Link href="/partner">
-                                <a target="_blank">
-                                    <img src="/images/partner/partner1.png" alt="image" />
-                                </a>
+                            <Link href="/partner" target="_blank">
+
+                                <img src="/images/partner/partner1.png" alt="image" />
+
                             </Link>
                         </div>
 
                         <div className="partner-item">
-                            <Link href="/partner">
-                                <a target="_blank">
-                                    <img src="/images/partner/partner2.png" alt="image" />
-                                </a>
+                            <Link href="/partner" target="_blank">
+
+                                <img src="/images/partner/partner2.png" alt="image" />
+
                             </Link>
                         </div>
 
                         <div className="partner-item">
-                            <Link href="/partner">
-                                <a target="_blank">
-                                    <img src="/images/partner/partner3.png" alt="image" />
-                                </a>
+                            <Link href="/partner" target="_blank">
+
+                                <img src="/images/partner/partner3.png" alt="image" />
+
                             </Link>
                         </div>
                     </div>

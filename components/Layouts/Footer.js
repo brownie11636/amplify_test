@@ -141,7 +141,7 @@ class Footer extends Component {
                                     </li> */}
                                     <li>
                                         <Link href="/">
-                                            <a>© Copyright PORTAL301 All Rights Reserved.</a>
+                                            © Copyright PORTAL301 All Rights Reserved.
                                         </Link>
                                     </li>
                                 </ul>

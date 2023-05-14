@@ -13,22 +13,22 @@ class TeamContent extends Component {
                                     <img src="/images/team/team1.jpg" alt="Team Image" />
 
                                     <div className="social">
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-facebook-f"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-facebook-f"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-twitter"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-twitter"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-instagram"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-instagram"></i>
+
                                         </Link>
                                     </div>
                                 </div>
@@ -46,22 +46,22 @@ class TeamContent extends Component {
                                     <img src="/images/team/team2.jpg" alt="Team Image" />
 
                                     <div className="social">
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-facebook-f"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-facebook-f"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-twitter"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-twitter"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-instagram"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-instagram"></i>
+
                                         </Link>
                                     </div>
                                 </div>
@@ -79,22 +79,22 @@ class TeamContent extends Component {
                                     <img src="/images/team/team3.jpg" alt="Team Image" />
 
                                     <div className="social">
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-facebook-f"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-facebook-f"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-twitter"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-twitter"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-instagram"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-instagram"></i>
+
                                         </Link>
                                     </div>
                                 </div>
@@ -112,22 +112,22 @@ class TeamContent extends Component {
                                     <img src="/images/team/team4.jpg" alt="Team Image" />
 
                                     <div className="social">
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-facebook-f"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-facebook-f"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-twitter"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-twitter"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-instagram"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-instagram"></i>
+
                                         </Link>
                                     </div>
                                 </div>
@@ -145,22 +145,22 @@ class TeamContent extends Component {
                                     <img src="/images/team/team5.jpg" alt="Team Image" />
 
                                     <div className="social">
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-facebook-f"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-facebook-f"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-twitter"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-twitter"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-instagram"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-instagram"></i>
+
                                         </Link>
                                     </div>
                                 </div>
@@ -178,22 +178,22 @@ class TeamContent extends Component {
                                     <img src="/images/team/team6.jpg" alt="Team Image" />
 
                                     <div className="social">
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-facebook-f"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-facebook-f"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-twitter"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-twitter"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-instagram"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-instagram"></i>
+
                                         </Link>
                                     </div>
                                 </div>
@@ -211,22 +211,22 @@ class TeamContent extends Component {
                                     <img src="/images/team/team7.jpg" alt="Team Image" />
 
                                     <div className="social">
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-facebook-f"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-facebook-f"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-twitter"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-twitter"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-instagram"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-instagram"></i>
+
                                         </Link>
                                     </div>
                                 </div>
@@ -244,22 +244,22 @@ class TeamContent extends Component {
                                     <img src="/images/team/team8.jpg" alt="Team Image" />
 
                                     <div className="social">
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-facebook-f"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-facebook-f"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-twitter"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-twitter"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-instagram"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-instagram"></i>
+
                                         </Link>
                                     </div>
                                 </div>
@@ -277,22 +277,22 @@ class TeamContent extends Component {
                                     <img src="/images/team/team9.jpg" alt="Team Image" />
 
                                     <div className="social">
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-facebook-f"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-facebook-f"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-twitter"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-twitter"></i>
+
                                         </Link>
 
-                                        <Link href="/team/#">
-                                            <a target="_blank">
-                                                <i className="fab fa-instagram"></i>
-                                            </a>
+                                        <Link href="/team/#" target="_blank">
+
+                                            <i className="fab fa-instagram"></i>
+
                                         </Link>
                                     </div>
                                 </div>

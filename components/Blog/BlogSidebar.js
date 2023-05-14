@@ -22,16 +22,16 @@ class BlogSidebar extends Component {
                     <h3 className="widget-title">Popular posts</h3>
 
                     <article className="item">
-                        <Link href="/blog-details">
-                            <a className="thumb">
-                                <span className="fullimage cover bg1" role="img"></span>
-                            </a>
+                        <Link href="/blog-details" className="thumb">
+
+                            <span className="fullimage cover bg1" role="img"></span>
+
                         </Link>
                         <div className="info">
                             <time>March 15, 2020</time>
                             <h4 className="title usmall">
                                 <Link href="/blog-details">
-                                    <a>The Best Marketing top use Management Tools</a>
+                                    The Best Marketing top use Management Tools
                                 </Link>
                             </h4>
                         </div>
@@ -47,7 +47,7 @@ class BlogSidebar extends Component {
                             <time>March 16, 2020</time>
                             <h4 className="title usmall">
                                 <Link href="/blog-details">
-                                    <a>Top 21 Must-Read Blogs For Creative Agencies</a>
+                                    Top 21 Must-Read Blogs For Creative Agencies
                                 </Link>
                             </h4>
                         </div>
@@ -63,7 +63,7 @@ class BlogSidebar extends Component {
                             <time>March 17, 2020</time>
                             <h4 className="title usmall">
                                 <Link href="/blog-details">
-                                    <a>Protect your workplace from cyber attacks</a>
+                                    Protect your workplace from cyber attacks
                                 </Link>
                             </h4>
                         </div>
@@ -79,31 +79,31 @@ class BlogSidebar extends Component {
                     <ul>
                         <li>
                             <Link href="/blog-details">
-                                <a>The security risks of changing package owners</a>
+                                The security risks of changing package owners
                             </Link>
                             <span className="post-date">March 15, 2020</span>
                         </li>
                         <li>
                             <Link href="/blog-details">
-                                <a>Tips to protecting business and Family</a>
+                                Tips to protecting business and Family
                             </Link>
                             <span className="post-date">March 16, 2020</span>
                         </li>
                         <li>
                             <Link href="/blog-details">
-                                <a>Protect your workplace from cyber attacks</a>
+                                Protect your workplace from cyber attacks
                             </Link>
                             <span className="post-date">March 17, 2020</span>
                         </li>
                         <li>
                             <Link href="/blog-details">
-                                <a>Business debit Fees to increase in 2020</a>
+                                Business debit Fees to increase in 2020
                             </Link>
                             <span className="post-date">March 18, 2020</span>
                         </li>
                         <li>
                             <Link href="/blog-details">
-                                <a>10 tips to reduce your card processing costs</a>
+                                10 tips to reduce your card processing costs
                             </Link>
                             <span className="post-date">March 19, 2020</span>
                         </li>
@@ -117,27 +117,27 @@ class BlogSidebar extends Component {
                     <ul>
                         <li>
                             <Link href="/blog2/#">
-                                <a>Business</a>
+                                Business
                             </Link>
                         </li>
                         <li>
                             <Link href="/blog2/#">
-                                <a>Privacy</a>
+                                Privacy
                             </Link>
                         </li>
                         <li>
                             <Link href="/blog2/#">
-                                <a>Technology </a>
+                                Technology 
                             </Link>
                         </li>
                         <li>
                             <Link href="/blog2/#">
-                                <a>Tips</a>
+                                Tips
                             </Link>
                         </li>
                         <li>
                             <Link href="/blog2/#">
-                                <a>Uncategorized</a>
+                                Uncategorized
                             </Link>
                         </li>
                     </ul>
@@ -149,28 +149,28 @@ class BlogSidebar extends Component {
 
                     <div className="tagcloud">
                         <Link href="/blog2/#">
-                            <a>IT <span className="tag-link-count">(3)</span></a>
+                            IT<span className="tag-link-count">(3)</span>
                         </Link>
                         <Link href="/blog2/#">
-                            <a>React <span className="tag-link-count">(3)</span></a>
+                            React<span className="tag-link-count">(3)</span>
                         </Link>
                         <Link href="/blog2/#">
-                            <a>Games <span className="tag-link-count">(2)</span></a>
+                            Games<span className="tag-link-count">(2)</span>
                         </Link>
                         <Link href="/blog2/#">
-                            <a>Development <span className="tag-link-count">(2)</span></a>
+                            Development<span className="tag-link-count">(2)</span>
                         </Link>
                         <Link href="/blog2/#">
-                            <a>Design <span className="tag-link-count">(1)</span></a>
+                            Design<span className="tag-link-count">(1)</span>
                         </Link>
                         <Link href="/blog2/#">
-                            <a>Apps <span className="tag-link-count">(1)</span></a>
+                            Apps<span className="tag-link-count">(1)</span>
                         </Link>
                         <Link href="/blog2/#">
-                            <a>Marketing <span className="tag-link-count">(1)</span></a>
+                            Marketing<span className="tag-link-count">(1)</span>
                         </Link>
                         <Link href="/blog2/#">
-                            <a>Tips <span className="tag-link-count">(2)</span></a>
+                            Tips<span className="tag-link-count">(2)</span>
                         </Link>
                     </div>
                 </div>

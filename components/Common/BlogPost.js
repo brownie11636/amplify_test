@@ -16,9 +16,9 @@ class BlogPost extends Component {
                             <div className="single-blog-post">
                                 <div className="entry-thumbnail">
                                     <Link href="/blog-details">
-                                        <a>
-                                            <img src="/images/blog/blog1.jpg" alt="image" />
-                                        </a>
+
+                                        <img src="/images/blog/blog1.jpg" alt="image" />
+
                                     </Link>
                                 </div>
 
@@ -27,7 +27,7 @@ class BlogPost extends Component {
                                         <ul>
                                             <li>
                                                 <Link href="/blog">
-                                                    <a>Admin</a>
+                                                    Admin
                                                 </Link>
                                             </li>
                                             <li>March 10, 2020</li>
@@ -36,16 +36,15 @@ class BlogPost extends Component {
 
                                     <h3>
                                         <Link href="/blog-details">
-                                            <a>Making Peace With The Feast Or Famine Of Freelancing</a>
+                                            Making Peace With The Feast Or Famine Of Freelancing
                                         </Link>
                                     </h3>
 
                                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...</p>
                                     
-                                    <Link href="/blog-details">
-                                        <a className="learn-more-btn">
-                                            Read More <i className="flaticon-add"></i>
-                                        </a>
+                                    <Link href="/blog-details" className="learn-more-btn">
+                                        Read More<i className="flaticon-add"></i>
+
                                     </Link>
                                 </div>
                             </div>
@@ -55,9 +54,9 @@ class BlogPost extends Component {
                             <div className="single-blog-post">
                                 <div className="entry-thumbnail">
                                     <Link href="/blog-details">
-                                        <a>
-                                            <img src="/images/blog/blog2.jpg" alt="image" />
-                                        </a>
+
+                                        <img src="/images/blog/blog2.jpg" alt="image" />
+
                                     </Link>
                                 </div>
 
@@ -66,7 +65,7 @@ class BlogPost extends Component {
                                         <ul>
                                             <li>
                                                 <Link href="/blog">
-                                                    <a>Admin</a>
+                                                    Admin
                                                 </Link>
                                             </li>
                                             <li>March 11, 2020</li>
@@ -75,15 +74,14 @@ class BlogPost extends Component {
 
                                     <h3>
                                         <Link href="/blog-details">
-                                            <a>I Used The Web For A Day On A 50 MB Budget</a>
+                                            I Used The Web For A Day On A 50 MB Budget
                                         </Link>
                                     </h3>
                                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...</p>
                                     
-                                    <Link href="/blog-details">
-                                        <a className="learn-more-btn">
-                                            Read More <i className="flaticon-add"></i>
-                                        </a>
+                                    <Link href="/blog-details" className="learn-more-btn">
+                                        Read More<i className="flaticon-add"></i>
+
                                     </Link>
                                 </div>
                             </div>
@@ -93,9 +91,9 @@ class BlogPost extends Component {
                             <div className="single-blog-post">
                                 <div className="entry-thumbnail">
                                     <Link href="/blog-details">
-                                        <a>
-                                            <img src="/images/blog/blog3.jpg" alt="image" />
-                                        </a>
+
+                                        <img src="/images/blog/blog3.jpg" alt="image" />
+
                                     </Link>
                                 </div>
 
@@ -104,7 +102,7 @@ class BlogPost extends Component {
                                         <ul>
                                             <li>
                                                 <Link href="/blog">
-                                                    <a>Admin</a>
+                                                    Admin
                                                 </Link>
                                             </li>
                                             <li>March 12, 2020</li>
@@ -113,15 +111,14 @@ class BlogPost extends Component {
 
                                     <h3>
                                         <Link href="/blog-details">
-                                            <a>Here are the 5 most telling signs of micromanagement</a>
+                                            Here are the 5 most telling signs of micromanagement
                                         </Link>
                                     </h3>
                                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...</p>
                                     
-                                    <Link href="/blog-details">
-                                        <a className="learn-more-btn">
-                                            Read More <i className="flaticon-add"></i>
-                                        </a>
+                                    <Link href="/blog-details" className="learn-more-btn">
+                                        Read More<i className="flaticon-add"></i>
+
                                     </Link>
                                 </div>
                             </div>

@@ -59,8 +59,8 @@ class PricingCard extends Component {
                                             </div>
 
                                             <div className="buy-btn">
-                                                <Link href="/pricing/#">
-                                                    <a className="btn btn-primary">Get Started Free</a>
+                                                <Link href="/pricing/#" className="btn btn-primary">
+                                                    Get Started Free
                                                 </Link>
                                             </div>
 
@@ -89,8 +89,8 @@ class PricingCard extends Component {
                                             </div>
 
                                             <div className="buy-btn">
-                                                <Link href="/pricing/#">
-                                                    <a className="btn btn-primary">Start 3 Days Free Trial</a>
+                                                <Link href="/pricing/#" className="btn btn-primary">
+                                                    Start 3 Days Free Trial
                                                 </Link>
                                             </div>
 
@@ -119,8 +119,8 @@ class PricingCard extends Component {
                                             </div>
 
                                             <div className="buy-btn">
-                                                <Link href="/pricing/#">
-                                                    <a className="btn btn-primary">Start 6 Days Free Trial</a>
+                                                <Link href="/pricing/#" className="btn btn-primary">
+                                                    Start 6 Days Free Trial
                                                 </Link>
                                             </div>
 
@@ -153,8 +153,8 @@ class PricingCard extends Component {
                                             </div>
 
                                             <div className="buy-btn">
-                                                <Link href="/pricing/#">
-                                                    <a className="btn btn-primary">Get Started Free</a>
+                                                <Link href="/pricing/#" className="btn btn-primary">
+                                                    Get Started Free
                                                 </Link>
                                             </div>
 
@@ -183,8 +183,8 @@ class PricingCard extends Component {
                                             </div>
 
                                             <div className="buy-btn">
-                                                <Link href="/pricing/#">
-                                                    <a className="btn btn-primary">Start 3 Days Free Trial</a>
+                                                <Link href="/pricing/#" className="btn btn-primary">
+                                                    Start 3 Days Free Trial
                                                 </Link>
                                             </div>
 
@@ -213,8 +213,8 @@ class PricingCard extends Component {
                                             </div>
 
                                             <div className="buy-btn">
-                                                <Link href="/pricing/#">
-                                                    <a className="btn btn-primary">Start 6 Days Free Trial</a>
+                                                <Link href="/pricing/#" className="btn btn-primary">
+                                                    Start 6 Days Free Trial
                                                 </Link>
                                             </div>
 
