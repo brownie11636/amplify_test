@@ -3,11 +3,11 @@ import { emitHandler, SocketContext, onHandelr } from '../../../components/Socke
 
 export const Child = () => {
 
-    const socket = useContext(SocketContext);
+    // const socket = useContext(SocketContext);
 
-    socket.on('echo', function (msg) {
-        console.log("echo msg:" + msg);
-    });
+    // socket.on('echo', function (msg) {
+    //     console.log("echo msg:" + msg);
+    // });
 
     const check = () => {
         // console.log(returnV);

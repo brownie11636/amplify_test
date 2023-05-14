@@ -17,7 +17,7 @@ export default function Scene(props) {
 
   // ------- PCD datachannel
   const [PCD, setPCD] = useState();
-  const point = props.PCD.current;
+  // const point = props.PCD.current;
 
   // const result = useLoader(PCDLoader, '../Zaghetto.pcd');
   // const loader = new PCDLoader();

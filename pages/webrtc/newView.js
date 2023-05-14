@@ -20,8 +20,8 @@ export const NewView = () => {
     return (
         <>
             <SocketContext.Provider value={socket}>
-                    <RemoteVideoPanel stream={stream} setStream={setRemoteStream}/>
-                    <RemoteController stream={stream} setStream={setRemoteStream}/>
+                    {/* <RemoteVideoPanel stream={stream} setStream={setRemoteStream}/>
+                    <RemoteController stream={stream} setStream={setRemoteStream}/> */}
                     <Scene />
             </SocketContext.Provider>
         </>

@@ -34,7 +34,7 @@ const MyModel = () => {
   const loader = new PCDLoader();
   loader.load(
     // resource URL
-    '/Zaghetto.pcd',
+    'Zaghetto.pcd',
     // called when the resource is loaded
     function (points) {
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Header from '../components/Layouts/Header';
 import PageBanner from '../components/Common/PageBanner';
-import ContactFormContent from '../components/Contact/ContactFormContent';
+// import ContactFormContent from '../components/Contact/ContactFormContent';
 import Footer from '../components/Layouts/Footer';
 
 class Contact extends Component {
@@ -18,7 +18,7 @@ class Contact extends Component {
                     bgImgClass="item-bg3" 
                 />  
 
-                <ContactFormContent />
+                {/* <ContactFormContent /> */}
                 
                 <Footer/>
             </>

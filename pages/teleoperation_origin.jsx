@@ -5,7 +5,7 @@ import PageBanner from "../components/Common/PageBanner";
 import Footer from "../components/Layouts/Footer";
 
 
-const Scene = dynamic(() => import("../components/Canvas/Scene"), { ssr: true })
+// const Scene = dynamic(() => import("../components/Canvas/Scene"), { ssr: true })
 
 export default function Teleoperation(Component, props){
 
@@ -21,7 +21,7 @@ export default function Teleoperation(Component, props){
         activePageText="Service Details"
         bgImgClass="item-bg2"
       />
-      <Scene />    
+      {/* <Scene />     */}
       <Footer />
     </>
   );

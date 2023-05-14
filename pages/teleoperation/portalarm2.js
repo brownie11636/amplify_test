@@ -5,7 +5,7 @@ import { SocketContext, socket } from '../../components/Socket/Socket';
 
 import dynamic from 'next/dynamic'
 
-const PCDload = dynamic(() => import("../../components/Canvas/PCDload"), { ssr: true })
+// const PCDload = dynamic(() => import("../../components/Canvas/PCDload"), { ssr: true })
 
 export const PortalArm2 = () => {
 
@@ -18,7 +18,7 @@ export const PortalArm2 = () => {
     return (<>
         <div>
             <SocketContext.Provider value={socket}>
-                <PCDload PCD={point}/>
+                {/* <PCDload PCD={point}/> */}
             </SocketContext.Provider>
         </div>
     </>);

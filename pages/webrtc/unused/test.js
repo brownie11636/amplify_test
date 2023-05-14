@@ -16,24 +16,25 @@ export const Test = () => {
     };
 
     return (
-        <Socket setProfileList={setProfileList}>
+        <div>Hello</div>
+        // <Socket setProfileList={setProfileList}>
 
-            Hello, Im Test Component!
-            <div class="col-md-4">
-                <select class="form-control" style={{ width: '400px' }} onChange={handleSelect} value={targetProfile}>
-                    {profileList.map((item) => (
-                        <option value={item.sid} key={item.sid}>
-                            {item.sid}
-                        </option>
-                    ))}
-                </select>
-            </div>
+            // Hello, Im Test Component!
+            // <div class="col-md-4">
+            //     <select class="form-control" style={{ width: '400px' }} onChange={handleSelect} value={targetProfile}>
+            //         {profileList.map((item) => (
+            //             <option value={item.sid} key={item.sid}>
+            //                 {item.sid}
+            //             </option>
+            //         ))}
+            //     </select>
+            // </div>
 
-            {/* <button type="button" class="btn btn-primary" onClick={createOffer}>Join Streaming</button>
-            <button type="button" class="btn btn-primary" onClick={debugcode}>console debug</button> */}
+            // {/* <button type="button" class="btn btn-primary" onClick={createOffer}>Join Streaming</button>
+            // <button type="button" class="btn btn-primary" onClick={debugcode}>console debug</button> */}
 
 
-        </Socket>
+        // </Socket>
     );
 };
 
