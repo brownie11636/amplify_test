@@ -35,7 +35,8 @@ class FeedbackSlider extends Component {
         return (
             <div className="feedback-area">
                 <div className="container-flauid p-0">
-                    {this.state.display ? <OwlCarousel 
+                    {this.state.display ? 
+                    <OwlCarousel 
                     className="feedback-slides owl-carousel owl-theme"
                         {...options}
                     >
@@ -107,7 +108,9 @@ class FeedbackSlider extends Component {
                                 </div>
                             </div>
                         </div>
-                    </OwlCarousel> : ''}
+                        
+                     </OwlCarousel> : ''}
+
                 </div>
             </div>
         );

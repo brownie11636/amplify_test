@@ -5,7 +5,7 @@ import PageBanner from '../components/Common/PageBanner';
 import Services from '../components/HomeOne/Services';
 import Team from '../components/Common/Team';
 import PartnerContent from '../components/Common/PartnerContent';
-import FeedbackSlider from '../components/Common/FeedbackSlider';
+// import FeedbackSlider from '../components/Common/FeedbackSlider';
 import PricingCard from '../components/Common/PricingCard';
 import FreeTrialForm from '../components/Common/FreeTrialForm';
 import Footer from '../components/Layouts/Footer';

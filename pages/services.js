@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from "../components/Layouts/Header";
 import PageBanner from '../components/Common/PageBanner';
 import ServicesContent from '../components/Services/ServicesContent';
-import FeedbackSlider from '../components/Common/FeedbackSlider';
+// import FeedbackSlider from '../components/Common/FeedbackSlider';
 import Footer from '../components/Layouts/Footer';
 
 class Services extends Component {

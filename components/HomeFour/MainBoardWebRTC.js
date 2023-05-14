@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-const OwlCarousel = dynamic(import('react-owl-carousel3'));
+// const OwlCarousel = dynamic(import('react-owl-carousel3'));
 
 const options = {
     loop: true,
@@ -26,10 +26,11 @@ const MainBoardWebRTC = () => {
 
     return (
         <>
-            {display ? <OwlCarousel 
-                className="home-slides owl-carousel owl-theme"
-                {...options}
-            > 
+            {display ? 
+            // <OwlCarousel 
+            //     className="home-slides owl-carousel owl-theme"
+            //     {...options}
+            // > 
                 <div className="main-banner item-bg1">
                     <div className="container">
                         <div className="main-banner-content">
@@ -50,7 +51,8 @@ const MainBoardWebRTC = () => {
                         </div>
                     </div>
                 </div>
-            </OwlCarousel> : ''}
+            // </OwlCarousel>
+             : ''}
         </>
     )
 }
