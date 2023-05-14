@@ -1,7 +1,7 @@
 {
-    "name": "bariton",
+    "name": "portal301-next",
     "version": "2.0.0",
-    "description": "Bariton - IT Machine Learning React Next Template",
+    "description": "nextjs project of portal301",
     "main": "index.js",
     "scripts": {
         "dev": "next dev -p 3000",
@@ -18,7 +18,7 @@
         "@nivo/line": "^0.83.0",
         "@react-three/drei": "^9.40.0",
         "@react-three/fiber": "^8.9.1",
-        "@react-three/xr": "^5.0.5",
+        "@react-three/xr": "^5.5.0",
         "animate.css": "^4.1.1",
         "axios": "^1.4.0",
         "bootstrap": "^5.2.3",
@@ -27,13 +27,14 @@
         "install": "^0.13.0",
         "leva": "^0.9.34",
         "mediasoup-client": "^3.6.58",
-        "next": "13.0",
+        "next": "^13.4.2",
         "next-auth": "^4.10.3",
         "next-dev-https": "^0.13.3",
         "next-redux-wrapper": "^7.0.5",
         "nodemailer": "^6.7.1",
         "nodemailer-sendgrid-transport": "^0.2.0",
         "openssl": "^2.0.0",
+        "prop-types": "^15.8.1",
         "react": "^18.2.0",
         "react-accessible-accordion": "^5.0.0",
         "react-bootstrap": "^2.7.0",
@@ -48,12 +49,12 @@
         "redux-persist": "^6.0.0",
         "redux-thunk": "^2.4.1",
         "sass": "^1.43.4",
-        "socket.io-client": "^2.3.0",
+        "socket.io-client": "^4.6.1",
         "sweetalert2": "^11.4.8",
         "sweetalert2-react-content": "^5.0.7",
         "three": "^0.146.0",
         "uuid": "^8.3.2",
-        "webrtc-adapter": "^8.1.1"
+        "webrtc-adapter": "^8.2.2"
     },
     "devDependencies": {
         "typescript": "^4.8.4"
