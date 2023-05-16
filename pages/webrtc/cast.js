@@ -356,30 +356,30 @@ export const App = () => {
       />
 
       <div>
-        <div class="row">
-          <div class="col-md-4">
+        <div className="row">
+          <div className="col-md-4">
           </div>
 
-          <div class="col-md-4">
+          <div className="col-md-4">
             <RTCvideo2 stream={localVideoRef.current} setStream={setStream} />
             {/* <button onClick={setVideoTracks}>Start Streaming</button> */}
-            <div class="col-md-4">
+            <div className="col-md-4">
 
-              <select class="form-control" style={{ width: '400px' }} onChange={handleSelect} value={targetProfile}>
+              <select className="form-control" style={{ width: '400px' }} onChange={handleSelect} value={targetProfile}>
                 {profileList.map((item) => (
-                  <option value={item.sid} key={item.sid}>
+                  <option value={item.sid} key={Math.random()}>
                     {item.sid}
                   </option>
                 ))}
               </select>
             </div>
 
-            <button type="button" class="btn btn-primary" onClick={setVideoTracks}>Start Streaming</button>
-            <button type="button" class="btn btn-primary" onClick={debugcode}>console debug</button>
+            <button type="button" className="btn btn-primary" onClick={setVideoTracks}>Start Streaming</button>
+            <button type="button" className="btn btn-primary" onClick={debugcode}>console debug</button>
 
           </div>
 
-          <div class="col-md-4">
+          <div className="col-md-4">
           </div>
         </div>
       </div>
