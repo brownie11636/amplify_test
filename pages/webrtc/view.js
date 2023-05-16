@@ -4,10 +4,7 @@ import Header from "../../components/Layouts/Header";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
 import { socketPoint } from "../../toServer/API-AccessPoint";
-import ServiceListPanel2 from "../../components/ServiceProfile/ServiceListPanel2";
-import ServiceListPanel from "../../components/ServiceProfile/ServiceListPanel";
 import RTCvideo from "../../components/Services/VideoPanel";
-import RTCvideo2 from "../../components/Services/VideoPanel2";
 import 'bootstrap/dist/css/bootstrap.css';
 
 const BSON = require('bson');
@@ -23,14 +20,13 @@ const SOCKET_SERVER_URL = socketPoint;
 
 export const App = () => {
 
-  // ------------------- 컴포넌트 분리 작업 중...
   const [targetProfile, setTargetProfile] = useState({});
   const [profileList, setProfileList] = useState([]);
 
   const setStream = (stream) => {
     remoteVideoRef.current = stream;
   }
-  // -------------------
+
   const socketRef = useRef();
   const pcRef = useRef();
 
@@ -257,7 +253,7 @@ export const App = () => {
           </div>
           <div className="col-md-4">
 
-            <RTCvideo2 stream={remoteVideoRef.current} setStream={setStream} />
+            <RTCvideo stream={remoteVideoRef.current} setStream={setStream} />
 
             <div className="col">
 

@@ -5,7 +5,7 @@ import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
 import { socketPoint } from "../../toServer/API-AccessPoint";
 import ServiceListPanel from "../../components/ServiceProfile/ServiceListPanel";
-import RTCvideo2 from "../../components/Services/VideoPanel2";
+import RTCvideo from "../../components/Services/VideoPanel";
 import 'bootstrap/dist/css/bootstrap.css';
 
 const pc_config = {
@@ -19,15 +19,12 @@ const SOCKET_SERVER_URL = socketPoint;
 
 export const App = () => {
 
-  //--------------- 컴포넌트 분리 작업중
   const [profileList, setProfileList] = useState([]);
   const [targetProfile, setTargetProfile] = useState({});
 
   const setStream = (stream) => {
     localVideoRef.current = stream;
   }
-  //---------------
-
 
   const socketRef = useRef();
   const pcRef = useRef();
@@ -348,7 +345,7 @@ export const App = () => {
       <Header />
 
       <PageBanner
-        pageTitle="You are Broadcast!"
+        pageTitle="You are Broadcaster!"
         homePageUrl="/"
         homePageText="Home"
         activePageText="WebRTC-Cast"
@@ -361,7 +358,7 @@ export const App = () => {
           </div>
 
           <div className="col-md-4">
-            <RTCvideo2 stream={localVideoRef.current} setStream={setStream} />
+            <RTCvideo stream={localVideoRef.current} setStream={setStream} />
             {/* <button onClick={setVideoTracks}>Start Streaming</button> */}
             <div className="col-md-4">
 

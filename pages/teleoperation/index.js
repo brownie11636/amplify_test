@@ -1,6 +1,5 @@
 
 import { useState, useRef } from "react";
-import DatachannelController from "../../components/Services/DatachannelController"
 import { SocketContext, socket } from '../../components/Socket/Socket';
 
 import dynamic from 'next/dynamic'
@@ -18,8 +17,7 @@ export const PortalArm = () => {
     return (<>
         <div>
             <SocketContext.Provider value={socket}>
-                <Scene PCD={point}/>
-                <DatachannelController updatePCD={updatePCD}/>
+                {/* <Scene PCD={point}/> */}
             </SocketContext.Provider>
         </div>
     </>);
