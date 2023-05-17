@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer {
+  .tw_bg_blue {
+    background-color: blue;
+  }
+  .tw_bg_green {
+    background-color: green;
+  }
+  .tw_bg_red {
+    background-color: red;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and 엣지 */
+    scrollbar-width: none; /* 파이어폭스 */
+  }
+}
