@@ -2,10 +2,12 @@ import SideNavigator from "./SideNavigator";
 
 const MainLayout = ({ children }) => {
   return (
-    <div className="flex bg-[#F2F2F2]">
-      <SideNavigator />
+    <>
+      <aside className="flex bg-[#F2F2F2]">
+        <SideNavigator />
+      </aside>
       {children}
-    </div>
+    </>
   );
 };
 

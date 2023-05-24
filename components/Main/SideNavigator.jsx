@@ -1,10 +1,11 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const SideNavigator = () => {
   const [isAllSelected, setIsAllSelected] = useState(false);
   const [allGroupIsChecked, setAllGroupIsChecked] = useState([]);
-
+  const router = useRouter();
   // fetch data from server
   const navList = [
     { text: "CB1-반도체A", checked: false },
@@ -31,7 +32,14 @@ const SideNavigator = () => {
           조각모음
         </span>
         <div className="mt-[40px] flex items-center">
-          <span className="text-lg">My page</span>
+          <span
+            className="text-lg select-none cursor-pointer"
+            onClick={() => {
+              router.push("/myPage");
+            }}
+          >
+            My page
+          </span>
           <div className="mx-[40px] border-l w-[1px] h-[12px]" />
           <span className="text-lg">Logout</span>
         </div>
