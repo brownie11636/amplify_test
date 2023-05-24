@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import Header from "../../components/Layouts/Header";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
-import ControlPanel from "../../components/MonkeyEye/ControlPanel";
+// import ControlPanel from "../../components/MonkeyEye/ControlPanel";
 import ServiceListPanel from "../../components/ServiceProfile/ServiceListPanel";
 import {socketPoint} from "../../toServer/API-AccessPoint";
 
@@ -308,7 +308,7 @@ export const App = () => {
             <button onClick={onClickTerminationButton}>termination</button>
             <button onClick={stateCheck}>state-check</button>
           </div>
-          <ControlPanel onChange={onNewCommand}/>
+          {/* <ControlPanel onChange={onNewCommand}/> */}
           <button onClick={onClickStartButton}>Start Motion recording</button>
           <button onClick={onClickSaveButton}>Save Motion recording</button>
           <div className="service-list-area">

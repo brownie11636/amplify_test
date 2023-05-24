@@ -14,7 +14,7 @@ class PageBanner extends Component {
                         <ul>
                             <li>
                                 <Link href={homePageUrl}>
-                                    <a>{homePageText}</a>
+                                    {homePageText}
                                 </Link>
                             </li>
                             <li>{activePageText}</li>

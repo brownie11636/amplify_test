@@ -4,10 +4,7 @@ import Header from "../../components/Layouts/Header";
 import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
 import { socketPoint } from "../../toServer/API-AccessPoint";
-import ServiceListPanel2 from "../../components/ServiceProfile/ServiceListPanel2";
-import ServiceListPanel from "../../components/ServiceProfile/ServiceListPanel";
 import RTCvideo from "../../components/Services/VideoPanel";
-import RTCvideo2 from "../../components/Services/VideoPanel2";
 import 'bootstrap/dist/css/bootstrap.css';
 
 const BSON = require('bson');
@@ -23,14 +20,13 @@ const SOCKET_SERVER_URL = socketPoint;
 
 export const App = () => {
 
-  // ------------------- 컴포넌트 분리 작업 중...
   const [targetProfile, setTargetProfile] = useState({});
   const [profileList, setProfileList] = useState([]);
 
   const setStream = (stream) => {
     remoteVideoRef.current = stream;
   }
-  // -------------------
+
   const socketRef = useRef();
   const pcRef = useRef();
 
@@ -251,35 +247,35 @@ export const App = () => {
         ref={remoteVideoRef}
         autoPlay
       /> */}
-        <div class="row">
-          <div class="col-md-4">
+        <div className="row">
+          <div className="col-md-4">
 
           </div>
-          <div class="col-md-4">
+          <div className="col-md-4">
 
-            <RTCvideo2 stream={remoteVideoRef.current} setStream={setStream} />
+            <RTCvideo stream={remoteVideoRef.current} setStream={setStream} />
 
-            <div class="col">
+            <div className="col">
 
-              <div class="col-md-4">
-                <select class="form-control" style={{ width: '400px' }} onChange={handleSelect} value={targetProfile}>
+              <div className="col-md-4">
+                <select className="form-control" style={{ width: '400px' }} onChange={handleSelect} value={targetProfile}>
                   {profileList.map((item) => (
-                    <option value={item.sid} key={item.sid}>
+                    <option value={item.sid} key={Math.random()}>
                       {item.sid}
                     </option>
                   ))}
                 </select>
               </div>
 
-              <button type="button" class="btn btn-primary" onClick={createOffer}>Join Streaming</button>
-              <button type="button" class="btn btn-primary" onClick={debugcode}>console debug</button>
+              <button type="button" className="btn btn-primary" onClick={createOffer}>Join Streaming</button>
+              <button type="button" className="btn btn-primary" onClick={debugcode}>console debug</button>
 
             </div>
 
           </div>
-          <div class="col-md-4" style={{ height: '450px', overflow: 'scroll' }}>
+          {/* <div class="col-md-4" style={{ height: '450px', overflow: 'scroll' }}>
             <ServiceListPanel profileList={profileList} onProfileSelect={setTargetProfile} />
-          </div>
+          </div> */}
         </div>
 
         {/* {rendVideo(remoteVideoRef.current, setStream)} */}

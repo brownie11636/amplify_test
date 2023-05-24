@@ -13,6 +13,8 @@ node_modules/
 # production
 /build
 build/
+/unusedfile
+unusedfile/
 
 /out
 out/

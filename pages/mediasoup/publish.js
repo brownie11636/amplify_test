@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Device } from 'mediasoup-client';
 import io from 'socket.io-client';
 import { MediaSoupSocketPoint } from "../../toServer/API-AccessPoint";
-import socket from 'socket.io-client/lib/socket';
+// import socket from 'socket.io-client/lib/socket';
 import Header from '../../components/Layouts/Header';
 import PageBanner from '../../components/Common/PageBanner';
 import Footer from '../../components/Layouts/Footer';
