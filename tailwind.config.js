@@ -1,10 +1,15 @@
-const tailwindcss = require("tailwindcss");
-
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./pages/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+
+    // Or if using `src` directory:
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {},
   },
-  darkMode: "class", // default 'media', if change 'class', add className 'dark' to parent element
   plugins: [],
 };
