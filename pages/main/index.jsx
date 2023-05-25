@@ -3,11 +3,10 @@ import MainLayout from "../../components/Main/MainLayout";
 import { useEffect } from "react";
 
 const Main = () => {
-  // const router = useRouter();
-  // useEffect(() => {
-  //   router.push('/main/')
-
-  // }, [])
+  const router = useRouter();
+  useEffect(() => {
+    router.push(`/main/${1}`);
+  }, []);
 
   return (
     <MainLayout>

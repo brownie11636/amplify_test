@@ -6,5 +6,6 @@ const MyPage = () => {
   useEffect(() => {
     router.push("/myPage/account");
   }, []);
+  return <div></div>;
 };
 export default MyPage;

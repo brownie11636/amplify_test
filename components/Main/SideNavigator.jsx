@@ -26,17 +26,21 @@ const SideNavigator = () => {
   }, []);
 
   return (
-    <div className="flex flex-col w-[300px] h-screen py-[4.44444444444%] border-r border-[#D9D9D9]">
+    <div className="flex flex-col w-[300px] h-screen py-[4.44444444444%] border-r border-[#D9D9D9] relative">
       <div className="flex flex-col border-b w-full px-[40px] pb-[20px] text-[#222222]">
-        <span className="font-['NotoSans'] font-medium text-2xl text-[#222222] w-fit">
+        <span
+          className="font-['NotoSans'] font-medium text-2xl text-[#222222] w-fit select-none cursor-pointer"
+          onClick={() => router.push("/main")}
+        >
           조각모음
         </span>
         <div className="mt-[40px] flex items-center">
           <span
-            className="text-lg select-none cursor-pointer"
-            onClick={() => {
-              router.push("/myPage");
-            }}
+            href="/myPage"
+            className={`text-lg select-none cursor-pointer ${
+              router.asPath.includes("myPage") ? "text-[#182a5b]" : "text-[#222222]"
+            }`}
+            onClick={() => router.push("/myPage")}
           >
             My page
           </span>
@@ -146,6 +150,9 @@ const SideNavigator = () => {
           </ul>
         </ul>
       </div>
+      <picture className="w-[160px] h-[40px] absolute bottom-0 self-center">
+        <Image src={"/images/main/portal-logo.svg"} fill draggable={false} />
+      </picture>
     </div>
   );
 };
