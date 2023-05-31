@@ -1,9 +1,50 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ArmController = ({ visible }) => {
   const [controlState, setControlState] = useState("operate");
-  console.log(controlState);
+  const [baseValue, setBaseValue] = useState(0);
+  const [shoulderValue, setShoulderValue] = useState(0);
+  const [elbowValue, setElbowValue] = useState(0);
+  const [wrist1Value, setWrist1Value] = useState(0);
+  const [wrist2Value, setWrist2Value] = useState(0);
+  const [wrist3Value, setWrist3Value] = useState(0);
+  useEffect(() => {
+    const base = document.getElementById("progress-base");
+    if (base) {
+      base.style.transform = `translateX(${baseValue / 3.6}%)`;
+    }
+  }, [baseValue]);
+  useEffect(() => {
+    const shoulder = document.getElementById("progress-shoulder");
+    if (shoulder) {
+      shoulder.style.transform = `translateX(${shoulderValue / 3.6}%)`;
+    }
+  }, [shoulderValue]);
+  useEffect(() => {
+    const elbow = document.getElementById("progress-elbow");
+    if (elbow) {
+      elbow.style.transform = `translateX(${elbowValue / 3.6}%)`;
+    }
+  }, [elbowValue]);
+  useEffect(() => {
+    const wrist1 = document.getElementById("progress-wrist1");
+    if (wrist1) {
+      wrist1.style.transform = `translateX(${wrist1Value / 3.6}%)`;
+    }
+  }, [wrist1Value]);
+  useEffect(() => {
+    const wrist2 = document.getElementById("progress-wrist2");
+    if (wrist2) {
+      wrist2.style.transform = `translateX(${wrist2Value / 3.6}%)`;
+    }
+  }, [wrist2Value]);
+  useEffect(() => {
+    const wrist3 = document.getElementById("progress-wrist3");
+    if (wrist3) {
+      wrist3.style.transform = `translateX(${wrist3Value / 3.6}%)`;
+    }
+  }, [wrist3Value]);
   return (
     <section
       id="floatDiv"
@@ -164,39 +205,143 @@ const ArmController = ({ visible }) => {
         </div>
       </div>
       <div className="w-full border-t-[1px] border-[#D9D9D9] mt-[30px]" />
-      <div className="flex flex-col mt-[20px] ">
-        <div className="flex gap-[18px]">
-          <div className="w-[60px] h-[40px] relative cursor-pointer" onClick={() => {}}>
-            <Image src={"/images/main/controller/minus.svg"} fill alt="" />
-          </div>
-          <div
-            className="w-[60px] h-[40px] relative cursor-pointer"
-            onClick={() => {
-              const target = document.getElementById("progress-base");
-              target.style.transform = `translateX(10%)`;
-            }}
+      <RotateArm
+        name={"BASE"}
+        id={"progress-base"}
+        value={baseValue}
+        setValue={setBaseValue}
+        step={20}
+      />
+      <RotateArm
+        name={"SHOULDER"}
+        id={"progress-shoulder"}
+        value={shoulderValue}
+        setValue={setShoulderValue}
+        step={20}
+      />
+      <RotateArm
+        name={"ELBOW"}
+        id={"progress-elbow"}
+        value={elbowValue}
+        setValue={setElbowValue}
+        step={20}
+      />
+      <RotateArm
+        name={"WRIST 1"}
+        id={"progress-wrist1"}
+        value={wrist1Value}
+        setValue={setWrist1Value}
+        step={20}
+      />
+      <RotateArm
+        name={"WRIST 2"}
+        id={"progress-wrist2"}
+        value={wrist2Value}
+        setValue={setWrist2Value}
+        step={20}
+      />
+      <RotateArm
+        name={"WRIST 3"}
+        id={"progress-wrist3"}
+        value={wrist3Value}
+        setValue={setWrist3Value}
+        step={20}
+      />
+      <div className="w-full border-t-[1px] border-[#D9D9D9] mt-[20px]" />
+      <div className="grid grid-cols-2 gap-[18px] w-full mt-[20px]">
+        {["FLIP WRIST", "FLIP ELBOW", "FLIP SHOULDER", "HOME"].map((item, index) => (
+          <button
+            key={index}
+            className="w-[220px] h-[40px] bg-[#182A5B] text-white flex justify-center items-center"
           >
-            <Image src={"/images/main/controller/plus.svg"} fill alt="" />
-          </div>
-          <div className="flex flex-col gap-[14px]">
-            <div className="w-[300px] h-[12px] bg-[#F2F2F2] overflow-hidden relative">
-              <div
-                id="progress-base"
-                className="absolute right-full z-20 w-full h-full bg-[#182A5B66] transition-all duration-300"
-              />
-            </div>
-            <div className="w-full flex justify-between">
-              <span className="text-[#222222] text-xl">BASE</span>
-              <span className="text-[#222222] text-lg">
-                value <span>°</span>
-              </span>
-            </div>
-          </div>
-        </div>
+            <span>{item}</span>
+          </button>
+        ))}
       </div>
       <div className="w-full border-t-[1px] border-[#D9D9D9] mt-[20px]" />
-      <div className="w-full border-t-[1px] border-[#D9D9D9] mt-[20px]" />
+      <div className="flex flex-col gap-[20px] mt-[20px]">
+        <span className="text-[#222222] text-base">TOOL POSITION</span>
+        <div className="flex gap-[18px]">
+          {["X", "Y", "Z"].map((item, index) => (
+            <div key={index} className="flex">
+              <div className="flex justify-center items-center w-[22px] h-[30px] bg-[#182A5B]">
+                <span className="text-white text-base">{item}</span>
+              </div>
+              <div className="w-[106px] h-full flex justify-center items-center">
+                <span className="text-[#222222] text-sm">value</span>
+              </div>
+              <span className="h-full flex items-end text-base text-[#222222]">mm</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };
 export default ArmController;
+
+const RotateArm = ({ name, id, value, setValue, step }) => {
+  const rotateHandler = (type) => {
+    type === "-"
+      ? value !== -180 && setValue(value - step)
+      : value !== 180 && setValue(value + step);
+  };
+  return (
+    <div className="flex flex-col mt-[20px] ">
+      <div className="flex gap-[18px]">
+        <div
+          className="w-[60px] h-[40px] relative cursor-pointer"
+          onClick={() => {
+            rotateHandler("-");
+          }}
+        >
+          <Image src={"/images/main/controller/minus.svg"} fill alt="" />
+        </div>
+        <div
+          className="w-[60px] h-[40px] relative cursor-pointer"
+          onClick={() => {
+            rotateHandler("+");
+          }}
+        >
+          <Image src={"/images/main/controller/plus.svg"} fill alt="" />
+        </div>
+        <div className="flex flex-col gap-[14px]">
+          <div className="w-[300px] h-[12px] bg-[#F2F2F2] overflow-hidden relative">
+            <div
+              id={id}
+              className={`absolute z-20 w-full h-full bg-[#182A5B66] transition-all duration-300 right-1/2`}
+            />
+          </div>
+          <div className="w-full flex justify-between">
+            <span className="text-[#222222] text-xl">{name}</span>
+            <div className="w-[80px] flex justify-end">
+              <span
+                className="text-[#222222] text-lg cursor-pointer"
+                onClick={(e) => {
+                  e.target.classList.add("hidden");
+                  e.target.nextSibling?.classList.remove("hidden");
+                  e.target.nextSibling?.focus();
+                }}
+              >
+                {value} °
+              </span>
+              <input
+                type="text"
+                id={`${id}-input`}
+                defaultValue={value}
+                className="text-right text-[#222222] text-lg placeholder:text-lg hidden"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.target.previousSibling.classList.remove("hidden");
+                    e.target.classList.add("hidden");
+                    setValue(parseInt(e.target.value));
+                  }
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -8,7 +8,6 @@ import ArmController from "../../../components/Main/ArmController";
 const Test = () => {
   const router = useRouter();
   const [controlVisible, setControlVisible] = useState(false);
-  console.log(controlVisible);
   return (
     <>
       <MainLayout>
@@ -45,9 +44,33 @@ const Test = () => {
             </div>
           </div>
           <MainView />
+          <div className="w-full h-[100px] px-[20px] py-[30px] flex gap-[20px]">
+            <select name="" id="" className="w-[220px] px-[20px]">
+              <option value="1">1</option>
+            </select>
+            <div className="w-[220px] h-[40px] flex justify-center items-center gap-[20px] bg-white">
+              <picture className="relative w-[18px] h-[18px]">
+                <Image src={"/images/main/task-simulator.svg"} fill draggable={false} alt="" />
+              </picture>
+              <span className="text-base text-[#222222]">작업동작 시뮬레이션</span>
+            </div>
+            <div className="w-[220px] h-[40px] flex justify-center items-center gap-[20px] bg-white">
+              <picture className="relative w-[18px] h-[18px]">
+                <Image src={"/images/main/bar-graph.svg"} fill draggable={false} alt="" />
+              </picture>
+              <span className="text-base text-[#222222]">통계</span>
+            </div>
+            <div className="w-[220px] h-[40px] flex justify-center items-center gap-[20px] bg-white">
+              <picture className="relative w-[18px] h-[18px]">
+                <Image src={"/images/main/config.svg"} fill draggable={false} alt="" />
+              </picture>
+              <span className="text-base text-[#222222]">그래프설정</span>
+            </div>
+          </div>
+          <div className="w-full h-[222px] flex items-center gap-[20px] bg-white"></div>
         </section>
-        <section className="flex flex-col w-[342px] h-fit gap-[26px] border-l-[4px] border-[#182A5B] mr-[180px]">
-          <div className="w-full h-fit p-[30px] bg-white flex flex-col gap-[20px]">
+        <section className="flex flex-col w-[342px] h-fit gap-[26px] mr-[180px]">
+          <div className="w-full h-fit p-[30px] bg-white border-l-[4px] border-[#182A5B] flex flex-col gap-[20px]">
             <span className="mb-[4px] text-[#182A5B]">로봇 정보</span>
             <div className="w-fit flex gap-[50px]">
               <span className="min-w-[100px] text-sm text-[#7d7d7d]">Robot ID</span>
@@ -60,6 +83,35 @@ const Test = () => {
             <div className="w-fit flex gap-[50px]">
               <span className="min-w-[100px] text-sm text-[#7d7d7d]">Robot name</span>
               <span className="min-w-[160px]">CB1-반도체A</span>
+            </div>
+          </div>
+          <div className="w-full h-fit p-[30px] bg-white border-l-[4px] border-[#182A5B] flex flex-col gap-[20px]">
+            <span className="mb-[4px] text-[#182A5B]">배치 정보</span>
+            <div className="w-fit flex gap-[50px]">
+              <span className="min-w-[100px] text-sm text-[#7d7d7d]">배치현장</span>
+              <span className="min-w-[160px]">test</span>
+            </div>
+            <div className="w-fit flex gap-[50px]">
+              <span className="min-w-[100px] text-sm text-[#7d7d7d] min">배치공정</span>
+              <span className="min-w-[160px]">test</span>
+            </div>
+          </div>
+          <div
+            id="test"
+            className="w-full h-fit p-[30px] bg-white border-l-[4px] border-[#182A5B] flex flex-col gap-[20px]"
+          >
+            <span className="mb-[4px] text-[#182A5B]">관리자 정보</span>
+            <div className="w-fit flex gap-[50px]">
+              <span className="min-w-[100px] text-sm text-[#7d7d7d]">Engineer</span>
+              <span className="min-w-[160px]">test 1</span>
+            </div>
+            <div className="w-fit flex gap-[50px]">
+              <span className="min-w-[100px] text-sm text-[#7d7d7d] min">Operator 1</span>
+              <span className="min-w-[160px]">test 2</span>
+            </div>
+            <div className="w-fit flex gap-[50px]">
+              <span className="min-w-[100px] text-sm text-[#7d7d7d]">Operator 2</span>
+              <span className="min-w-[160px]">test 3</span>
             </div>
           </div>
         </section>

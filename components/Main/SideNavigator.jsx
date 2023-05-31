@@ -151,7 +151,7 @@ const SideNavigator = () => {
         </ul>
       </div>
       <picture className="w-[160px] h-[40px] absolute bottom-0 self-center">
-        <Image src={"/images/main/portal-logo.svg"} fill draggable={false} />
+        <Image src={"/images/main/portal-logo.svg"} fill draggable={false} alt="" />
       </picture>
     </div>
   );
