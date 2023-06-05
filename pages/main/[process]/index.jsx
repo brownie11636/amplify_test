@@ -4,10 +4,17 @@ import MainView from "../../../components/Main/MainView";
 import Image from "next/image";
 import { useState } from "react";
 import ArmController from "../../../components/Main/ArmController";
+import PieChart from "../../../components/Main/Chart/PieChart";
+import BarChart from "../../../components/Main/Chart/BarChart";
 
 const Test = () => {
   const router = useRouter();
   const [controlVisible, setControlVisible] = useState(false);
+  const data = [
+    { id: "test1", angle: 10, status: "SUCCESS" },
+    { id: "test2", angle: 30, status: "SUCCESS" },
+    { id: "test3", angle: 20, status: "FAIL" },
+  ];
   return (
     <>
       <MainLayout>
@@ -67,7 +74,11 @@ const Test = () => {
               <span className="text-base text-[#222222]">그래프설정</span>
             </div>
           </div>
-          <div className="w-full h-[222px] flex items-center gap-[20px] bg-white"></div>
+          <div className="w-full max-w-[984px] h-[222px] flex items-center gap-[20px] bg-white px-[40px] overflow-x-scroll">
+            <PieChart data={data} type={true} />
+            <PieChart data={data} type={false} />
+            <BarChart data={data} />
+          </div>
         </section>
         <section className="flex flex-col w-[342px] h-fit gap-[26px] mr-[180px]">
           <div className="w-full h-fit p-[30px] bg-white border-l-[4px] border-[#182A5B] flex flex-col gap-[20px]">
