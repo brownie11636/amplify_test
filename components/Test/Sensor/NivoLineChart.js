@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
-import { ResponsiveLine } from '@nivo/line';
 import sample_data from './data';
+import { ResponsiveLine } from '@nivo/line';
+// import dynamic from "next/dynamic";
+// const {ResponsiveLine} = dynamic(() => import("@nivo/line"), {ssr:false});
+// const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 // make sure parent container have a defined height when using responsive component,
 // otherwise height will be 0 and no chart will be rendered.
