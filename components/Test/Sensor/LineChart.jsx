@@ -1,33 +1,18 @@
 import dynamic from "next/dynamic";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const LineChart = ({ data }) => {
+const LineChart = (props) => {
   // const idArr = data.map((item) => item.options.chart.id);
   // const angle = data.map((item) => item.series);
-  const idArr = data.options.chart.id;
-  const angle = data.series;
-  const series = [
-    {
-      // name: ["각도"],
-      data: angle,
-    },
-  ];
+  // const angle = data.series;
   const options = {
     chart: {
       type: "bar",
       height: 350,
     },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: "55%",
-        endingShape: "rounded",
-      },
-    },
     stroke: {
+      curve: "smooth",
       show: true,
-      width: 2,
-      colors: ["transparent"],
     },
     colors: ["#00069E"],
     toolbar: {
@@ -46,7 +31,8 @@ const LineChart = ({ data }) => {
       show: false,
     },
     xaxis: {
-      categories: idArr,
+      // type: "numeric",
+      type: "datetime",
       title: {
         text: "시간",
       },
@@ -78,7 +64,7 @@ const LineChart = ({ data }) => {
 
   return (
     <div>
-      <ReactApexChart options={data.options} series={data.series} type="line" height={200} />
+      <ReactApexChart options={props.options} series={props.series} type="line" height={200} />
     </div>
   );
 };

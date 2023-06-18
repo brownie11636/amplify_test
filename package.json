@@ -13,9 +13,6 @@
     "author": "EnvyTheme.com",
     "license": "ISC",
     "dependencies": {
-        "@nivo/bar": "^0.83.0",
-        "@nivo/core": "^0.83.0",
-        "@nivo/line": "^0.83.0",
         "@react-three/drei": "^9.40.0",
         "@react-three/fiber": "^8.9.1",
         "@react-three/xr": "^5.5.0",

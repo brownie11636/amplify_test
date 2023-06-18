@@ -7,6 +7,12 @@ import Footer from "../../../components/Layouts/Footer";
 import BarChart from "../../../components/Test/Sensor/BarChart";
 import LineChart from "../../../components/Test/Sensor/LineChart";
 
+import React, { useEffect, useRef, useState } from "react";
+
+const mqtt_url = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload/topic?topic=';
+
+// const mqtt_url = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload/topic?topic=perpet/SerialNumber/acc';
+
 
 
 const Test = ()=> {
@@ -18,20 +24,138 @@ const Test = ()=> {
 
   const data2 = {
     options: {
+      title: {
+        text:"Empty title",
+        align: "center",
+        style:{
+          fontSize: '14px',
+          fontWeight: 'bold',
+          fontFamily: undefined,
+          color:  '#263238'
+        }
+      },
       chart: {
-        id: "basic-bar"
+        id: "basic-line",
+        height: 380,
+        width: "100%",
+        Animation:{
+          initialAnimation:{
+            enabled: false
+          }
+        }
+      },
+      stroke: {
+        curve: "smooth",//smooth, straight, stepline
+        show: true,
+        width: 2,
       },
       xaxis: {
-        categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
-      }
+        type: 'numeric',
+        // type: 'datetime'
+        title: {
+          text: "time",
+        },
+      },
+      yaxis: {
+        title: {
+          text: "sensor name[unit]",
+        },
+      },
     },
     series: [
       {
         name: "series-1",
-        data: [30, 40, 45, 50, 49, 60, 70, 91]
+        data: [[0,30], [20,40], [30,45], [40,50], [50,49], [60,60], [70,70], [1101,91]]
+      },
+      {
+        name: "series-2",
+        data: [[0,10], [200,40], [300,35], [400,100], [500,149], [600,160], [700,50], [1001,191]]
       }
     ]
   }
+
+  const parserId = "1q2w3e4r";
+
+  const parser = (packet, parser_id)=>{
+    if(parser_id=="1q2w3e4r"){
+      parser_1q2w3e4r(packet);      
+    }
+  }
+
+  const parser_1q2w3e4r = (packet)=>{
+    let array0=[];
+    let array1=[];
+    let array2=[];
+    let hexArray;
+
+    packet.forEach((e,i)=>{
+        console.log(e.payload); 
+        hexArray = e.payload.split("").map(char => parseInt(char.charCodeAt(0),10));
+        console.log(hexArray);
+        hexArray.forEach((datum,idx)=>{
+          if(idx%3 == 0){
+            array0.push([i*20+idx,datum])
+          }else if(idx%3 == 1){
+            array1.push([i*20+idx,datum])
+          }else if(idx%3 == 2){
+            array2.push([i*20+idx,datum])
+          }
+        })
+        setChartSeries([{
+          name: targetSensor+".x",
+          data:array0
+        },
+        {
+          name:targetSensor+".y",
+          data:array1
+        },
+        {
+          name:targetSensor+".z",
+          data:array2
+        }
+      ]);
+        // console.log("\n"); 
+        // console.log(hexArray.map(dec => dec.toString(16)));
+        // console.log("\n"); 
+    })
+  };
+  
+  const [targetDevice, setTargetDevice] = useState("perpet/SerialNumber/")
+  const [targetSensor, setTargetSensor] = useState("acc")
+  const [chartSeries, setChartSeries] = useState(data2.series)
+  const [chartOption, setChartOption] = useState(data2.options)
+
+
+
+  useEffect(() => {
+    let series=[{
+      name: targetDevice,
+      data:[[0,10], [200,-40], [300,135], [400,100], [500,149], [600,160], [700,50], [1001,191]]
+    }]
+    setChartOption(()=>{
+      chartOption.title.text=targetDevice+targetSensor;
+      return chartOption;
+    })
+
+    fetch(mqtt_url+targetDevice+targetSensor)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data);
+      let arr = data.data.content;
+      parser(arr,"1q2w3e4r");
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+
+
+
+  },[])
 
   return (
     <>
@@ -44,12 +168,12 @@ const Test = ()=> {
         activePageText="Sensor IoT"
         bgImgClass="item-bg2"
         />
+        <LineChart
+          options={chartOption} 
+          series={chartSeries}
+        />
         <BarChart data={data}/>
-        <LineChart data={data2}/>
         {/* <ChartSection/> */}
-        {/* <MyResponsiveLine
-          data={chartData}
-        /> */}
         
         <Footer />
     </>
