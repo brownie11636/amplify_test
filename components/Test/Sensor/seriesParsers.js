@@ -1,31 +1,29 @@
 
-export default function parser(packet, parser_id){
-    if(parser_id=="1q2w3e4r"){
-        return parser_1q2w3e4r(packet);
-    }
-  }
+export default function parser(packet, parser_id, targetSensor){
 
-const parser_1q2w3e4r = (packet)=>{
+  if(parser_id=="1q2w3e4r") {
     let array0=[];
     let array1=[];
     let array2=[];
     let hexArray;
 
-    let targetSensor="dummy";
     packet.forEach((e,i)=>{
-        console.log(e.payload); 
+        // console.log(e.payload); 
         hexArray = e.payload.split("").map(char => parseInt(char.charCodeAt(0),10));
-        console.log(hexArray);
+        // console.log("hexArray:"+hexArray);
+        console.log("i:"+i);
         hexArray.forEach((datum,idx)=>{
+          console.log(idx);
           if(idx%3 == 0){
-            array0.push([i*20+idx,datum])
+            array0.push([i*192+idx,datum])
           }else if(idx%3 == 1){
-            array1.push([i*20+idx,datum])
+            array1.push([i*192+idx,datum])
           }else if(idx%3 == 2){
-            array2.push([i*20+idx,datum])
+            array2.push([i*192+idx,datum])
           }
         })
-        return ([{
+        console.log(array0);
+        console.log([{
             name: targetSensor+".x",
             data:array0
           },
@@ -36,11 +34,19 @@ const parser_1q2w3e4r = (packet)=>{
           {
             name:targetSensor+".z",
             data:array2
-          }
-        ])
-        // console.log("\n"); 
-        // console.log(hexArray.map(dec => dec.toString(16)));
-        // console.log("\n"); 
+          }]);
     })
-  };
-  
+    return([{
+      name: targetSensor+".x",
+      data:array0
+    },
+    {
+      name:targetSensor+".y",
+      data:array1
+    },
+    {
+      name:targetSensor+".z",
+      data:array2
+    }]);
+  }
+}
