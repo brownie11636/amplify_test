@@ -1,84 +1,55 @@
 
-export default function parser(packet, parser_id, targetSensor){
+export default function parser(packet, parser_id){
 
   if(parser_id=="1q2w3e4r") {
+    let hexArray = [];
+    let timeHex = "";
+    let lengthHex = "";
     let array0=[];
     let array1=[];
     let array2=[];
-    let hexArray;
-    let timeBinary = "";
-    let dtBinary = "";
-    let xBinary = "";
-    let yBinary = "";
-    let zBinary = "";
+    
+    
+    let dataArray = [];
 
     packet.forEach((e,i)=>{
-      console.log(e.receivedData);
-      hexArray = e.receivedData.split("").map(char => parseInt(char.charCodeAt(0),10));
-      console.log(hexArray);
+      // console.log(e.id);
+      for (let i = 0; i < e.payload.length; i += 2) {
+        hexArray.push(e.payload[i] + e.payload[i + 1]);
+      }
       hexArray.forEach((datum,idx)=>{
         if (idx<4) {
-          console.log(datum.toString(2));
-          timeBinary += datum.toString(2);
+          timeHex += datum;
         }
-        if (idx>3 && idx<8) {
-          dtBinary += datum.toString(2);
+        if (idx>3 && idx<6) {
+          lengthHex += datum;
         }
-        if (idx>8) {
-          if ((idx-4)%12<4) {
-            xBinary += datum.toString(2);
-            if ((idx-4)%12 == 3) {
-              array0.push(parseInt(xBinary,2));
-              xBinary = "";
-            }
+        if (idx>5) {
+          if (idx%3 == 0) {
+            array0.push(parseInt(datum, 16));
           }
-          if ((idx-4)%12>3 && (idx-4)%12<8) {
-            yBinary += datum.toString(2);
-            if ((idx-4)%12 == 7) {
-              array1.push(parseInt(yBinary,2));
-              yBinary = "";
-            }
+          if (idx%3 == 1) {
+            array1.push(parseInt(datum, 16));
           }
-          if ((idx-4)%12 >7) {
-            zBinary += datum.toString(2);
-            if ((idx-4)%12 == 11) {
-              array2.push(parseInt(zBinary,2));
-              zBinary = "";
-            }
+          if (idx%3 == 2) {
+            array2.push(parseInt(datum, 16));
           }
+          
         }
       })
-
-      console.log("t: "+parseInt(timeBinary,2));
-      console.log("dt: "+parseInt(dtBinary,2));
-      console.log("x: "+array0);
-      console.log("y: "+array1);
-      console.log("z: "+array2);
-      
-      // console.log([{
-      //   name: targetSensor+".x",
-      //   data:array0
-      // },
-      // {
-      //   name:targetSensor+".y",
-      //   data:array1
-      // },
-      // {
-      //   name:targetSensor+".z",
-      //   data:array2
-      // }]);
+      // console.log("t: "+parseInt(timeHex,16));
+      // console.log("length: "+parseInt(lengthHex,16));
+      // console.log("x: "+array0);
+      // console.log("y: "+array1);
+      // console.log("z: "+array2);
+      timeHex = "";
+      lengthHex = "";
+      hexArray = [];
     })
-    return([{
-      name: targetSensor+".x",
-      data:array0
-    },
-    {
-      name:targetSensor+".y",
-      data:array1
-    },
-    {
-      name:targetSensor+".z",
-      data:array2
-    }]);
+
+    for (let i=0;i<array0.length;i++) {
+      dataArray.push({"x":array0[i],"y":array1[i],"z":array2[i]})
+    }
+    return dataArray;
   }
 }

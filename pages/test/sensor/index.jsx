@@ -83,7 +83,7 @@ const Test = ()=> {
   useEffect(() => {
     let series=[{
       name: targetDevice,
-      data:[[0,10], [200,-40], [300,135], [400,100], [500,149], [600,160], [700,50], [1001,191]]
+      data:[[0,10], [200,40], [300,35], [400,100], [500,149], [600,160], [700,50], [1001,191]]
     }]
     setChartOption(()=>{
       chartOption.title.text=targetDevice+targetSensor;
