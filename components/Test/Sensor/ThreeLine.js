@@ -31,7 +31,7 @@ export default function App(props) {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis />
+          <XAxis dataKey="time"/>
           <YAxis />
           <Tooltip />
           <Line isAnimationActive={false} type="monotone" dataKey="x" stroke="#8884d8" fill="#8884d8" />
@@ -52,7 +52,7 @@ export default function App(props) {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis />
+          <XAxis dataKey="time"/>
           <YAxis />
           <Tooltip />
           <Line isAnimationActive={false} type="monotone" dataKey="y" stroke="#82ca9d" fill="#82ca9d" />
@@ -73,7 +73,7 @@ export default function App(props) {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis />
+          <XAxis dataKey="time"/>
           <YAxis />
           <Tooltip />
           <Line isAnimationActive={false} type="monotone" dataKey="z" stroke="#FA8071" fill="#FA8071" />
