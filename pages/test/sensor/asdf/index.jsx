@@ -8,18 +8,7 @@ import LineComponent from "../../../../components/Test/Sensor/LineComponent";
 const Sensor = ()=> {
   return (
     <>
-        <Header />
-
-        <PageBanner
-        pageTitle="Sensor IoT"
-        homePageUrl="/"
-        homePageText="Home"
-        activePageText="Sensor IoT"
-        bgImgClass="item-bg2"
-        />
         <LineComponent/>
-        
-        <Footer />
     </>
   );
 }
