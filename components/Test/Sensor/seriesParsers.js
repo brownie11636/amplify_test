@@ -46,20 +46,59 @@ export default function parser(packet, parser_id){
           
         }
       })
-      // console.log("t: "+parseInt(timeHex,16));
-      // console.log("length: "+parseInt(lengthHex,16));
-      // console.log("x: "+array0);
-      // console.log("y: "+array1);
-      // console.log("z: "+array2);
       timeHex = "";
       lengthHex = "";
       hexArray = [];
     })
-    console.log(timeArray);
 
-    for (let i=0;i<array0.length;i++) {
-      dataArray.push({"time":timeArray, "x":array0[i],"y":array1[i],"z":array2[i]});
-    }
-    return dataArray;
+    const dataArray0 = timeArray.map((time, index) => {
+      return {
+        x: time,
+        y: array0[index]
+      };
+    });
+
+    const dataArray1 = timeArray.map((time, index) => {
+      return {
+        x: time,
+        y: array1[index]
+      };
+    });
+
+    const dataArray2 = timeArray.map((time, index) => {
+      return {
+        x: time,
+        y: array2[index]
+      };
+    });
+
+    console.log([
+      {
+        "id": "x",
+        "color": "hsl(33, 70%, 50%)",
+        "data": dataArray0
+      },
+      {
+        "id": "y",
+        "color": "hsl(100, 70%, 50%)",
+        "data": dataArray1
+      },
+      {
+        "id": "z",
+        "color": "hsl(125, 70%, 50%)",
+        "data": dataArray2
+      }
+    ]);
+    return ({x:[
+      {
+        "id": "x",
+        "data": dataArray0
+      }], y:[{
+      "id": "y",
+      "data": dataArray1
+    }], z:[{
+      "id": "z",
+      "data": dataArray2
+    }]});
   }
 }
