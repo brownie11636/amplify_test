@@ -51,35 +51,26 @@ export default function parser(packet, parser_id){
     })
 
     const dataArray0 = timeArray.map((time, index) => {
-      return {
-        x: time,
-        y: array0[index]
-      };
+      return ([time, array0[index]]);
     });
 
     const dataArray1 = timeArray.map((time, index) => {
-      return {
-        x: time,
-        y: array1[index]
-      };
+      return ([time, array1[index]]);
     });
 
     const dataArray2 = timeArray.map((time, index) => {
-      return {
-        x: time,
-        y: array2[index]
-      };
+      return ([time, array2[index]]);
     });
 
     return ({x:[
       {
-        "id": "x",
+        "name": "x",
         "data": dataArray0
       }], y:[{
-      "id": "y",
+      "name": "y",
       "data": dataArray1
     }], z:[{
-      "id": "z",
+      "name": "z",
       "data": dataArray2
     }]});
   }
