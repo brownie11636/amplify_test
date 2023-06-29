@@ -1,36 +1,37 @@
 import dynamic from "next/dynamic";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const BarChart = ({ data }) => {
+const AreaChart = ({ data }) => {
   const idArr = data?.id;
   const timeToAngle = data.timeToAngle;
   const angle = timeToAngle.map((item) => item.angle);
   const time = timeToAngle.map((item) => item.time);
   const series = [
     {
-      name: ["각도"],
+      name: "각도",
       data: angle,
     },
   ];
   const options = {
     chart: {
-      type: "bar",
-      height: 350,
+      type: "area",
       toolbar: {
         show: false,
       },
+      height: 200,
+      offsetY: 10,
     },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: "55%",
-        endingShape: "rounded",
+    stroke: {
+      curve: "straight",
+      width: 1,
+    },
+    markers: {
+      size: 4,
+      hover: {
+        size: 5,
       },
     },
     colors: ["#00069E"],
-    toolbar: {
-      show: false,
-    },
     dataLabels: {
       enabled: false,
     },
@@ -38,28 +39,22 @@ const BarChart = ({ data }) => {
       show: false,
     },
     fill: {
-      colors: ["#00069E"],
-    },
-    toolbar: {
-      show: false,
+      colors: ["#182A5B"],
+      opacity: 0.5,
     },
     xaxis: {
       title: {
-        text: "시간",
-      },
-      labels: {
-        show: false,
+        text: "시간(분)",
       },
     },
     yaxis: {
       title: {
         text: "각도",
       },
-      labels: {
-        show: false,
-      },
     },
     tooltip: {
+      followCursor: true,
+      shared: false,
       x: {
         show: false,
       },
@@ -83,8 +78,8 @@ const BarChart = ({ data }) => {
 
   return (
     <div className="w-[200px] min-w-[200px] h-[200px]">
-      <ReactApexChart options={options} series={series} type="bar" height={200} />
+      <ReactApexChart options={options} series={series} type="area" height={200} />
     </div>
   );
 };
-export default BarChart;
+export default AreaChart;

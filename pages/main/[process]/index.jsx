@@ -6,14 +6,40 @@ import { useState } from "react";
 import ArmController from "../../../components/Main/ArmController";
 import PieChart from "../../../components/Main/Chart/PieChart";
 import BarChart from "../../../components/Main/Chart/BarChart";
+import AreaChart from "../../../components/Main/Chart/AreaChart";
 
 const Test = () => {
   const router = useRouter();
   const [controlVisible, setControlVisible] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(0);
   const data = [
-    { id: "test1", angle: 10, status: "SUCCESS" },
-    { id: "test2", angle: 30, status: "SUCCESS" },
-    { id: "test3", angle: 20, status: "FAIL" },
+    {
+      id: "test1",
+      timeToAngle: [
+        { time: 1, angle: 10 },
+        { time: 2, angle: 30 },
+        { time: 3, angle: 20 },
+      ],
+      status: "SUCCESS",
+    },
+    {
+      id: "test2",
+      timeToAngle: [
+        { time: 1, angle: 30 },
+        { time: 2, angle: 20 },
+        { time: 3, angle: 10 },
+      ],
+      status: "SUCCESS",
+    },
+    {
+      id: "test3",
+      timeToAngle: [
+        { time: 1, angle: 10 },
+        { time: 2, angle: 20 },
+        { time: 3, angle: 30 },
+      ],
+      status: "FAIL",
+    },
   ];
   return (
     <>
@@ -52,8 +78,17 @@ const Test = () => {
           </div>
           <MainView />
           <div className="w-full h-[100px] px-[20px] py-[30px] flex gap-[20px]">
-            <select name="" id="" className="w-[220px] px-[20px]">
+            <select
+              name=""
+              id=""
+              className="w-[220px] px-[20px]"
+              onChange={(e) => {
+                setSelectedTask(e.target.value - 1);
+              }}
+            >
               <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
             </select>
             <div className="w-[220px] h-[40px] flex justify-center items-center gap-[20px] bg-white">
               <picture className="relative w-[18px] h-[18px]">
@@ -75,9 +110,14 @@ const Test = () => {
             </div>
           </div>
           <div className="w-full max-w-[984px] h-[222px] flex items-center gap-[20px] bg-white px-[40px] overflow-x-scroll">
-            <PieChart data={data} type={true} />
-            <PieChart data={data} type={false} />
-            <BarChart data={data} />
+            {data ? (
+              <>
+                <PieChart data={data} type={true} />
+                <PieChart data={data} type={false} />
+                <BarChart data={data[selectedTask]} />
+                {/* <AreaChart data={data} /> */}
+              </>
+            ) : null}
           </div>
         </section>
         <section className="flex flex-col w-[342px] h-fit gap-[26px] mr-[180px]">
@@ -126,7 +166,7 @@ const Test = () => {
             </div>
           </div>
         </section>
-        <ArmController visible={controlVisible} />
+        <ArmController visible={controlVisible} setVisible={setControlVisible} />
       </MainLayout>
     </>
   );
