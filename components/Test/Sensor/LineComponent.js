@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import ThreeLines from './ThreeLine';
+import Line from './ApexChartLine';
 import styles from "../../../styles/Login2.module.css";
 import parser from "./seriesParsers";
 
 export default function App() {
 
-  const [targetURL, setTargetURL] = useState("perpet/SerialNumber/acc");
+  const [targetURL, setTargetURL] = useState("perpet/SerialNumber/prs");
   const [urlFlag, setUrlFlag] = useState(true);
   const [message, setMessage] = useState("");
   const [data, setData] = useState([]);
@@ -100,7 +100,7 @@ export default function App() {
       <div className={styles.submit}>
         <input type="submit" value="submit" onClick={messageSubmit} />
       </div>
-      <ThreeLines data={data} />
+      <Line data={data} />
     </div>
   )
 }

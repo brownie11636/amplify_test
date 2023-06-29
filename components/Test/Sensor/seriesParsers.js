@@ -1,4 +1,3 @@
-
 export default function parser(packet, parser_id){
  
   if(parser_id=="1q2w3e4r") {
@@ -11,9 +10,8 @@ export default function parser(packet, parser_id){
     let array2=[];
     let dt = 33;
     
-    let dataArray = [];
-
     packet.reverse().forEach((e)=>{
+      console.log(e);
       for (let i = 0; i < e.payload.length; i += 2) {
         hexArray.push(e.payload[i] + e.payload[i + 1]);
       }
@@ -97,16 +95,15 @@ export default function parser(packet, parser_id){
         if (idx>3 && idx<6) {
           lengthHex += datum;
           if (idx==5) {
-            console.log(parseInt(lengthHex,16));
             for (let j=0;j<parseInt(lengthHex,16)-1;j++) {
               timeArray.push(timeArray.at(-1)+dt);
             }
           }
         }
         if (idx>5) {
-          pressureHex += datum;
+          pressureHex +=datum;
           if ((idx-6)%4 == 3) {
-            pressureArray.push(parseInt(pressureHex,16));
+            pressureArray.push(Buffer.from(pressureHex, 'hex').readFloatLE());
             pressureHex = "";
           }          
         }
@@ -115,11 +112,9 @@ export default function parser(packet, parser_id){
       lengthHex = "";
       hexArray = [];
     })
-
     const dataArray = timeArray.map((time, index) => {
       return ([time, pressureArray[index]]);
     });
-    console.log
     return ([
       {
         "name": "pressure",
