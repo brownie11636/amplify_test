@@ -109,9 +109,9 @@ const LineChart = (props) => {
 
   return (
     <div style={{width:"100%"}}>
-      <ReactApexChart options={options[0]} series={props.data.x} type="line" height={200} />
-      <ReactApexChart options={options[1]} series={props.data.y} type="line" height={200} />
-      <ReactApexChart options={options[2]} series={props.data.z} type="line" height={200} />
+      <ReactApexChart options={options[0]} series={props.data} type="line" height={200} />
+      {/* <ReactApexChart options={options[1]} series={props.data.y} type="line" height={200} />
+      <ReactApexChart options={options[2]} series={props.data.z} type="line" height={200} /> */}
     </div>
   );
 };

@@ -8,7 +8,7 @@ export default function App() {
   const [targetURL, setTargetURL] = useState("perpet/SerialNumber/acc");
   const [urlFlag, setUrlFlag] = useState(true);
   const [message, setMessage] = useState("");
-  const [data, setData] = useState({x:[], y:[], z:[]});
+  const [data, setData] = useState([]);
   const mqtt_url = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload/topic?topic=';
   const mqtt_url2 = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload';
 
@@ -21,7 +21,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    setData({x:[], y:[], z:[]});
+    setData([]);
     const timeout = setInterval(() => {
       fetch(mqtt_url+targetURL)
       .then(response => {
@@ -33,7 +33,7 @@ export default function App() {
       .then(data => {
         console.log(data.data.content);
         let arr = data.data.content;
-        setData(parser(arr,"1q2w3e4r"));
+        setData(parser(arr,"pressure"));
       })
       .catch(error => {
         console.error('Error:', error);
