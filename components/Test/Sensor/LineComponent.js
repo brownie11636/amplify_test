@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Line from './ApexChartLine';
-import styles from "../../../styles/Login2.module.css";
+import styles from "../../../styles/login2.module.css";
 import parser from "./seriesParsers";
 
 export default function App() {
