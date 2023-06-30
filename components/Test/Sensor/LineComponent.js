@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Line from './ApexChartLine';
+import ApexLine from './ApexChartLine';
 import styles from "../../../styles/login2.module.css";
 import parser from "./seriesParsers";
 
@@ -100,7 +100,7 @@ export default function App() {
       <div className={styles.submit}>
         <input type="submit" value="submit" onClick={messageSubmit} />
       </div>
-      <Line data={data} />
+      <ApexLine data={data} />
     </div>
   )
 }
