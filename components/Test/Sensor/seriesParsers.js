@@ -1,5 +1,6 @@
+
 export default function parser(packet, parser_id){
- 
+
   if(parser_id=="1q2w3e4r") {
     let hexArray = [];
     let timeHex = "";
@@ -10,8 +11,10 @@ export default function parser(packet, parser_id){
     let array2=[];
     let dt = 33;
     
-    packet.reverse().forEach((e)=>{
-      console.log(e);
+    let dataArray = [];
+
+    packet.reverse().forEach((e,i)=>{
+      console.log(e.id);
       for (let i = 0; i < e.payload.length; i += 2) {
         hexArray.push(e.payload[i] + e.payload[i + 1]);
       }
@@ -43,82 +46,20 @@ export default function parser(packet, parser_id){
           
         }
       })
+      // console.log("t: "+parseInt(timeHex,16));
+      // console.log("length: "+parseInt(lengthHex,16));
+      // console.log("x: "+array0);
+      // console.log("y: "+array1);
+      // console.log("z: "+array2);
       timeHex = "";
       lengthHex = "";
       hexArray = [];
     })
+    console.log(timeArray);
 
-    const dataArray0 = timeArray.map((time, index) => {
-      return ([time, array0[index]]);
-    });
-
-    const dataArray1 = timeArray.map((time, index) => {
-      return ([time, array1[index]]);
-    });
-
-    const dataArray2 = timeArray.map((time, index) => {
-      return ([time, array2[index]]);
-    });
-    return ([
-      {
-        "name": "x",
-        "data": dataArray0
-      },{
-      "name": "y",
-      "data": dataArray1
-    },{
-      "name": "z",
-      "data": dataArray2
-    }]);
-  }
-
-  if(parser_id=="pressure") {
-    let hexArray = [];
-    let timeHex = "";
-    let lengthHex = "";
-    let timeArray = [];
-    let pressureHex = "";
-    let pressureArray = [];
-    let dt = 200;
-
-    packet.reverse().forEach((e)=>{
-      for (let i = 0; i < e.payload.length; i += 2) {
-        hexArray.push(e.payload[i] + e.payload[i + 1]);
-      }
-      hexArray.forEach((datum,idx)=>{
-        if (idx<4) {
-          timeHex += datum;
-          if (idx==3) {
-            timeArray.push(parseInt(timeHex,16));
-          }
-        }
-        if (idx>3 && idx<6) {
-          lengthHex += datum;
-          if (idx==5) {
-            for (let j=0;j<parseInt(lengthHex,16)-1;j++) {
-              timeArray.push(timeArray.at(-1)+dt);
-            }
-          }
-        }
-        if (idx>5) {
-          pressureHex +=datum;
-          if ((idx-6)%4 == 3) {
-            pressureArray.push(Buffer.from(pressureHex, 'hex').readFloatLE());
-            pressureHex = "";
-          }          
-        }
-      })
-      timeHex = "";
-      lengthHex = "";
-      hexArray = [];
-    })
-    const dataArray = timeArray.map((time, index) => {
-      return ([time, pressureArray[index]]);
-    });
-    return ([
-      {
-        "name": "pressure",
-        "data": dataArray
-      }]);
+    for (let i=0;i<array0.length;i++) {
+      dataArray.push({"time":timeArray, "x":array0[i],"y":array1[i],"z":array2[i]});
+    }
+    return dataArray;
   }
 }
