@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React from 'react';
 import dynamic from "next/dynamic";
 
 const ResponsiveScatterPlot = dynamic(() => import("@nivo/scatterplot").then(m => m.ResponsiveScatterPlot), { ssr: false });
@@ -44,7 +44,7 @@ const legend = [
   }
 ];
 
-function App(props) {
+export default function App(props) {
   return (
     <div style={{ width: '100%', height: 'auto', margin: '0 auto' }}>
       <div style={{ width: '100%', height: '250px', margin: '0 auto' }}>
@@ -55,13 +55,12 @@ function App(props) {
           xFormat=">-.2f"
           yScale={{ type: 'linear', min: 'auto', max: 'auto' }}
           yFormat=">-.2f"
-          // blendMode="multiply"
+          blendMode="multiply"
           nodeSize={8}
           axisTop={null}
           axisRight={null}
           axisBottom={axisBottom}
           axisLeft={axisLeft}
-          animate={false}
           legends={legend}
         />
       </div>
@@ -74,13 +73,12 @@ function App(props) {
           yScale={{ type: 'linear', min: 'auto', max: 'auto' }}
           yFormat=">-.2f"
           colors={{ scheme: 'category10' }}
-          // blendMode="multiply"
+          blendMode="multiply"
           nodeSize={8}
           axisTop={null}
           axisRight={null}
           axisBottom={axisBottom}
           axisLeft={axisLeft}
-          animate={false}
           legends={legend}
         />
       </div>
@@ -93,18 +91,15 @@ function App(props) {
           yScale={{ type: 'linear', min: 'auto', max: 'auto' }}
           yFormat=">-.2f"
           colors={{ scheme: 'accent' }}
-          // blendMode="multiply"
+          blendMode="multiply"
           nodeSize={8}
           axisTop={null}
           axisRight={null}
           axisBottom={axisBottom}
           axisLeft={axisLeft}
-          animate={false}
           legends={legend}
         />
       </div>
     </div>
   );
 }
-
-export default memo(App);

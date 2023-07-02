@@ -13,7 +13,8 @@ export default function parser(packet, parser_id){
     
     let dataArray = [];
 
-    packet.reverse().forEach((e)=>{
+    packet.reverse().forEach((e,i)=>{
+      console.log(e.id);
       for (let i = 0; i < e.payload.length; i += 2) {
         hexArray.push(e.payload[i] + e.payload[i + 1]);
       }
@@ -71,6 +72,23 @@ export default function parser(packet, parser_id){
       };
     });
 
+    console.log([
+      {
+        "id": "x",
+        "color": "hsl(33, 70%, 50%)",
+        "data": dataArray0
+      },
+      {
+        "id": "y",
+        "color": "hsl(100, 70%, 50%)",
+        "data": dataArray1
+      },
+      {
+        "id": "z",
+        "color": "hsl(125, 70%, 50%)",
+        "data": dataArray2
+      }
+    ]);
     return ({x:[
       {
         "id": "x",
