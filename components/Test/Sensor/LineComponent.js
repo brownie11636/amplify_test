@@ -9,7 +9,7 @@ export default function App() {
   const [submitFlag, setSubmitFlag] = useState(true);
   const [targetSensor, setTargetSensor] = useState("acc")
 
-  const [data, setData] = useState({x:[], y:[], z:[]});
+  const [data, setData] = useState([]);
   const mqtt_url = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload/topic?topic=';
 
   const onChangeTargetURL = (event) => {
@@ -17,7 +17,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    setData({x:[], y:[], z:[]});
+    setData([]);
     const timeout = setInterval(() => {
       fetch(mqtt_url+targetURL)
       .then(response => {
