@@ -4,10 +4,11 @@ import styles from "../../../styles/Login2.module.css";
 import parser from "./seriesParsers";
 
 export default function App() {
-
+  const d = new Date();
   const [targetURL, setTargetURL] = useState("perpet/SerialNumber/acc");
   const [urlFlag, setUrlFlag] = useState(true);
   const [message, setMessage] = useState("");
+
   const [data, setData] = useState({x:[], y:[], z:[]});
   const mqtt_url = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload/topic?topic=';
   const mqtt_url2 = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload';
@@ -49,6 +50,7 @@ export default function App() {
   };
 
   const messageSubmit = (e) => {
+    console.log(targetURL.split('/').map((part, index, arr) => (index === arr.length - 1 ? "message" : part)).join('/'));
     fetch(mqtt_url2, {
       method: 'POST',
       headers: {
