@@ -11,7 +11,6 @@ export default function App() {
 
   const [data, setData] = useState({x:[], y:[], z:[]});
   const mqtt_url = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload/topic?topic=';
-  const mqtt_url2 = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload';
 
   const onChangeTargetURL = (event) => {
     setTargetURL(event.target.value);
@@ -32,14 +31,14 @@ export default function App() {
         return response.json();
       })
       .then(data => {
-        console.log(data.data.content);
+        console.log(data);
         let arr = data.data.content;
         setData(parser(arr,"1q2w3e4r"));
       })
       .catch(error => {
         console.error('Error:', error);
       });
-    }, 1000)
+    }, 3000)
   
     return () => clearInterval(timeout);
   }, [urlFlag]);
@@ -50,16 +49,12 @@ export default function App() {
   };
 
   const messageSubmit = (e) => {
-    console.log(targetURL.split('/').map((part, index, arr) => (index === arr.length - 1 ? "message" : part)).join('/'));
-    fetch(mqtt_url2, {
+    fetch(mqtt_url+targetURL+'/message', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'text/plain'
       },
-      body: JSON.stringify({
-        topic: targetURL.split('/').map((part, index, arr) => (index === arr.length - 1 ? "message" : part)).join('/'),
-        payload: message
-      })
+      body: message
     })
       .then(response => {
         if (response.ok) {
