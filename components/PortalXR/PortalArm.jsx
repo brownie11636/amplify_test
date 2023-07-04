@@ -83,13 +83,22 @@ const Model = ({loader, modelConfig, position=[0,0,0], rotation=[0,0,0], ...prop
   const [geo,setGeo] = useState(new THREE.BufferGeometry);
 
   useEffect(()=>{
-    console.log("modelConfig")
-    console.log(modelConfig)
+    // console.log("modelConfig")
+    // console.log(modelConfig)
     const loadGLTF = async () => {
       console.log("paaaaaath",path)
       let gltf = await loader.loadAsync(path);
       setGeo((geo_) => geo_ = gltf.scene.children[0].geometry) ;
     }
+
+    // const loadGLTF =  () => {
+    //   console.log("paaaaaath",path)
+    //   // let gltf =  
+    //   loader.load(path,(gltf) =>{
+    //     setGeo((geo_) => geo_ = gltf.scene.children[0].geometry) ;
+    //   } 
+    //   );
+    // }
 
     loadGLTF();
 
