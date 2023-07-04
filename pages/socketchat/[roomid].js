@@ -4,7 +4,7 @@ import PageBanner from "../../components/Common/PageBanner";
 import Footer from "../../components/Layouts/Footer";
 
 import { useRouter } from "next/router";
-import SocketChat from "../../components/Services/SocketChat";
+// import SocketChat from "../../components/Services/SocketChat";
 
 export default function Detail({}) {
     const router = useRouter();
@@ -26,7 +26,7 @@ export default function Detail({}) {
           bgImgClass="item-bg2"
         />
   
-        <SocketChat roomID={roomID}/>
+        {/* <SocketChat roomID={roomID}/> */}
   
         <Footer />
       </>
