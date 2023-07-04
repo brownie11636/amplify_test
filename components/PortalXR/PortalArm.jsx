@@ -1,11 +1,10 @@
 import * as THREE from 'three'
-import { Suspense, useRef, useState, useMemo, useEffect} from 'react'
-import { Canvas, useThree, useLoader, useFrame } from '@react-three/fiber'
+import { useRef, useState, useMemo, useEffect} from 'react'
+import { useFrame } from '@react-three/fiber'
 import { useXR } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import * as myGamepadInput from '../../libs/XR/myGamepadInput'
-import { Kinematics } from '../../libs/kinematics_YS'
 
 import Box from './boxes'
 
@@ -78,7 +77,6 @@ export default function PortalArm(type, path, ...props) {
 
 const Model = ({loader, modelConfig, position=[0,0,0], rotation=[0,0,0], ...props}) => {
 
-  // const path = "/3d_models/portalarm/UR5e_ver/ALLZERO/UR5e/GLTFs/arm_0.gltf"
   const path = modelConfig.path
   const [geo,setGeo] = useState(new THREE.BufferGeometry);
 

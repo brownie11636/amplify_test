@@ -1,9 +1,7 @@
-import dynamic from 'next/dynamic'
 import * as THREE from 'three'
-import { Suspense, useRef, useState, useMemo, useEffect} from 'react'
-import { Canvas, useThree, useLoader, useFrame } from '@react-three/fiber'
-import { OrbitControls, Preload, Html } from '@react-three/drei'
-import { VRButton, ARButton, XR, Controllers, Hands, useController, useXR } from '@react-three/xr'
+import { useRef, useState, useMemo, useEffect} from 'react'
+import { useLoader, useFrame } from '@react-three/fiber'
+import { useController, useXR } from '@react-three/xr'
 import {STLLoader} from 'three/examples/jsm/loaders/STLLoader';
 import * as myGamepadInput from '../../libs/XR/myGamepadInput'
 import { Kinematics } from '../../libs/kinematics_YS'
