@@ -28,7 +28,7 @@ export default function RemoteGroup(props) {
       {/* <Suspense > */}
       <PortalArm />
       {/* </Suspense> */}
-      <SpatialVideo/>
+      {/* <SpatialVideo/> */}
       {/* <Box position={[-1.2, 0, 0]} />
       <Box position={[1.2, 0, 0]} />     */}
     </group>
