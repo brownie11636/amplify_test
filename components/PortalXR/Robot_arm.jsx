@@ -127,49 +127,48 @@ export default function RobotArm({type, path, ...props}) {
     //record data
     //send message part is incompleted
     if ((gamepadInput.right.new.buttons[5] !== gamepadInput.right.prev.buttons[5])  //button B: 0 or 1
-      && (gamepadInput.right.new.buttons[5] > 0.8)){
-        console.log("button ON!")
-        setRecordOn(!recordOn);
-        let [recordCMD, color] = recordOn? ["START",'#ddaaaa']:["WRITE","#b0bef0"];
+    && (gamepadInput.right.new.buttons[5] > 0.8)){
+      console.log("button ON!")
+      setRecordOn(!recordOn);
+      let [recordCMD, color] = recordOn? ["START",'#ddaaaa']:["WRITE","#b0bef0"];
 
-        // if (target_robot_profile !== undefined && target_robot_profile !== null) {
-        //   sendMessage2(JSON.stringify({type:"CONFIG",data:{record: recordCMD}}));    
-        // }
-        robotArm.current.traverse((obj)=>{
-          if (obj.isMesh) obj.material.color.set(color);
-        });
+      // if (target_robot_profile !== undefined && target_robot_profile !== null) {
+      //   sendMessage2(JSON.stringify({type:"CONFIG",data:{record: recordCMD}}));    
+      // }
+      robotArm.current.traverse((obj)=>{
+        if (obj.isMesh) obj.material.color.set(color);
+      });
 
-      }
+    }
     
     // console.log(rightController.grip);
   })
+  
 
-  const armInfos = [];
-  for (let i=0; i<7; i++){
-    if (i === 0){
-      armInfos[i] = {
-        STLUrl: '/stls/base_binary.STL', 
-        pos:[0, 0, 0]
-        // pos:[VRRobotPos.x, VRRobotPos.y, VRRobotPos.z],
-      }
-    } else {
-      armInfos.push({
-        STLUrl: `/stls/arm${i-1}_binary.STL`,
-        pos: [0, 0, 0],
-        // attach: `${armInfo[i-1].attach}-${i-1}`,
-      })
-      // console.log(armInfo[i].attach);
-      if ( i > 1 ) {
-        armInfos[i].pos = [0, armLength[i-2], 0];
+  const [armInfos, setArmInfos] = useState(() =>{
+    const infos = []
+    for (let i=0; i<7; i++){
+      if (i === 0){
+        infos[i] = {
+          STLUrl: '/stls/base_binary.STL', 
+          pos:[0, 0, 0]
+          // pos:[VRRobotPos.x, VRRobotPos.y, VRRobotPos.z],
+        }
+      } else {
+        infos.push({
+          STLUrl: `/stls/arm${i-1}_binary.STL`,
+          pos: [0, 0, 0],
+          // attach: `${armInfo[i-1].attach}-${i-1}`,
+        })
+        // console.log(armInfo[i].attach);
+        if ( i > 1 ) {
+          infos[i].pos = [0, armLength[i-2], 0];
+        }
       }
     }
-    // console.log(armInfos[i]);
-  }
+    return infos
+  });
 
-  // const STLUrl = ['/stls/base_binary.stl'];
-  // for (let i = 0; i < armLength.length;  i++ ) {
-  //   STLUrl.push(`/stls/arm${i}_binary.stl`);
-  // }
 
   return (
     <group position={VRRobotPos} scale ={ 1/XRRatio } ref={robotArm}>
@@ -218,9 +217,9 @@ const Model = ({info, children, rotation, ...props}) => {
   // });
 
   return (
-    <group>
+    <group position={info.pos} rotation={rotation}>
 
-      <mesh ref={ref} position={info.pos} rotation={rotation}>
+      <mesh ref={ref} >
         <primitive object={geom} attach="geometry"/>
         <meshPhongMaterial 
           color='#b0bef0'   //0xb0bef0로 쓰면 안됨
@@ -229,8 +228,8 @@ const Model = ({info, children, rotation, ...props}) => {
           transparent 
           opacity='0.85' 
           />
-        {children}
       </mesh>
+      {children}
     </group>
   );
 };
