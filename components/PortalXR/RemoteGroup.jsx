@@ -11,6 +11,7 @@ import { Leva, useControls } from 'leva'
 
 const RobotArm = dynamic(() => import('./Robot_arm'), { ssr: false })
 const PortalArm = dynamic(() => import('./PortalArm'), { ssr: false })
+// const Box = dynamic(() => import('./boxes'), { sssr: false })
 
 export default function RemoteGroup(props) {
 
@@ -18,6 +19,7 @@ export default function RemoteGroup(props) {
 
   useEffect(() => {
 
+    console.log('in scene >> remotegroup');
     // console.log('in scene >>', props.PCD);
     //setVid(document.getElementById('remotevideo'));
   }, []);
@@ -26,7 +28,12 @@ export default function RemoteGroup(props) {
   return (
     <group>
       {/* <RobotArm  /> */}
+      {/* <Suspense > */}
       <PortalArm />
+      {/* </Suspense> */}
+
+      {/* <Box position={[-1.2, 0, 0]} />
+      <Box position={[1.2, 0, 0]} />     */}
     </group>
   )
 }
