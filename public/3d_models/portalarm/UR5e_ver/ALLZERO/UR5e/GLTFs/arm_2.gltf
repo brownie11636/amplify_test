@@ -1,0 +1,100 @@
+{
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "mode": 4,
+          "material": 0,
+          "extensions": {
+            "KHR_draco_mesh_compression": {
+              "bufferView": 0,
+              "attributes": {
+                "POSITION": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "buffers": [
+    {
+      "name": "link_2.STL",
+      "byteLength": 102928,
+      "uri": "link_2.STL.bin"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 102924
+    }
+  ],
+  "accessors": [
+    {
+      "componentType": 5125,
+      "count": 513792,
+      "type": "SCALAR",
+      "max": [
+        85571
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "componentType": 5126,
+      "count": 86069,
+      "type": "VEC3",
+      "min": [
+        -0.060366340986809965,
+        -0.06035634098680996,
+        -0.13569634098680997
+      ],
+      "max": [
+        0.48536634098681003,
+        0.06029612603810456,
+        0.00013756228627262446
+      ]
+    }
+  ],
+  "asset": {
+    "version": "2.0"
+  },
+  "materials": [
+    {
+      "name": "default",
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": false
+    }
+  ],
+  "scene": 0,
+  "extensionsRequired": [
+    "KHR_draco_mesh_compression"
+  ],
+  "extensionsUsed": [
+    "KHR_draco_mesh_compression"
+  ]
+}

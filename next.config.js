@@ -7,4 +7,7 @@ module.exports = {
     trailingSlash: true,
     distDir: 'build',
     optimizeFonts: false,
+    images:{
+        unoptimized: true,
+    }
 }

@@ -98,8 +98,8 @@ export default function Scene(props) {
 
   return (
     <>
+      {/* <VRButton /> */}
       <div className={styles.canvasContainer}>
-        <VRButton />
         <Canvas>
           <XR>
             <directionalLight intensity={0.75} />
@@ -126,7 +126,7 @@ export default function Scene(props) {
             {/* <VideoText position={[0, 1.3, -2]} />      */}
           </XR>
         </Canvas>
-        <Leva />
+        {/* <Leva /> */}
       </div>
       <button onClick={receiveData}>check recevice point-data</button>
     </>
