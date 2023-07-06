@@ -6,8 +6,6 @@ import { PortalCommContext } from '../../utils/contexts/portalComm';
 import PortalRTC from "../../libs/portal/webrtc/portalrtc";
 import RTCvideo from "../../components/Services/VideoPanel";
 
-const Scene = dynamic(() => import("../../components/PortalXR/Scene"), { ssr: true })
-
 
 const WebrtcContainer = () => {
   const commClient = useContext(PortalCommContext);
@@ -144,9 +142,6 @@ const WebrtcContainer = () => {
         <video className="w-[300px]" autoPlay playsInline ref={localVideo}/>
           {/* <source src="../../drei.mp4" type="video/mp4"></source> */}
         <video className="w-[300px]" autoPlay playsInline ref={remoteVideo}/>
-      </div>
-      <div>
-        <Scene/>
       </div>
 
     </section>
