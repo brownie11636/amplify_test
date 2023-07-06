@@ -5,7 +5,6 @@ import Image from "next/Image"
 import { socketNsp } from '../../toServer/API-AccessPoint';
 import { PortalCommContext } from '../../utils/contexts/portalComm';
 import PortalRTC from "../../libs/portal/webrtc/portalrtc";
-import RTCvideo from "../../components/Services/VideoPanel";
 import sampleImg from "./sample_jpeg.jpeg"
 
 const Scene = dynamic(() => import("../../components/PortalXR/Scene"), { ssr: true })
@@ -155,10 +154,12 @@ const XRContainer = () => {
         </RgbdContext.Provider>
       </div>
       <div>
-        <Suspense>
-          <Image ref={depthSrcRef} src={sampleImg} width={1280} height={720} priority={true} />
-          <Image ref={rgbSrcRef} src={sampleImg} width={1280} height={720} priority={true} />
-        </Suspense>
+        {/* <Suspense> */}
+          <Image ref={depthSrcRef} src={sampleImg} width={1280} height={720} />
+          <Image ref={rgbSrcRef} src={sampleImg} width={1280} height={720} />
+          {/* <Image ref={depthSrcRef} src={sampleImg} width={1280} height={720} priority={true} />
+          <Image ref={rgbSrcRef} src={sampleImg} width={1280} height={720} priority={true} /> */}
+        {/* </Suspense> */}
       </div>
 
     </section>

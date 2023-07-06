@@ -6,13 +6,15 @@ import { useXR } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { textureLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
-import { RgbdContext } from './XR.container';
+import { PortalCommContext } from '../../utils/contexts/portalComm';
+import { PortalRTCContext, RgbdContext } from './XR.container';
 
 
 export default function SpatialVideo(mode, ...props) {
 
-  
+  const commClient = useContext(PortalCommContext);
   const {rgbSrcRef, depthSrcRef} = useContext(RgbdContext);
+  const portalRTC = useContext(PortalRTCContext)
   // const depthTexture = useTexture(depthSrcRef.current);
   // const rgbTexture = useTexture(rgbSrcRef.current);
 
@@ -57,7 +59,8 @@ export default function SpatialVideo(mode, ...props) {
   },[])
 
   useLayoutEffect(()=>{
-  
+    //rtc datachannel eventhandler에 spatialvideo관련 정보 넘기기
+    
     // setUniforms((uniforms) => uniforms = {
     //   texSize: {
     //     value: [720,1280],
@@ -78,10 +81,10 @@ export default function SpatialVideo(mode, ...props) {
   const matRef = useRef();
   const pointsRef = useRef();
   useFrame(() => {
-    console.log(matRef.current.uniforms.rgbImg.value)
-    matRef.current.uniforms.rgbImg.value.needupdate=true
-    matRef.current.uniforms.depthImg.value.needupdate=true
-    console.log(pointsRef.current)
+    // console.log(matRef.current.uniforms.rgbImg.value)
+    // matRef.current.uniforms.rgbImg.value.needupdate=true
+    // matRef.current.uniforms.depthImg.value.needupdate=true
+    // console.log(pointsRef.current)
   })
 
   return (
@@ -93,12 +96,12 @@ export default function SpatialVideo(mode, ...props) {
         transparent={false}
         vertexShader={vertShaderSrc}
         fragmentShader={fragShaderSrc}
-        //uniformsNddeUpdate={true}
+        // uniformsNeedUpdate={true}
       />
       <bufferGeometry>
         <bufferAttribute attach="attributes-vertexIdx" count={numPoints} array={buffPointIndicesAttr} itemSize={1}/>
         <bufferAttribute attach="index" count={numPoints} array={buffIndices} itemSize={1}/>
-      </bufferGeometry>
+      </bufferGeometry> 
         
     </points>
   )

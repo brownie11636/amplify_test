@@ -14,7 +14,7 @@ import RemoteGroup from "./RemoteGroup"
 
 // const Blob = dynamic(() => import('./Blob'), { ssr: false })
 
-export default function Scene(props) {
+export default function Scene(portalRTC, ...props) {
 
   // ------- PCD datachannel
   const [PCD, setPCD] = useState();
@@ -38,9 +38,9 @@ export default function Scene(props) {
             <Stats showPanel={0} className="stats" {...props} />            
             <directionalLight intensity={0.75} />
             <ambientLight intensity={0.75} />
-            <Suspense fallback={null}>
+            {/* <Suspense fallback={null}> */}
               <Environment />
-            </Suspense>
+            {/* </Suspense> */}
 
             <Controllers />
             <Hands />
@@ -52,9 +52,9 @@ export default function Scene(props) {
             {/* <Preload all /> */}
             <OrbitControls />
             {/* <VideoText position={[0, 1.3, -2]} />      */}
-            <Suspense fallback={null}>
+            {/* <Suspense fallback={null}> */}
               <RemoteGroup />
-            </Suspense>
+            {/* </Suspense> */}
           </XR>
         </Canvas>
         {/* <Leva /> */}
