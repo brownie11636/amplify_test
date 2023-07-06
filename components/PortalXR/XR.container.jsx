@@ -1,13 +1,17 @@
-import { Suspense, useContext, useEffect, useState, useMemo, useRef } from 'react';
+import { Suspense, createContext,useContext, useEffect, useState, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic'
+import Image from "next/Image"
 
 import { socketNsp } from '../../toServer/API-AccessPoint';
 import { PortalCommContext } from '../../utils/contexts/portalComm';
 import PortalRTC from "../../libs/portal/webrtc/portalrtc";
 import RTCvideo from "../../components/Services/VideoPanel";
+import sampleImg from "./sample_jpeg.jpeg"
 
 const Scene = dynamic(() => import("../../components/PortalXR/Scene"), { ssr: true })
 
+export const RgbdContext = createContext();
+export const PortalRTCContext = createContext();
 
 const XRContainer = () => {
   const commClient = useContext(PortalCommContext);
@@ -21,23 +25,26 @@ const XRContainer = () => {
     //   isStreamer: false,
     //   isViewer: false
     // })
-    const streamMode = useRef({
-      isStreamer: false,
-      isViewer: false
-    })
+  const streamMode = useRef({
+    isStreamer: false,
+    isViewer: false
+  })
+
+  const depthSrcRef = useRef();
+  const rgbSrcRef = useRef();
     
-    useEffect(() =>{
-      console.log("socket.id:",commClient.sockets[socketNsp].id);
-      commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
-      commClient.fetchServices().then((res) => {
-        updateServicesSelect(res.services);
-      });
-      portalRTC.current = new PortalRTC(commClient);
-  
-  
-      return () => {
-  
-    }},[]);
+  //onMount
+  useEffect(() => {
+    console.log("socket.id:",commClient.sockets[socketNsp].id);
+    commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
+    commClient.fetchServices().then((res) => {
+      updateServicesSelect(res.services);
+    });
+    portalRTC.current = new PortalRTC(commClient);
+
+    return () => {
+    }
+  },[]);
 
   const updateServicesSelect = (servicesJSON) => {
     console.log('%c updateServicesSelect, received JSON \n', `color: ${"white"}; background: ${"black"}`, servicesJSON);
@@ -141,7 +148,17 @@ const XRContainer = () => {
 
     </div>
       <div>
-        <Scene/>
+        <RgbdContext.Provider value={{rgbSrcRef, depthSrcRef}}>
+          <PortalRTCContext.Provider value={portalRTC}>
+            <Scene />
+          </PortalRTCContext.Provider>
+        </RgbdContext.Provider>
+      </div>
+      <div>
+        <Suspense>
+          <Image ref={depthSrcRef} src={sampleImg} width={1280} height={720} priority={true} />
+          <Image ref={rgbSrcRef} src={sampleImg} width={1280} height={720} priority={true} />
+        </Suspense>
       </div>
 
     </section>

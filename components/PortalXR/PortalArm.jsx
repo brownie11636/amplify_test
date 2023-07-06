@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { useRef, useState, useMemo, useEffect} from 'react'
+import { forwardRef, useRef, useState, useMemo, useEffect} from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useXR } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -59,7 +59,7 @@ export default function PortalArm(type, path, ...props) {
   }, []);
 
   useFrame((state, delta)=> { 
-    setArmAngles(armAngles => armAngles.map(val=>val+0.3));
+    // setArmAngles(armAngles => armAngles.map(val=>val+0.3));
   })
 
   return(
@@ -75,7 +75,7 @@ export default function PortalArm(type, path, ...props) {
 
 }
 
-const Model = ({loader, modelConfig, position=[0,0,0], rotation=[0,0,0], ...props}) => {
+const Model = forwardRef( function Model ({loader, modelConfig, position=[0,0,0], rotation=[0,0,0], ...props}, forwardedRef) {
 
   const path = modelConfig.path
   const [geo,setGeo] = useState(new THREE.BufferGeometry);
@@ -105,7 +105,7 @@ const Model = ({loader, modelConfig, position=[0,0,0], rotation=[0,0,0], ...prop
   },[])
 
   return (
-    <group position={position} rotation={rotation} >
+    <group ref={forwardedRef} position={position} rotation={rotation} >
       <mesh >
         {/* <primitive object={gltf.scene.children[0].geometry} attach="geometry"/> */}
         <primitive object={geo} attach="geometry"/>
@@ -116,7 +116,7 @@ const Model = ({loader, modelConfig, position=[0,0,0], rotation=[0,0,0], ...prop
     
     </group>
   );
-};
+});
 
 const Table = ({loader, children, ...props}) => {
   const modelConfig = {
@@ -150,21 +150,26 @@ const Arm = ({ index=0, angles=[0,0,0,0,0,0], ...props}) => {
   ];
 
   const [rotation, setRotation] = useState([0,0,0]);
-
+  const modelRef = useRef();
   useEffect(() => {
     console.log("arm index:",index)
-    console.log("poses",props.potisions)
+    console.log("poses",props.positions)
+    console.log("refref")
+    console.log(modelRef)
   },[])
 
   useFrame((state,delta) => {
     if (index > 0){
-      setRotation((rotation)=> rotAxes[index-1].map((val,idx) => val * angles[index-1] * THREE.MathUtils.DEG2RAD))
+      // console.log("rotrot")
+      // console.log(modelRef)
+      modelRef.current.rotation.fromArray(rotAxes[index-1].map((val,idx) => val * angles[index-1] * THREE.MathUtils.DEG2RAD));
       // console.log("angles in arms[",index,"]: ",rotation)
     }
   })
 
   return (
     <Model 
+    ref={modelRef}
     rotation={rotation}
     loader={props.loader} 
     position={props.positions[index]}
