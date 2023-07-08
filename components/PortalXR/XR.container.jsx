@@ -41,7 +41,7 @@ const XRContainer = () => {
         commClient.fetchServices().then((res) => {
           updateServicesSelect(res.services);
         });
-        portalRTCRef.current = new portalRTC(commClient);
+        portalRTCRef.current = new PortalRTC(commClient);
         portalRTCRef.current.rgbImg = rgbSrcRef.current;
         portalRTCRef.current.depthImg = depthSrcRef.current;
       })
@@ -177,7 +177,7 @@ const XRContainer = () => {
       </div>
         <div>
           <RgbdContext.Provider value={{rgbSrcRef, depthSrcRef}}>
-            <PortalRTCContext.Provider value={portalRTC}>
+            <PortalRTCContext.Provider value={portalRTCRef}>
               <Scene />
             </PortalRTCContext.Provider>
           </RgbdContext.Provider>
