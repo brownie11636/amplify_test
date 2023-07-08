@@ -250,8 +250,13 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
     console.log('createPeerConnection');
     let pc = new RTCPeerConnection(this.webrtcParams.pcConfig);
     let senderId = this.id;
-    let stream = this.localVideo.srcObject;
-    //let stream = null;
+    let stream = null;
+    try {
+      stream = this.localVideo.srcObject;
+
+    } catch (e) {
+      console.log('stream var is null', e);
+    }
 
     if (stream !== null) { //viewer인 경우 stream이 없으므로
       for (const track of stream.getTracks()) {
@@ -265,7 +270,11 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
       console.log('remoteVideos?>>', this.remoteVideos);
       console.log('remoteVideos []?>>', this.remoteVideos['webrtc:' + this.id]);
       //this.remoteVideos['webrtc:'+this.id].srcObject = event.streams[0];
-      this.remoteVideos[targetServiceId].srcObject = event.streams[0];
+      try {
+        this.remoteVideos[targetServiceId].srcObject = event.streams[0];
+      } catch (e){
+        console.log(e)
+      }
     }
 
     pc.addEventListener('datachannel', event => {
