@@ -1,4 +1,4 @@
-import { Suspense, createContext,useContext, useEffect, useState, useMemo, useRef } from 'react';
+import { Suspense, createContext,useContext, useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic'
 import Image from "next/Image"
 
@@ -31,7 +31,7 @@ const XRContainer = () => {
 
   const depthSrcRef = useRef();
   const rgbSrcRef = useRef();
-    
+  
   //onMount
   useEffect(() => {
     console.log("socket.id:",commClient.sockets[socketNsp].id);
@@ -40,10 +40,24 @@ const XRContainer = () => {
       updateServicesSelect(res.services);
     });
     portalRTC.current = new PortalRTC(commClient);
-
+    portalRTC.current.rgbImg = rgbSrcRef.current;
+    portalRTC.current.depthImg = depthSrcRef.current;
+    // depthSrcRef.current.src = sampleImg;
+    // rgbSrcRef.current.src = sampleImg;
     return () => {
     }
   },[]);
+  
+  const onLoadRgbImg = useCallback (() => {
+    //console.log('image lo!!!!!!!!!!!')
+    portalRTC.current.rgbImg = rgbSrcRef.current;
+    
+  }, [])
+  const onLoadDepthImg = useCallback (() => {
+    portalRTC.current.depthImg = depthSrcRef.current;
+    
+  }, [])
+  
 
   const updateServicesSelect = (servicesJSON) => {
     console.log('%c updateServicesSelect, received JSON \n', `color: ${"white"}; background: ${"black"}`, servicesJSON);
@@ -92,77 +106,86 @@ const XRContainer = () => {
  
 
   return (
-    <section className="bg-white w-[984px] h-[600px] mt-[38px] flex flex-col">
-      <button 
-      className="absolute right-[20px] top-[10px] w-[130px] h-[40px] bg-[#182a5b]"
-      onClick={() => {commClient.createService()}}>
-        <span className="text-white">create service</span>
-      </button>
-      <div>
-        <select className="w-[250px]" ref={svcSlt}>
-          <option>available services</option>
-        </select>
+    <>
+      <section className="bg-white w-[984px] h-[600px] mt-[38px] flex flex-col">
         <button 
-        className="text-white w-[130px] h-[40px] bg-[#182a5b]" 
-        onClick={() => {
-          let selected = svcSlt.current.options[svcSlt.current.selectedIndex].value;
-          commClient.requestJoinService(selected);
-          console.log("joinRequest",selected)
-        }}
-        >join service</button>
-        <button 
-        className="text-white w-[130px] h-[40px] bg-[#182a5b]" 
-        onClick={() => {
-          let selected = svcSlt.current.options[svcSlt.current.selectedIndex].value;
-          commClient.requestLeaveService(selected);
-          console.log("leaveRequest",selected)
-        }}
-        >leave service</button>
-      </div>
-      <div>
-        <select className="w-[250px]" ref={joinedSvcSlt}>
-          <option>available joined services</option>
-        </select>
-        <button 
-        className="text-white w-[130px] h-[40px] bg-[#182a5b]" 
-        onClick={() => {
-          let selected = joinedSvcSlt.current.options[joinedSvcSlt.current.selectedIndex].value;
-          if (selected === 'field') {
-            if (!streamMode.isViewer) alert('plz select the joined service list');
-            return;      
-          }
-          startWebrtcStreaming(streamMode, selected);
-        }}
-        >start streaming</button>        
-        <button 
-        className="text-white w-[130px] h-[40px] bg-[#182a5b]" 
-        onClick={() => {
-          let selected = svcSlt.current.options[svcSlt.current.selectedIndex].value;
-          commClient.requestLeaveService(selected);
-          console.log("leaveRequest",selected);
+        className="absolute right-[20px] top-[10px] w-[130px] h-[40px] bg-[#182a5b]"
+        onClick={() => {commClient.createService()}}>
+          <span className="text-white">create service</span>
+        </button>
+        <div>
+          <select className="w-[250px]" ref={svcSlt}>
+            <option>available services</option>
+          </select>
+          <button 
+          className="text-white w-[130px] h-[40px] bg-[#182a5b]" 
+          onClick={() => {
+            let selected = svcSlt.current.options[svcSlt.current.selectedIndex].value;
+            commClient.requestJoinService(selected);
+            console.log("joinRequest",selected)
           }}
-        >stop streaming</button>
-      </div>
-      <div className="flex" >
+          >join service</button>
+          <button 
+          className="text-white w-[130px] h-[40px] bg-[#182a5b]" 
+          onClick={() => {
+            let selected = svcSlt.current.options[svcSlt.current.selectedIndex].value;
+            commClient.requestLeaveService(selected);
+            console.log("leaveRequest",selected)
+          }}
+          >leave service</button>
+        </div>
+        <div>
+          <select className="w-[250px]" ref={joinedSvcSlt}>
+            <option>available joined services</option>
+          </select>
+          <button 
+          className="text-white w-[130px] h-[40px] bg-[#182a5b]" 
+          onClick={() => {
+            let selected = joinedSvcSlt.current.options[joinedSvcSlt.current.selectedIndex].value;
+            if (selected === 'field') {
+              if (!streamMode.isViewer) alert('plz select the joined service list');
+              return;      
+            }
+            startWebrtcStreaming(streamMode, selected);
+          }}
+          >start streaming</button>        
+          <button 
+          className="text-white w-[130px] h-[40px] bg-[#182a5b]" 
+          onClick={() => {
+            let selected = svcSlt.current.options[svcSlt.current.selectedIndex].value;
+            commClient.requestLeaveService(selected);
+            console.log("leaveRequest",selected);
+            }}
+          >stop streaming</button>
+        </div>
+        <div className="flex" >
 
-    </div>
-      <div>
-        <RgbdContext.Provider value={{rgbSrcRef, depthSrcRef}}>
-          <PortalRTCContext.Provider value={portalRTC}>
-            <Scene />
-          </PortalRTCContext.Provider>
-        </RgbdContext.Provider>
       </div>
-      <div>
-        {/* <Suspense> */}
-          <Image ref={depthSrcRef} src={sampleImg} width={1280} height={720} />
-          <Image ref={rgbSrcRef} src={sampleImg} width={1280} height={720} />
-          {/* <Image ref={depthSrcRef} src={sampleImg} width={1280} height={720} priority={true} />
-          <Image ref={rgbSrcRef} src={sampleImg} width={1280} height={720} priority={true} /> */}
-        {/* </Suspense> */}
-      </div>
+        <div>
+          <RgbdContext.Provider value={{rgbSrcRef, depthSrcRef}}>
+            <PortalRTCContext.Provider value={portalRTC}>
+              <Scene />
+            </PortalRTCContext.Provider>
+          </RgbdContext.Provider>
+        </div>
+        <div>
+            {/* <Image ref={depthSrcRef} src={sampleImg} width={1280} height={720} onLoad={onLoadDepthImg} loading='lazy'/>
+            <Image ref={rgbSrcRef} src={sampleImg} width={1280} height={720} onLoad={onLoadRgbImg} loading='lazy'/> */}
+            {/* <img ref={depthSrcRef} src="/sample_jpeg2.jpeg" width="1280" height="720" style={{width:"1280px", height:"720px"}} onLoad={onLoadDepthImg} loading='auto'/>
+            <img ref={rgbSrcRef} src="/sample_jpeg2.jpeg" width="1280" height="720" style={{width:"1280px", height:"720px"}}  onLoad={onLoadRgbImg} loading='auto'/> */}
+            {/* <Image ref={depthSrcRef} src={sampleImg} width={1280} height={720} onload={onLoadDepthImg} />
+            <Image ref={rgbSrcRef} src={sampleImg} width={1280} height={720} onload={onLoadRgbImg} /> */}
+            {/* <Image ref={depthSrcRef} src={sampleImg} width={1280} height={720} priority={true} />
+            <Image ref={rgbSrcRef} src={sampleImg} width={1280} height={720} priority={true} /> */}
+        </div>
 
-    </section>
+      </section>
+      <panel>
+        <img ref={depthSrcRef} src="/sample_jpeg2.jpeg" width="1280" height="720" style={{width:"1280px", height:"720px"}} onLoad={onLoadDepthImg} loading='auto'/>
+        <img ref={rgbSrcRef} src="/sample_jpeg2.jpeg" width="1280" height="720" style={{width:"1280px", height:"720px"}}  onLoad={onLoadRgbImg} loading='auto'/>
+      </panel>
+
+    </>
   );
 };
 

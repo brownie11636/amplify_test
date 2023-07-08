@@ -12,38 +12,93 @@ import { PortalRTCContext, RgbdContext } from './XR.container';
 
 export default function SpatialVideo(mode, ...props) {
 
-  const commClient = useContext(PortalCommContext);
+  //const commClient = useContext(PortalCommContext);
   const {rgbSrcRef, depthSrcRef} = useContext(RgbdContext);
-  const portalRTC = useContext(PortalRTCContext)
+  //const portalRTC = useContext(PortalRTCContext);
+  const matRef = useRef();
+  const pointsRef = useRef();
+
+
   // const depthTexture = useTexture(depthSrcRef.current);
   // const rgbTexture = useTexture(rgbSrcRef.current);
 
   // console.log("rgb",rgbSrcRef)
   // console.log("depth",depthSrcRef)
 
-  const [rgbTexture, depthTexture] = useMemo(() => {
+  const rgbTexture = useRef(new THREE.Texture(rgbSrcRef.current))
+  const depthTexture = useRef(new THREE.Texture(depthSrcRef.current))
+
+  useLayoutEffect(()=>{
+    rgbTexture.current.needsUpdate = true;
+    depthTexture.current.needsUpdate = true;
+    console.log(rgbTexture.current);
+    // rgbSrcRef.current.onload = () =>{
+    //   // rgbTx = new THREE.Texture(rgbSrcRef.current);
+    //   rgbTexture.current.needsUpdate = true;
+    //   console.log("updated!!!!rgb",rgbSrcRef.current)
+    // }
+    // depthSrcRef.current.onload = () =>{
+    //   // depthTx = new THREE.Texture(depthSrcRef.current);
+    //   depthTexture.current.needsUpdate = true;
+    // }
+    },[])
+  // const [rgbTexture, depthTexture] = useMemo(() => {
     
-    let rgbTx = new THREE.Texture(rgbSrcRef.current);
-    let depthTx = new THREE.Texture(depthSrcRef.current);
-    console.log("texture")
-    console.log(depthTx)
-    rgbTx.needsUpdate = true;
-    depthTx.needsUpdate = true;
+  //   let rgbTx = new THREE.Texture(rgbSrcRef.current);
+  //   let depthTx = new THREE.Texture(depthSrcRef.current);
+  //   console.log("texture init about image", rgbSrcRef.current)
+  //   //console.log(depthTx)
+  //   rgbTx.needsUpdate = true;
+  //   depthTx.needsUpdate = true;
+  //   rgbSrcRef.current.onload = () =>{
+  //     rgbTx = new THREE.Texture(rgbSrcRef.current);
+  //     rgbTx.needsUpdate = true;
+  //     console.log("updated!!!!rgb")
+  //   }
+  //   depthSrcRef.current.onload = () =>{
+  //     depthTx = new THREE.Texture(depthSrcRef.current);
+  //     depthTx.needsUpdate = true;
+  //   }
     
-    return [rgbTx, depthTx]
-  },[])
+  //   return [rgbTx, depthTx]
+  // },[]);
+
+  // useEffect(() => {
+  //   console.log("ImgTexture needs Update !")
+  //   rgbTexture.needsUpdate = true;
+  //   depthTexture.needsUpdate = true;
+
+  //   return () => {
+  //   }
+  // },[rgbTexture, depthTexture]);
+
+  // setInterval(() => {
+  //   console.log(rgbSrcRef.current);
+  //   console.log(rgbTexture);
+  // }, 4000);
+
+
 
   // const texture = useLoader(TexturesLoader)
-  const [uniforms, setUniforms] = useState(
-    {
-      rgbImg: { type: 't', value: rgbTexture },
-      depthImg: { type: 't', value: depthTexture },
-      texSize: { type: 'i2', value: [720,1280] },
-      iK: { type: 'f4', value: [0, 0, 0, 0] },
-      scale: { type: 'f', value: 6.0 },
-      ptSize: { type: 'f', value: 1.6 },
-    }
-  )
+  const uniforms =     {
+    rgbImg: { type: 't', value: rgbTexture.current },
+    depthImg: { type: 't', value: depthTexture.current },
+    texSize: { type: 'i2', value: [1280,720] },
+    iK: { type: 'f4', value: [0, 0, 0, 0] },
+    scale: { type: 'f', value: 6.0 },
+    ptSize: { type: 'f', value: 1.6 },
+  }
+
+  // const [uniforms, setUniforms] = useState(
+  //   {
+  //     rgbImg: { type: 't', value: rgbTexture },
+  //     depthImg: { type: 't', value: depthTexture },
+  //     texSize: { type: 'i2', value: [720,1280] },
+  //     iK: { type: 'f4', value: [0, 0, 0, 0] },
+  //     scale: { type: 'f', value: 6.0 },
+  //     ptSize: { type: 'f', value: 1.6 },
+  //   }
+  // )
 
   const numPoints = 720 * 1280
 
@@ -58,32 +113,41 @@ export default function SpatialVideo(mode, ...props) {
     return [buffIndices_, buffPointIndicesAttr_];
   },[])
 
-  useLayoutEffect(()=>{
-    //rtc datachannel eventhandler에 spatialvideo관련 정보 넘기기
-    
-    // setUniforms((uniforms) => uniforms = {
-    //   texSize: {
-    //     value: [720,1280],
-    //     ...uniforms.texSize
-    //   },
-    //   rgbImg: {
-    //     value: rgbTexture,
-    //     ...uniforms.rgbImg
-    //   },
-    //   depthImg: {
-    //     value: null,
-    //     ...uniforms.depthImg
-    //   },
-    //   ...uniforms 
-    // });
-  },[])
+  
+  let tmp = rgbSrcRef.current.src;
 
-  const matRef = useRef();
-  const pointsRef = useRef();
-  useFrame(() => {
-    // console.log(matRef.current.uniforms.rgbImg.value)
-    // matRef.current.uniforms.rgbImg.value.needupdate=true
-    // matRef.current.uniforms.depthImg.value.needupdate=true
+  useFrame( () => {
+    if (rgbSrcRef.current.complete && depthSrcRef.current.complete){
+      //console.log(rgbTexture.current);
+      // matRef.current.uniforms.texSize.value = [720, 1280];
+      //console.log('complete!');
+      rgbTexture.current.needsUpdate=true
+      depthTexture.current.needsUpdate=true;
+      //console.log(rgbSrcRef.current);
+
+      // matRef.current.uniforms.rgbImg.value.needsUpdate = true;
+      // matRef.current.uniforms.depthImg.value.needsUpdate = true;
+    }
+    // if (tmp !== rgbSrcRef.current.src) {
+    //   console.log('diff');
+    //   rgbTexture.needsUpdate=true
+    //   depthTexture.needsUpdate=true;
+
+    // } else {
+    //   //console.log('same');
+    // }
+    // tmp = rgbSrcRef.current.src;
+
+    //console.log('useFrame in spatial')
+    // rgbTexture.image = rgbSrcRef.current;
+    // depthTexture.image = depthSrcRef.current;
+    // matRef.current.uniforms.rgbImg.value = rgbTexture;
+    // matRef.current.uniforms.depthImg.value = depthTexture;
+    //matRef.current.uniforms.texSize.value = [height, width];
+
+    //matRef.current.uniforms.rgbImg.value.needsUpdate = true;
+    //matRef.current.uniforms.depthImg.value.needsUpdate = true;
+    //matRef.current.uniforms.rgbImg.value = rgbTexture;
     // console.log(pointsRef.current)
   })
 
@@ -92,7 +156,7 @@ export default function SpatialVideo(mode, ...props) {
       <shaderMaterial 
         ref={matRef}
         uniforms={uniforms}  
-        side={THREE.DoubleSide}
+        // side={THREE.DoubleSide}
         transparent={false}
         vertexShader={vertShaderSrc}
         fragmentShader={fragShaderSrc}
