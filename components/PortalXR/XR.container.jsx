@@ -34,14 +34,28 @@ const XRContainer = () => {
   
   //onMount
   useEffect(() => {
-    console.log("socket.id:",commClient.sockets[socketNsp].id);
-    commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
-    commClient.fetchServices().then((res) => {
-      updateServicesSelect(res.services);
-    });
-    portalRTC.current = new PortalRTC(commClient);
-    portalRTC.current.rgbImg = rgbSrcRef.current;
-    portalRTC.current.depthImg = depthSrcRef.current;
+    if(commClient.sockets[socketNsp].id === undefined){
+      commClient.sockets[socketNsp].on("connect",() => {
+        console.log("initiated socket.id:",commClient.sockets[socketNsp].id);
+        commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
+        commClient.fetchServices().then((res) => {
+          updateServicesSelect(res.services);
+        });
+        portalRTC.current = new PortalRTC(commClient);
+        portalRTC.current.rgbImg = rgbSrcRef.current;
+        portalRTC.current.depthImg = depthSrcRef.current;
+      })
+    } else {
+      console.log("socket.id:",commClient.sockets[socketNsp].id);
+      commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
+      commClient.fetchServices().then((res) => {
+        updateServicesSelect(res.services);
+      });
+      portalRTC.current = new PortalRTC(commClient);
+      portalRTC.current.rgbImg = rgbSrcRef.current;
+      portalRTC.current.depthImg = depthSrcRef.current;
+
+  }
     // depthSrcRef.current.src = sampleImg;
     // rgbSrcRef.current.src = sampleImg;
     return () => {
@@ -180,10 +194,10 @@ const XRContainer = () => {
         </div>
 
       </section>
-      <panel>
+      <div style={{position:"absolute", top:"500px", left:"-1000px", width:"3000", height:"3000", zIndex:"111"}}>
         <img ref={depthSrcRef} src="/sample_jpeg2.jpeg" width="1280" height="720" style={{width:"1280px", height:"720px"}} onLoad={onLoadDepthImg} loading='auto'/>
         <img ref={rgbSrcRef} src="/sample_jpeg2.jpeg" width="1280" height="720" style={{width:"1280px", height:"720px"}}  onLoad={onLoadRgbImg} loading='auto'/>
-      </panel>
+      </div>
 
     </>
   );
