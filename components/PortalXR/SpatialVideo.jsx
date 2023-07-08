@@ -13,7 +13,7 @@ import { GamepadContext } from "./GamepadContext"
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 const RAD2DEG = THREE.MathUtils.RAD2DEG;
 export default function SpatialVideo(mode, ...props) {
-  
+  const portaRTCRef = useContext(PortalRTCContext)
   const gamepadRef = useContext(GamepadContext)
   //const commClient = useContext(PortalCommContext);
   const {rgbSrcRef, depthSrcRef} = useContext(RgbdContext);

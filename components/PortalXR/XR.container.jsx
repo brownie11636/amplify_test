@@ -14,7 +14,7 @@ export const PortalRTCContext = createContext();
 
 const XRContainer = () => {
   const {commClient} = useContext(PortalCommContext);
-  const portalRTC = useRef();
+  const portalRTCRef = useRef();
   const localVideo = useRef();
   const remoteVideo = useRef();
   // const svcSltOpt = uesRef();
@@ -41,9 +41,9 @@ const XRContainer = () => {
         commClient.fetchServices().then((res) => {
           updateServicesSelect(res.services);
         });
-        portalRTC.current = new PortalRTC(commClient);
-        portalRTC.current.rgbImg = rgbSrcRef.current;
-        portalRTC.current.depthImg = depthSrcRef.current;
+        portalRTCRef.current = new portalRTC(commClient);
+        portalRTCRef.current.rgbImg = rgbSrcRef.current;
+        portalRTCRef.current.depthImg = depthSrcRef.current;
       })
     } else {
       console.log("socket.id:",commClient.sockets[socketNsp].id);
@@ -51,9 +51,9 @@ const XRContainer = () => {
       commClient.fetchServices().then((res) => {
         updateServicesSelect(res.services);
       });
-      portalRTC.current = new PortalRTC(commClient);
-      portalRTC.current.rgbImg = rgbSrcRef.current;
-      portalRTC.current.depthImg = depthSrcRef.current;
+      portalRTCRef.current = new PortalRTC(commClient);
+      portalRTCRef.current.rgbImg = rgbSrcRef.current;
+      portalRTCRef.current.depthImg = depthSrcRef.current;
 
   }
     // depthSrcRef.current.src = sampleImg;
@@ -64,11 +64,11 @@ const XRContainer = () => {
   
   const onLoadRgbImg = useCallback (() => {
     //console.log('image lo!!!!!!!!!!!')
-    portalRTC.current.rgbImg = rgbSrcRef.current;
+    portalRTCRef.current.rgbImg = rgbSrcRef.current;
     
   }, [])
   const onLoadDepthImg = useCallback (() => {
-    portalRTC.current.depthImg = depthSrcRef.current;
+    portalRTCRef.current.depthImg = depthSrcRef.current;
     
   }, [])
   
@@ -101,18 +101,18 @@ const XRContainer = () => {
   }
 
   const startWebrtcStreaming = (streamMode, selected) => {
-    if (!portalRTC.current.localVideo){
-      portalRTC.current.localVideo = localVideo.current;
+    if (!portalRTCRef.current.localVideo){
+      portalRTCRef.current.localVideo = localVideo.current;
     }
-    console.log(portalRTC.remoteVideos)
-    // console.log(portalRTC.remoteVideos.hasOwnProperty(toString(selected)))
-    if(portalRTC.current.remoteVideos[selected]) {
+    console.log(portalRTCRef.remoteVideos)
+    // console.log(portalRTCRef.remoteVideos.hasOwnProperty(toString(selected)))
+    if(portalRTCRef.current.remoteVideos[selected]) {
       console.log('return');
       return;
     }
-    portalRTC.current.remoteVideos[selected] = remoteVideo.current;
+    portalRTCRef.current.remoteVideos[selected] = remoteVideo.current;
 
-    portalRTC.current.startStreaming(selected, streamMode).then(value => {
+    portalRTCRef.current.startStreaming(selected, streamMode).then(value => {
       console.log('isStart? >>>', value);
      });
   }
