@@ -13,13 +13,14 @@ export const RgbdContext = createContext();
 export const PortalRTCContext = createContext();
 
 const XRContainer = () => {
-  const {commClient} = useContext(PortalCommContext);
+  const {commClient, commClientV01} = useContext(PortalCommContext);
   const portalRTCRef = useRef();
   const localVideo = useRef();
   const remoteVideo = useRef();
   // const svcSltOpt = uesRef();
   const svcSlt = useRef();
   const joinedSvcSlt = useRef();
+  const robotSlt = useRef();
   // const [streamMode, setStreamMode] = useState({
     //   isStreamer: false,
     //   isViewer: false
@@ -100,6 +101,20 @@ const XRContainer = () => {
     }
   }
 
+  const updateRobotSelect = (modules) => {
+    //module: List of moduleJSONs
+    console.log("robotmodulesTYPE:",typeof modules)
+    console.log('%c updateRobotSelect, received JSON \n', `color: ${"white"}; background: ${"black"}`, modules);
+    robotSlt.current.options.length = 1;
+    modules.map((JSON)=>{
+      const option = document.createElement("option");
+      option.innerText = `id: ${JSON.id}`;
+      option.value = `${JSON.id}`;
+      option.key = JSON.id;
+      robotSlt.current.append(option);
+    });
+  }
+
   const startWebrtcStreaming = (streamMode, selected) => {
     if (!portalRTCRef.current.localVideo){
       portalRTCRef.current.localVideo = localVideo.current;
@@ -172,9 +187,29 @@ const XRContainer = () => {
             }}
           >stop streaming</button>
         </div>
-        <div className="flex" >
-
-      </div>
+        <div>
+          <select className="w-[250px]" ref={robotSlt}>
+            <option>available robots</option>
+          </select>
+          <button 
+          className="text-white w-[130px] h-[40px] bg-[#182a5b]" 
+          onClick={() => {
+            commClientV01.socket.emit("query-module-portal", "filter",(res) => {
+              updateRobotSelect(res)
+            })
+          }}
+          >query robots</button>        
+          <button 
+          className="text-white w-[130px] h-[40px] bg-[#182a5b]" 
+          onClick={() => {
+            let selected = robotSlt.current.options[robotSlt.current.selectedIndex].value;
+            commClientV01.socket.emit("connect-module", selected, (res) => {
+              console.log("response for connection request:", res);
+            });
+            console.log("request robot connection",selected);
+            }}
+          >connect robot</button>
+        </div>
         <div>
           <RgbdContext.Provider value={{rgbSrcRef, depthSrcRef}}>
             <PortalRTCContext.Provider value={portalRTCRef}>
