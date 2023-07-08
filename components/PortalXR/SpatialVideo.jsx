@@ -8,23 +8,19 @@ import { textureLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
 import { PortalCommContext } from '../../utils/contexts/portalComm';
 import { PortalRTCContext, RgbdContext } from './XR.container';
+import { GamepadContext } from "./GamepadContext"
 
-
+const DEG2RAD = THREE.MathUtils.DEG2RAD;
+const RAD2DEG = THREE.MathUtils.RAD2DEG;
 export default function SpatialVideo(mode, ...props) {
-
+  
+  const gamepadRef = useContext(GamepadContext)
   //const commClient = useContext(PortalCommContext);
   const {rgbSrcRef, depthSrcRef} = useContext(RgbdContext);
   //const portalRTC = useContext(PortalRTCContext);
   const matRef = useRef();
   const pointsRef = useRef();
-
-
-  // const depthTexture = useTexture(depthSrcRef.current);
-  // const rgbTexture = useTexture(rgbSrcRef.current);
-
-  // console.log("rgb",rgbSrcRef)
-  // console.log("depth",depthSrcRef)
-
+  const controlRef = useRef(true)
   const rgbTexture = useRef(new THREE.Texture(rgbSrcRef.current))
   const depthTexture = useRef(new THREE.Texture(depthSrcRef.current))
 
@@ -32,50 +28,23 @@ export default function SpatialVideo(mode, ...props) {
     rgbTexture.current.needsUpdate = true;
     depthTexture.current.needsUpdate = true;
     console.log(rgbTexture.current);
-    // rgbSrcRef.current.onload = () =>{
-    //   // rgbTx = new THREE.Texture(rgbSrcRef.current);
-    //   rgbTexture.current.needsUpdate = true;
-    //   console.log("updated!!!!rgb",rgbSrcRef.current)
-    // }
-    // depthSrcRef.current.onload = () =>{
-    //   // depthTx = new THREE.Texture(depthSrcRef.current);
-    //   depthTexture.current.needsUpdate = true;
-    // }
-    },[])
-  // const [rgbTexture, depthTexture] = useMemo(() => {
+  },[])
+
+  useFrame((state, delta, XRFrame)=>{
+    let right = gamepadRef.current.right;
+    let W = 0.05; 
+    if(controlRef.current){
+      pointsRef.current.position.z += W * right.new.axes[2];
+      pointsRef.current.position.x += W * right.new.axes[3];
+    } else {
+      pointsRef.current.rotation.y += W * right.new.axes[2];
+      pointsRef.current.position.y += W * right.new.axes[3];
+    } 
     
-  //   let rgbTx = new THREE.Texture(rgbSrcRef.current);
-  //   let depthTx = new THREE.Texture(depthSrcRef.current);
-  //   console.log("texture init about image", rgbSrcRef.current)
-  //   //console.log(depthTx)
-  //   rgbTx.needsUpdate = true;
-  //   depthTx.needsUpdate = true;
-  //   rgbSrcRef.current.onload = () =>{
-  //     rgbTx = new THREE.Texture(rgbSrcRef.current);
-  //     rgbTx.needsUpdate = true;
-  //     console.log("updated!!!!rgb")
-  //   }
-  //   depthSrcRef.current.onload = () =>{
-  //     depthTx = new THREE.Texture(depthSrcRef.current);
-  //     depthTx.needsUpdate = true;
-  //   }
-    
-  //   return [rgbTx, depthTx]
-  // },[]);
-
-  // useEffect(() => {
-  //   console.log("ImgTexture needs Update !")
-  //   rgbTexture.needsUpdate = true;
-  //   depthTexture.needsUpdate = true;
-
-  //   return () => {
-  //   }
-  // },[rgbTexture, depthTexture]);
-
-  // setInterval(() => {
-  //   console.log(rgbSrcRef.current);
-  //   console.log(rgbTexture);
-  // }, 4000);
+    if (right.new.buttons[3] && right.prev.buttons[3]!==right.new.buttons[3]){
+      controlRef.current = !controlRef.current;
+    }
+  })
 
 
 
@@ -89,16 +58,6 @@ export default function SpatialVideo(mode, ...props) {
     ptSize: { type: 'f', value: 1.6 },
   }
 
-  // const [uniforms, setUniforms] = useState(
-  //   {
-  //     rgbImg: { type: 't', value: rgbTexture },
-  //     depthImg: { type: 't', value: depthTexture },
-  //     texSize: { type: 'i2', value: [720,1280] },
-  //     iK: { type: 'f4', value: [0, 0, 0, 0] },
-  //     scale: { type: 'f', value: 6.0 },
-  //     ptSize: { type: 'f', value: 1.6 },
-  //   }
-  // )
 
   const numPoints = 720 * 1280
 
@@ -118,56 +77,31 @@ export default function SpatialVideo(mode, ...props) {
 
   useFrame( () => {
     if (rgbSrcRef.current.complete && depthSrcRef.current.complete){
-      //console.log(rgbTexture.current);
-      // matRef.current.uniforms.texSize.value = [720, 1280];
-      //console.log('complete!');
+     
       rgbTexture.current.needsUpdate=true
       depthTexture.current.needsUpdate=true;
-      //console.log(rgbSrcRef.current);
-
-      // matRef.current.uniforms.rgbImg.value.needsUpdate = true;
-      // matRef.current.uniforms.depthImg.value.needsUpdate = true;
     }
-    // if (tmp !== rgbSrcRef.current.src) {
-    //   console.log('diff');
-    //   rgbTexture.needsUpdate=true
-    //   depthTexture.needsUpdate=true;
-
-    // } else {
-    //   //console.log('same');
-    // }
-    // tmp = rgbSrcRef.current.src;
-
-    //console.log('useFrame in spatial')
-    // rgbTexture.image = rgbSrcRef.current;
-    // depthTexture.image = depthSrcRef.current;
-    // matRef.current.uniforms.rgbImg.value = rgbTexture;
-    // matRef.current.uniforms.depthImg.value = depthTexture;
-    //matRef.current.uniforms.texSize.value = [height, width];
-
-    //matRef.current.uniforms.rgbImg.value.needsUpdate = true;
-    //matRef.current.uniforms.depthImg.value.needsUpdate = true;
-    //matRef.current.uniforms.rgbImg.value = rgbTexture;
-    // console.log(pointsRef.current)
   })
 
   return (
-    <points ref={pointsRef} frustumCulled={false}>
-      <shaderMaterial 
-        ref={matRef}
-        uniforms={uniforms}  
-        side={THREE.DoubleSide}
-        transparent={false}
-        vertexShader={vertShaderSrc}
-        fragmentShader={fragShaderSrc}
-        // uniformsNeedUpdate={true}
-      />
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-vertexIdx" count={numPoints} array={buffPointIndicesAttr} itemSize={1}/>
-        <bufferAttribute attach="index" count={numPoints} array={buffIndices} itemSize={1}/>
-      </bufferGeometry> 
-        
-    </points>
+    <group rotation={[0,-45*DEG2RAD,0]} position={[-0.5,0.8,-0.4]}>
+      <points ref={pointsRef} frustumCulled={false}>
+        <shaderMaterial 
+          ref={matRef}
+          uniforms={uniforms}  
+          side={THREE.DoubleSide}
+          transparent={false}
+          vertexShader={vertShaderSrc}
+          fragmentShader={fragShaderSrc}
+          // uniformsNeedUpdate={true}
+        />
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-vertexIdx" count={numPoints} array={buffPointIndicesAttr} itemSize={1}/>
+          <bufferAttribute attach="index" count={numPoints} array={buffIndices} itemSize={1}/>
+        </bufferGeometry> 
+          
+      </points>
+    </group>
   )
 }
 
