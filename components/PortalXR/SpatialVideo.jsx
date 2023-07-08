@@ -17,7 +17,7 @@ export default function SpatialVideo(mode, ...props) {
   const gamepadRef = useContext(GamepadContext)
   //const commClient = useContext(PortalCommContext);
   const {rgbSrcRef, depthSrcRef} = useContext(RgbdContext);
-  //const portalRTC = useContext(PortalRTCContext);
+  const portalRTCRef = useContext(PortalRTCContext);
   const matRef = useRef();
   const pointsRef = useRef();
   const controlRef = useRef(true)
@@ -39,8 +39,26 @@ export default function SpatialVideo(mode, ...props) {
     } else {
       pointsRef.current.rotation.y += W * right.new.axes[2];
       pointsRef.current.position.y += W * right.new.axes[3];
-    } 
-    
+    }
+
+    //let eulerData = portalRTC.quaternion;
+    if (portalRTCRef.current.quaternion) {
+      let eulerData = new THREE.Euler().setFromQuaternion(
+        new THREE.Quaternion(
+          portalRTCRef.current.quaternion.x,
+          portalRTCRef.current.quaternion.y,
+          portalRTCRef.current.quaternion.z,
+          portalRTCRef.current.quaternion.w
+        ),
+        "XYZ"
+      );
+      // console.log('portalRTCRef : ', portalRTCRef.current.quaternion)
+      // console.log('eulerData : ', eulerData)
+      pointsRef.current.rotation.set(eulerData.x, -eulerData.y, -eulerData.z, "XYZ")
+
+    } else {
+      //console.log('not changed : ', portalRTCRef.current.quaternion);
+    }
     if (right.new.buttons[3] && right.prev.buttons[3]!==right.new.buttons[3]){
       controlRef.current = !controlRef.current;
     }

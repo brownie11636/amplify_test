@@ -6,7 +6,7 @@
 let receivedDatacontrol = 'None';
 let buffer = [];
 
-export function messageEventHandler(event, spatialVideo, rgbImg, depthImg) {
+export function messageEventHandler(event, spatialVideo, rgbImg, depthImg, quaternion) {
   //console.log("get datachannel message")
   //console.log("datachannel event:",event)
 
@@ -101,16 +101,16 @@ export function messageEventHandler(event, spatialVideo, rgbImg, depthImg) {
     // receivedSize = 0;
   }
   else if (receivedDatacontrol === 'Sensor data' && nowMsg === 'Data') {
-    //console.log('Done for Sensor data');
+    // console.log('Done for Sensor data');
     // console.log(message);
-    // const message_json = JSON.parse(message)
-    // let x, y, z, w;
-    // x = message_json.x;
-    // y = message_json.y;
-    // z = message_json.z;
-    // w = message_json.w;
-    // quaternion_from = { "x": x, "y": y, "z": z, "w": w, }
-    //console.log('quaternion_from >>', quaternion_from)
+    const quaternionData = JSON.parse(message);
+    let x, y, z, w;
+    x = quaternionData.x;
+    y = quaternionData.y;
+    z = quaternionData.z;
+    w = quaternionData.w;
+    return quaternion = { "x": x, "y": y, "z": z, "w": w, }
+    //console.log('received quaternion data : ', quaternion)
 
   }
 };

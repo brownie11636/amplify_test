@@ -47,6 +47,7 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
     this.spatialVideo = null;
     this.rgbImg = null;
     this.depthImg = null;
+    this.quaternion = null;
 
     this.setOnSocketIOCallbacks();
     
@@ -286,7 +287,7 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
       */
      dataChannel.addEventListener("message", event=>{
       let receivedDatacontrol = 'None';
-      messageEventHandler(event, this.spatialVideo, this.rgbImg, this.depthImg);
+      this.quaternion = messageEventHandler(event, this.spatialVideo, this.rgbImg, this.depthImg, this.quaternion);
      });
 
     });

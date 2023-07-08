@@ -313,7 +313,7 @@ const Gripper = ({loader, geoConfig, children,...props}) => {
 
       if (j !== 0 && k !== 1) rotations_.push([0,0,THREE.MathUtils.DEG2RAD*180]);
       else rotations_.push([0,0,0])
-    }
+    } 
     return rotations_
   })
   
