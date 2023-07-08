@@ -9,25 +9,18 @@ import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
 import { Leva, useControls } from 'leva'
 // import 'bootstrap/dist/css/bootstrap.css';
 
+import DevBoard from "./DevBoard"
 import RemoteGroup from "./RemoteGroup"
-
+import { GamepadProvider } from "./GamepadContext"
 
 // const Blob = dynamic(() => import('./Blob'), { ssr: false })
 
 export default function Scene(portalRTC, ...props) {
 
-  // ------- PCD datachannel
-  const [PCD, setPCD] = useState();
-  
-
-  // Everything defined in here will persist between route changes, only children are swapped
-
-  useEffect( () => {
-
+  useEffect(() => {
     // console.log('in scene >>', props.PCD);
     //setVid(document.getElementById('remotevideo'));
   }, []);
-
 
   return (
     <>
@@ -44,7 +37,7 @@ export default function Scene(portalRTC, ...props) {
 
             <Controllers />
             <Hands />
-
+            
 
             {/* <Blob route='/' position-y={-0.75} /> */}
             {/* <Suspense fallback={null}> */}
@@ -53,7 +46,11 @@ export default function Scene(portalRTC, ...props) {
             <OrbitControls />
             {/* <VideoText position={[0, 1.3, -2]} />      */}
             {/* <Suspense fallback={null}> */}
+            <GamepadProvider>
+              <DevBoard />
               <RemoteGroup />
+
+            </GamepadProvider>
             {/* </Suspense> */}
           </XR>
         </Canvas>

@@ -1,31 +1,21 @@
 import * as THREE from 'three'
-import { forwardRef, useRef, useState, useMemo, useEffect} from 'react'
+import { forwardRef, useRef, useState, useMemo, useEffect, useContext} from 'react'
 import { useFrame } from '@react-three/fiber'
+import { Html } from "@react-three/drei"
 import { useXR } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+
+import { PortalCommContext } from '../../utils/contexts/portalComm';
 import * as myGamepadInput from '../../libs/XR/myGamepadInput'
+import { GamepadContext } from './GamepadContext'
 
 import Box from './boxes'
 
 export default function PortalArm(type, path, ...props) {
 
-  const {
-    // An array of connected `XRController`
-    controllers,
-    // Whether the XR device is presenting in an XR session
-    isPresenting,
-    // Whether hand tracking inputs are active
-    isHandTracking,
-    // A THREE.Group representing the XR viewer or player
-    player,
-    // The active `XRSession`
-    session,
-    // `XRSession` foveation. This can be configured as `foveation` on <XR>. Default is `0`
-    foveation,
-    // `XRSession` reference-space type. This can be configured as `referenceSpace` on <XR>. Default is `local-floor`
-    referenceSpace
-  } = useXR();
+  const commClient = useContext(PortalCommContext);
+  const gamepadRef = useContext(GamepadContext);
 
   const armPos =  [0, 0.717, 0]
   const armGeometries = [
@@ -50,16 +40,29 @@ export default function PortalArm(type, path, ...props) {
   const [loader, setLoader] = useState(new GLTFLoader())
   const armRef = useRef();
 
+  const {commClientV01} = useContext(PortalCommContext)
+
   useEffect(() => {
 
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath("/3d_models/libs/draco/")
     setLoader((gltfLoader) => gltfLoader.setDRACOLoader(dracoLoader));
 
+    //commClient.socket callback -> 명령 들어왓을때 setArmAngles하기
+    //commClient.socket callback -> 명령 들어왓을때 setGripperAngles하기
+
+    return () => {
+
+    }
   }, []);
 
+  //socket io callback을 붙히기
   useFrame((state, delta)=> { 
-    // setArmAngles(armAngles => armAngles.map(val=>val+0.3));
+    if(gamepadRef.current.left.new.buttons[0] === 0){
+      setArmAngles(armAngles => armAngles.map(val=>val+0.3));
+    } else {
+      setArmAngles(armAngles => armAngles.map(val=>val-0.3));
+    }
   })
 
   return(
@@ -278,7 +281,16 @@ const Gripper = ({loader, geoConfig, ...props}) => {
           <Model loader={loader} modelConfig={configs[4]} position={positions[4]} rotations={rotations[4]}/>
         </Model>
       </Model>
-
+      <Html
+        style={{
+          width: 200,
+          height: 200
+        }}
+      >
+        <span>
+          HEELLLEOOOOP
+        </span>
+      </Html>
       <Model loader={loader} modelConfig={configs[5]} position={positions[5]} rotations={rotations[5]}/>
       <Model loader={loader} modelConfig={configs[6]} position={positions[6]} rotations={rotations[6]}>
         <Model loader={loader} modelConfig={configs[7]} position={positions[7]} rotations={rotations[7]}>

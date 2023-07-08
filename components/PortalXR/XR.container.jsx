@@ -13,7 +13,7 @@ export const RgbdContext = createContext();
 export const PortalRTCContext = createContext();
 
 const XRContainer = () => {
-  const commClient = useContext(PortalCommContext);
+  const {commClient} = useContext(PortalCommContext);
   const portalRTC = useRef();
   const localVideo = useRef();
   const remoteVideo = useRef();

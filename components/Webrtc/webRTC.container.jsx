@@ -1,4 +1,4 @@
-import { Suspense, useContext, useEffect, useState, useMemo, useRef } from 'react';
+import { Suspense, useContext, useEffect, useLayoutEffect, useState, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic'
 
 import { socketNsp } from '../../toServer/API-AccessPoint';
@@ -23,15 +23,27 @@ const WebrtcContainer = () => {
       isStreamer: false,
       isViewer: false
     })
+
+  const socketOn = useRef(false);
     
     useEffect(() =>{
-      console.log("socket.id:",commClient.sockets[socketNsp].id);
-      commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
-      commClient.fetchServices().then((res) => {
-        updateServicesSelect(res.services);
-      });
-      portalRTC.current = new PortalRTC(commClient);
-  
+      if(commClient.sockets[socketNsp].id === undefined){
+        commClient.sockets[socketNsp].on("connect", () => {
+          console.log("initiated socket.id:",commClient.sockets[socketNsp].id);
+          commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
+          commClient.fetchServices().then((res) => {
+            updateServicesSelect(res.services);
+          });
+          portalRTC.current = new PortalRTC(commClient);
+        });
+      } else {
+        console.log("socket.id:",commClient.sockets[socketNsp].id);
+        commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
+        commClient.fetchServices().then((res) => {
+          updateServicesSelect(res.services);
+        });
+        portalRTC.current = new PortalRTC(commClient);
+      }
   
       return () => {
   
