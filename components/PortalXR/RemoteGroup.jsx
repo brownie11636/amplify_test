@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import * as THREE from 'three';
-import { useEffect, useRef, useContext } from 'react';
+import { useEffect, useRef, useContext, Suspense } from 'react';
 import Image from "next/Image";
 import { useFrame } from '@react-three/fiber';
 
@@ -11,7 +11,8 @@ import { RgbdContext } from './XR.container';
 import { GamepadContext } from "./GamepadContext"
 
 const RobotArm = dynamic(() => import('./Robot_arm'), { ssr: false })
-const PortalArm = dynamic(() => import('./PortalArm'), { ssr: false })
+// const PortalArm = dynamic(() => import('./PortalArm'), { ssr: false })
+import PortalArm from './PortalArm'
 
 export default function RemoteGroup(props) {
 
@@ -34,10 +35,9 @@ export default function RemoteGroup(props) {
   return (
     <group ref={ref} >
       {/* <RobotArm  /> */}
-      {/* <Suspense > */}
-      
-      <PortalArm />
-      {/* </Suspense> */}
+      <Suspense >
+        {/* <PortalArm /> */}
+      </Suspense>
       <SpatialVideo />
       {/* <Box position={[-1.2, 0, 0]} />
       <Box position={[1.2, 0, 0]} />     */}

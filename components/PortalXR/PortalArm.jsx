@@ -47,7 +47,7 @@ export default function PortalArm(type, path, ...props) {
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath("/3d_models/libs/draco/")
     setLoader((gltfLoader) => gltfLoader.setDRACOLoader(dracoLoader));
-
+    console.log("dakljfasd")
     //commClient.socket callback -> 명령 들어왓을때 setArmAngles하기
     //commClient.socket callback -> 명령 들어왓을때 setGripperAngles하기
 
@@ -109,19 +109,21 @@ const Model = forwardRef( function Model ({loader, modelConfig, position=[0,0,0]
 
   return (
     <group ref={forwardedRef} position={position} rotation={rotation} >
-      <mesh >
+      <mesh >    
+     {/* <group > */}
+      {/* <mesh ref={forwardedRef} position={position} rotation={rotation} > */}
         {/* <primitive object={gltf.scene.children[0].geometry} attach="geometry"/> */}
         <primitive object={geo} attach="geometry"/>
         <meshPhongMaterial {...modelConfig.matParams} />
       </mesh>
 
-      {props.children}
+    {props.children}
     
     </group>
   );
 });
 
-const Table = ({loader, children, ...props}) => {
+const Table = ({loader, children, position, ...props}) => {
   const modelConfig = {
     path: "/3d_models/portalarm/UR5e_ver/table/GLTFs/table.gltf",
     matParams: {
@@ -134,14 +136,32 @@ const Table = ({loader, children, ...props}) => {
   }
 
   return (
-    <Model loader={loader} modelConfig={modelConfig}>
+    <Model loader={loader} modelConfig={modelConfig} position={position}>
       {children}
     </Model>
   )
 }
+const ArmConfigs = setArmConfigs();
 
+function setArmConfigs() {
+  const configs_ = []
 
-const Arm = ({ index=0, angles=[0,0,0,0,0,0], ...props}) => {
+  for (let i = 0; i<9; i++){
+    
+    configs_.push({
+      path: `/3d_models/portalarm/UR5e_ver/ALLZERO/UR5e/GLTFs/arm_${i}.gltf`,
+      matParams:{
+        color: 0xb0bef0,
+        transparent: true,
+        opacity: 0.5,
+        side: THREE.DoubleSide,
+        flatShading: true,
+    }})
+  }
+
+  return configs_
+}
+const Arm = ({loader, index=0, angles=[0,0,0,0,0,0],positions, children, ...props}) => {
 
   const rotAxes = [
     [0, 1, 0],
@@ -153,73 +173,193 @@ const Arm = ({ index=0, angles=[0,0,0,0,0,0], ...props}) => {
   ];
 
   const [rotation, setRotation] = useState([0,0,0]);
-  const modelRef = useRef();
+  const ref = useRef([]);
   useEffect(() => {
     console.log("arm index:",index)
     console.log("poses",props.positions)
     console.log("refref")
-    console.log(modelRef)
+    console.log(ref.current[0])
   },[])
 
   useFrame((state,delta) => {
     if (index > 0){
       // console.log("rotrot")
       // console.log(modelRef)
-      modelRef.current.rotation.fromArray(rotAxes[index-1].map((val,idx) => val * angles[index-1] * THREE.MathUtils.DEG2RAD));
+      // modelRef.current.rotation.fromArray(rotAxes[index-1].map((val,idx) => val * angles[index-1] * THREE.MathUtils.DEG2RAD));
       // console.log("angles in arms[",index,"]: ",rotation)
     }
   })
 
   return (
-    <Model 
-    ref={modelRef}
-    rotation={rotation}
-    loader={props.loader} 
-    position={props.positions[index]}
-    modelConfig={{
-      path:`/3d_models/portalarm/UR5e_ver/ALLZERO/UR5e/GLTFs/arm_${index}.gltf`,
-      matParams:{
-        color:0xb0bef0,   //0xb0bef0로 쓰면 안됨
-        transparent:true ,
-        opacity:0.5,
-        flatShading:true,
-        side:THREE.DoubleSide, 
-    }}}>
-      { 
-      props.depth === index ? 
-        props.children 
-        : 
-        <Arm 
-        // loader={loader} 
-        // depth={depth} 
-        index={index+1}
-        angles={angles}
-        {...props} />  
-      }
+    <Model ref={el => (ref.current[0] = el)} loader={loader} 
+    rotation={rotation} position={positions[0]} modelConfig={ArmConfigs[0]}>
+
+      <Model ref={el => (ref.current[1] = el)} loader={loader} 
+      rotation={rotation} position={positions[1]} modelConfig={ArmConfigs[1]}>
+
+        <Model ref={el => (ref.current[2] = el)} loader={loader} 
+        rotation={rotation} position={positions[2]} modelConfig={ArmConfigs[2]}>
+
+          <Model ref={el => (ref.current[3] = el)}loader={loader} 
+          rotation={rotation} position={positions[3]} modelConfig={ArmConfigs[3]}>
+
+            <Model ref={el => (ref.current[4] = el)} loader={loader} 
+            rotation={rotation} position={positions[4]} modelConfig={ArmConfigs[4]}>
+
+              <Model ref={el => (ref.current[5] = el)} loader={loader} 
+              rotation={rotation} position={positions[5]} modelConfig={ArmConfigs[5]}>
+
+                <Model ref={el => (ref.current[6] = el)} loader={loader} 
+                rotation={rotation} position={positions[6]} modelConfig={ArmConfigs[6]}>
+                  {children}
+                </Model>
+              </Model>
+            </Model>
+          </Model>
+        </Model>
+      </Model>
+      
+    </Model>
+ 
+  
+  )
+}
+
+// const Arm = ({ index=0, angles=[0,0,0,0,0,0], ...props}) => {
+
+//   const rotAxes = [
+//     [0, 1, 0],
+//     [0, 0, -1],
+//     [0, 0, -1],
+//     [0, 0, -1],
+//     [0, -1, 0],
+//     [0, 0, -1],
+//   ];
+
+//   const [rotation, setRotation] = useState([0,0,0]);
+//   const modelRef = useRef();
+//   useEffect(() => {
+//     console.log("arm index:",index)
+//     console.log("poses",props.positions)
+//     console.log("refref")
+//     console.log(modelRef)
+//   },[])
+
+//   useFrame((state,delta) => {
+//     if (index > 0){
+//       // console.log("rotrot")
+//       // console.log(modelRef)
+//       modelRef.current.rotation.fromArray(rotAxes[index-1].map((val,idx) => val * angles[index-1] * THREE.MathUtils.DEG2RAD));
+//       // console.log("angles in arms[",index,"]: ",rotation)
+//     }
+//   })
+
+//   return (
+//     <Model 
+//     ref={modelRef}
+//     rotation={rotation}
+//     loader={props.loader} 
+//     position={props.positions[index]}
+//     modelConfig={{
+//       path:`/3d_models/portalarm/UR5e_ver/ALLZERO/UR5e/GLTFs/arm_${index}.gltf`,
+//       matParams:{
+//         color:0xb0bef0,   //0xb0bef0로 쓰면 안됨
+//         transparent:true ,
+//         opacity:0.5,
+//         flatShading:true,
+//         side:THREE.DoubleSide, 
+//     }}}>
+//       { 
+//       props.depth === index ? 
+//         props.children 
+//         : 
+//         <Arm 
+//         // loader={loader} 
+//         // depth={depth} 
+//         index={index+1}
+//         angles={angles}
+//         {...props} />  
+//       }
+//     </Model>
+//   )
+// }
+
+// /*  
+//   gripperLinks configuration:
+//   ROBOTIS RH-P12-RN:    // ⎟,⎿ means grouping structure in THREEJS
+//   i   j   k   file  description      
+//   0   -1  0   0     (body)  body_on_bracket
+//   1   0   1   1-0   (right) ⎿ link_CLmirror_and_LR
+//   2   0   2   2     (right) ⎿ link_1_and_2
+//   3   0   3   3     (right) ⎟  ⎿ link_3
+//   4   0   4   4     (right) ⎟     ⎿ RUB_ASM
+//   5   1   1   1-1   (left)  ⎿ link_CL_and_LR
+//   6   1   2   2     (left)  ⎿ link_1_and_2
+//   7   1   3   3     (left)  ⎟  ⎿ link_3
+//   8   1   4   4     (left)  ⎟     ⎿ RUB_ASM
+// */
+
+const gripperConfigs =setGripperConfigs();
+const gripperPositions = setGripperPositions();
+
+const Gripper = ({loader, geoConfig, children,...props}) => {
+
+  const [rotations, setRotations] = useState(() => {
+    let rotations_ = []
+    for (let i = 0; i<9; i++){
+
+      let j = Math.floor((i - 1)/4);
+      let k = 1 + (i - 1)% 4
+
+      if (j !== 0 && k !== 1) rotations_.push([0,0,THREE.MathUtils.DEG2RAD*180]);
+      else rotations_.push([0,0,0])
+    }
+    return rotations_
+  })
+  
+  return(
+    <Model loader={loader} modelConfig={gripperConfigs[0]} position={gripperPositions[0]} rotations={rotations[0]}>
+
+      <Model loader={loader} modelConfig={gripperConfigs[1]} position={gripperPositions[1]} rotations={rotations[1]}/>
+      <Model loader={loader} modelConfig={gripperConfigs[2]} position={gripperPositions[2]} rotations={rotations[2]}>
+        <Model loader={loader} modelConfig={gripperConfigs[3]} position={gripperPositions[3]} rotations={rotations[3]}>
+          <Model loader={loader} modelConfig={gripperConfigs[4]} position={gripperPositions[4]} rotations={rotations[4]}/>
+        {children}
+        </Model>
+      </Model>
+      <Model loader={loader} modelConfig={gripperConfigs[5]} position={gripperPositions[5]} rotations={rotations[5]}/>
+      <Model loader={loader} modelConfig={gripperConfigs[6]} position={gripperPositions[6]} rotations={rotations[6]}>
+        <Model loader={loader} modelConfig={gripperConfigs[7]} position={gripperPositions[7]} rotations={rotations[7]}>
+          <Model loader={loader} modelConfig={gripperConfigs[8]} position={gripperPositions[8]} rotations={rotations[8]}/>
+        </Model>
+      </Model>
+
     </Model>
   )
 }
 
-    /*  
-      gripperLinks configuration:
-      ROBOTIS RH-P12-RN:    // ⎟,⎿ means grouping structure in THREEJS
-      i   j   k   file  description      
-      0   -1  0   0     (body)  body_on_bracket
-      1   0   1   1-0   (right) ⎿ link_CLmirror_and_LR
-      2   0   2   2     (right) ⎿ link_1_and_2
-      3   0   3   3     (right) ⎟  ⎿ link_3
-      4   0   4   4     (right) ⎟     ⎿ RUB_ASM
-      5   1   1   1-1   (left)  ⎿ link_CL_and_LR
-      6   1   2   2     (left)  ⎿ link_1_and_2
-      7   1   3   3     (left)  ⎟  ⎿ link_3
-      8   1   4   4     (left)  ⎟     ⎿ RUB_ASM
-    */
-   
-const Gripper = ({loader, geoConfig, ...props}) => {
+function setGripperPositions() {
+  const gripperGeometries = [
+    [0, 0, -0.0533],
+    [0.01861, 0, -0.04739],
+    [0.008, 0, -0.058],
+    [0, 0, -0.05694],
+    [0, 0, 0],
+  ];
+  let positions_ = [];
+  for (let i = 0; i<9; i++){
 
-  const [configs, setConfigs] = useState(() => {
+    let j = Math.floor((i - 1)/4);
+    let k = 1 + (i - 1)% 4
 
-    const configs_ = []
+    if (j === 0) positions_.push([gripperGeometries[k][0],gripperGeometries[k][1],gripperGeometries[k][2]]) 
+    else positions_.push([ - gripperGeometries[k][0],gripperGeometries[k][1],gripperGeometries[k][2]])
+  }
+  return positions_
+}
+
+function setGripperConfigs() {
+  const configs_ = []
 
     for (let i = 0; i<9; i++){
   
@@ -243,61 +383,4 @@ const Gripper = ({loader, geoConfig, ...props}) => {
       }
     }  
     return configs_
-  })
-  
-  const [positions, setPositions] = useState(() => {
-
-    let positions_ = [];
-    for (let i = 0; i<9; i++){
-
-      let j = Math.floor((i - 1)/4);
-      let k = 1 + (i - 1)% 4
-
-      if (j === 0) positions_.push([geoConfig[k][0],geoConfig[k][1],geoConfig[k][2]]) 
-      else positions_.push([ - geoConfig[k][0],geoConfig[k][1],geoConfig[k][2]])
-    }
-    return positions_
-  })
-
-  const [rotations, setRotations] = useState(() => {
-    let rotations_ = []
-    for (let i = 0; i<9; i++){
-
-      let j = Math.floor((i - 1)/4);
-      let k = 1 + (i - 1)% 4
-
-      if (j !== 0 && k !== 1) rotations_.push([0,0,THREE.MathUtils.DEG2RAD*180]);
-      else rotations_.push([0,0,0])
-    }
-    return rotations_
-  })
-  
-  return(
-    <Model loader={loader} modelConfig={configs[0]} position={positions[0]} rotations={rotations[0]}>
-
-      <Model loader={loader} modelConfig={configs[1]} position={positions[1]} rotations={rotations[1]}/>
-      <Model loader={loader} modelConfig={configs[2]} position={positions[2]} rotations={rotations[2]}>
-        <Model loader={loader} modelConfig={configs[3]} position={positions[3]} rotations={rotations[3]}>
-          <Model loader={loader} modelConfig={configs[4]} position={positions[4]} rotations={rotations[4]}/>
-        </Model>
-      </Model>
-      <Html
-        style={{
-          width: 200,
-          height: 200
-        }}
-      >
-        <span>
-          HEELLLEOOOOP
-        </span>
-      </Html>
-      <Model loader={loader} modelConfig={configs[5]} position={positions[5]} rotations={rotations[5]}/>
-      <Model loader={loader} modelConfig={configs[6]} position={positions[6]} rotations={rotations[6]}>
-        <Model loader={loader} modelConfig={configs[7]} position={positions[7]} rotations={rotations[7]}>
-          <Model loader={loader} modelConfig={configs[8]} position={positions[8]} rotations={rotations[8]}/>
-        </Model>
-      </Model>
-
-    </Model>
-  )
 }

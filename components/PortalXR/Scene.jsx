@@ -37,7 +37,7 @@ export default function Scene(portalRTC, ...props) {
 
             <Controllers />
             <Hands />
-            
+
 
             {/* <Blob route='/' position-y={-0.75} /> */}
             {/* <Suspense fallback={null}> */}

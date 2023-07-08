@@ -152,11 +152,11 @@ export default function SpatialVideo(mode, ...props) {
   })
 
   return (
-    <points ref={pointsRef}>
+    <points ref={pointsRef} frustumCulled={false}>
       <shaderMaterial 
         ref={matRef}
         uniforms={uniforms}  
-        // side={THREE.DoubleSide}
+        side={THREE.DoubleSide}
         transparent={false}
         vertexShader={vertShaderSrc}
         fragmentShader={fragShaderSrc}

@@ -194,7 +194,7 @@ const XRContainer = () => {
         </div>
 
       </section>
-      <div style={{position:"absolute", top:"500px", left:"-1000px", width:"3000", height:"3000", zIndex:"111"}}>
+      <div style={{position:"absolute", top:"500px", left:"-2000px", width:"3000", height:"3000", zIndex:"111"}}>
         <img ref={depthSrcRef} src="/sample_jpeg2.jpeg" width="1280" height="720" style={{width:"1280px", height:"720px"}} onLoad={onLoadDepthImg} loading='auto'/>
         <img ref={rgbSrcRef} src="/sample_jpeg2.jpeg" width="1280" height="720" style={{width:"1280px", height:"720px"}}  onLoad={onLoadRgbImg} loading='auto'/>
       </div>
