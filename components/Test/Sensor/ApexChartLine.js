@@ -17,14 +17,10 @@ const App = (props) => {
     dataLabels: {
       enabled: false
     },
-    colors: ["#00069E"],
     stroke: {
-      curve: 'smooth'
+      curve: 'straight'
     },
     xaxis: {
-      type: "numeric",
-    },
-    yaxis: {
       type: "numeric",
     },
     grid: {
@@ -36,15 +32,56 @@ const App = (props) => {
     markers: {
       size: 5
     },
-    title: {
-      text: 'Pressure',
-      align: 'left'
-    },
   };
 
+  const DoubleYaxisOption = [
+    {
+      axisTicks: {
+        show: true,
+      },
+      axisBorder: {
+        show: true,
+        color: '#008FFB'
+      },
+      labels: {
+        style: {
+          colors: '#008FFB',
+        }
+      },
+      tooltip: {
+        enabled: true
+      }
+    },
+    {
+      seriesName: 'rh',
+      opposite: true,
+      axisTicks: {
+        show: true,
+      },
+      axisBorder: {
+        show: true,
+        color: '#00E396'
+      },
+      labels: {
+        style: {
+          colors: '#00E396',
+        }
+      },
+    }
+  ];
+
+
   return (
-    <div style={{width:"100%"}}>
-      <ReactApexChart options={options} series={props.data} type="line" height={400} />
+    <div style = {{width:"90%"}}>
+      <div style={{marginTop:"10px"}}>
+        <ReactApexChart options={{ ...options, title: {text: "Accelerometer"}}} series={props.accData} type="line" height={400} />
+      </div>
+      <div style={{marginTop:"10px"}}>
+        <ReactApexChart options={{ ...options, title: {text: "pressure"}}} series={props.prsData} type="line" height={400} />
+      </div>
+      <div style={{marginTop:"10px"}}>
+        <ReactApexChart options={{ ...options, yaxis: DoubleYaxisOption, title: {text: "Temperature/Relative humidity"}}} series={props.trhData} type="line" height={400} />
+      </div>
     </div>
   );
 };
