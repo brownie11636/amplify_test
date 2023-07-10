@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import * as THREE from 'three';
 import { useEffect, useRef, useContext, Suspense } from 'react';
-import Image from "next/Image";
+import Image from "next/image";
 import { useFrame } from '@react-three/fiber';
 
 import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';

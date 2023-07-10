@@ -1,6 +1,6 @@
 import { Suspense, createContext,useContext, useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic'
-import Image from "next/Image"
+import Image from "next/image"
 
 import { socketNsp } from '../../toServer/API-AccessPoint';
 import { PortalCommContext } from '../../utils/contexts/portalComm';
