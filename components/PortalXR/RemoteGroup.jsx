@@ -14,7 +14,7 @@ const RobotArm = dynamic(() => import('./Robot_arm'), { ssr: false })
 // const PortalArm = dynamic(() => import('./PortalArm'), { ssr: false })
 import PortalArm from './PortalArm'
 
-export default function RemoteGroup(props) {
+export default function RemoteGroup({XRscale, ...props}) {
 
   const ref = useRef();
   const gamepadRef = useContext(GamepadContext)
@@ -33,12 +33,12 @@ export default function RemoteGroup(props) {
   })
   
   return (
-    <group ref={ref} >
+    <group ref={ref} scale={1} >
       {/* <RobotArm  /> */}
       <Suspense >
         <PortalArm />
       </Suspense>
-      <SpatialVideo />
+      {/* <SpatialVideo /> */}
       {/* <Box position={[-1.2, 0, 0]} />
       <Box position={[1.2, 0, 0]} />     */}
     </group>

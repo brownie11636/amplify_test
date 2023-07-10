@@ -104,14 +104,16 @@ const XRContainer = () => {
   const updateRobotSelect = (modules) => {
     //module: List of moduleJSONs
     console.log("robotmodulesTYPE:",typeof modules)
+    console.log("robotmodules:",modules)
     console.log('%c updateRobotSelect, received JSON \n', `color: ${"white"}; background: ${"black"}`, modules);
     robotSlt.current.options.length = 1;
     modules.map((JSON)=>{
       const option = document.createElement("option");
       option.innerText = `id: ${JSON.id}`;
-      option.value = `${JSON.id}`;
+      option.value = JSON.id;
       option.key = JSON.id;
       robotSlt.current.append(option);
+      console.log(JSON)
     });
   }
 
@@ -203,8 +205,15 @@ const XRContainer = () => {
           className="text-white w-[130px] h-[40px] bg-[#182a5b]" 
           onClick={() => {
             let selected = robotSlt.current.options[robotSlt.current.selectedIndex].value;
-            commClientV01.socket.emit("connect-module", selected, (res) => {
+            let msg = { moduleId: selected }
+            console.log(robotSlt.current.options[robotSlt.current.selectedIndex])
+            commClientV01.socket.emit("connect-module", msg, (res) => {
               console.log("response for connection request:", res);
+              if(res.status === "ok") {
+                console.log(commClientV01)
+                commClientV01.connectedModules.push(selected);
+              }
+              console.log("module connected:", selected);
             });
             console.log("request robot connection",selected);
             }}

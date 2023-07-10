@@ -42,22 +42,25 @@ export default function SpatialVideo(mode, ...props) {
     }
 
     //let eulerData = portalRTC.quaternion;
-    if (portalRTCRef.current.quaternion) {
-      let eulerData = new THREE.Euler().setFromQuaternion(
-        new THREE.Quaternion(
-          portalRTCRef.current.quaternion.x,
-          portalRTCRef.current.quaternion.y,
-          portalRTCRef.current.quaternion.z,
-          portalRTCRef.current.quaternion.w
-        ),
-        "XYZ"
-      );
-      // console.log('portalRTCRef : ', portalRTCRef.current.quaternion)
-      // console.log('eulerData : ', eulerData)
-      pointsRef.current.rotation.set(eulerData.x, -eulerData.y, -eulerData.z, "XYZ")
+    // console.log("rtcRef:", portalRTCRef)
+    if(portalRTCRef.current !== undefined){
+      if (portalRTCRef.current.quaternion) {
+        let eulerData = new THREE.Euler().setFromQuaternion(
+          new THREE.Quaternion(
+            portalRTCRef.current.quaternion.x,
+            portalRTCRef.current.quaternion.y,
+            portalRTCRef.current.quaternion.z,
+            portalRTCRef.current.quaternion.w
+          ),
+          "XYZ"
+        );
+        // console.log('portalRTCRef : ', portalRTCRef.current.quaternion)
+        // console.log('eulerData : ', eulerData)
+        pointsRef.current.rotation.set(eulerData.x, -eulerData.y, -eulerData.z, "XYZ")
 
-    } else {
-      //console.log('not changed : ', portalRTCRef.current.quaternion);
+      } else {
+        //console.log('not changed : ', portalRTCRef.current.quaternion);
+      }
     }
     if (right.new.buttons[3] && right.prev.buttons[3]!==right.new.buttons[3]){
       controlRef.current = !controlRef.current;

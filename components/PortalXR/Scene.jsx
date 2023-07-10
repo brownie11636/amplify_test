@@ -47,7 +47,7 @@ export default function Scene(portalRTC, ...props) {
             {/* <VideoText position={[0, 1.3, -2]} />      */}
             {/* <Suspense fallback={null}> */}
             <GamepadProvider>
-              <DevBoard />
+              {/* <DevBoard /> */}
               <RemoteGroup />
 
             </GamepadProvider>
