@@ -45,14 +45,17 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
 
     this.receivedDChBuff = [];
     this.spatialVideo = null;
+    this.rgbImg = null;
+    this.depthImg = null;
+    this.quaternion = null;
 
     this.setOnSocketIOCallbacks();
-
+    
   }
 
   async setOnSocketIOCallbacks() {
     this.comm.on("webrtc:connection request", async (senderId) => {
-
+      console.log('connection request from :', senderId);
       let targetId = senderId;
       let pc = this.createPeerConnection(targetId, targetId);
       this.pcs[targetId] = pc;
@@ -201,8 +204,10 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
         for (let idx in this.pcs) {
           this.pcs[idx].close();
         }
-        this.localVideo.remove();
-        this.localVideo = null;
+        if(this.localVideo) {
+          this.localVideo.remove();
+          this.localVideo = null;  
+        }
         this.comm.emit('webrtc:connectionStateChanged', this.id, targetServiceId, "offline");
 
       })
@@ -243,9 +248,16 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
 
   createPeerConnection(targetId, targetServiceId = null) {
     // 여기서 targetId은 service host의 id 또는 request를 요청한 guest의 id이다.
+    console.log('createPeerConnection');
     let pc = new RTCPeerConnection(this.webrtcParams.pcConfig);
     let senderId = this.id;
-    let stream = this.localVideo.srcObject;
+    let stream = null;
+    try {
+      stream = this.localVideo.srcObject;
+
+    } catch (e) {
+      console.log('stream var is null', e);
+    }
 
     if (stream !== null) { //viewer인 경우 stream이 없으므로
       for (const track of stream.getTracks()) {
@@ -259,7 +271,11 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
       console.log('remoteVideos?>>', this.remoteVideos);
       console.log('remoteVideos []?>>', this.remoteVideos['webrtc:' + this.id]);
       //this.remoteVideos['webrtc:'+this.id].srcObject = event.streams[0];
-      this.remoteVideos[targetServiceId].srcObject = event.streams[0];
+      try {
+        this.remoteVideos[targetServiceId].srcObject = event.streams[0];
+      } catch (e){
+        console.log(e)
+      }
     }
 
     pc.addEventListener('datachannel', event => {
@@ -271,7 +287,7 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
       */
      dataChannel.addEventListener("message", event=>{
       let receivedDatacontrol = 'None';
-      messageEventHandler(event, this.receivedDChBuff, this.spatialVideo);
+      this.quaternion = messageEventHandler(event, this.spatialVideo, this.rgbImg, this.depthImg, this.quaternion);
      });
 
     });

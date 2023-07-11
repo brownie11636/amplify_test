@@ -9,25 +9,18 @@ import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
 import { Leva, useControls } from 'leva'
 // import 'bootstrap/dist/css/bootstrap.css';
 
+import DevBoard from "./DevBoard"
 import RemoteGroup from "./RemoteGroup"
-
+import { GamepadProvider } from "./GamepadContext"
 
 // const Blob = dynamic(() => import('./Blob'), { ssr: false })
 
-export default function Scene(props) {
+export default function Scene(portalRTC, ...props) {
 
-  // ------- PCD datachannel
-  const [PCD, setPCD] = useState();
-  
-
-  // Everything defined in here will persist between route changes, only children are swapped
-
-  useEffect( () => {
-
+  useEffect(() => {
     // console.log('in scene >>', props.PCD);
     //setVid(document.getElementById('remotevideo'));
   }, []);
-
 
   return (
     <>
@@ -38,9 +31,9 @@ export default function Scene(props) {
             <Stats showPanel={0} className="stats" {...props} />            
             <directionalLight intensity={0.75} />
             <ambientLight intensity={0.75} />
-            <Suspense fallback={null}>
+            {/* <Suspense fallback={null}> */}
               <Environment />
-            </Suspense>
+            {/* </Suspense> */}
 
             <Controllers />
             <Hands />
@@ -52,9 +45,13 @@ export default function Scene(props) {
             {/* <Preload all /> */}
             <OrbitControls />
             {/* <VideoText position={[0, 1.3, -2]} />      */}
-            <Suspense fallback={null}>
+            {/* <Suspense fallback={null}> */}
+            <GamepadProvider>
+              {/* <DevBoard /> */}
               <RemoteGroup />
-            </Suspense>
+
+            </GamepadProvider>
+            {/* </Suspense> */}
           </XR>
         </Canvas>
         {/* <Leva /> */}

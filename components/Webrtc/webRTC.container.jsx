@@ -1,12 +1,10 @@
-import { Suspense, useContext, useEffect, useState, useMemo, useRef } from 'react';
+import { Suspense, useContext, useEffect, useLayoutEffect, useState, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic'
 
 import { socketNsp } from '../../toServer/API-AccessPoint';
 import { PortalCommContext } from '../../utils/contexts/portalComm';
 import PortalRTC from "../../libs/portal/webrtc/portalrtc";
 import RTCvideo from "../../components/Services/VideoPanel";
-
-const Scene = dynamic(() => import("../../components/PortalXR/Scene"), { ssr: true })
 
 
 const WebrtcContainer = () => {
@@ -25,15 +23,27 @@ const WebrtcContainer = () => {
       isStreamer: false,
       isViewer: false
     })
+
+  const socketOn = useRef(false);
     
     useEffect(() =>{
-      console.log("socket.id:",commClient.sockets[socketNsp].id);
-      commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
-      commClient.fetchServices().then((res) => {
-        updateServicesSelect(res.services);
-      });
-      portalRTC.current = new PortalRTC(commClient);
-  
+      if(commClient.sockets[socketNsp].id === undefined){
+        commClient.sockets[socketNsp].on("connect", () => {
+          console.log("initiated socket.id:",commClient.sockets[socketNsp].id);
+          commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
+          commClient.fetchServices().then((res) => {
+            updateServicesSelect(res.services);
+          });
+          portalRTC.current = new PortalRTC(commClient);
+        });
+      } else {
+        console.log("socket.id:",commClient.sockets[socketNsp].id);
+        commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
+        commClient.fetchServices().then((res) => {
+          updateServicesSelect(res.services);
+        });
+        portalRTC.current = new PortalRTC(commClient);
+      }
   
       return () => {
   
@@ -144,9 +154,6 @@ const WebrtcContainer = () => {
         <video className="w-[300px]" autoPlay playsInline ref={localVideo}/>
           {/* <source src="../../drei.mp4" type="video/mp4"></source> */}
         <video className="w-[300px]" autoPlay playsInline ref={remoteVideo}/>
-      </div>
-      <div>
-        <Scene/>
       </div>
 
     </section>
