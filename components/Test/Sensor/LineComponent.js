@@ -157,10 +157,10 @@ export default function App() {
           placeholder="serial number"
         />
       </div>
-      {/* <div className={styles.submit}>
+      <div className={styles.submit}>
         <input type="submit" value="submit" onClick={urlSubmit} />
-      </div> */}
-      {/* <div className={styles.login_id}>
+      </div>
+      <div className={styles.login_id}>
         <h4>Patient message</h4>
         <input
           id="message"
@@ -172,9 +172,8 @@ export default function App() {
       </div>
       <div className={styles.submit}>
         <input type="submit" value="submit" onClick={messageSubmit} />
-      </div> */}
-      {/* <ApexChartLine accData={accData} prsData={prsData} trhData={trhData}/> */}
-      {/* <ApexChartLine accData={accData1} prsData={prsData1} trhData={trhData1}/> */}
+      </div>
+      <ApexChartLine accData={accData1} prsData={prsData1} trhData={trhData1}/>
     </div>
   )
 }
