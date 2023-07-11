@@ -25,11 +25,13 @@ export default function App() {
     "name": "z",
     "data": [[1,4],[2,3],[3,1],[4,2],[5,1]]
   }];
+
   const prsData1 = [
     {
       "name": "pressure",
       "data": [[1,10],[2,27],[3,32],[4,25],[5,15]]
     }];  
+
   const trhData1 = [
     {
       "name": "temperature",
@@ -38,6 +40,7 @@ export default function App() {
     "name": "rh",
     "data": [[1,100],[2,200],[3,300],[4,200],[5,100]]
   }];
+
   const onChangeSerialNumber = (event) => {
     setSerialNumber(event.target.value);
   };
@@ -46,69 +49,71 @@ export default function App() {
     setMessage(event.target.value);
   };
 
-  useEffect(() => {
-    setAccData([]);
-    setPrsData([]);
-    setTrhData([]);
-    const timeout1 = setInterval(() => {
-      fetch(mqtt_url+serialNumber+"/acc")
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log(data.data.content);
-        let arr = data.data.content;
-        setAccData(parser(arr,"acc"));
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    }, 1000);
+  // useEffect(() => {
+  //   setAccData([]);
+  //   setPrsData([]);
+  //   setTrhData([]);
+  //   const timeout1 = setInterval(() => {
+  //     fetch(mqtt_url+serialNumber+"/acc")
+  //     .then(response => {
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+  //       return response.json();
+  //     })
+  //     .then(data => {
+  //       console.log(data.data.content);
+  //       let arr = data.data.content;
+  //       setAccData(parser(arr,"acc"));
+  //     })
+  //     .catch(error => {
+  //       console.error('Error:', error);
+  //     });
+  //   }, 1000);
     
-    const timeout2 = setInterval(() => {
-      fetch(mqtt_url+serialNumber+"/prs")
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log(data.data.content);
-        let arr = data.data.content;
-        setPrsData(parser(arr,"prs"));
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    }, 2000);
+  //   const timeout2 = setInterval(() => {
+  //     fetch(mqtt_url+serialNumber+"/prs")
+  //     .then(response => {
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+  //       return response.json();
+  //     })
+  //     .then(data => {
+  //       console.log(data.data.content);
+  //       let arr = data.data.content;
+  //       setPrsData(parser(arr,"prs"));
+  //     })
+  //     .catch(error => {
+  //       console.error('Error:', error);
+  //     });
+  //   }, 2000);
 
-    const timeout3 = setInterval(() => {
-      fetch(mqtt_url+serialNumber+"/trh")
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log(data.data.content);
-        let arr = data.data.content;
-        setTrhData(parser(arr,"trh"));
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    }, 5000)
+  //   const timeout3 = setInterval(() => {
+  //     fetch(mqtt_url+serialNumber+"/trh")
+  //     .then(response => {
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+  //       return response.json();
+  //     })
+  //     .then(data => {
+  //       console.log(data.data.content);
+  //       let arr = data.data.content;
+  //       setTrhData(parser(arr,"trh"));
+  //     })
+  //     .catch(error => {
+  //       console.error('Error:', error);
+  //     });
+  //   }, 5000)
 
-    return () => {
-      clearInterval(timeout1);
-      clearInterval(timeout2);
-      clearInterval(timeout3);};
-  }, [urlFlag]);
+  //   return () => {
+  //     clearInterval(timeout1);
+  //     clearInterval(timeout2);
+  //     clearInterval(timeout3);
+  //   };
+    
+  // }, [urlFlag]);
 
   const urlSubmit = (e) => {
     setUrlFlag(!urlFlag);
