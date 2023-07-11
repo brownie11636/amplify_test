@@ -28,20 +28,37 @@ export const GamepadProvider = (props) => {
   )
 };
 // export default GamepadProvider
-/**
+/**       ----- RIGHT -----
  *  button
- *    0: Trigger
- *    1: Squeeze
- *    2: Touchpad
- *    3: Thumbstick
- *    4: A button
- *    5: B button
+ *    0: Trigger      //  gripper control    
+ *    1: Squeeze      //  send right controller's 6DOF info to robot 
+ *    2: Touchpad     //      
+ *    3: Thumbstick   //  toggle thumstick axes' roles     
+ *    4: A button     //  toggle gripper control direction      
+ *    5: B button     //        
  *  
  *  axes
- *    0: Touchpad X
- *    1: Touchpad Y
- *    2: Thumbstick X
- *    3: Thumbstick Y
+ *    0: Touchpad X   //    
+ *    1: Touchpad Y   //        
+ *    2: Thumbstick X //  spatial video z position(앞뒤)  /  y rotation 
+ *    3: Thumbstick Y //  spatial video x position(좌우)  /  y position(상하)    
+ * 
+ */
+
+/**       ----- LEFT -----
+ *  button
+ *    0: Trigger      //       
+ *    1: Squeeze      //        
+ *    2: Touchpad     //        
+ *    3: Thumbstick   //      
+ *    4: A button     //        
+ *    5: B button     //        
+ *  
+ *  axes
+ *    0: Touchpad X   // left:       
+ *    1: Touchpad Y   // left:       
+ *    2: Thumbstick X // left:       
+ *    3: Thumbstick Y // left:       
  * 
  */
 

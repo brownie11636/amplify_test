@@ -28,6 +28,7 @@ export class PortalCommClient_v0_1 {
     this.serviceParams = null;//roomParams?
     this.isSocketConnected = false;
     // this.SOCKET_ENDPOINT = null;
+    this.connectedModules = [];
 
     this.profile = {
       id: null,

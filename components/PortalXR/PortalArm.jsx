@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import { forwardRef, useRef, useState, useMemo, useEffect, useContext} from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Html } from "@react-three/drei"
-import { useXR } from '@react-three/xr'
+import { Html, Text } from "@react-three/drei"
+import { useXR, useController } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
@@ -11,36 +11,50 @@ import * as myGamepadInput from '../../libs/XR/myGamepadInput'
 import { GamepadContext } from './GamepadContext'
 
 import Box from './boxes'
+const DEG2RAD = THREE.MathUtils.DEG2RAD;
+const RAD2DEG = THREE.MathUtils.RAD2DEG;
+
+const armPos =  [0, 0.717, 0]
+const armPosVec = new THREE.Vector3().fromArray(armPos);
+const armGeometries = [
+  [0, 0.0991, 0],
+  [0, 0.0634, -0.0744],
+  [0.425, 0, 0],
+  [0.39225, 0, 0.0215],
+  [0, -0.0463, -0.0804],
+  [0, -0.0534, -0.0463],
+];
+
+const gripperGeometries = [
+  [0, 0, -0.0533],
+  [0.01861, 0, -0.04739],
+  [0.008, 0, -0.058],
+  [0, 0, -0.05694],
+  [0, 0, 0],
+];
+
+let acculTime = 0;
+let dir = 1
+
+let packet = { } 
 
 export default function PortalArm(type, path, ...props) {
 
-  const commClient = useContext(PortalCommContext);
+  const {commClientV01} = useContext(PortalCommContext);
   const gamepadRef = useContext(GamepadContext);
+  const ref = useRef();
+  const {controllers} = useXR();
 
-  const armPos =  [0, 0.717, 0]
-  const armGeometries = [
-    [0, 0.0991, 0],
-    [0, 0.0634, -0.0744],
-    [0.425, 0, 0],
-    [0.39225, 0, 0.0215],
-    [0, -0.0463, -0.0804],
-    [0, -0.0534, -0.0463],
-  ];
+  const rightController = useController('right');
+  const leftController = useController('left');
 
-  const gripperGeometries = [
-    [0, 0, -0.0533],
-    [0.01861, 0, -0.04739],
-    [0.008, 0, -0.058],
-    [0, 0, -0.05694],
-    [0, 0, 0],
-  ];
-
-
-  const [armAngles, setArmAngles] = useState([0,0,0,0,0,0])
+  const [armAngles, setArmAngles] = useState([60,-90,90,0,30,0])
   const [loader, setLoader] = useState(new GLTFLoader())
-  const armRef = useRef();
-
-  const {commClientV01} = useContext(PortalCommContext)
+  const armRef = useRef([]);
+  const [conPos, setConPos]= useState(new THREE.Vector3);
+  const [conRot, setConRot]= useState(new THREE.Vector3);
+  const [gripDistance, setGripDistance] = useState(50);
+  const [gripDirection, setGripDirection] = useState(1);
 
   useEffect(() => {
 
@@ -48,31 +62,117 @@ export default function PortalArm(type, path, ...props) {
     dracoLoader.setDecoderPath("/3d_models/libs/draco/")
     setLoader((gltfLoader) => gltfLoader.setDRACOLoader(dracoLoader));
     console.log("dakljfasd")
+    //commClient.socket.on()
     //commClient.socket callback -> 명령 들어왓을때 setArmAngles하기
     //commClient.socket callback -> 명령 들어왓을때 setGripperAngles하기
-
+    ref.current.position.x = 0.2;
     return () => {
-
+      //commClient.socket.off()
     }
   }, []);
 
   //socket io callback을 붙히기
-  useFrame((state, delta)=> { 
-    if(gamepadRef.current.left.new.buttons[0] === 0){
-      setArmAngles(armAngles => armAngles.map(val=>val+0.3));
-    } else {
-      setArmAngles(armAngles => armAngles.map(val=>val-0.3));
+  useFrame((state, delta, XRFrame)=> { 
+    if(XRFrame){
+      // console.log(delta)
+      acculTime += delta
+      if (acculTime > 0.01){
+        acculTime = 0
+        let right = {...gamepadRef.current.right};
+  
+        if (right.new.buttons[1] === 1){  //squeeze
+          //controller 6DOF
+          if(rightController){
+            right.controller = rightController.controller;
+            // let pos = ref.current.worldToLocal(
+            //   right.controller.position.sub(armPosVec)).toArray();
+            let pos = armRef.current.children[0].worldToLocal(
+              right.controller.position).toArray();
+            // console.log(armRef.current.children[0]);
+            pos = [-pos[0], pos[2], pos[1]]
+            pos = pos.map((val) => Math.round(val*10000)/10000)
+            setConPos(pos);
+
+            let rot = right.controller.rotation.clone().reorder("XZY").toArray().map((val)=>Math.round(RAD2DEG*val*10000)/10000)
+            // console.log(rot)
+            rot = [-rot[0], rot[2], rot[1]]
+            // console.log(typeof rot[0], typeof rot[1], typeof rot[2])
+            setConRot(rot)
+          }
+        }
+
+        if (right.new.buttons[4] !== right.prev.buttons[4] 
+            &&right.new.buttons[4] > 0.8){
+          setGripDirection((direction) => - direction);
+        }
+        if (right.new.buttons[0] > 0.5) {
+          setGripDistance((distance) => {
+            let result = (distance + 30* delta * gripDirection)
+            if (result > 100) return 100;
+            else if (result < 1) return 1;
+            else return result
+          })
+        }
+
+        
+        // setGripDistance((grip)=> {
+        //   if ( grip > 100) dir = -dir;
+        //   else if ( grip < 2 ) dir = -dir;
+        //   return grip + dir;
+        // })
+
+        // let armData = [...conPos, ...conRot]
+        // console.log (armData)
+        packet = { 
+          from: commClientV01.id, 
+          to:commClientV01.connectedModules[0],
+          msg:{
+            type:"DUP", 
+            data:{arm:[...conPos,...conRot],grip: gripDistance*10 }}
+        } 
+        console.log(packet)
+        // console.log(packet.msg.data.arm);
+        commClientV01.socket.emit("task", "msg-v0", packet, (res) =>{
+          // console.log("msg-v0 response:",res)
+        } )
+
+        
+  
+        // if(gamepadRef.current.left.new.buttons[0] === 0){
+        //   setArmAngles(armAngles => armAngles.map(val=>val+0.3));
+        // } else {
+        //   // console.log(gamepadRef.current.left)
+        //   setArmAngles(armAngles => armAngles.map(val=>val-0.3));
+        // }
+      }
     }
+
   })
 
   return(
-    <group>
+    <group ref={ref}>
       <Table loader={loader}>
-        <Arm loader={loader} depth={6} angles={armAngles} positions={[armPos,...armGeometries]}>
-          <Gripper loader={loader} geoConfig={gripperGeometries} />
+        <Arm ref={armRef} loader={loader} depth={6} angles={armAngles} positions={[armPos,...armGeometries]}>
+          <Gripper loader={loader} geoConfig={gripperGeometries} gripDistance={gripDistance}/>
         {/* <Box position={[-1.2, 0, 0]} /> */}
         </Arm>
       </Table> 
+
+      <Text fontSize={0.5} position={[-10,1,-10]} rotation={[0,45*DEG2RAD,0]} color="black">            
+        {conPos[0]}
+      </Text>
+      <Text fontSize={0.5} position={[-10,0,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
+        {conPos[1]}
+      </Text>
+      <Text fontSize={0.5} position={[-10,-1,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
+        {conPos[2]}
+      </Text>
+      <Text fontSize={0.5} position={[-10,-2,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
+        grip: {gripDistance}
+      </Text>
+      <Text fontSize={0.5} position={[-10,-3,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
+        {gamepadRef.current.right.new.buttons[0]}
+      </Text>
     </group>
   )
 
@@ -99,7 +199,7 @@ const Model = forwardRef( function Model ({loader, modelConfig, position=[0,0,0]
     //     setGeo((geo_) => geo_ = gltf.scene.children[0].geometry) ;
     //   } 
     //   );
-    // }
+    // 
 
     loadGLTF();
 
@@ -116,9 +216,7 @@ const Model = forwardRef( function Model ({loader, modelConfig, position=[0,0,0]
         <primitive object={geo} attach="geometry"/>
         <meshPhongMaterial {...modelConfig.matParams} />
       </mesh>
-
-    {props.children}
-    
+      {props.children}
     </group>
   );
 });
@@ -161,7 +259,9 @@ function setArmConfigs() {
 
   return configs_
 }
-const Arm = ({loader, index=0, angles=[0,0,0,0,0,0],positions, children, ...props}) => {
+
+// function Arm ({loader, index=0, angles=[0,0,0,0,0,0], positions, children, ...props}) {
+const Arm = forwardRef( function Arm ({loader, index=0, angles=[0,0,0,0,0,0], positions, children, ...props}, forwardedRef) {
 
   const rotAxes = [
     [0, 1, 0],
@@ -172,7 +272,7 @@ const Arm = ({loader, index=0, angles=[0,0,0,0,0,0],positions, children, ...prop
     [0, 0, -1],
   ];
 
-  const [rotation, setRotation] = useState([0,0,0]);
+  // const [rotation, setRotation] = useState([0,0,0]);
   const ref = useRef([]);
   useEffect(() => {
     console.log("arm index:",index)
@@ -182,48 +282,43 @@ const Arm = ({loader, index=0, angles=[0,0,0,0,0,0],positions, children, ...prop
   },[])
 
   useFrame((state,delta) => {
-    if (index > 0){
-      // console.log("rotrot")
-      // console.log(modelRef)
-      // modelRef.current.rotation.fromArray(rotAxes[index-1].map((val,idx) => val * angles[index-1] * THREE.MathUtils.DEG2RAD));
-      // console.log("angles in arms[",index,"]: ",rotation)
-    }
+    // ref.current[2].rotation.z += 0.01;
+    angles.map((angle, i) => {
+      ref.current[i + 1].rotation.fromArray(rotAxes[i].map((val) => val * angle * DEG2RAD))
+    })
   })
 
   return (
-    <Model ref={el => (ref.current[0] = el)} loader={loader} 
-    rotation={rotation} position={positions[0]} modelConfig={ArmConfigs[0]}>
+    <group ref={forwardedRef}>
+      <Model ref={el => (ref.current[0] = el)} loader={loader} 
+      position={positions[0]} modelConfig={ArmConfigs[0]}>
 
-      <Model ref={el => (ref.current[1] = el)} loader={loader} 
-      rotation={rotation} position={positions[1]} modelConfig={ArmConfigs[1]}>
+        <Model ref={el => (ref.current[1] = el)} loader={loader} 
+        position={positions[1]} modelConfig={ArmConfigs[1]}>
 
-        <Model ref={el => (ref.current[2] = el)} loader={loader} 
-        rotation={rotation} position={positions[2]} modelConfig={ArmConfigs[2]}>
+          <Model ref={el => (ref.current[2] = el)} loader={loader} position={positions[2]} modelConfig={ArmConfigs[2]}>
 
-          <Model ref={el => (ref.current[3] = el)}loader={loader} 
-          rotation={rotation} position={positions[3]} modelConfig={ArmConfigs[3]}>
+            <Model ref={el => (ref.current[3] = el)}loader={loader} position={positions[3]} modelConfig={ArmConfigs[3]}>
 
-            <Model ref={el => (ref.current[4] = el)} loader={loader} 
-            rotation={rotation} position={positions[4]} modelConfig={ArmConfigs[4]}>
+              <Model ref={el => (ref.current[4] = el)} loader={loader} position={positions[4]} modelConfig={ArmConfigs[4]}>
 
-              <Model ref={el => (ref.current[5] = el)} loader={loader} 
-              rotation={rotation} position={positions[5]} modelConfig={ArmConfigs[5]}>
+                <Model ref={el => (ref.current[5] = el)} loader={loader} position={positions[5]} modelConfig={ArmConfigs[5]}>
 
-                <Model ref={el => (ref.current[6] = el)} loader={loader} 
-                rotation={rotation} position={positions[6]} modelConfig={ArmConfigs[6]}>
-                  {children}
+                  <Model ref={el => (ref.current[6] = el)} loader={loader} position={positions[6]} modelConfig={ArmConfigs[6]}>
+                    {children}
+                  </Model>
                 </Model>
               </Model>
             </Model>
           </Model>
         </Model>
       </Model>
-      
-    </Model>
+    s</group>
  
   
   )
 }
+)
 
 // const Arm = ({ index=0, angles=[0,0,0,0,0,0], ...props}) => {
 
@@ -302,8 +397,9 @@ const Arm = ({loader, index=0, angles=[0,0,0,0,0,0],positions, children, ...prop
 const gripperConfigs =setGripperConfigs();
 const gripperPositions = setGripperPositions();
 
-const Gripper = ({loader, geoConfig, children,...props}) => {
+const Gripper = ({loader, geoConfig, gripDistance, children,...props}) => {
 
+  const ref = useRef([]);
   const [rotations, setRotations] = useState(() => {
     let rotations_ = []
     for (let i = 0; i<9; i++){
@@ -311,26 +407,35 @@ const Gripper = ({loader, geoConfig, children,...props}) => {
       let j = Math.floor((i - 1)/4);
       let k = 1 + (i - 1)% 4
 
-      if (j !== 0 && k !== 1) rotations_.push([0,0,THREE.MathUtils.DEG2RAD*180]);
+      if (j === 1 && k === 2 ) rotations_.push([0,0,THREE.MathUtils.DEG2RAD*180]);
       else rotations_.push([0,0,0])
     } 
     return rotations_
   })
+
+  useFrame((state,delta,XRFrame)=>{
+    
+    grip(gripDistance, ref.current)
+    // if ( distance < 1 || distance > 105) {
+    //   console.error("gripeer: out of range")
+    // } else {
+    //   let angle = RAD2DEG * Math.asin(( disa))
+    // }
+  })
   
   return(
-    <Model loader={loader} modelConfig={gripperConfigs[0]} position={gripperPositions[0]} rotations={rotations[0]}>
-
-      <Model loader={loader} modelConfig={gripperConfigs[1]} position={gripperPositions[1]} rotations={rotations[1]}/>
-      <Model loader={loader} modelConfig={gripperConfigs[2]} position={gripperPositions[2]} rotations={rotations[2]}>
-        <Model loader={loader} modelConfig={gripperConfigs[3]} position={gripperPositions[3]} rotations={rotations[3]}>
-          <Model loader={loader} modelConfig={gripperConfigs[4]} position={gripperPositions[4]} rotations={rotations[4]}/>
+    <Model ref={el=>(ref.current[0]=el)} loader={loader} modelConfig={gripperConfigs[0]} position={gripperPositions[0]} rotation={rotations[0]}>
+      <Model ref={el=>(ref.current[1]=el)} loader={loader} modelConfig={gripperConfigs[1]} position={gripperPositions[1]} rotation={rotations[1]}/>
+      <Model ref={el=>(ref.current[2]=el)} loader={loader} modelConfig={gripperConfigs[2]} position={gripperPositions[2]} rotation={rotations[2]}>
+        <Model ref={el=>(ref.current[3]=el)} loader={loader} modelConfig={gripperConfigs[3]} position={gripperPositions[3]} rotation={rotations[3]}>
+          <Model ref={el=>(ref.current[4]=el)} loader={loader} modelConfig={gripperConfigs[4]} position={gripperPositions[4]} rotation={rotations[4]}/>
         {children}
         </Model>
       </Model>
-      <Model loader={loader} modelConfig={gripperConfigs[5]} position={gripperPositions[5]} rotations={rotations[5]}/>
-      <Model loader={loader} modelConfig={gripperConfigs[6]} position={gripperPositions[6]} rotations={rotations[6]}>
-        <Model loader={loader} modelConfig={gripperConfigs[7]} position={gripperPositions[7]} rotations={rotations[7]}>
-          <Model loader={loader} modelConfig={gripperConfigs[8]} position={gripperPositions[8]} rotations={rotations[8]}/>
+      <Model ref={el=>(ref.current[5]=el)} loader={loader} modelConfig={gripperConfigs[5]} position={gripperPositions[5]} rotation={rotations[5]}/>
+      <Model ref={el=>(ref.current[6]=el)} loader={loader} modelConfig={gripperConfigs[6]} position={gripperPositions[6]} rotation={rotations[6]}>
+        <Model ref={el=>(ref.current[7]=el)} loader={loader} modelConfig={gripperConfigs[7]} position={gripperPositions[7]} rotation={rotations[7]}>
+          <Model ref={el=>(ref.current[8]=el)} loader={loader} modelConfig={gripperConfigs[8]} position={gripperPositions[8]} rotation={rotations[8]}/>
         </Model>
       </Model>
 
@@ -369,9 +474,9 @@ function setGripperConfigs() {
       configs_.push({
         // path: null,
         matParams:{
-          color: 0xc5c5c5,
+          color: 0x777777,
           transparent: true,
-          opacity: 0.5,
+          opacity: 0.8,
           side: THREE.DoubleSide,
           flatShading: true,
       }})
@@ -383,4 +488,26 @@ function setGripperConfigs() {
       }
     }  
     return configs_
+}
+
+const grip = (distance, gripperLinks, type = "ROBOTIS_RH-P12-RN") => {
+  if ( type === "ROBOTIS_RH-P12-RN" ){
+    if ( distance < 1 || distance > 105) {
+      console.error("gripper: out of range", distance);
+      return;
+    } else {
+      console.log("gripDistance:", distance)
+      let angle = RAD2DEG * Math.asin(( distance - 8 ) / 2 / 57);
+      for (let i = 1; i < 8; i++ ){
+        let j = Math.floor((i - 1)/4);
+        let k = 1 + (i - 1)% 4
+        let rot = 2 * (j - 0.5) * angle * DEG2RAD; 
+        if ( k < 3) gripperLinks[i].rotation.y = rot; 
+        else if (k === 3) gripperLinks[i].rotation.y = angle * DEG2RAD;
+      } 
+    } 
+  } else {
+    console.error("not registed gripper");
+    return;
+  }
 }
