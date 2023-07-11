@@ -43,6 +43,7 @@ export default function App() {
 
   const onChangeSerialNumber = (event) => {
     setSerialNumber(event.target.value);
+    console.log(serialNumber);
   };
 
   const onChangeMessage = (event) => {
@@ -147,19 +148,19 @@ export default function App() {
   return (
     <div style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
       <div className={styles.login_id}>
-        <h4>choose data range</h4>
+        <h4>Type the serial number</h4>
         <input
           id="url"
           value={serialNumber}
           onChange={onChangeSerialNumber}
           type="text"
-          placeholder="target URL"
+          placeholder="serial number"
         />
       </div>
-      <div className={styles.submit}>
+      {/* <div className={styles.submit}>
         <input type="submit" value="submit" onClick={urlSubmit} />
-      </div>
-      <div className={styles.login_id}>
+      </div> */}
+      {/* <div className={styles.login_id}>
         <h4>Patient message</h4>
         <input
           id="message"
@@ -171,9 +172,9 @@ export default function App() {
       </div>
       <div className={styles.submit}>
         <input type="submit" value="submit" onClick={messageSubmit} />
-      </div>
+      </div> */}
       {/* <ApexChartLine accData={accData} prsData={prsData} trhData={trhData}/> */}
-      <ApexChartLine accData={accData1} prsData={prsData1} trhData={trhData1}/>
+      {/* <ApexChartLine accData={accData1} prsData={prsData1} trhData={trhData1}/> */}
     </div>
   )
 }
