@@ -44,7 +44,7 @@ const Test = () => {
   return (
     <>
       <MainLayout>
-        <section className="px-[60px]">
+        <section className="px-[60px] py-[48px]">
           <div className="w-full flex justify-between items-center">
             <span className="text-xl">Test1</span>
             <div className="flex gap-[30px]">

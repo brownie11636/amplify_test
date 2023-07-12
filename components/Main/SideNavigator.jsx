@@ -26,8 +26,8 @@ const SideNavigator = () => {
   }, []);
 
   return (
-    <div className="flex flex-col w-[300px] h-screen py-[4.44444444444%] border-r border-[#D9D9D9] relative">
-      <div className="flex flex-col border-b w-full px-[40px] pb-[20px] text-[#222222]">
+    <div className="flex flex-col w-[300px] py-[48px] h-screen border-r border-[#D9D9D9] relative">
+      <div className="flex flex-col border-b w-full max-h-[140px] px-[40px] pb-[20px] text-[#222222]">
         <span
           className="font-['NotoSans'] font-medium text-2xl text-[#222222] w-fit select-none cursor-pointer"
           onClick={() => router.push("/main")}

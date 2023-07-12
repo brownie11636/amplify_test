@@ -6,7 +6,7 @@ const Test = () => {
   console.log(router.query);
   return (
     <MainLayout>
-      <div>
+      <div className="py-[48px]">
         Test2
         <span></span>
       </div>
