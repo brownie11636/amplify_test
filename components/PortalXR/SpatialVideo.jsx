@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useRef, useState, useMemo, useEffect, useLayoutEffect, useContext} from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useTexture } from '@react-three/drei'
+import { useTexture, Line } from '@react-three/drei'
 import { useXR } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { textureLoader } from "three/examples/jsm/loaders/DRACOLoader";
@@ -12,14 +12,16 @@ import { GamepadContext } from "./GamepadContext"
 
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 const RAD2DEG = THREE.MathUtils.RAD2DEG;
-export default function SpatialVideo(mode, ...props) {
+
+export default function SpatialVideo({mode, ...props}) {
   // const portaRTCRef = useContext(PortalRTCContext)
   const gamepadRef = useContext(GamepadContext)
   //const commClient = useContext(PortalCommContext);
   const {rgbSrcRef, depthSrcRef} = useContext(RgbdContext);
   const portalRTCRef = useContext(PortalRTCContext);
-  const matRef = useRef();
+  const groupRef = useRef();
   const pointsRef = useRef();
+  const matRef = useRef();
   const controlRef = useRef(true)
   const rgbTexture = useRef(new THREE.Texture(rgbSrcRef.current))
   const depthTexture = useRef(new THREE.Texture(depthSrcRef.current))
@@ -28,18 +30,23 @@ export default function SpatialVideo(mode, ...props) {
     rgbTexture.current.needsUpdate = true;
     depthTexture.current.needsUpdate = true;
     console.log(rgbTexture.current);
+    console.log(props.position)
   },[])
 
   useFrame((state, delta, XRFrame)=>{
     let right = gamepadRef.current.right;
-    let W = 0.05; 
+    let left = gamepadRef.current.left
+    let W = 0.005; 
     if(controlRef.current){
-      pointsRef.current.position.z += W * right.new.axes[2];
-      pointsRef.current.position.x += W * right.new.axes[3];
+      groupRef.current.position.z += W * right.new.axes[2];
+      groupRef.current.position.x += W * right.new.axes[3];
     } else {
-      pointsRef.current.rotation.y += W * right.new.axes[2];
-      pointsRef.current.position.y += W * right.new.axes[3];
+      groupRef.current.rotation.y += W * right.new.axes[2];
+      groupRef.current.position.y += W * right.new.axes[3];
     }
+    groupRef.current.scale.x += 0.01 * left.new.axes[2];
+    groupRef.current.scale.y += 0.01 * left.new.axes[2];
+    groupRef.current.scale.z += 0.01 * left.new.axes[2];
 
     //let eulerData = portalRTC.quaternion;
     // console.log("rtcRef:", portalRTCRef)
@@ -70,7 +77,7 @@ export default function SpatialVideo(mode, ...props) {
 
 
   // const texture = useLoader(TexturesLoader)
-  const uniforms =     {
+  const uniforms = {
     rgbImg: { type: 't', value: rgbTexture.current },
     depthImg: { type: 't', value: depthTexture.current },
     texSize: { type: 'i2', value: [1280,720] },
@@ -96,17 +103,23 @@ export default function SpatialVideo(mode, ...props) {
   
   let tmp = rgbSrcRef.current.src;
 
-  useFrame( () => {
+  useFrame(() => {
     if (rgbSrcRef.current.complete && depthSrcRef.current.complete){
-     
       rgbTexture.current.needsUpdate=true
       depthTexture.current.needsUpdate=true;
     }
   })
 
   return (
-    <group rotation={[0,-45*DEG2RAD,0]} position={[-0.5,0.8,-0.4]}>
-      <points ref={pointsRef} frustumCulled={false}>
+    <group 
+      ref={groupRef} 
+      {...props}
+      // position={props.position} 
+      // rotation={[0,-0.5,0]} 
+      // {...props} 
+    >
+      <MyFrustrum far={6} near={0.1}/>
+      <points ref={pointsRef} frustumCulled={false} >
         <shaderMaterial 
           ref={matRef}
           uniforms={uniforms}  
@@ -120,18 +133,63 @@ export default function SpatialVideo(mode, ...props) {
           <bufferAttribute attach="attributes-vertexIdx" count={numPoints} array={buffPointIndicesAttr} itemSize={1}/>
           <bufferAttribute attach="index" count={numPoints} array={buffIndices} itemSize={1}/>
         </bufferGeometry> 
+        {props.children}
           
       </points>
     </group>
   )
 }
 
-function getSize(source){
-
-  let height = source.height;
-  let width = source.width;
-
-  return {height, width};
+//zed mini fov={HD1080:{
+//                fov_h:69,
+//                fov_v:42
+//                },
+//              HD720:{
+//                fov_h:85,
+//                fov_v:54
+//                } 
+//              }
+const MyFrustrum = ({far,near,fov,...props}) => {
+  // const {fov_h, fov_v} = fov
+  const fov_h = 85 * DEG2RAD;
+  const fov_v = 54 * DEG2RAD;
+  const w = Math.tan(fov_h/2)
+  const h = Math.tan(fov_v/2)
+  const points = [];
+  points.push(new THREE.Vector3(w,h,-1));
+  points.push(new THREE.Vector3(-w,h,-1));
+  points.push(new THREE.Vector3(-w,-h,-1));
+  points.push(new THREE.Vector3(w,-h,-1));
+  const farPoints = points.map(val=>val.clone().multiplyScalar(far))
+  const nearPoints = points.map(val=>val.clone().multiplyScalar(near))
+  
+  const farGeometry = new THREE.BufferGeometry().setFromPoints(farPoints);
+  const nearGeometry = new THREE.BufferGeometry().setFromPoints(nearPoints);
+  // console.log(nearRef.current)
+  return(
+    <group>
+      <lineLoop geometry={nearGeometry} >
+        <lineBasicMaterial attach="material" color={"blue"} lineWidth={10}/>
+      </lineLoop>
+      <lineLoop geometry={farGeometry}>
+        <lineBasicMaterial attach="material" color={"blue"}/>
+      </lineLoop>
+      <Line segment={false} lineWidth={1.5} points={[farPoints[0],nearPoints[0]]} color={"blue"}/>
+      <Line points={[farPoints[1],nearPoints[1]]} color={"blue"}/>
+      <Line points={[farPoints[2],nearPoints[2]]} color={"blue"}/>
+      <Line points={[farPoints[3],nearPoints[3]]} color={"blue"}/>
+      
+      {/* <Line points={[farPoints[0],nearPoints[1]]} color={"blue"}/>
+      <Line points={[farPoints[1],nearPoints[2]]} color={"blue"}/>
+      <Line points={[farPoints[2],nearPoints[3]]} color={"blue"}/>
+      <Line points={[farPoints[3],nearPoints[0]]} color={"blue"}/>
+      
+      <Line points={[farPoints[0],nearPoints[3]]} color={"blue"}/>
+      <Line points={[farPoints[1],nearPoints[0]]} color={"blue"}/>
+      <Line points={[farPoints[2],nearPoints[1]]} color={"blue"}/>
+      <Line points={[farPoints[3],nearPoints[2]]} color={"blue"}/> */}
+    </group>
+  )
 }
 
 async function getTexture(source){ //source: HTML element
