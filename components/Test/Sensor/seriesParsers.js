@@ -17,7 +17,7 @@ export default function parser(packet, parser_id){
         if (idx>1 && idx<6) {
           timeHex += datum;
           if (idx==5) {
-            timeArray.push(parseInt(timeHex,16));
+            timeArray.push(Buffer.from(timeHex, 'hex').readUInt32LE());
             for (let j=0;j<29;j++) {
               timeArray.push(timeArray.at(-1)+dt);
             }
@@ -25,13 +25,13 @@ export default function parser(packet, parser_id){
         }
         if (idx>5) {
           if (idx%3 == 0) {
-            array0.push(parseInt(datum, 16));
+            array0.push(Buffer.from(datum, 'hex').readUInt8());
           }
           if (idx%3 == 1) {
-            array1.push(parseInt(datum, 16));
+            array1.push(Buffer.from(datum, 'hex').readUInt8());
           }
           if (idx%3 == 2) {
-            array2.push(parseInt(datum, 16));
+            array2.push(Buffer.from(datum, 'hex').readUInt8());
           }
         }
       })
@@ -69,7 +69,7 @@ export default function parser(packet, parser_id){
     let timeArray = [];
     let pressureHex = "";
     let pressureArray = [];
-    let dt = 100;
+    let dt = 50;
 
     packet.reverse().forEach((e)=>{
       for (let i = 0; i < e.payload.length; i += 2) {
@@ -79,7 +79,7 @@ export default function parser(packet, parser_id){
         if (idx>1 && idx<6) {
           timeHex += datum;
           if (idx==5) {
-            timeArray.push(parseInt(timeHex,16));
+            timeArray.push(Buffer.from(timeHex, 'hex').readUInt32LE());
             for (let j=0;j<19;j++) {
               timeArray.push(timeArray.at(-1)+dt);
             }
@@ -93,7 +93,7 @@ export default function parser(packet, parser_id){
               pressureHex = "";
             }
             else {
-              pressureArray.push(null);
+              pressureArray.push(pressureArray.at(-1));
               pressureHex = "";
             }
           }          
@@ -106,12 +106,13 @@ export default function parser(packet, parser_id){
     const dataArray = timeArray.map((time, index) => {
       return ([time, pressureArray[index]]);
     });
-    
+    console.log(dataArray);
     return ([
       {
         "name": "pressure",
         "data": dataArray
       }]);
+
   }
 
   if(parser_id=="trh") {
@@ -132,7 +133,8 @@ export default function parser(packet, parser_id){
         if (idx>1 && idx<6) {
           timeHex += datum;
           if (idx==5) {
-            timeArray.push(parseInt(timeHex,16));
+            timeArray.push(Buffer.from(timeHex, 'hex').readUInt32LE());
+            console.log(Buffer.from(timeHex, 'hex').readUInt32LE());
             for (let j=0;j<19;j++) {
               timeArray.push(timeArray.at(-1)+dt);
             }
@@ -142,14 +144,14 @@ export default function parser(packet, parser_id){
           if ((idx-6)%4<2) {
             tempHex+=datum;
             if ((idx-6)%4==1) {
-              tempArray.push(parseInt(tempHex, 16));
+              tempArray.push(Buffer.from(tempHex, 'hex').readUInt16LE());
               tempHex = "";
             }
           }
           if ((idx-6)%4>1) {
             rhHex+=datum;
             if ((idx-6)%4==3) {
-              rhArray.push(parseInt(rhHex, 16));
+              rhArray.push(Buffer.from(rhHex, 'hex').readUInt16LE());
               rhHex = "";
             }
           }

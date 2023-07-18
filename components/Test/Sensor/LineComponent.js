@@ -5,7 +5,7 @@ import parser from "./seriesParsers";
 
 export default function App() {
 
-  const [serialNumber, setSerialNumber] = useState("SerialNumber");
+  const [serialNumber, setSerialNumber] = useState("SN000-000-0000");
   const [urlFlag, setUrlFlag] = useState(true);
   const [message, setMessage] = useState("");
   const [accData, setAccData] = useState([]);
@@ -14,107 +14,150 @@ export default function App() {
   const mqtt_url = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload/topic?topic=perpet/';
   const mqtt_url2 = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload';
 
-  const accData1 = [
-    {
-      "name": "x",
-      "data": [[1,1],[2,2],[3,3],[4,2],[5,1]]
-    },{
-    "name": "y",
-    "data": [[1,2],[2,4],[3,5],[4,3],[5,1]]
-  },{
-    "name": "z",
-    "data": [[1,4],[2,3],[3,1],[4,2],[5,1]]
-  }];
+  const options = {
+    chart: {
+      id: 'realtime',
+      height: 350,
+      type: 'line',
+      animations: {
+        enabled: false,
+        easing: 'linear',
+        dynamicAnimation: {
+          speed: 1000
+        }
+      },
+      toolbar: {
+        show: false
+      },
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      curve: 'straight'
+    },
+    xaxis: {
+      type: "numeric",
+    },
+    grid: {
+      row: {
+        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+        opacity: 0.5
+      },
+    },
+    markers: {
+      size: 0
+    },
+  };
 
-  const prsData1 = [
+  const DoubleYaxisOption = [
+    { 
+      axisTicks: {
+        show: true,
+      },
+      axisBorder: {
+        show: true,
+        color: '#008FFB'
+      },
+      labels: {
+        style: {
+          colors: '#008FFB',
+        }
+      },
+      tooltip: {
+        enabled: true
+      }
+    },
     {
-      "name": "pressure",
-      "data": [[1,10],[2,27],[3,32],[4,25],[5,15]]
-    }];  
-
-  const trhData1 = [
-    {
-      "name": "temperature",
-      "data": [[1,1],[2,2],[3,3],[4,2],[5,1]]
-    },{
-    "name": "rh",
-    "data": [[1,100],[2,200],[3,300],[4,200],[5,100]]
-  }];
+      opposite: true,
+      axisTicks: {
+        show: true,
+      },
+      axisBorder: {
+        show: true,
+        color: '#00E396'
+      },
+      labels: {
+        style: {
+          colors: '#00E396',
+        }
+      },
+    }
+  ];
 
   const onChangeSerialNumber = (event) => {
     setSerialNumber(event.target.value);
-    console.log(serialNumber);
   };
 
   const onChangeMessage = (event) => {
     setMessage(event.target.value);
   };
 
-  // useEffect(() => {
-  //   setAccData([]);
-  //   setPrsData([]);
-  //   setTrhData([]);
-  //   const timeout1 = setInterval(() => {
-  //     fetch(mqtt_url+serialNumber+"/acc")
-  //     .then(response => {
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-  //       return response.json();
-  //     })
-  //     .then(data => {
-  //       console.log(data.data.content);
-  //       let arr = data.data.content;
-  //       setAccData(parser(arr,"acc"));
-  //     })
-  //     .catch(error => {
-  //       console.error('Error:', error);
-  //     });
-  //   }, 1000);
+  useEffect(() => {
+    setAccData([]);
+    setPrsData([]);
+    setTrhData([]);
+    const timeout1 = setInterval(() => {
+      fetch(mqtt_url+serialNumber+"/acc")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data.data.content);
+        let arr = data.data.content;
+        setAccData(parser(arr,"acc"));
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }, 1000);
     
-  //   const timeout2 = setInterval(() => {
-  //     fetch(mqtt_url+serialNumber+"/prs")
-  //     .then(response => {
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-  //       return response.json();
-  //     })
-  //     .then(data => {
-  //       console.log(data.data.content);
-  //       let arr = data.data.content;
-  //       setPrsData(parser(arr,"prs"));
-  //     })
-  //     .catch(error => {
-  //       console.error('Error:', error);
-  //     });
-  //   }, 2000);
+    const timeout2 = setInterval(() => {
+      fetch(mqtt_url+serialNumber+"/prs")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data.data.content);
+        let arr = data.data.content;
+        setPrsData(parser(arr,"prs"));
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }, 1000);
 
-  //   const timeout3 = setInterval(() => {
-  //     fetch(mqtt_url+serialNumber+"/trh")
-  //     .then(response => {
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-  //       return response.json();
-  //     })
-  //     .then(data => {
-  //       console.log(data.data.content);
-  //       let arr = data.data.content;
-  //       setTrhData(parser(arr,"trh"));
-  //     })
-  //     .catch(error => {
-  //       console.error('Error:', error);
-  //     });
-  //   }, 5000)
+    const timeout3 = setInterval(() => {
+      fetch(mqtt_url+serialNumber+"/trh")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // console.log(data.data.content);
+        let arr = data.data.content;
+        setTrhData(parser(arr,"trh"));
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }, 1000)
 
-  //   return () => {
-  //     clearInterval(timeout1);
-  //     clearInterval(timeout2);
-  //     clearInterval(timeout3);
-  //   };
+    return () => {
+      clearInterval(timeout1);
+      clearInterval(timeout2);
+      clearInterval(timeout3);
+    };
     
-  // }, [urlFlag]);
+  }, [urlFlag]);
 
   const urlSubmit = (e) => {
     setUrlFlag(!urlFlag);
@@ -173,7 +216,9 @@ export default function App() {
       <div className={styles.submit}>
         <input type="submit" value="submit" onClick={messageSubmit} />
       </div>
-      <ApexChartLine accData={accData1} prsData={prsData1} trhData={trhData1}/>
+      <ApexChartLine data={accData} options={{ ...options, title: {text: "Accelerometer"}}}/>
+      <ApexChartLine data={prsData} options={{ ...options, title: {text: "pressure"}}}/>
+      <ApexChartLine data={trhData} options={{ ...options, yaxis: DoubleYaxisOption, title: {text: "Temperature/Relative humidity"}}}/>
     </div>
   )
 }
