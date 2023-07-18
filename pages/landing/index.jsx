@@ -2,15 +2,15 @@ import Image from "next/image";
 
 const landingPage = () => {
   return (
-    <div className="landing-page w-screen h-fit flex flex-col whitespace-pre">
-      <div className="w-full min-w-fit h-[68rem] relative">
+    <div className="landing-page w-screen h-fit flex flex-col whitespace-pre font-['NotoSans']">
+      <div className="w-full min-w-fit max-h-[68rem] h-screen relative">
         <picture className="w-full h-full flex absolute top-0 z-0">
           <Image src={`/images/landing/landing.jpg`} fill style={{ objectFit: "cover" }} alt="" />
         </picture>
         <div className="flex w-full h-full bg-opacity-50 bg-black z-30 absolute top-0">
           <div className="text-white flex flex-col w-full h-full mt-[18.98148148148148vh] ml-[12.5vw]">
             <span
-              className="uppercase 
+              className="uppercase font-['RobotoB'] tracking-[1.6px]
               text-[100%] sm:text-[200%] md:text-[300%] lg:text-[400%] xl:text-[500%] 2xl:text-[600%] 
               mb-[0.5%] sm:mb-[1%] md:mb-[1.5%] lg:mb-[2%] xl:mb-[2.5%] 2xl:mb-[3.125%] 
             "
@@ -38,8 +38,8 @@ const landingPage = () => {
         <span className="text-[50px] text-[#252525] leading-[68px] self-start ml-[60px] mb-[110px]">{`포탈의 로봇팔은 무엇이 다른가요?`}</span>
         <div className="flex w-full gap-[100px]">
           <div className="flex flex-col relative pl-[76px]">
-            <span className="text-[40px] text-[#909090] leading-[46.88px] z-10 mb-[90px]">{`3D telepresence`}</span>
-            <span className="text-[40px] text-[#182A5B] leading-[46.88px] z-10 mb-[30px]">{`Remote control robot`}</span>
+            <span className="text-[40px] text-[#909090] leading-[46.88px] z-10 mb-[90px] font-['Roboto']">{`3D telepresence`}</span>
+            <span className="text-[40px] text-[#182A5B] leading-[46.88px] z-10 mb-[30px] font-['Roboto']">{`Remote control robot`}</span>
             <span className="text-[34px] text-[#252525] leading-[46.31px] whitespace-pre z-10 mb-[90px]">
               {`초저지연 통신을 통해 사용자의\n모션에 위하감 없이 동기화됩니다.\n위험하거나 멀리 있는 현장의\n노동자를 대체합니다.`}
             </span>
@@ -57,14 +57,14 @@ const landingPage = () => {
           </picture>
           <div className="flex flex-col">
             <span className="text-[50px] text-[#252525] mb-[50px]">{`로봇팔을 활용한 다양한 서비스`}</span>
-            <span className="text-[40px] text-[#182A5B] mb-[34px]">{`SMART FARM`}</span>
+            <span className="text-[40px] text-[#182A5B] mb-[34px] font-['Roboto']">{`SMART FARM`}</span>
             <span className="whitespace-pre text-[36px] text-[#252525] leading-[49.03px] mb-[83px]">
               {`인구 감소와 고령화 문제로 인한 일손이 부족한\n농촌에서는 팜봇을 활용하여 씨를 심거나\n모를 심는 작업 등 사람이 하던 작업을\n빠르고 정확한 작업을 수행해냅니다.`}
             </span>
             <div className="w-full h-[1px] bg-[#CBCBCB]"></div>
           </div>
         </div>
-        <div className="flex gap-[92px]">
+        <div className="flex gap-[92px] font-['Roboto']">
           {[
             "factory.svg",
             "smart-farm.svg",
@@ -92,7 +92,7 @@ const landingPage = () => {
           })}
         </div>
       </div>
-      <div className="w-full min-w-fit h-[24rem] bg-[#F3F3F3] flex flex-col justify-center items-center">
+      <div className="w-full min-w-fit h-[24rem] bg-[#F3F3F3] flex flex-col justify-center items-center font-['Inter']">
         <picture className="relative w-[300px] h-[74px] flex">
           <Image src={`/images/landing/logo.svg`} alt="" fill />
         </picture>

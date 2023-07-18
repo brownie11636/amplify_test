@@ -39,6 +39,31 @@ This files table contents are outlined below>>>>>
 /*================================================
 Default CSS
 =================================================*/
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter/Inter-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: "RobotoM";
+  src: url("/fonts/Roboto/Roboto-Medium.woff2") format("woff2");
+  font-style: medium;
+  font-weight: 500;
+}
+@font-face {
+  font-family: "RobotoB";
+  src: url("/fonts/Roboto/Roboto-Bold.woff2") format("woff2");
+  font-style: Bold;
+  font-weight: 700;
+}
+
 body {
   padding: 0;
   margin: 0;
