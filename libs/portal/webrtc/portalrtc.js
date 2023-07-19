@@ -287,7 +287,10 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
       */
      dataChannel.addEventListener("message", event=>{
       let receivedDatacontrol = 'None';
-      this.quaternion = messageEventHandler(event, this.spatialVideo, this.rgbImg, this.depthImg, this.quaternion);
+      // console.log(event)
+      messageEventHandler(event, this.spatialVideo, this.rgbImg, this.depthImg, this);
+      // this.quaternion = messageEventHandler(event, this.spatialVideo, this.rgbImg, this.depthImg, this.quaternion);
+      console.log('received quaternion data : ', this.quaternion)
      });
 
     });
