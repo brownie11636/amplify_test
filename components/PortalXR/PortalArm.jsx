@@ -1,10 +1,11 @@
 import * as THREE from 'three'
 import { forwardRef, useRef, useState, useMemo, useEffect, useContext} from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useLoader } from '@react-three/fiber'
 import { Html, Text } from "@react-three/drei"
 import { useXR, useController } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 
 import { PortalCommContext } from '../../utils/contexts/portalComm';
 import * as myGamepadInput from '../../libs/XR/myGamepadInput'
@@ -63,6 +64,7 @@ export default function PortalArm(type, path, ...props) {
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath("/3d_models/libs/draco/")
     setLoader((gltfLoader) => gltfLoader.setDRACOLoader(dracoLoader));
+    
     console.log("socketid in PortalArm.jsx")
     console.log(commClientV01.socket.id)
     commClientV01.socket.on("robot",(type, packet)=>{
@@ -92,7 +94,7 @@ export default function PortalArm(type, path, ...props) {
     }
     //commClient.socket callback -> 명령 들어왓을때 setArmAngles하기
     //commClient.socket callback -> 명령 들어왓을때 setGripperAngles하기
-    ref.current.position.x = 0.3;
+    // ref.current.position.x = 0.3;
 
     console.log("robot comm on")
     
@@ -144,10 +146,10 @@ export default function PortalArm(type, path, ...props) {
               }
             }
           } 
-          // console.log(packet)
+          console.log("send C2C packet")
           // console.log(packet.msg.data.arm);
           commClientV01.socket.emit("robot", "C2C", packet, (res) => {
-            // console.log("msg-v0 response:",res)
+          // console.log("msg-v0 response:",res)
           } )
         }
         if (right.new.buttons[5] !== right.prev.buttons[5] 
@@ -206,11 +208,12 @@ export default function PortalArm(type, path, ...props) {
   return(
     <group ref={ref}>
       <Table loader={loader}>
-        <Arm ref={armRef} loader={loader} depth={6} angles={armAngles} positions={[armPos,...armGeometries]}>
+        {/* <Arm ref={armRef} loader={loader} depth={6} angles={armAngles} positions={[armPos,...armGeometries]}>
           <Gripper loader={loader} geoConfig={gripperGeometries} gripDistance={gripDistance}/>
-        {/* <Box position={[-1.2, 0, 0]} /> */}
-        </Arm>
+        </Arm> */}
       </Table> 
+      <Table loader={loader} position={[1,0,0]}/>
+      <Table loader={loader} position={[2,0,0]}/>
       <group position={armPos}>
         <BoundaryBox color="red" boundary={boundary}/>
       </group>
@@ -276,7 +279,7 @@ const Model = forwardRef( function Model ({loader, modelConfig, position=[0,0,0]
   );
 });
 
-const Table = ({loader, children, position, ...props}) => {
+const Table = ({loader, children, ...props}) => {
   const modelConfig = {
     path: "/3d_models/portalarm/UR5e_ver/table/GLTFs/table.gltf",
     matParams: {
@@ -288,10 +291,21 @@ const Table = ({loader, children, position, ...props}) => {
     }
   }
 
+  // const model = useLoader(STLLoader,'/3d_models/portalarm/UR5e_ver/table/STLs/table.STL')
+  // console.log(model)
+
+
   return (
-    <Model loader={loader} modelConfig={modelConfig} position={position}>
+    <Model loader={loader} modelConfig={modelConfig} {...props}>
       {children}
     </Model>
+    // <group {...props}>
+    //   <mesh >    
+    //     <primitive object={model} attach="geometry"/>
+    //     <meshPhongMaterial {...modelConfig.matParams} />
+    //   </mesh>
+    //   {children}
+    // </group>
   )
 }
 const ArmConfigs = setArmConfigs();

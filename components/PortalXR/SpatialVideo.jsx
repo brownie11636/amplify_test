@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useRef, useState, useMemo, useEffect, useLayoutEffect, useContext} from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useTexture, Line } from '@react-three/drei'
+import { useTexture, Line, Sphere } from '@react-three/drei'
 import { useXR } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { textureLoader } from "three/examples/jsm/loaders/DRACOLoader";
@@ -12,6 +12,8 @@ import { GamepadContext } from "./GamepadContext"
 
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 const RAD2DEG = THREE.MathUtils.RAD2DEG;
+
+//Euler {isEuler: true, _x: -0.0010090750180074188, _y: 0.02912233438379935, _z: 0.0043550970184092, _order: 'XYZ'}
 
 export default function SpatialVideo({mode, ...props}) {
   // const portaRTCRef = useContext(PortalRTCContext)
@@ -30,10 +32,15 @@ export default function SpatialVideo({mode, ...props}) {
     rgbTexture.current.needsUpdate = true;
     depthTexture.current.needsUpdate = true;
     console.log(rgbTexture.current);
-    console.log(props.position)
+    console.log(depthTexture.current);
+    // console.log(props.position)
   },[])
-
+  
   useFrame((state, delta, XRFrame)=>{
+    
+    // console.log(rgbTexture.current);
+    // console.log(depthTexture.current);
+
     let right = gamepadRef.current.right;
     let left = gamepadRef.current.left
     let W = 0.005; 
@@ -49,24 +56,28 @@ export default function SpatialVideo({mode, ...props}) {
     groupRef.current.scale.z += 0.01 * left.new.axes[2];
 
     //let eulerData = portalRTC.quaternion;
-    // console.log("rtcRef:", portalRTCRef)
-    if(portalRTCRef.current !== undefined){
-      if (portalRTCRef.current.quaternion) {
-        let eulerData = new THREE.Euler().setFromQuaternion(
-          new THREE.Quaternion(
-            portalRTCRef.current.quaternion.x,
-            portalRTCRef.current.quaternion.y,
-            portalRTCRef.current.quaternion.z,
-            portalRTCRef.current.quaternion.w
-          ),
-          "XYZ"
-        );
-        // console.log('portalRTCRef : ', portalRTCRef.current.quaternion)
-        // console.log('eulerData : ', eulerData)
-        pointsRef.current.rotation.set(eulerData.x, -eulerData.y, -eulerData.z, "XYZ")
+    // if(true){
+      if(portalRTCRef.current !== undefined){
+        if (portalRTCRef.current.quaternion) {
+          console.log("rtcRef:", portalRTCRef.current)
+          // if (true) {
+          let eulerData = new THREE.Euler().setFromQuaternion(
+            new THREE.Quaternion(
+              portalRTCRef.current.quaternion.x,
+              portalRTCRef.current.quaternion.y,
+              portalRTCRef.current.quaternion.z,
+              portalRTCRef.current.quaternion.w
+            ),
+            "XYZ"
+          );
+          // console.log('portalRTCRef : ', portalRTCRef.current.quaternion)
+          // console.log('eulerData : ', eulerData)
+          // pointsRef.current.rotation.set( 0.030090750180074188, -0.02912233438379935, -0.0043550970184092, "XYZ")
+          // pointsRef.current.rotation.set( -0.0010090750180074188, -0.02912233438379935, -0.0043550970184092, "XYZ")
+          pointsRef.current.rotation.set(eulerData.x, -eulerData.y, -eulerData.z, "XYZ")
 
       } else {
-        //console.log('not changed : ', portalRTCRef.current.quaternion);
+        // console.log('not changed : ', portalRTCRef.current.quaternion);
       }
     }
     if (right.new.buttons[3] && right.prev.buttons[3]!==right.new.buttons[3]){
@@ -82,7 +93,7 @@ export default function SpatialVideo({mode, ...props}) {
     depthImg: { type: 't', value: depthTexture.current },
     texSize: { type: 'i2', value: [1280,720] },
     iK: { type: 'f4', value: [0, 0, 0, 0] },
-    scale: { type: 'f', value: 6.0 },
+    scale: { type: 'f', value: 5.0 },
     ptSize: { type: 'f', value: 1.6 },
   }
 
@@ -118,7 +129,7 @@ export default function SpatialVideo({mode, ...props}) {
       // rotation={[0,-0.5,0]} 
       // {...props} 
     >
-      <MyFrustrum far={6} near={0.1}/>
+      <MyFrustrum far={5} near={0.1}/>
       <points ref={pointsRef} frustumCulled={false} >
         <shaderMaterial 
           ref={matRef}
@@ -133,9 +144,8 @@ export default function SpatialVideo({mode, ...props}) {
           <bufferAttribute attach="attributes-vertexIdx" count={numPoints} array={buffPointIndicesAttr} itemSize={1}/>
           <bufferAttribute attach="index" count={numPoints} array={buffIndices} itemSize={1}/>
         </bufferGeometry> 
-        {props.children}
-          
       </points>
+      <Sphere args={[0.02]} material-color={"black"}/>
     </group>
   )
 }
