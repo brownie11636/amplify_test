@@ -25,13 +25,13 @@ export default function parser(packet, parser_id){
         }
         if (idx>5) {
           if (idx%3 == 0) {
-            array0.push(Buffer.from(datum, 'hex').readUInt8());
+            array0.push(Buffer.from(datum, 'hex').readInt8());
           }
           if (idx%3 == 1) {
-            array1.push(Buffer.from(datum, 'hex').readUInt8());
+            array1.push(Buffer.from(datum, 'hex').readInt8());
           }
           if (idx%3 == 2) {
-            array2.push(Buffer.from(datum, 'hex').readUInt8());
+            array2.push(Buffer.from(datum, 'hex').readInt8());
           }
         }
       })

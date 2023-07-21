@@ -204,7 +204,7 @@ export default function App() {
         <input type="submit" value="submit" onClick={urlSubmit} />
       </div>
       <div className={styles.login_id}>
-        <h4>Patient message</h4>
+        <h4>Label message</h4>
         <input
           id="message"
           value={message}
