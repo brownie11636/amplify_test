@@ -12,6 +12,7 @@ export default function App() {
   const [prsData, setPrsData] = useState([]);
   const [trhData, setTrhData] = useState([]);
   const [xTimeRange, setXTimeRange] = useState(20);
+  const [messageLog, setMessageLog] = useState([]);
   const [options, setOptions] = useState({
     chart: {
       id: 'realtime',
@@ -101,6 +102,28 @@ export default function App() {
     setAccData([]);
     setPrsData([]);
     setTrhData([]);
+
+    const timeout0 = setInterval(()=> {
+      fetch(mqtt_url+serialNumber+"/message")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data.data.content);
+        let newMessage = data.data.content.map((e) => ({
+          time: e.insert_date,
+          message: e.payload
+        }));
+        setMessageLog(newMessage.reverse());
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }, 1000);
+
     const timeout1 = setInterval(() => {
       fetch(mqtt_url+serialNumber+"/acc")
       .then(response => {
@@ -110,7 +133,6 @@ export default function App() {
         return response.json();
       })
       .then(data => {
-        console.log(data.data.content);
         let arr = data.data.content;
         setAccData(parser(arr,"acc"));
       })
@@ -128,7 +150,6 @@ export default function App() {
         return response.json();
       })
       .then(data => {
-        console.log(data.data.content);
         let arr = data.data.content;
         setPrsData(parser(arr,"prs"));
       })
@@ -146,7 +167,6 @@ export default function App() {
         return response.json();
       })
       .then(data => {
-        // console.log(data.data.content);
         let arr = data.data.content;
         setTrhData(parser(arr,"trh"));
       })
@@ -156,6 +176,7 @@ export default function App() {
     }, 1000)
 
     return () => {
+      clearInterval(timeout0);
       clearInterval(timeout1);
       clearInterval(timeout2);
       clearInterval(timeout3);
@@ -176,7 +197,7 @@ export default function App() {
       },
       body: JSON.stringify({
         topic: "perpet/"+serialNumber+"/message",
-        payload: message
+        payload: message,
       })
     })
       .then(response => {
@@ -237,6 +258,24 @@ export default function App() {
       </div>
       <div className={styles.submit}>
         <input type="submit" value="submit" onClick={xTimeRangeSubmit} />
+      </div>
+      <div style={{ width: '80%', marginTop: 30, marginBottom: 30 }}>
+        <div style={{ display: 'flex', fontWeight: 'bold' }}>
+          <div style={{ flex: 1 }}>Time</div>
+          <div style={{ flex: 1 }}>Writer</div>
+          <div style={{ flex: 1 }}>Location</div>
+          <div style={{ flex: 3 }}>Message</div>
+          <div style={{ flex: 2 }}>Note</div>
+        </div>
+        {messageLog.map((entry, index) => (
+          <div key={index} style={{ display: 'flex', borderBottom: '1px solid #ccc' }}>
+            <div style={{ flex: 1 }}>{entry.time}</div>
+            <div style={{ flex: 1 }}></div>
+            <div style={{ flex: 1 }}></div>
+            <div style={{ flex: 3 }}>{entry.message}</div>
+            <div style={{ flex: 2 }}></div>
+          </div>
+        ))}
       </div>
       <ApexChartLine data={accData} options={{ ...options, title: {text: "Accelerometer"}}}/>
       <ApexChartLine data={prsData} options={{ ...options, title: {text: "pressure"}}}/>
