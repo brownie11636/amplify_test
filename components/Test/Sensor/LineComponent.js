@@ -11,10 +11,8 @@ export default function App() {
   const [accData, setAccData] = useState([]);
   const [prsData, setPrsData] = useState([]);
   const [trhData, setTrhData] = useState([]);
-  const mqtt_url = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload/topic?topic=perpet/';
-  const mqtt_url2 = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload';
-
-  const options = {
+  const [xTimeRange, setXTimeRange] = useState(20);
+  const [options, setOptions] = useState({
     chart: {
       id: 'realtime',
       height: 350,
@@ -36,19 +34,21 @@ export default function App() {
     stroke: {
       curve: 'straight'
     },
-    xaxis: {
-      type: "numeric",
-    },
     grid: {
       row: {
         colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
         opacity: 0.5
       },
     },
+    xaxis: {
+      type: "numeric"
+    },
     markers: {
       size: 0
     },
-  };
+  });
+  const mqtt_url = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload/topic?topic=perpet/';
+  const mqtt_url2 = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload';
 
   const DoubleYaxisOption = [
     { 
@@ -93,6 +93,10 @@ export default function App() {
     setMessage(event.target.value);
   };
 
+  const onChangeXTimeRange = (event) => {
+    setXTimeRange(event.target.value);
+  };
+  
   useEffect(() => {
     setAccData([]);
     setPrsData([]);
@@ -188,6 +192,11 @@ export default function App() {
       });
   };
 
+  const xTimeRangeSubmit = (e) => {
+    setOptions({ ...options, xaxis: {type: "numeric", range: 1000*xTimeRange}});
+    console.log(options);
+  }
+
   return (
     <div style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
       <div className={styles.login_id}>
@@ -215,6 +224,19 @@ export default function App() {
       </div>
       <div className={styles.submit}>
         <input type="submit" value="submit" onClick={messageSubmit} />
+      </div>
+      <div className={styles.login_id}>
+        <h4>set Xaxis range in second </h4>
+        <input
+          id="xrange"
+          value={xTimeRange}
+          onChange={onChangeXTimeRange}
+          type="number"
+          placeholder="Xaxis range in second"
+        />
+      </div>
+      <div className={styles.submit}>
+        <input type="submit" value="submit" onClick={xTimeRangeSubmit} />
       </div>
       <ApexChartLine data={accData} options={{ ...options, title: {text: "Accelerometer"}}}/>
       <ApexChartLine data={prsData} options={{ ...options, title: {text: "pressure"}}}/>
