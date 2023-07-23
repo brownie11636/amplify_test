@@ -8,6 +8,7 @@ import PortalRTC from "../../libs/portal/webrtc/portalrtc";
 import sampleImg from "./sample_jpeg.jpeg"
 
 const Scene = dynamic(() => import("../../components/PortalXR/Scene"), { ssr: true })
+// import Scene from "../../components/PortalXR/Scene";
 
 export const RgbdContext = createContext();
 export const PortalRTCContext = createContext();

@@ -12,6 +12,7 @@ import { Leva, useControls } from 'leva'
 import DevBoard from "./DevBoard"
 import RemoteGroup from "./RemoteGroup"
 import { GamepadProvider } from "./GamepadContext"
+import { GamepadInput } from "./GamepadInput"
 
 // const Blob = dynamic(() => import('./Blob'), { ssr: false })
 
@@ -21,6 +22,9 @@ export default function Scene(portalRTC, ...props) {
     // console.log('in scene >>', props.PCD);
     //setVid(document.getElementById('remotevideo'));
   }, []);
+  useEffect(()=>{
+    console.log("Scence is rendered")
+  })
 
   return (
     <>
@@ -37,6 +41,7 @@ export default function Scene(portalRTC, ...props) {
 
             <Controllers />
             <Hands />
+            <GamepadInput />
 
 
             {/* <Blob route='/' position-y={-0.75} /> */}

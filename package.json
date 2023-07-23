@@ -51,7 +51,8 @@
         "sweetalert2-react-content": "^5.0.7",
         "three": "^0.146.0",
         "uuid": "^8.3.2",
-        "webrtc-adapter": "^8.2.2"
+        "webrtc-adapter": "^8.2.2",
+        "zustand": "^4.3.9"
     },
     "devDependencies": {
         "@svgr/webpack": "^8.0.1",
