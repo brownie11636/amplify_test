@@ -4,9 +4,10 @@ export const useXRStore = create((set) => ({
   controllerMode: "normal",
   switchMode: () => set((state) => {
     switch (state.controllerMode) {
-      case "normal": return "operating";
-      case "operating": return "setting";
-      case "setting": return "normal";
+      case "normal": return {controllerMode: "operating"};
+      case "operating": return {controllerMode: "setting"};
+      case "setting": return {controllerMode: "normal"};
+      // default: return {controllerMode: "default"}
     }
   }),
   triggerPressed_R: false,  //right.buttons[0]

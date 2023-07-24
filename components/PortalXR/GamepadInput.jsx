@@ -9,89 +9,45 @@ import * as myGamepadInput from '../../libs/XR/myGamepadInput'
 
 const deadZone = 0.1; 
 const threshold = 0.7 
-// const buttonThreshold = 
 
 export const GamepadInput = (props) => {
 
   const { session } = useXR();
   const gamepadRef = useRef(myGamepadInput.create());
-  const [
-    updateTriggerPressed_R,
-    updateSqueezePressed_R,
-    updateTouchpadPressed_R,
-    updateStickPressed_R,
-    updateButtonAPressed_R,
-    updateButtonBPressed_R,
-    updateTouchpadRight_R,
-    updateTouchpadLeft_R,
-    updateTouchpadUp_R,
-    updateTouchpadDown_R,
-    updateStickRight_R,
-    updateStickLeft_R,
-    updateStickUp_R,
-    updateStickDown_R,
-    updateTriggerPressed_L,
-    updateSqueezePressed_L,
-    updateTouchpadPressed_L,
-    updateStickPressed_L,
-    updateButtonXPressed_L,
-    updateButtonYPressed_L,
-    updateTouchpadRight_L,
-    updateTouchpadLeft_L,
-    updateTouchpadUp_L,
-    updateTouchpadDown_L,
-    updateStickRight_L,
-    updateStickLeft_L,
-    updateStickUp_L,
-    updateStickDown_L,
-  ] = useXRStore((state) => [
-    state.updateTriggerPressed_R,
-    state.updateSqueezePressed_R,
-    state.updateTouchpadPressed_R,
-    state.updateStickPressed_R,
-    state.updateButtonAPressed_R,
-    state.updateButtonBPressed_R,
-    state.updateTouchpadRight_R,
-    state.updateTouchpadLeft_R,
-    state.updateTouchpadUp_R,
-    state.updateTouchpadDown_R,
-    state.updateStickRight_R,
-    state.updateStickLeft_R,
-    state.updateStickUp_R,
-    state.updateStickDown_R,
-    state.updateTriggerPressed_L,
-    state.updateSqueezePressed_L,
-    state.updateTouchpadPressed_L,
-    state.updateStickPressed_L,
-    state.updateButtonXPressed_L,
-    state.updateButtonYPressed_L,
-    state.updateTouchpadRight_L,
-    state.updateTouchpadLeft_L,
-    state.updateTouchpadUp_L,
-    state.updateTouchpadDown_L,
-    state.updateStickRight_L,
-    state.updateStickLeft_L,
-    state.updateStickUp_L,
-    state.updateStickDown_L,
-  ])
 
-
-  // const pad = gamepadRef.current;
+  const updateTriggerPressed_R = useXRStore((state)=>state.updateTriggerPressed_R);
+  const updateSqueezePressed_R = useXRStore((state)=>state.updateSqueezePressed_R);
+  const updateTouchpadPressed_R = useXRStore((state)=>state.updateTouchpadPressed_R);
+  const updateStickPressed_R = useXRStore((state)=>state.updateStickPressed_R);
+  const updateButtonAPressed_R = useXRStore((state)=>state.updateButtonAPressed_R);
+  const updateButtonBPressed_R = useXRStore((state)=>state.updateButtonBPressed_R);
+  const updateTouchpadRight_R = useXRStore((state)=>state.updateTouchpadRight_R);
+  const updateTouchpadLeft_R = useXRStore((state)=>state.updateTouchpadLeft_R);
+  const updateTouchpadUp_R = useXRStore((state)=>state.updateTouchpadUp_R);
+  const updateTouchpadDown_R = useXRStore((state)=>state.updateTouchpadDown_R);
+  const updateStickRight_R = useXRStore((state)=>state.updateStickRight_R);
+  const updateStickLeft_R = useXRStore((state)=>state.updateStickLeft_R);
+  const updateStickUp_R = useXRStore((state)=>state.updateStickUp_R);
+  const updateStickDown_R = useXRStore((state)=>state.updateStickDown_R);
+  const updateTriggerPressed_L = useXRStore((state)=>state.updateTriggerPressed_L);
+  const updateSqueezePressed_L = useXRStore((state)=>state.updateSqueezePressed_L);
+  const updateTouchpadPressed_L = useXRStore((state)=>state.updateTouchpadPressed_L);
+  const updateStickPressed_L = useXRStore((state)=>state.updateStickPressed_L);
+  const updateButtonXPressed_L = useXRStore((state)=>state.updateButtonXPressed_L);
+  const updateButtonYPressed_L = useXRStore((state)=>state.updateButtonYPressed_L);
+  const updateTouchpadRight_L = useXRStore((state)=>state.updateTouchpadRight_L);
+  const updateTouchpadLeft_L = useXRStore((state)=>state.updateTouchpadLeft_L);
+  const updateTouchpadUp_L = useXRStore((state)=>state.updateTouchpadUp_L);
+  const updateTouchpadDown_L = useXRStore((state)=>state.updateTouchpadDown_L);
+  const updateStickRight_L = useXRStore((state)=>state.updateStickRight_L);
+  const updateStickLeft_L = useXRStore((state)=>state.updateStickLeft_L);
+  const updateStickUp_L = useXRStore((state)=>state.updateStickUp_L);
+  const updateStickDown_L = useXRStore((state)=>state.updateStickDown_L);
 
   useFrame((state, delta, XRFrame) => {
     if(XRFrame){
       gamepadRef.current = myGamepadInput.get(session, gamepadRef.current)
-      // let now = gamepadRef.current.right.new.buttons[0];
-      // let prev = gamepadRef.current.right.prev.buttons[0];
-
-      // if (now > threshold && prev < threshold ) {
-      //   updateTriggerPressed_R(true);
-      //   console.log("pressed!")
-      // }
-      // else if (now < threshold && prev > threshold ) {
-      //   updateTriggerPressed_R(false);
-      //   console.log("released!")
-      // }
+      
       callUpdateFn(gamepadRef.current.right.new.buttons[0],gamepadRef.current.right.prev.buttons[0],updateTriggerPressed_R);
       callUpdateFn(gamepadRef.current.right.new.buttons[1],gamepadRef.current.right.prev.buttons[1],updateSqueezePressed_R);
       callUpdateFn(gamepadRef.current.right.new.buttons[2],gamepadRef.current.right.prev.buttons[2],updateTouchpadPressed_R);
@@ -113,8 +69,6 @@ export const GamepadInput = (props) => {
       callUpdateFn(gamepadRef.current.left.new.axes[2],gamepadRef.current.left.prev.axes[2],updateStickRight_L,updateStickLeft_L);
       callUpdateFn(gamepadRef.current.left.new.axes[3],gamepadRef.current.left.prev.axes[3],updateStickUp_L,updateStickDown_L);
 
-      // console.log(gamepadRef.current.left.new.buttons)
-      // console.log(gamepadRef)
     }
   })
 
@@ -133,11 +87,11 @@ function callUpdateFn(now, prev, updateFn0, updateFn1 = null) {
 
   if (now > threshold && prev < threshold ) {
     updateFn0(true);
-    console.log("pressed!")
+    // console.log("pressed!")
   }
   else if (now < threshold && prev > threshold ) {
     updateFn0(false);
-    console.log("released!")
+    // console.log("released!")
   }
   if (updateFn1 !== null) {
 
