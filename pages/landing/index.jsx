@@ -66,14 +66,18 @@ const landingPage = () => {
         </div>
         <div className="flex gap-[92px] font-['Roboto']">
           {[
-            "factory.svg",
-            "smart-farm.svg",
-            "teleoperation.svg",
-            "streaming.svg",
-            "education.svg",
-            "ai.svg",
+            { filename: "factory.svg", title: "Factory" },
+            { filename: "smart-farm.svg", title: "Smart-Farm" },
+            { filename: "teleoperation.svg", title: "Teleoperation" },
+            { filename: "streaming.svg", title: "2D/3D\nStreaming" },
+            { filename: "education.svg", title: "Education" },
+            { filename: "ai.svg", title: "Ai" },
           ].map((item, index) => {
-            return <IconsComponent icon={`/images/landing/${item}`} title={`Factory`} />;
+            return (
+              <div key={index}>
+                <IconsComponent icon={`/images/landing/${item.filename}`} title={item.title} />
+              </div>
+            );
           })}
         </div>
       </div>
@@ -88,7 +92,11 @@ const landingPage = () => {
         </div>
         <div className="mt-[158px] grid grid-cols-[480px_480px_480px_480px] gap-[60px] overflow-scroll scrollbar-hide">
           {[1, 2, 3, 4, 5, 6].map((item, index) => {
-            return <LogosComponent logo={``} />;
+            return (
+              <div key={index}>
+                <LogosComponent logo={``} />
+              </div>
+            );
           })}
         </div>
       </div>
@@ -122,7 +130,7 @@ const IconsComponent = ({ icon, title }) => {
       <picture className="relative w-[60px] h-[60px]">
         <Image src={icon} alt="" fill />
       </picture>
-      <span className="text-xl text-[#182A5B]">{title}</span>
+      <span className="text-xl text-[#182A5B] whitespace-pre-wrap">{title}</span>
     </button>
   );
 };

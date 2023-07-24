@@ -2,16 +2,25 @@ import { useRouter } from "next/router";
 import MainLayout from "../../../components/Main/MainLayout";
 import MainView from "../../../components/Main/MainView";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ArmController from "../../../components/Main/ArmController";
 import PieChart from "../../../components/Main/Chart/PieChart";
 import BarChart from "../../../components/Main/Chart/BarChart";
 import AreaChart from "../../../components/Main/Chart/AreaChart";
-
-const Test = () => {
+import "dotenv";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+const Test = (props) => {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [controlVisible, setControlVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState(0);
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      signIn();
+    }
+  }, [status]);
+  console.log(status);
   const data = [
     {
       id: "test1",
@@ -173,3 +182,8 @@ const Test = () => {
 };
 
 export default Test;
+
+export const getServerSideProps = async () => {
+  const nextSecret = process.env.NEXT_AUTH_SECRET;
+  return { props: { nextSecret } };
+};

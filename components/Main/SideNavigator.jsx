@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { signOut } from "next-auth/react";
 
 const SideNavigator = () => {
   const [isAllSelected, setIsAllSelected] = useState(false);
@@ -45,7 +46,13 @@ const SideNavigator = () => {
             My page
           </span>
           <div className="mx-[40px] border-l w-[1px] h-[12px]" />
-          <span className="text-lg">Logout</span>
+          <button
+            onClick={() => {
+              signOut();
+            }}
+          >
+            <span className="text-lg">Logout</span>
+          </button>
         </div>
       </div>
       <div className="w-full mt-[56px] text-[#7d7d7d]">
@@ -107,7 +114,7 @@ const SideNavigator = () => {
               </li>
             </label>
             {navList.map((item, index) => {
-              console.log(allGroupIsChecked[index]);
+              // console.log(allGroupIsChecked[index]);
               return (
                 <label
                   key={index}

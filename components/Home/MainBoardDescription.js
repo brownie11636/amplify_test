@@ -1,76 +1,89 @@
-import React, { Component } from 'react';
+import { useRouter } from "next/router";
+import React, { Component } from "react";
 
 class MainBoardDescription extends Component {
-    render() {
-        return (
-            <section className="about-area ptb-110">
-                <div className="container">
-                    <div className="row align-items-center">
-                        {/* <div className="col-lg-6 col-md-12">
+  render() {
+    return (
+      <section className="about-area ptb-110">
+        <div className="container">
+          <div className="row align-items-center">
+            {/* <div className="col-lg-6 col-md-12">
                             <div className="about-image">
                                 <img src="/images/about/about1.jpg" alt="image" />
                                 <img src="/images/about/about2.jpg" alt="image" />
                             </div>
                         </div> */}
 
-                        {/* <div className="col-lg-6 col-md-12"> */}
+            {/* <div className="col-lg-6 col-md-12"> */}
 
-                            <div className="about-content"> 
-                                <div className="row">
-                                    <div className="about-text">
-                                        <h2>
-                                            누구나, 언제, 어디서나, <br/>
-                                            안전하고 손쉬운 로봇 활용
-                                            {/* 이부분 h3는 너무 작고 h2는 너무 큰거같음 */}
-                                        </h2>
-                                        {/* 문구 좀 고치고 싶음 ㅎ */}
-                                        <h4>
-                                            전문가의 영역이었던 로봇 제어, <br/>
-                                            첨단 XR 기술을 통해 손쉽게 만나보세요.
-                                        </h4>
-                                        <p>
-                                            로봇은 아직 인간의 창의적인 판단력을 필요로 합니다. <br/>
-                                            자동화가 불가능하지만 로봇은 필요할 때, XR 기술을 통해 손쉽게 제어할 수 있습니다.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        {/* </div> */}
+            <div className="about-content">
+              <div className="row">
+                <div className="about-text">
+                  <h2>
+                    누구나, 언제, 어디서나, <br />
+                    안전하고 손쉬운 로봇 활용
+                    {/* 이부분 h3는 너무 작고 h2는 너무 큰거같음 */}
+                  </h2>
+                  {/* 문구 좀 고치고 싶음 ㅎ */}
+                  <h4>
+                    전문가의 영역이었던 로봇 제어, <br />
+                    첨단 XR 기술을 통해 손쉽게 만나보세요.
+                  </h4>
+                  <p>
+                    로봇은 아직 인간의 창의적인 판단력을 필요로 합니다. <br />
+                    자동화가 불가능하지만 로봇은 필요할 때, XR 기술을 통해 손쉽게 제어할 수
+                    있습니다.
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/* </div> */}
 
-                        {/* <div className="col-lg-6 col-md-12"> */}
-                        <div className="about-content"> 
-                            {/* <div className="row"> */}
-                                <div className="about-text" >
-                                    <br/>
-                                    <br/>                                    
-                                    <br/>
-                                    <br/>                                    
-                                    <h3>다음과 같은 기술들을 이용해 원격 제어 시스템을 제공합니다.</h3>
-                                    <div className="row" >
-                                        <div className="col-lg-4 col-md-12" >
-                                            <img src="/images/about/telepresence.png" alt="image" />
-                                            <h4>3D telepresence</h4>
-                                            <p> 스테레오 비전 시스템을 통해 입체적인 시야를 제공합니다. <br/>
-                                                이를 통해 현장을 생생하게 느껴 효율적인 작업활동이 용이합니다. </p>
-                                            <p/>                                            
-                                        </div>                                        
-                                        <div className="col-lg-4 col-md-12" >
-                                            <img src="/images/about/teleoperated robot.png" alt="image" style={{paddingTop:0}} />
-                                            <h4>원격제어 로봇</h4>
-                                            <p> 초저지연 통신을 통해 사용자의 모션에 위화감 없이 동기화됩니다.<br/>
-                                                위험하거나 멀리있는 현장의 노동자를 대체합니다.</p>
-                                            <p/>                                        
-                                        </div>                                        
-                                        <div className="col-lg-4 col-md-12" >
-                                            <img src="/images/about/gesture interface.png" alt="image" />
-                                            <h4>제스처 기반 인터페이스</h4>
-                                            <p> 직관적인 인터페이스를 통해 손쉽게 로봇을 제어할 수 있습니다. </p>
-                                            <p/>                                        
-                                        </div>
-                                    </div>
-                                </div>
+            {/* <div className="col-lg-6 col-md-12"> */}
+            <div className="about-content">
+              {/* <div className="row"> */}
+              <div className="about-text">
+                <br />
+                <br />
+                <br />
+                <br />
+                <h3>다음과 같은 기술들을 이용해 원격 제어 시스템을 제공합니다.</h3>
+                <div className="row">
+                  <div className="col-lg-4 col-md-12">
+                    <img src="/images/about/telepresence.png" alt="image" />
+                    <h4>3D telepresence</h4>
+                    <p>
+                      {" "}
+                      스테레오 비전 시스템을 통해 입체적인 시야를 제공합니다. <br />
+                      이를 통해 현장을 생생하게 느껴 효율적인 작업활동이 용이합니다.{" "}
+                    </p>
+                    <p />
+                  </div>
+                  <div className="col-lg-4 col-md-12">
+                    <img
+                      src="/images/about/teleoperated robot.png"
+                      alt="image"
+                      style={{ paddingTop: 0 }}
+                    />
+                    <h4>원격제어 로봇</h4>
+                    <p>
+                      {" "}
+                      초저지연 통신을 통해 사용자의 모션에 위화감 없이 동기화됩니다.
+                      <br />
+                      위험하거나 멀리있는 현장의 노동자를 대체합니다.
+                    </p>
+                    <p />
+                  </div>
+                  <div className="col-lg-4 col-md-12">
+                    <img src="/images/about/gesture interface.png" alt="image" />
+                    <h4>제스처 기반 인터페이스</h4>
+                    <p> 직관적인 인터페이스를 통해 손쉽게 로봇을 제어할 수 있습니다. </p>
+                    <p />
+                  </div>
+                </div>
+              </div>
 
-                                {/* <div className="about-text">
+              {/* <div className="about-text">
                                     <br/>
                                     <br/>
 
@@ -92,16 +105,14 @@ class MainBoardDescription extends Component {
                                     <p/>
 
                                 </div> */}
-                            {/* </div> */}
-                        </div>
-                    </div>
-                    {/* </div> */}
+              {/* </div> */}
+            </div>
+          </div>
+          {/* </div> */}
+        </div>
 
-
-                </div>
-
-                {/* Shape Images */}
-                {/* <div className="shape-img1">
+        {/* Shape Images */}
+        {/* <div className="shape-img1">
                     <img src="/images/shape/shape1.png" alt="image" />
                 </div>
                 <div className="shape-img2">
@@ -125,9 +136,9 @@ class MainBoardDescription extends Component {
                 <div className="dot-shape2">
                     <img src="/images/shape/dot2.png" alt="image" />
                 </div> */}
-            </section>
-        );
-    }
+      </section>
+    );
+  }
 }
 
 export default MainBoardDescription;

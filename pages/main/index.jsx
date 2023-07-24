@@ -1,11 +1,12 @@
 import { useRouter } from "next/router";
 import MainLayout from "../../components/Main/MainLayout";
 import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 const Main = () => {
   const router = useRouter();
   useEffect(() => {
-    router.push(`/main/${1}`);
+    router.push(`/main/1`);
   }, []);
 
   return (
