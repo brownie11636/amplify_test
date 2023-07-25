@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const landingPage = () => {
+const LandingPage = () => {
   return (
     <div className="landing-page w-screen h-fit flex flex-col whitespace-pre font-['NotoSans']">
       <div className="w-full min-w-fit max-h-[68rem] h-screen relative">
@@ -73,7 +73,11 @@ const landingPage = () => {
             "education.svg",
             "ai.svg",
           ].map((item, index) => {
-            return <IconsComponent icon={`/images/landing/${item}`} title={`Factory`} />;
+            return (
+              <div key={index}>
+                <IconsComponent icon={`/images/landing/${item}`} title={`Factory`} />;
+              </div>
+            );
           })}
         </div>
       </div>
@@ -88,7 +92,11 @@ const landingPage = () => {
         </div>
         <div className="mt-[158px] grid grid-cols-[480px_480px_480px_480px] gap-[60px] overflow-scroll scrollbar-hide">
           {[1, 2, 3, 4, 5, 6].map((item, index) => {
-            return <LogosComponent logo={``} />;
+            return (
+              <div key={index}>
+                <LogosComponent logo={``} />
+              </div>
+            );
           })}
         </div>
       </div>
@@ -115,7 +123,8 @@ const landingPage = () => {
     </div>
   );
 };
-export default landingPage;
+export default LandingPage;
+
 const IconsComponent = ({ icon, title }) => {
   return (
     <button className="min-w-[200px] h-[240px] flex flex-col justify-center items-center bg-white gap-[26px] select-none">
