@@ -8,10 +8,10 @@ import PieChart from "../../../components/Main/Chart/PieChart";
 import BarChart from "../../../components/Main/Chart/BarChart";
 import AreaChart from "../../../components/Main/Chart/AreaChart";
 import "dotenv";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-const Test = (props) => {
-  const { data: session, status } = useSession();
+const Test = ({}) => {
+  const { data: session, status, update } = useSession();
   const router = useRouter();
   const [controlVisible, setControlVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState(0);
@@ -20,6 +20,7 @@ const Test = (props) => {
       signIn();
     }
   }, [status]);
+  console.log(session);
   console.log(status);
   const data = [
     {
@@ -183,7 +184,8 @@ const Test = (props) => {
 
 export default Test;
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (context) => {
   const nextSecret = process.env.NEXT_AUTH_SECRET;
+
   return { props: { nextSecret } };
 };
