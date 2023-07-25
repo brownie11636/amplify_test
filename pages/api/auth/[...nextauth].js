@@ -26,7 +26,8 @@ export default NextAuth({
           console.log(response.data);
           return null;
         } else {
-          return response.data.user;
+          const { index, id, name, affiliation } = response.data.user;
+          return { index, id, name, affiliation };
         }
       },
     }),
@@ -34,23 +35,13 @@ export default NextAuth({
   callbacks: {
     async jwt({ token, user, account, profile, isNewUser }) {
       if (user) {
-        token.id = user.id;
+        token.user = user;
       }
-      // console.log(1);
-      // console.log(token);
-      // console.log(2);
-      // console.log(user);
-      // console.log(3);
-      // console.log(account);
-      // console.log(4);
-      // console.log(profile);
-      // console.log(5);
-      // console.log(isNewUser);
-
       return token;
     },
     async session(session, user, token, trigger) {
-      console.log(trigger);
+      console.log(user);
+      console.log(token);
       return session;
     },
   },
