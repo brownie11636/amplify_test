@@ -66,16 +66,16 @@ const LandingPage = () => {
         </div>
         <div className="flex gap-[92px] font-['Roboto']">
           {[
-            "factory.svg",
-            "smart-farm.svg",
-            "teleoperation.svg",
-            "streaming.svg",
-            "education.svg",
-            "ai.svg",
+            { filename: "factory.svg", title: "Factory" },
+            { filename: "smart-farm.svg", title: "Smart-Farm" },
+            { filename: "teleoperation.svg", title: "Teleoperation" },
+            { filename: "streaming.svg", title: "2D/3D\nStreaming" },
+            { filename: "education.svg", title: "Education" },
+            { filename: "ai.svg", title: "Ai" },
           ].map((item, index) => {
             return (
               <div key={index}>
-                <IconsComponent icon={`/images/landing/${item}`} title={`Factory`} />;
+                <IconsComponent icon={`/images/landing/${item.filename}`} title={item.title} />
               </div>
             );
           })}
@@ -131,7 +131,7 @@ const IconsComponent = ({ icon, title }) => {
       <picture className="relative w-[60px] h-[60px]">
         <Image src={icon} alt="" fill />
       </picture>
-      <span className="text-xl text-[#182A5B]">{title}</span>
+      <span className="text-xl text-[#182A5B] whitespace-pre-wrap">{title}</span>
     </button>
   );
 };

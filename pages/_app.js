@@ -13,6 +13,7 @@ import React from "react";
 import Loader from "../components/Shared/Loader";
 import GoTop from "../components/Shared/GoTop";
 
+import { SessionProvider } from "next-auth/react";
 import { Provider as ReduxProvider } from "react-redux";
 import { store } from "../store";
 import "./globals.css";
@@ -37,22 +38,27 @@ export default class MyApp extends App {
     const { Component, pageProps } = this.props;
     return (
       <>
-        <ReduxProvider store={store}>
-          {/* <PersistGate loading={null} persistor={persistor}> */}
-          <Head>
-            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-            <title>Portal301 - Socket Remote Robot</title>
-          </Head>
+        <SessionProvider>
+          <ReduxProvider store={store}>
+            {/* <PersistGate loading={null} persistor={persistor}> */}
+            <Head>
+              <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1, shrink-to-fit=no"
+              />
+              <title>Portal301 - Socket Remote Robot</title>
+            </Head>
 
-          <Component {...pageProps} />
+            <Component {...pageProps} />
 
-          {/* Preloader */}
-          {/* <Loader loading={this.state.loading} /> */}
+            {/* Preloader */}
+            {/* <Loader loading={this.state.loading} /> */}
 
-          {/* Go Top Button */}
-          <GoTop scrollStepInPx="50" delayInMs="10.50" />
-          {/* </PersistGate> */}
-        </ReduxProvider>
+            {/* Go Top Button */}
+            <GoTop scrollStepInPx="50" delayInMs="10.50" />
+            {/* </PersistGate> */}
+          </ReduxProvider>
+        </SessionProvider>
       </>
     );
   }

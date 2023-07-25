@@ -1,6 +1,6 @@
 import SideNavigator from "./SideNavigator";
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children, session }) => {
   return (
     <main className="flex overflow-hidden bg-[#F2F2F2] ">
       <aside className="z-10">
