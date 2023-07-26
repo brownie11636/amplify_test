@@ -2,7 +2,7 @@ import SideNavigator from "./SideNavigator";
 
 const MainLayout = ({ children, session }) => {
   return (
-    <main className="flex overflow-hidden bg-[#F2F2F2] ">
+    <main className="flex w-full h-full overflow-hidden bg-[#F2F2F2] ">
       <aside className="z-10">
         <SideNavigator />
       </aside>
