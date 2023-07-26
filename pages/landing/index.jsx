@@ -1,10 +1,56 @@
 import Image from "next/image";
+import { useEffect, useRef } from "react";
 
 const LandingPage = () => {
+  const targetRef = useRef();
+  const targetBgRef = useRef();
+  useEffect(() => {
+    let observer;
+    if (targetRef) {
+      observer = new IntersectionObserver(
+        ([e]) => {
+          const target = e.target;
+          if (e.isIntersecting) {
+            target.style.opacity = 1;
+            target.style.transform = "translateY(0)";
+          } else {
+            target.style.opacity = 0;
+            target.style.transform = "translateY(100px)";
+          }
+        },
+        { threshold: 0.5 }
+      );
+      observer.observe(targetRef.current);
+    }
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+  useEffect(() => {
+    let observer;
+    if (targetBgRef) {
+      observer = new IntersectionObserver(
+        ([e]) => {
+          const target = e.target;
+          if (e.isIntersecting) {
+            target.style.display = "block";
+          } else {
+            target.style.display = "none";
+          }
+        },
+        { threshold: 0.5 }
+      );
+      observer.observe(targetRef.current);
+    }
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <div className="landing-page w-screen h-fit flex flex-col whitespace-pre font-['NotoSans']">
       <div className="w-full min-w-fit max-h-[68rem] h-screen relative">
-        <picture className="w-full h-full flex absolute top-0 z-0">
+        <picture className="w-full h-full flex fixed top-0 -z-10" ref={targetBgRef}>
           <Image src={`/images/landing/landing.jpg`} fill style={{ objectFit: "cover" }} alt="" />
         </picture>
         <div className="flex w-full h-full bg-opacity-50 bg-black z-30 absolute top-0">
@@ -34,7 +80,7 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
-      <div className="w-full h-[68rem] flex flex-col justify-center items-center px-[130px]">
+      <div className="w-full min-w-fit h-[68rem] flex flex-col justify-center items-center px-[130px] bg-white">
         <span className="text-[50px] text-[#252525] leading-[68px] self-start ml-[60px] mb-[110px]">{`포탈의 로봇팔은 무엇이 다른가요?`}</span>
         <div className="flex w-full gap-[100px]">
           <div className="flex flex-col relative pl-[76px]">
@@ -64,7 +110,10 @@ const LandingPage = () => {
             <div className="w-full h-[1px] bg-[#CBCBCB]"></div>
           </div>
         </div>
-        <div className="flex gap-[92px] font-['Roboto']">
+        <div
+          className="flex gap-[92px] font-['Roboto'] transition-all duration-300"
+          ref={targetRef}
+        >
           {[
             { filename: "factory.svg", title: "Factory" },
             { filename: "smart-farm.svg", title: "Smart-Farm" },
@@ -81,7 +130,7 @@ const LandingPage = () => {
           })}
         </div>
       </div>
-      <div className="w-full h-[68rem] pt-[170px]">
+      <div className="w-full min-w-fit h-[68rem] pt-[170px] bg-white">
         <div className="flex flex-col gap-[44px] px-[148px]">
           <picture className="relative w-[300px] h-[74px] flex">
             <Image src={`/images/landing/logo.svg`} alt="" fill />
