@@ -56,7 +56,7 @@ const Test = ({}) => {
       <MainLayout>
         <section className="px-[60px] py-[48px]">
           <div className="w-full flex justify-between items-center">
-            <span className="text-xl">Test1</span>
+            <span className="text-xl uppercase">{session?.token?.user?.id || ""}</span>
             <div className="flex gap-[30px]">
               <div className="flex">
                 <button className="w-[100px] h-[50px] bg-white flex gap-[10px] justify-center items-center">

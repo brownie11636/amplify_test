@@ -39,7 +39,7 @@ const Login = () => {
           className="absolute -top-[100px] cursor-pointer text-lg text-[#182a5b]"
           onClick={async () => {
             await signIn("testLogin", {
-              id: "test",
+              id: "admin",
               password: "123",
               redirect: false,
             })

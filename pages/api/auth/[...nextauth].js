@@ -14,6 +14,9 @@ export default NextAuth({
         password: { label: "PW", type: "password" },
       },
       async authorize(credentials, req) {
+        if (credentials.id === "admin" && credentials.password === "123") {
+          return { id: "admin", name: "test", affiliation: "admin" };
+        }
         const response = await axios.post(
           "https://localhost:3333/api/mongo/login",
           {
