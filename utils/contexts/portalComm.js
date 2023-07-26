@@ -15,12 +15,13 @@ const commClient = new PortalCommClient;
 
 commClient.createSocketIO(SOCKET_SERVER_URL,SOCKET_NSP,{transports:["websocket"]});
 commClient.initSocketIO();
-
+console.log("portalComm.js V00 initSocketIO")
 const commClientV01 = new PortalCommClient_v0_1;
 
 commClientV01.createSocketIO(SOCKET_SERVER_URL,SOCKET_NSP,{transports:["websocket"]});
 commClientV01.initSocketIO();
 commClientV01.setMainSocket("/")
+console.log("portalComm.js V01 initSocketIO")
 
 const PortalCommContext = React.createContext();
 
