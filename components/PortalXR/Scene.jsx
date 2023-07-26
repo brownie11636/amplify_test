@@ -14,14 +14,14 @@ import DevBoard from "./DevBoard"
 import RemoteGroup from "./RemoteGroup"
 import { GamepadProvider } from "./GamepadContext"
 import { GamepadInput } from "./GamepadInput"
-import UiPanel from "./UiPanel"
+import UiPanel from "./UI/UiPanel.jsx"
 
 // const Blob = dynamic(() => import('./Blob'), { ssr: false })
-const switchMode = useXRStore.getState().switchMode;
 
 export default function Scene(portalRTC, ...props) {
   const triggerPressed_L = useRef({now:false, prev:false});
-
+  const switchMode = useXRStore.getState().switchMode;
+  console.log(process.env.NODE_ENV)
   useEffect(() => useXRStore.subscribe(
     (state) => {
       setGamepadCallback(triggerPressed_L, state.triggerPressed_L, () => {
@@ -53,7 +53,8 @@ export default function Scene(portalRTC, ...props) {
             <Controllers />
             <Hands />
             <GamepadInput />
-            <UiPanel />
+            {/* <UiPanel /> */}
+            <UiPanel position={[-2,2,-3]}/>
 
 
             {/* <Blob route='/' position-y={-0.75} /> */}

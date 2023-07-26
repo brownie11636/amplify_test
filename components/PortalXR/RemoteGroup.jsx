@@ -35,13 +35,13 @@ export default function RemoteGroup({XRscale, ...props}) {
     <group ref={ref} scale={1} >
       {/* <RobotArm  /> */}
       <Suspense >
-        {/* <PortalArm /> */}
+        <PortalArm />
       </Suspense>
-      {/* <SpatialVideo 
+      <SpatialVideo 
         scale={1} 
         rotation={[0, -61*THREE.MathUtils.DEG2RAD, 0]} 
         position={[-0.88, 1.02, -0.28]}
-      /> */}
+      />
       {/* <Box position={[-1.2, 0, 0]} />
       <Box position={[1.2, 0, 0]} />     */}
     </group>

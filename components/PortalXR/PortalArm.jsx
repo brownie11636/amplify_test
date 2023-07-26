@@ -130,7 +130,8 @@ export default function PortalArm(type, path, ...props) {
         // console.log(acculTime)
         acculTime = 0
   
-        if (squeezePressed_R.current === true){  //squeeze
+        if (controllerMode.current === "operating" 
+          && squeezePressed_R.current === true){  //squeeze
           //controller 6DOF
           if(rightController){
             // let pos = ref.current.worldToLocal(
@@ -232,17 +233,17 @@ export default function PortalArm(type, path, ...props) {
   return(
     <group ref={ref}>
       <Table loader={loader}>
-        {/* <Arm ref={armRef} loader={loader} depth={6} angles={armAngles} positions={[armPos,...armGeometries]}>
+        <Arm ref={armRef} loader={loader} depth={6} angles={armAngles} positions={[armPos,...armGeometries]}>
           <Gripper loader={loader} geoConfig={gripperGeometries} gripDistance={gripDistance}/>
-        </Arm> */}
+        </Arm>
       </Table> 
-      <Table loader={loader} position={[1,0,0]}/>
-      <Table loader={loader} position={[2,0,0]}/>
+      {/* <Table loader={loader} position={[1,0,0]}/>
+      <Table loader={loader} position={[2,0,0]}/> */}
       <group position={armPos}>
         <BoundaryBox color="red" boundary={boundary}/>
       </group>
 
-      <Text fontSize={0.5} position={[-10,1,-10]} rotation={[0,45*DEG2RAD,0]} color="black">            
+      {/* <Text fontSize={0.5} position={[-10,1,-10]} rotation={[0,45*DEG2RAD,0]} color="black">            
         {conPos[0]}
       </Text>
       <Text fontSize={0.5} position={[-10,0,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
@@ -253,7 +254,7 @@ export default function PortalArm(type, path, ...props) {
       </Text>
       <Text fontSize={0.5} position={[-10,-2,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
         grip: {gripDistance}
-      </Text>
+      </Text> */}
       
     </group>
   )
