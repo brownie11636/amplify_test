@@ -6,10 +6,9 @@ import { PortalCommClient } from "../../libs/portal/portalComm.js";
 import { PortalCommClient_v0_1 } from "../../libs/portal/portalComm_v0.1.js";
 import { socketPoint, socketPoint_dev, socketNsp } from "../../toServer/API-AccessPoint";
 
-const SOCKET_SERVER_URL = 
-  process.env.NODE_ENV==="production"?
-  socketPoint:
-  socketPoint_dev;
+const SOCKET_SERVER_URL = socketPoint
+// const SOCKET_SERVER_URL = socketPoint_dev;
+
 const SOCKET_NSP = socketNsp;
 
 const commClient = new PortalCommClient;
