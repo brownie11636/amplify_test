@@ -1,12 +1,12 @@
 import SideNavigator from "./SideNavigator";
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children, session }) => {
   return (
-    <main className="flex overflow-hidden bg-[#F2F2F2] py-[48px]">
-      <aside>
+    <main className="flex w-full h-full overflow-hidden bg-[#F2F2F2] ">
+      <aside className="z-10">
         <SideNavigator />
       </aside>
-      <article className="flex relative overflow-scroll">{children}</article>
+      <article className="flex relative overflow-scroll w-full h-full">{children}</article>
     </main>
   );
 };

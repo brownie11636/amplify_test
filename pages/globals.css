@@ -24,13 +24,13 @@
     font-size: 12px;
     font-weight: 700;
     fill: #374151;
-    transform: translateX(35%) translateY(-15%) rotate(0deg);
+    transform: translateX(24%) translateY(-5%) rotate(0deg);
   }
   .apexcharts-yaxis-title-text {
     transform-origin: left top 0;
     font-size: 12px;
     font-weight: 700;
     fill: #374151;
-    transform: translateX(4%) translateY(-33%) rotate(0deg);
+    transform: translateX(2%) translateY(-33%) rotate(0deg);
   }
 }
