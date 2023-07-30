@@ -184,7 +184,7 @@ const Test = ({}) => {
 
 export default Test;
 
-export const getServerSideProps = async (context) => {
+export const getInitialProps = async (context) => {
   const nextSecret = process.env.NEXT_AUTH_SECRET;
 
   return { props: { nextSecret } };
