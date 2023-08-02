@@ -45,6 +45,14 @@ Default CSS
   font-style: normal;
   font-weight: 400;
 }
+
+@font-face {
+  font-family: "NotoSans";
+  src: url("/fonts/NotoSans/NotoSans-Regular") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+}
+
 @font-face {
   font-family: "Roboto";
   src: url("/fonts/Roboto/Roboto-Regular.woff2") format("woff2");
