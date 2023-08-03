@@ -313,6 +313,8 @@ const RotateArm = ({ name, id, value, setValue, step }) => {
   const startCounter = (type) => {
     if (!intervalRef.current) {
       intervalRef.current = setInterval(() => {
+        SetSpeed(speed + 10);
+
         setValue((prev) => {
           if (type === "-") {
             return prev - step < -180 ? prev : prev - step;
@@ -322,13 +324,13 @@ const RotateArm = ({ name, id, value, setValue, step }) => {
         });
       }, speed);
     }
-    console.log(speed);
   };
   const stopCounter = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    SetSpeed(120);
   };
 
   return (
@@ -371,6 +373,7 @@ const RotateArm = ({ name, id, value, setValue, step }) => {
                 onClick={(e) => {
                   e.target.classList.add("hidden");
                   e.target.nextSibling?.classList.remove("hidden");
+                  e.target.nextSibling?.value === "";
                   e.target.nextSibling?.focus();
                 }}
               >
@@ -385,6 +388,24 @@ const RotateArm = ({ name, id, value, setValue, step }) => {
                   if (e.key === "Enter") {
                     e.target.previousSibling.classList.remove("hidden");
                     e.target.classList.add("hidden");
+                    setValue(
+                      parseInt(e.target.value) < -180
+                        ? -180 && (e.target.value = -180)
+                        : parseInt(e.target.value) > 180
+                        ? 180 && (e.target.value = 180)
+                        : parseInt(e.target.value)
+                    );
+                  }
+                }}
+                onFocus={(e) => {
+                  e.target.value = "";
+                }}
+                onBlur={(e) => {
+                  e.target.previousSibling.classList.remove("hidden");
+                  e.target.classList.add("hidden");
+                  if (!e.target.value) {
+                    setValue(value);
+                  } else {
                     setValue(
                       parseInt(e.target.value) < -180
                         ? -180 && (e.target.value = -180)

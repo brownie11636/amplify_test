@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -77,7 +78,7 @@ const 거래처목록 = ({ data, ref }) => {
           <ul className="flex flex-col h-fit">
             {data.list.map((item, index) => (
               <li
-                key={index}
+                key={`${item.sub}${index}`}
                 className={`flex flex-col min-h-[50px] border-b ${
                   index === 0 ? "border-t" : null
                 } border-[#E0E0E0]`}
@@ -114,8 +115,8 @@ const 거래처목록 = ({ data, ref }) => {
                 </label>
                 <div className={`check${index} hidden`}>
                   {item.children.map((child, idx) => (
-                    <>
-                      <ul key={idx} className="flex w-full h-[50px] bg-white">
+                    <div key={`${child.name}${index}${idx}`}>
+                      <ul className="flex w-full h-[50px] bg-white">
                         <li className="flex flex-col h-[50px] items-center pl-[14px] w-full cursor-pointer">
                           <label
                             htmlFor={`check${index}${idx}`}
@@ -152,21 +153,21 @@ const 거래처목록 = ({ data, ref }) => {
                       <div className={`check${index}${idx} hidden`}>
                         {child.children.map((c, i) => (
                           <div
-                            key={i}
+                            key={`${c.name}${index}${idx}${i}`}
                             className="relative flex items-center justify-between pr-[20px] w-full cursor-pointer"
                           >
                             <label
                               htmlFor={`check${index}${idx}${i}`}
                               className="flex w-full h-[50px] bg-white"
                             >
-                              <li className="flex flex-col h-[50px] pl-[68px] w-full cursor-pointer">
+                              <div className="flex flex-col h-[50px] pl-[68px] w-full cursor-pointer">
                                 <div className="py-[16px] flex gap-[18px]">
                                   <picture className="select-none w-[18px] h-[18px] top-[1px] relative">
                                     <Image src={`/images/main/mypage/person.svg`} fill alt="" />
                                   </picture>
                                   <span className="text-[#222222] text-base">{c.name}</span>
                                 </div>
-                              </li>
+                              </div>
                             </label>
                             <input
                               type="checkbox"
@@ -193,7 +194,7 @@ const 거래처목록 = ({ data, ref }) => {
                           </div>
                         ))}
                       </div>
-                    </>
+                    </div>
                   ))}
                 </div>
               </li>

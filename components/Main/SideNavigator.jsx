@@ -48,7 +48,7 @@ const SideNavigator = () => {
           <div className="mx-[40px] border-l w-[1px] h-[12px]" />
           <button
             onClick={() => {
-              signOut();
+              signOut({ callbackUrl: "/main/login" });
             }}
           >
             <span className="text-lg">Logout</span>

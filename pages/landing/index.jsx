@@ -61,6 +61,15 @@ import {
   pl100px,
   width50px,
   height50px,
+  py80px,
+  text24px,
+  text16px,
+  gapX50px,
+  heightFlexible,
+  pt100px,
+  pt150px,
+  py100px,
+  heightScreen,
 } from "../../components/Main/flexibleStyle";
 
 const LandingPage = () => {
@@ -92,9 +101,9 @@ const LandingPage = () => {
   }, []);
   return (
     <div className={`landing-page flex flex-col w-full h-full whitespace-pre font-['NotoSans']`}>
-      <div className="flex flex-col w-full h-[200vh] lg:h-[200vh] xl:h-[300vh] 2xl:h-[400vh]">
-        <div className={`flex w-screen h-screen relative`}>
-          <picture className={`w-screen h-screen -z-10 absolute top-0 left-0`}>
+      <div className={`flex flex-col w-full ${heightScreen}`}>
+        <div className={`flex w-screen relative ${heightFlexible}`}>
+          <picture className={`w-screen ${heightFlexible} -z-10 absolute top-0 left-0`}>
             <Image
               src={`/images/landing/landing.jpg`}
               fill="fill"
@@ -102,8 +111,8 @@ const LandingPage = () => {
               alt=""
             />
           </picture>
-          <div className={`flex w-screen h-screen bg-opacity-50 bg-black z-10`}>
-            <div className={`text-white flex flex-col w-screen h-screen ${pt200px} ${pl240px}`}>
+          <div className={`flex w-screen ${heightFlexible} bg-opacity-50 bg-black z-10`}>
+            <div className={`text-white flex flex-col w-screen h-fit ${pt200px} ${pl240px}`}>
               <span
                 className={`uppercase font-['RobotoB'] z-30 ${letterSpacing10percent} ${text60px}`}
               >
@@ -113,7 +122,7 @@ const LandingPage = () => {
                 {`로봇팔을 이용하여 더 다양하고,\n정교한 작업을 대신해보세요.\n로봇팔 업계 1위 업체,\n포탈에서 경험해보세요.`}
               </span>
               <button
-                className={`relative bg-black bg-opacity-50 flex justify-start items-center ${width600px} ${height90px} ${pl100px}`}
+                className={`relative bg-black bg-opacity-50 flex justify-start items-center ${width600px} ${height90px} ${pl100px} hover:opacity-80`}
                 onClick={() => {
                   router.push("/main/login");
                 }}
@@ -129,7 +138,7 @@ const LandingPage = () => {
           </div>
         </div>
         <div
-          className={`flex w-screen h-screen flex-col bg-white items-center ${px130px} ${pb200px}
+          className={`flex w-screen flex-col bg-white items-center ${heightFlexible} ${px130px} ${pb200px}
           `}
         >
           <span
@@ -163,8 +172,8 @@ const LandingPage = () => {
             </picture>
           </div>
         </div>
-        <div className={`flex flex-col w-screen h-screen bg-[#F3F3F3] ${pb130px}`}>
-          <div className={`flex w-full h-full ${gap76px} ${ml130px} ${mt150px}`}>
+        <div className={`flex flex-col w-screen bg-[#F3F3F3] ${heightFlexible}`}>
+          <div className={`flex w-full h-full ${gap76px} ${px130px} ${pt150px}`}>
             <picture className={`${width800px} ${height450px} relative`}>
               <Image src={`/images/landing/robot-2.svg`} fill="fill" alt="" />
             </picture>
@@ -184,7 +193,7 @@ const LandingPage = () => {
             </div>
           </div>
           <div
-            className={`flex w-full h-full font-['Roboto'] transition-all duration-300 ${mt100px} ${px130px} ${gap90px}
+            className={`flex w-full h-full font-['Roboto'] transition-all duration-300 overflow-x-scroll scrollbar-hide ${py100px} ${px130px} ${gap90px}
           `}
             ref={targetRef}
           >
@@ -197,14 +206,14 @@ const LandingPage = () => {
               { filename: "ai.svg", title: "Ai" },
             ].map((item, index) => {
               return (
-                <div key={item.title} className={`w-full h-full`}>
+                <div key={item.title} className={`w-fit h-fit`}>
                   <IconsComponent icon={`/images/landing/${item.filename}`} title={item.title} />{" "}
                 </div>
               );
             })}
           </div>
         </div>
-        <div className={`flex flex-col w-screen h-screen bg-white`}>
+        <div className={`flex flex-col w-screen bg-white ${heightFlexible}`}>
           <div className={`flex flex-col w-full h-fit ${pl150px} ${pt170px}`}>
             <picture className={`relative flex ${width300px} ${height74px} ${mb30px}`}>
               <Image src={`/images/landing/logo.svg`} alt="" fill="fill" />
@@ -229,56 +238,24 @@ const LandingPage = () => {
         </div>
       </div>
       <div
-        className={`flex flex-col w-[full] h-[full] bg-[#F3F3F3] justify-center items-center font-['Inter'] py-[4.169381107491857%]`}
+        className={`flex flex-col w-full h-fit bg-[#F3F3F3] justify-center items-center font-['Inter'] ${py80px}`}
       >
-        <picture
-          className={`relative w-[16.930022573363431%] flex
-            h-[12.33333333px] sm:h-[24.66666667px] md:h-[37px] lg:h-[49.33333333px] xl:h-[61.66666667px] 2xl:h-[74px]
-            `}
-        >
+        <picture className={`relative flex opacity-60 ${width300px} ${height74px}`}>
           <Image src={`/images/landing/logo.svg`} alt="" fill="fill" />
         </picture>
-        <div className={`w-screen mt-[3.29330142490175%] flex justify-center`}>
-          <div
-            className={`flex text-[#7D7D7D] items-center justify-center
-          gap-[1.333333333%] sm:gap-[2.666666667%] md:gap-[4%] lg:gap-[5.333333333%] xl:gap-[6.666666667%] 2xl:gap-[8%]
-          `}
-          >
-            <span
-              className={`text-[45.71433333%] sm:text-[91.42866667%] md:text[137.143%] lg:text-[182.8573333%] xl:text[228.5716667%] 2xl:text-[274.286%]`}
-            >
-              포탈301
-            </span>
-            <span
-              className={`text-[30.47616667%] sm:text-[60.95233333%] md:text-[91.4285%] lg:text-[121.9046667%] xl:text-[152.3808333%] 2xl:text-[182.857%]`}
-            >
-              사업자등록번호 : 353-87-02451
-            </span>
+        <div className={`w-screen flex justify-center ${mt50px}`}>
+          <div className={`flex text-[#7D7D7D] items-center justify-center ${gapX50px}`}>
+            <span className={`${text24px}`}>포탈301</span>
+            <span className={`${text16px}`}>사업자등록번호 : 353-87-02451</span>
             <div className={`w-[1px] h-[13px] bg-[#D9D9D9]`} />
-            <span
-              className={`text-[30.47616667%] sm:text-[60.95233333%] md:text-[91.4285%] lg:text-[121.9046667%] xl:text-[152.3808333%] 2xl:text-[182.857%]`}
-            >
-              박장준
-            </span>
+            <span className={`${text16px}`}>박장준</span>
             <div className={`w-[1px] h-[13px] bg-[#D9D9D9]`} />
-            <span
-              className={`text-[30.47616667%] sm:text-[60.95233333%] md:text-[91.4285%] lg:text-[121.9046667%] xl:text-[152.3808333%] 2xl:text-[182.857%]`}
-            >
-              070-4776-7002
-            </span>
+            <span className={`${text16px}`}>070-4776-7002</span>
             <div className={`w-[1px] h-[13px] bg-[#D9D9D9]`} />
-            <span
-              className={`text-[30.47616667%] sm:text-[60.95233333%] md:text-[91.4285%] lg:text-[121.9046667%] xl:text-[152.3808333%] 2xl:text-[182.857%]`}
-            >
-              jangjun_park@portal301.com
-            </span>
+            <span className={`${text16px}`}>jangjun_park@portal301.com</span>
           </div>
         </div>
-        <span
-          className={`text-[#7D7D7D] mt-[3.29330142490175%]
-        text-[30.47616667%] sm:text-[60.95233333%] md:text-[91.4285%] lg:text-[121.9046667%] xl:text-[152.3808333%] 2xl:text-[182.857%]
-        `}
-        >
+        <span className={`text-[#7D7D7D] ${mt50px} ${text16px}`}>
           ⓒ 2023 Portal301 Co.,Ltd. check All rights Reserved.
         </span>
       </div>
@@ -291,7 +268,7 @@ const IconsComponent = ({ icon, title }) => {
   return (
     <button
       className={`flex justify-center items-center bg-white gap-[11%] select-none ${width200px} ${height240px}
-      hover:-translate-y-10 transition-transform duration-300 ease-in-out
+      hover:-translate-y-5 transition-transform duration-300 ease-in-out z-10
       `}
     >
       <div className={`w-full h-full flex flex-col justify-center items-center`}>
