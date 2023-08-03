@@ -31,19 +31,25 @@ export default function SpatialVideo({mode, ...props}) {
   useLayoutEffect(()=>{
     rgbTexture.current.needsUpdate = true;
     depthTexture.current.needsUpdate = true;
-    console.log(rgbTexture.current);
-    console.log(depthTexture.current);
+    // console.log(rgbTexture.current);
+    // console.log(depthTexture.current);
     // console.log(props.position)
   },[])
   
+  let right;
+  let left;
+  let W
+  let eulerData = new THREE.Euler();
+  let quaternion
+
   useFrame((state, delta, XRFrame)=>{
     
     // console.log(rgbTexture.current);
     // console.log(depthTexture.current);
 
-    let right = gamepadRef.current.right;
-    let left = gamepadRef.current.left
-    let W = 0.005; 
+    right = gamepadRef.current.right;
+    left = gamepadRef.current.left
+    W = 0.005; 
     if(controlRef.current){
       groupRef.current.position.z += W * right.new.axes[2];
       groupRef.current.position.x += W * right.new.axes[3];
@@ -57,24 +63,25 @@ export default function SpatialVideo({mode, ...props}) {
 
     //let eulerData = portalRTC.quaternion;
     // if(true){
-      if(portalRTCRef.current !== undefined){
-        if (portalRTCRef.current.quaternion) {
-          console.log("rtcRef:", portalRTCRef.current)
-          // if (true) {
-          let eulerData = new THREE.Euler().setFromQuaternion(
-            new THREE.Quaternion(
-              portalRTCRef.current.quaternion.x,
-              portalRTCRef.current.quaternion.y,
-              portalRTCRef.current.quaternion.z,
-              portalRTCRef.current.quaternion.w
-            ),
-            "XYZ"
-          );
-          // console.log('portalRTCRef : ', portalRTCRef.current.quaternion)
-          // console.log('eulerData : ', eulerData)
-          // pointsRef.current.rotation.set( 0.030090750180074188, -0.02912233438379935, -0.0043550970184092, "XYZ")
-          // pointsRef.current.rotation.set( -0.0010090750180074188, -0.02912233438379935, -0.0043550970184092, "XYZ")
-          pointsRef.current.rotation.set(eulerData.x, -eulerData.y, -eulerData.z, "XYZ")
+    if(portalRTCRef.current !== undefined){
+      if (portalRTCRef.current.quaternion) {
+        console.log("rtcRef:", portalRTCRef.current)
+        // if (true) {
+        ;
+        eulerData.setFromQuaternion(
+          quaternion.fromArray([
+            portalRTCRef.current.quaternion.x,
+            portalRTCRef.current.quaternion.y,
+            portalRTCRef.current.quaternion.z,
+            portalRTCRef.current.quaternion.w
+          ]),
+          "XYZ"
+        );
+        // console.log('portalRTCRef : ', portalRTCRef.current.quaternion)
+        // console.log('eulerData : ', eulerData)
+        // pointsRef.current.rotation.set( 0.030090750180074188, -0.02912233438379935, -0.0043550970184092, "XYZ")
+        // pointsRef.current.rotation.set( -0.0010090750180074188, -0.02912233438379935, -0.0043550970184092, "XYZ")
+        pointsRef.current.rotation.set(eulerData.x, -eulerData.y, -eulerData.z, "XYZ")
 
       } else {
         // console.log('not changed : ', portalRTCRef.current.quaternion);
@@ -82,6 +89,11 @@ export default function SpatialVideo({mode, ...props}) {
     }
     if (right.new.buttons[3] && right.prev.buttons[3]!==right.new.buttons[3]){
       controlRef.current = !controlRef.current;
+    }
+
+    if (rgbSrcRef.current.complete && depthSrcRef.current.complete){
+      rgbTexture.current.needsUpdate=true
+      depthTexture.current.needsUpdate=true;
     }
   })
 
@@ -110,16 +122,6 @@ export default function SpatialVideo({mode, ...props}) {
     }
     return [buffIndices_, buffPointIndicesAttr_];
   },[])
-
-  
-  let tmp = rgbSrcRef.current.src;
-
-  useFrame(() => {
-    if (rgbSrcRef.current.complete && depthSrcRef.current.complete){
-      rgbTexture.current.needsUpdate=true
-      depthTexture.current.needsUpdate=true;
-    }
-  })
 
   return (
     <group 

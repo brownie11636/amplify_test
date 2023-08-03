@@ -1,20 +1,7 @@
 import { create } from "zustand";
 
-export const useXRStore = create((set) => ({
-  controllerMode: "default",
-  switchMode: (modeStr) => set((state) => {
-    if (modeStr) {
-      return {controllerMode: modeStr};
-    }
-    else {
-      switch (state.controllerMode) {
-        case "default": return {controllerMode: "operating"};
-        case "operating": return {controllerMode: "setting"};
-        case "setting": return {controllerMode: "default"};
-        // default: return {controllerMode: "default"}
-      }
-    }
-  }),
+export const useXRGamepadStore = create((set) => ({
+  
   triggerPressed_R: false,  //right.buttons[0]
   updateTriggerPressed_R: (isPressed) => set({triggerPressed_R: isPressed}),
   squeezePressed_R: false,  //right.buttons[1]

@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { forwardRef, useRef, useState, useMemo, useEffect, useContext} from 'react'
 import { useFrame, useLoader } from '@react-three/fiber'
-import { Html, Text } from "@react-three/drei"
+import { Html, Text, Sphere, Box } from "@react-three/drei"
 import { useXR, useController } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
@@ -10,10 +10,11 @@ import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { PortalCommContext } from '../../utils/contexts/portalComm';
 import * as myGamepadInput from '../../libs/XR/myGamepadInput'
 import { GamepadContext } from './GamepadContext'
-import { useXRStore } from "../../store/zustand/XR.js"
+import { useXRGamepadStore } from "../../store/zustand/XRGamepad.js"
+import { useModeStore } from "../../store/zustand/mode.js"
+import { useControlStore } from "../../store/zustand/control.js"
 
-import Box from './boxes'
-import { setRequestMeta } from 'next/dist/server/request-meta'
+// import Box from './boxes'
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 const RAD2DEG = THREE.MathUtils.RAD2DEG;
 
@@ -46,23 +47,23 @@ export default function PortalArm(type, path, ...props) {
   const {commClientV01} = useContext(PortalCommContext);
   const ref = useRef();
   const squeezePressed_R = useRef({now:false, prev:false})
-  const controllerMode = useRef(useXRStore.getState().controllerMode);
-  const stickUp_R = useRef(useXRStore.getState().stickUp_R)
-  const stickDown_R = useRef(useXRStore.getState().stickDown_R)
+  const controllerMode = useRef(useModeStore.getState().controllerMode);
+  const stickUp_R = useRef(useXRGamepadStore.getState().stickUp_R)
+  const stickDown_R = useRef(useXRGamepadStore.getState().stickDown_R)
+  const increaseGripDistance = useControlStore((state)=>state.increaseGripDistance);
 
   const rightController = useController('right');
   const leftController = useController('left');
   const [isSafe, setIsSafe] = useState(false);
   const boundary = [[-0.5,0.5],[0.6,0.2],[-0.6,0.1]]
 
-  const [armAngles, setArmAngles] = useState([60,-90,90,0,30,0])
+  const armAngles = [60,-90,90,0,30,0]
   const [loader, setLoader] = useState(new GLTFLoader())
-  const armRef = useRef([]);
+  const armRef = useRef([{},{},{},{},{},{},{}]);
+  const controlGuideRef = useRef();
   // const [conPos, setConPos]= useState(new THREE.Vector3);
   // const [conRot, setConRot]= useState(new THREE.Vector3);
   
-  const [gripDistance, setGripDistance] = useState(50);
-  const [gripDirection, setGripDirection] = useState(1);
 
   useEffect(() => {
 
@@ -72,22 +73,18 @@ export default function PortalArm(type, path, ...props) {
     
     console.log("socketid in PortalArm.jsx")
     console.log(commClientV01.socket.id)
+
     commClientV01.socket.on("robot",(type, packet)=>{
       console.log(type)
       console.log(packet)
 
       if(type === "C2C" && packet.msg.type === "_q"){
-        console.log("get_q")
-        setArmAngles((angles)=> {
-          let result = packet.msg.payload.map(val=>val*RAD2DEG)
-          console.log(result)
-          return result
-        });
+        useControlStore.setState({actualAngles_q:packet.msg.payload})
       }
     })
 
     if(commClientV01.connectedModules){
-      //request _q msg (robot joint angles)
+      //request _q msg (robot joint angles) for initial angle
       packet = { 
         from: commClientV01.socket.id, 
         to:commClientV01.connectedModules[0],
@@ -101,27 +98,45 @@ export default function PortalArm(type, path, ...props) {
     //commClient.socket callback -> 명령 들어왓을때 setGripperAngles하기
     // ref.current.position.x = 0.3;
 
-    console.log("robot comm on")
-
-    const unsubXRStore = useXRStore.subscribe((state) => {
-      controllerMode.current = state.controllerMode
+    const unsubXRGamepadStore = useXRGamepadStore.subscribe((state) => {
       squeezePressed_R.current.prev = squeezePressed_R.current.now;
       squeezePressed_R.current.now = state.squeezePressed_R
       stickUp_R.current = state.stickUp_R;
       stickDown_R.current = state.stickDown_R;
     })
+    const unsubModeStore = useModeStore.subscribe((state) => {
+      controllerMode.current = state.controllerMode
+    })
     
     return () => {
       commClientV01.socket.off("robot")
       console.log("robot comm off")
-      unsubXRStore();
+      unsubXRGamepadStore();
+      unsubModeStore();
     }
   }, []);
 
   //socket io callback을 붙히기
-  let pos;
-  let rot;
+  let pos = [0,0,0];
+  let rot = [0,0,0];
+  let ang = 60;
+  let angles;
+  let euler = new THREE.Euler();
+  let posTest = new THREE.Vector3(1,1,1);
+  let storeDistance
+  let dir = 1
   useFrame((state, delta, XRFrame)=> { 
+    ang += delta;
+    useControlStore.setState({actualAngles_q:[ang,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
+    // useControlStore.setState({actualAngles_q:[60*DEG2RAD,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
+    // updateActualAngles_q([ang,-90,90,0,30,0])
+    storeDistance = useControlStore.getState().gripDistance
+    // console.log(storeDistance)
+    if (storeDistance >= 100) dir = -1
+    if (storeDistance <= 5) dir = 1 
+    increaseGripDistance(dir*delta*10)
+
+    // controlGuideRef.current.position.copy(posTest)
     if(XRFrame){
       // console.log(delta)
       acculTime += delta
@@ -129,112 +144,67 @@ export default function PortalArm(type, path, ...props) {
       if (acculTime > 0.05){
         // console.log(acculTime)
         acculTime = 0
-  
-        if (controllerMode.current === "operating" 
-          && squeezePressed_R.current === true){  //squeeze
-          //controller 6DOF
-          if(rightController){
-            // let pos = ref.current.worldToLocal(
-            //   right.controller.position.sub(armPosVec)).toArray();
-            pos = armRef.current.children[0].worldToLocal(
-              rightController.controller.position).toArray();
-            // console.log(armRef.current.children[0]);
-            pos = [-pos[0], pos[2], pos[1]]
-            pos = pos.map((val) => Math.round(val*10000)/10000)
+        if (controllerMode.current === "operating" && rightController){
+            controlGuideRef.current.position.copy(
+              armRef.current[0].worldToLocal(
+                rightController.controller.position));
+            controlGuideRef.current.rotation.copy(rightController.controller.rotation);
 
-            let rot = rightController.controller.rotation.clone().reorder("XZY").toArray().map((val)=>Math.round(val*10000)/10000)
-            // console.log(rot)
-            rot = [-rot[0]+(3.141592/2), rot[2], rot[1]]
-            // console.log(typeof rot[0], typeof rot[1], typeof rot[2])
+            if (squeezePressed_R.current === true){  //squeeze
+              //controller 6DOF
+              // let pos = ref.current.worldToLocal(
+              //   right.controller.position.sub(armPosVec)).toArray();
+              pos = armRef.current.children[0].worldToLocal(
+                rightController.controller.position).toArray();
+              // console.log(armRef.current.children[0]);
+              pos = [-pos[0], pos[2], pos[1]]
+              pos = pos.map((val) => Math.round(val*10000)/10000)
+              euler.copy(rightController.controller.rotation)
+              rot = rightController.controller.rotation.clone().reorder("XZY").toArray().map((val)=>Math.round(val*10000)/10000)
+              // console.log(rot)
+              // rot = 
+              rot = [-rot[0]+(3.141592/2), rot[2], rot[1]]
+              // console.log(typeof rot[0], typeof rot[1], typeof rot[2])
+
+              packet = { 
+                from: commClientV01.socket.id, 
+                to:commClientV01.connectedModules[0],
+                msg:{
+                  type:"set_pos", 
+                  data:{
+                    arm:[...pos,...rot],
+                    grip: Math.floor(gripDistance * 10) 
+                  }
+                }
+              } 
+              console.log("send C2C packet")
+              // console.log(packet.msg.data.arm);
+              commClientV01.socket.emit("robot", "C2C", packet, (res) => {
+              // console.log("msg-v0 response:",res)
+              })
+            }
           }
 
-          packet = { 
-            from: commClientV01.socket.id, 
-            to:commClientV01.connectedModules[0],
-            msg:{
-              type:"set_pos", 
-              data:{
-                arm:[...pos,...rot],
-                grip: Math.floor(gripDistance * 10) 
-              }
-            }
-          } 
-          console.log("send C2C packet")
-          // console.log(packet.msg.data.arm);
-          commClientV01.socket.emit("robot", "C2C", packet, (res) => {
-          // console.log("msg-v0 response:",res)
-          } )
-        }
-        // if (right.new.buttons[5] !== right.prev.buttons[5] 
-        //   &&right.new.buttons[5] > 0.8){
-        //   packet = { 
-        //     from: commClientV01.socket.id, 
-        //     to:commClientV01.connectedModules[0],
-        //     msg: {
-        //       type:"get_pos"
-        //     } 
-        //   }
-        //   commClientV01.socket.emit("robot","C2C",packet)        
-        //   console.log("request robot angles")
-        //   console.log(packet)
-        // }
-
-
-
-        // if (right.new.buttons[4] !== right.prev.buttons[4] 
-        //     &&right.new.buttons[4] > 0.8){
-        //   setGripDirection((direction) => - direction);
-        // }
-        // if (right.new.buttons[0] > 0.5) {
-        //   setGripDistance((distance) => {
-        //     let result = (distance + 30* delta * gripDirection)
-        //     if (result > 100) return 100;
-        //     else if (result < 1) return 1;
-        //     else return result
-        //   })
-        // }
         if (stickUp_R === true || stickDown_R === true ) {
-          setGripDistance((distance) => {
-            let dir
-            if(stickUp_R === true) dir = 1;
-            else if (stickDown_R) dir = -1;
+          if(stickUp_R === true) dir = 1;
+          else if (stickDown_R) dir = -1;
 
-            let result = (distance + dir * 30 * delta)
-            if (result > 100) return 100;
-            else if (result < 1) return 1;
-            else return result
-          })
-        }
-
-        
-        // setGripDistance((grip)=> {
-        //   if ( grip > 100) dir = -dir;
-        //   else if ( grip < 2 ) dir = -dir;
-        //   return grip + dir;
-        // })
-
-        // let armData = [...conPos, ...conRot]
-        // console.log (armData)
-     
-
-        
-  
-        // if(gamepadRef.current.left.new.buttons[0] === 0){
-        //   setArmAngles(armAngles => armAngles.map(val=>val+0.3));
-        // } else {
-        //   // console.log(gamepadRef.current.left)
-        //   setArmAngles(armAngles => armAngles.map(val=>val-0.3));
-        // }
+          increaseGripDistance(dir * 30 * delta)
+        }     
       }
     }
 
   })
 
+  useEffect(()=>{
+    console.log("portal arm rendered")
+  },)
+
   return(
     <group ref={ref}>
       <Table loader={loader}>
         <Arm ref={armRef} loader={loader} depth={6} angles={armAngles} positions={[armPos,...armGeometries]}>
-          <Gripper loader={loader} geoConfig={gripperGeometries} gripDistance={gripDistance}/>
+          <Gripper loader={loader} geoConfig={gripperGeometries} />
         </Arm>
       </Table> 
       {/* <Table loader={loader} position={[1,0,0]}/>
@@ -242,15 +212,20 @@ export default function PortalArm(type, path, ...props) {
       <group position={armPos}>
         <BoundaryBox color="red" boundary={boundary}/>
       </group>
-
+      <group ref={controlGuideRef}>
+        <Box args={[0.2,0.01,0.01]} material-color="red"/>
+        <Box args={[0.01,0.2,0.01]} material-color="green"/>
+        <Box args={[0.01,0.01,0.2]} material-color="blue"/>
+        <axesHelper args={[0.5]}/>
+      </group>
       {/* <Text fontSize={0.5} position={[-10,1,-10]} rotation={[0,45*DEG2RAD,0]} color="black">            
-        {conPos[0]}
+        {pos[0]}
       </Text>
       <Text fontSize={0.5} position={[-10,0,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
-        {conPos[1]}
+        {pos[1]}
       </Text>
       <Text fontSize={0.5} position={[-10,-1,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
-        {conPos[2]}
+        {pos[2]}
       </Text>
       <Text fontSize={0.5} position={[-10,-2,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
         grip: {gripDistance}
@@ -270,7 +245,7 @@ const Model = forwardRef( function Model ({loader, modelConfig, position=[0,0,0]
     // console.log("modelConfig")
     // console.log(modelConfig)
     const loadGLTF = async () => {
-      console.log("paaaaaath",path)
+      // console.log("paaaaaath",path)
       let gltf = await loader.loadAsync(path);
       setGeo((geo_) => geo_ = gltf.scene.children[0].geometry) ;
     }
@@ -286,7 +261,7 @@ const Model = forwardRef( function Model ({loader, modelConfig, position=[0,0,0]
 
     loadGLTF();
 
-    console.log("model loaded")
+    // console.log("model loaded")
     
   },[])
 
@@ -368,37 +343,41 @@ const Arm = forwardRef( function Arm ({loader, index=0, angles=[0,0,0,0,0,0], po
 
   // const [rotation, setRotation] = useState([0,0,0]);
   const ref = useRef([]);
+
   useEffect(() => {
+    // console.log(useControlStore.subscribe)
+    const unsubAngles = useControlStore.subscribe(
+      (state)=>state.actualAngles_q,
+      (angles)=>{
+        // console.log(state)
+      for (let i=0; i<6; i++){
+        forwardedRef.current[i + 2].rotation.fromArray(rotAxes[i].map((val) => val * angles[i]))
+      }
+    })
     console.log("arm index:",index)
     console.log("poses",props.positions)
-    console.log("refref")
-    console.log(ref.current[0])
+
+    return () => unsubAngles();
   },[])
 
   useFrame((state,delta) => {
     // ref.current[2].rotation.z += 0.01;
-    angles.map((angle, i) => {
-      ref.current[i + 1].rotation.fromArray(rotAxes[i].map((val) => val * angle * DEG2RAD))
-    })
+    // console.log(angles)
+    // angles.map((angle, i) => {
+    //   // ref.current[i + 1].rotation.fromArray(rotAxes[i].map((val) => val * angle * DEG2RAD))
+    //   forwardedRef.current[i + 1].rotation.fromArray(rotAxes[i].map((val) => val * angle * DEG2RAD))
+    // })
   })
 
   return (
-    <group ref={forwardedRef}>
-      <Model ref={el => (ref.current[0] = el)} loader={loader} 
-      position={positions[0]} modelConfig={ArmConfigs[0]}>
-
-        <Model ref={el => (ref.current[1] = el)} loader={loader} 
-        position={positions[1]} modelConfig={ArmConfigs[1]}>
-
-          <Model ref={el => (ref.current[2] = el)} loader={loader} position={positions[2]} modelConfig={ArmConfigs[2]}>
-
-            <Model ref={el => (ref.current[3] = el)}loader={loader} position={positions[3]} modelConfig={ArmConfigs[3]}>
-
-              <Model ref={el => (ref.current[4] = el)} loader={loader} position={positions[4]} modelConfig={ArmConfigs[4]}>
-
-                <Model ref={el => (ref.current[5] = el)} loader={loader} position={positions[5]} modelConfig={ArmConfigs[5]}>
-
-                  <Model ref={el => (ref.current[6] = el)} loader={loader} position={positions[6]} modelConfig={ArmConfigs[6]}>
+    <group ref={el => forwardedRef.current[0] = el}>
+      <Model ref={el => (forwardedRef.current[1] = el)} loader={loader} position={positions[0]} modelConfig={ArmConfigs[0]}>
+        <Model ref={el => (forwardedRef.current[2] = el)} loader={loader} position={positions[1]} modelConfig={ArmConfigs[1]}>
+          <Model ref={el => (forwardedRef.current[3] = el)} loader={loader} position={positions[2]} modelConfig={ArmConfigs[2]}>
+            <Model ref={el => (forwardedRef.current[4] = el)}loader={loader} position={positions[3]} modelConfig={ArmConfigs[3]}>
+              <Model ref={el => (forwardedRef.current[5] = el)} loader={loader} position={positions[4]} modelConfig={ArmConfigs[4]}>
+                <Model ref={el => (forwardedRef.current[6] = el)} loader={loader} position={positions[5]} modelConfig={ArmConfigs[5]}>
+                  <Model ref={el => (forwardedRef.current[7] = el)} loader={loader} position={positions[6]} modelConfig={ArmConfigs[6]}>
                     {children}
                   </Model>
                 </Model>
@@ -414,64 +393,6 @@ const Arm = forwardRef( function Arm ({loader, index=0, angles=[0,0,0,0,0,0], po
 }
 )
 
-// const Arm = ({ index=0, angles=[0,0,0,0,0,0], ...props}) => {
-
-//   const rotAxes = [
-//     [0, 1, 0],
-//     [0, 0, -1],
-//     [0, 0, -1],
-//     [0, 0, -1],
-//     [0, -1, 0],
-//     [0, 0, -1],
-//   ];
-
-//   const [rotation, setRotation] = useState([0,0,0]);
-//   const modelRef = useRef();
-//   useEffect(() => {
-//     console.log("arm index:",index)
-//     console.log("poses",props.positions)
-//     console.log("refref")
-//     console.log(modelRef)
-//   },[])
-
-//   useFrame((state,delta) => {
-//     if (index > 0){
-//       // console.log("rotrot")
-//       // console.log(modelRef)
-//       modelRef.current.rotation.fromArray(rotAxes[index-1].map((val,idx) => val * angles[index-1] * THREE.MathUtils.DEG2RAD));
-//       // console.log("angles in arms[",index,"]: ",rotation)
-//     }
-//   })
-
-//   return (
-//     <Model 
-//     ref={modelRef}
-//     rotation={rotation}
-//     loader={props.loader} 
-//     position={props.positions[index]}
-//     modelConfig={{
-//       path:`/3d_models/portalarm/UR5e_ver/ALLZERO/UR5e/GLTFs/arm_${index}.gltf`,
-//       matParams:{
-//         color:0xb0bef0,   //0xb0bef0로 쓰면 안됨
-//         transparent:true ,
-//         opacity:0.5,
-//         flatShading:true,
-//         side:THREE.DoubleSide, 
-//     }}}>
-//       { 
-//       props.depth === index ? 
-//         props.children 
-//         : 
-//         <Arm 
-//         // loader={loader} 
-//         // depth={depth} 
-//         index={index+1}
-//         angles={angles}
-//         {...props} />  
-//       }
-//     </Model>
-//   )
-// }
 
 // /*  
 //   gripperLinks configuration:
@@ -488,33 +409,46 @@ const Arm = forwardRef( function Arm ({loader, index=0, angles=[0,0,0,0,0,0], po
 //   8   1   4   4     (left)  ⎟     ⎿ RUB_ASM
 // */
 
-const gripperConfigs =setGripperConfigs();
+const gripperConfigs = setGripperConfigs();
 const gripperPositions = setGripperPositions();
 
-const Gripper = ({loader, geoConfig, gripDistance, children,...props}) => {
+const Gripper = ({loader, geoConfig, children,...props}) => {
 
   const ref = useRef([]);
   // const gamepadRef = useContext(GamepadContext);
   const colorRef = useRef(0x999999)
   const [index, setIndex] = useState(0)
 
-  const [rotations, setRotations] = useState(() => {
-    let rotations_ = []
+  const rotations = useMemo(() => {
+    let rotations = []
     for (let i = 0; i<9; i++){
 
       let j = Math.floor((i - 1)/4);
       let k = 1 + (i - 1)% 4
 
-      if (j === 1 && k === 2 ) rotations_.push([0,0,THREE.MathUtils.DEG2RAD*180]);
-      else rotations_.push([0,0,0])
+      if (j === 1 && k === 2 ) rotations.push([0,0,THREE.MathUtils.DEG2RAD*180]);
+      else rotations.push([0,0,0])
     } 
-    return rotations_
+    return rotations
   })
 
+  useEffect(()=>{
+    grip(50, ref.current);
+    const unsubGrip = useControlStore.subscribe(
+      (state)=>state.gripDistance,
+      (distance)=>grip(distance, ref.current));
+      // (state)=>[state.actualAngles_q,state.gripDistance],
+      // ([angles,distance])=>{
+      //   console.log(angles)
+      //   console.log(distance)
+      // });
+    return () => unsubGrip();
+  },[])
+
+  useEffect(() => console.log("gripper is rendered"),)
+
   useFrame((state,delta,XRFrame)=>{
-    
-    grip(gripDistance, ref.current)
-    
+        
     // if (gamepadRef.current.right.new.buttons[4] !== gamepadRef.current.right.prev.buttons[4] 
     //   && gamepadRef.current.right.new.buttons[4] > 0.8){
     //   ref.current[0].traverse((obj) => {
