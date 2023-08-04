@@ -1,3 +1,4 @@
+//originally in examples/behavior/states
 import { Behavior } from '../../../three-mesh-ui-7.1.5/src/three-mesh-ui';
 
 export default class SimpleStateBehavior extends Behavior{
