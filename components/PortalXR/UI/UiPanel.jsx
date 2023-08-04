@@ -4,7 +4,7 @@ import { Box } from '@react-three/drei'
 // import ThreeMeshUI from 'three-, mesh-ui'
 // import ThreeMeshUI from 'https://cdn.skypack.dev/three-mesh-ui'
 // import ThreeMeshUI from '../three-mesh-ui/three-mesh-ui'
-import ThreeMeshUI from '../three-mesh-ui-7.1.5/three-mesh-ui'
+import ThreeMeshUI from '../three-mesh-ui-7.1.5/src/three-mesh-ui'
 import * as THREE from 'three'
 import { Interactive, useInteraction } from '@react-three/xr'
 
@@ -50,15 +50,20 @@ export default function UiPanel(props){
   useEffect(()=>{
     console.log("UiPanel is rendered")
   })
+
   const args = {
+    width:"100%",
+    height:"100%",
     backgroundColor:color.portalPurple,
     // backgroundOpacity:1,
     flexDirection:"row",
     borderRadius:0.1,
     borderColor:color.black,
-    padding:0.05,
-    margin:0.05
+    padding:0.01,
+    margin:0.01,
+    borderWidth:0.01,
   }
+
   return (
     <block
       ref={panelRef}
@@ -84,14 +89,11 @@ export default function UiPanel(props){
       // onUpdate={self=>self.lookAt(0,0,0)}
     >
       {/* <axesHelper args={[1]}/> */}
-      <block args={[{
-        ...args,
-        width:"100%",
-        height:"50%",
-        borderWidth:0.02,
-      }]}>
-        <ModePanel/>
-        {/* <OperatingBlock/> */}
+      <block args={[{...args, height:"50%", borderWidth:0.02,}]} >
+        <ModePanel args={[{...args, width:"30%", flexDirection:"column"}]} />
+        <block args={[{...args, width:"70%", flexDirection:"column"}]} >
+          <OperatingBlock args={[{...args,flexDirection:"column"}]} />
+        </block>
       </block>
       <block args={[{ 
         ...args,
@@ -114,7 +116,7 @@ export default function UiPanel(props){
   )
 }
 
-const ModePanel = () =>{
+const ModePanel = (props) =>{
   const modeTextRef = useRef();
   const defaultRef = useRef(); 
   const operatingRef = useRef(); 
@@ -134,23 +136,24 @@ const ModePanel = () =>{
         // modeTextRef.current.set({content:"MODE:\n"+ state.controllerMode})
         // console.log(state.controllerMode)
 
-        // for ( let i = 0 ; i < 3 ; i++){
-        //   let text
-        //   buttonRefs[i].current.traverse((obj)=>{
-        //     if (obj.content) {
-        //       // console.log(obj.content)
-        //       text = obj.content
-        //     }
-        //   })
-        //   // console.log(buttonRefs[i].current)
-        //   buttonRefs[i].current.isActive = (text === state.controllerMode)
-        //   if (!buttonRefs[i].current.isActive) buttonRefs[i].current.setState("idle")
-        // }
+        for ( let i = 0 ; i < 3 ; i++){
+          let text
+          buttonRefs[i].current.traverse((obj)=>{
+            // console.log(obj)
+            if (obj.isText) {
+              // console.log(obj.content)
+              text = obj._textContent._value
+            }
+          })
+          // console.log(buttonRefs[i].current)
+          buttonRefs[i].current.isActive = (text === state.controllerMode)
+          if (!buttonRefs[i].current.isActive) buttonRefs[i].current.setState("idle")
+        }
       }
     )
 
-    // buttonRefs[0].current.isActive = true;
-    // buttonRefs[0].current.setState("active")
+    buttonRefs[0].current.isActive = true;
+    buttonRefs[0].current.setState("active")
 
 
     return () => {
@@ -165,40 +168,46 @@ const ModePanel = () =>{
     // textRef.current.set({content:triggerPressed_R.current.now+"\n"});
     // textRef.current.content = triggerPressed_R.current+"\n";
   })
+  
+    const args = {
+      width:"100%",
+      height:"100%",
+      backgroundColor:color.portalPurple,
+      // backgroundOpacity:1,
+      flexDirection:"column",
+      borderRadius:0.1,
+      borderColor:color.black,
+      borderWidth:0.02,
+      padding:0.02,
+      margin:0.02,
+      justiyContent:"center",
+      alignItems:"center",
+    }
 
   const modeButtonArgs = {
-    width: 1.2,
-    height: 0.3,
-    fontSize: 0.2,
-    margin:0.05,
+    ...args,
+    width: "100%",
+    height: "33%",
+    // height: 0.3,
     backgroundColor: color.darkPurple,
-    padding: 0.05,
-  }
-
-  const args = {
-    backgroundColor:color.portalPurple,
-    // backgroundOpacity:1,
-    flexDirection:"row",
-    borderRadius:0.1,
-    borderColor:color.black,
-    padding:0.05,
-    margin:0.05
+    // alignItems:"stretch",
+    margin:[0.05, 0.02, 0.05, 0.02]
   }
 
   return (
-    <block args={[{...args, width:"30%", height:"100%", 
-    // backgroundOpacity:0.2,
-    }]} >
-      <block args={[{...args, width:"100%", height:"25%",backgroundOpacity:0,margin:0.1, lineHeight: 0.05,}]}>
+    <block args={props.args}
+    // args={[{...args, width:"30%",}]} 
+    >
+      <block args={[{...args, height:"25%",backgroundOpacity:0, lineHeight: 0.05,}]}>
         {/* <text ref={modeTextRef} content={ "MODE:\ndefault" } /> */}
-        <text ref={modeTextRef} _textContent-value={ "MODE:" } />
+        <text ref={modeTextRef} args={[{height:"100%", alignItems:"center", textAlign:"center"}]} _textContent-value={ "MODE:" } />
       </block>
-      <block args={[{...args, width:"70%",height:"100%",
+      <block args={[{...args, width:"100%",height:"75%",alignItems:"stretch",
         // backgroundOpacity:0
       }]}>
-        {/* <Button ref={defaultRef} onClick={()=>{switchMode("default")}} args={[modeButtonArgs]} stateAttribute={UiStates.button} textContent={"default"} />
+        <Button ref={defaultRef} onClick={()=>{switchMode("default")}} args={[modeButtonArgs]} stateAttribute={UiStates.button} textContent={"default"} />
         <Button ref={operatingRef} onClick={()=>{switchMode("operating")}} args={[modeButtonArgs]} stateAttribute={UiStates.button} textContent={"operating"} />
-        <Button ref={settingRef} onClick={()=>{switchMode("setting")}} args={[modeButtonArgs]} stateAttribute={UiStates.button} textContent={"setting"}/> */}
+        <Button ref={settingRef} onClick={()=>{switchMode("setting")}} args={[modeButtonArgs]} stateAttribute={UiStates.button} textContent={"setting"}/>
       </block>
     </block>
   )

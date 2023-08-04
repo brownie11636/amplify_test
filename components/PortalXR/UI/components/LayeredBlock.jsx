@@ -1,4 +1,5 @@
 import {useRef, useEffect} from "react"
+import { useFrame } from "@react-three/fiber"
 
 import { useModeStore } from "/store/zustand/mode.js"
 
@@ -11,14 +12,17 @@ export default function LayeredBlock({layer, ...props}) {
       (state, prevState) => {
         // console.log(state)
         // console.log(prevState)
-        ref.current.set({content:state}) // it should be maintained to evoke onAfterupdate callback of layeredBlock  
+
         if(state.controllerMode === layer) layerRef.current = 0; //visible and interactive
         else layerRef.current = 1;  //invisible and non interactive
+
+        ref.current.traverse((obj3d)=>obj3d.layers.set(layerRef.current))
+
     })
 
     // ref.current.traverse((obj3d)=>obj3d.layers.set(layerRef.current))
-    ref.current.onAfterUpdate = () => {
-      ref.current.traverse((obj3d)=>obj3d.layers.set(layerRef.current))
+    ref.current.addAfterUpdate = () => {
+      // ref.current.traverse((obj3d)=>obj3d.layers.set(layerRef.current))
     }
 
     
@@ -26,6 +30,14 @@ export default function LayeredBlock({layer, ...props}) {
       unsubModeStore()
     }
   },[])
+
+  let i=0
+  useFrame(() =>{
+    if(i<50){
+      ref.current.traverse((obj3d)=>obj3d.layers.set(layerRef.current))
+      i++
+    }
+  })
 
   return(
     <block ref={ref} 

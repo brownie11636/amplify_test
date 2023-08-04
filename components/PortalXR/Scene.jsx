@@ -24,10 +24,6 @@ export default function Scene(portalRTC, ...props) {
 
   }, []);
 
-  useEffect(()=>{
-    console.log("Scence is rendered")
-  })
-
   return (
     <>
       <VRButton />

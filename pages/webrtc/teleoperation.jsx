@@ -1,5 +1,5 @@
 import { PortalCommContext, commClient, commClientV01 } from '../../utils/contexts/portalComm.js';
-// import XRContainer from  "../../components/PortalXR/XR.container.jsx"
+import XRContainer from  "../../components/PortalXR/XR.container.jsx"
 import RTCvideo from "../../components/Services/VideoPanel.js";
 import MainLayout from "../../components/Main/MainLayout.jsx"
 
@@ -14,14 +14,14 @@ export default function portalRTC(){
     //https://cocoder16.tistory.com/62 사용예
     return (
         <div>
-            {/* <PortalCommContext.Provider value={{commClientV01,commClient}}>
+            <PortalCommContext.Provider value={{commClientV01,commClient}}>
                 <MainLayout>
                     <span>Hello</span>
                     <XRContainer>
                     
                     </XRContainer>
                 </MainLayout>            
-            </PortalCommContext.Provider> */}
+            </PortalCommContext.Provider>
 
         </div>
     );

@@ -4,7 +4,7 @@ import { Box } from '@react-three/drei'
 // import ThreeMeshUI from 'three-, mesh-ui'
 // import ThreeMeshUI from 'https://cdn.skypack.dev/three-mesh-ui'
 // import ThreeMeshUI from '../three-mesh-ui/three-mesh-ui'
-import ThreeMeshUI, { FontLibrary } from '../three-mesh-ui-7.1.5/three-mesh-ui'
+import ThreeMeshUI, { FontLibrary } from '../three-mesh-ui-7.1.5/src/three-mesh-ui'
 import * as THREE from 'three'
 import { Interactive, useInteraction } from '@react-three/xr'
 
@@ -86,7 +86,7 @@ export default function StatPanel(props){
     >
       <text ref={fpsRef}/>
       {/* <axesHelper args={[1]}/> */}
-      {/* <block args={[{height:2,backgroundOpacity:0,contentDirection:"row",borderRadius:0.1,}]}>
+      {/* <block args={[{height:2,backgroundOpacity:0,flexDirection:"row",borderRadius:0.1,}]}>
        
       </block> */}
     </block>

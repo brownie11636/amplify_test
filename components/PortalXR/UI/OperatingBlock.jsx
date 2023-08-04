@@ -11,7 +11,7 @@ import { useModeStore } from "/store/zustand/mode.js"
 import { update } from '../three-mesh-ui/three-mesh-ui.js'
 
 
-export default function OperatingBlock() {
+export default function OperatingBlock(props) {
   // const ref = useRef();
   // const testRef = useRef();
   useEffect(()=>{
@@ -21,22 +21,37 @@ export default function OperatingBlock() {
     }
   },[])
 
+  const args = {
+    width: "100%",
+    height: "100%",
+    backgroundColor: color.portalPurple,
+    // backgroundOpacity: 1,
+    flexDirection: "row",
+    borderRadius: 0.1,
+    borderColor: color.black,
+    padding: 0.01,
+    margin: 0.01,
+    borderWidth: 0.01,
+  }
+
   const buttonArgs = { 
-    width:0.4, 
-    height:0.4, 
-    margin:0.04, 
-    justifyContent:"center",
+    ...args,
+    width: 0.4, 
+    height: 0.4, 
+    margin: 0.04, 
+    justifyContent: "center",
     borderColor: color.black,
   }
   return (
     <LayeredBlock layer={"operating"}
-      args={[{width:3, height:2, backgroundOpacity:0, borderOpacity:1, borderWidth:0.02, borderColor: color.black}]} 
+      args={props.args}
+      // args={[{width:3, height:2, backgroundOpacity:1, borderOpacity:1, borderWidth:0.02, borderColor: color.black}]} 
       // args={[{width:2.5, height:2, backgroundOpacity:0,borderOpacity:1,borderWidth:0.02,borderColor:new THREE.Color(0x000000)}]}
     >
-      <block args={[{width:2.8, height:0.6, contentDirection: "row", alignItems:"center", justifyContent:"center"}]}>
-        <block args={[{width:1.2, height:0.5, margin:0.04, justifyContent:"center"}]}>
-          {/* <text content={"fix\naxis"}/> */}
-          <text content={"translating\naxis"}/>
+      <block args={[{...args,width:2.8, height:0.6, flexDirection: "row", alignItems:"center", justifyContent:"center"}]}>
+        <block args={[{...args,width:1, height:0.5, margin:0.04, justifyContent:"center"}]}>
+          {/* <text _textContent-value={"fix\naxis"}/> */}
+          <text _textContent-value={"translating\naxis"}/>
         </block>
         <FixAxisButton axisStr={"X"} type={"translating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
         <FixAxisButton axisStr={"Y"} type={"translating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
@@ -46,9 +61,9 @@ export default function OperatingBlock() {
         <FixTranslateButton args={[buttonArgs]} stateAttribute={UiStates.button} translateAxesStr={"Z"} />
         <FixTranslateButton args={[{...buttonArgs,width:0.6}]} stateAttribute={UiStates.button} translateAxesStr={"XYZ"} /> */}
       </block>
-      <block args={[{width:2.8, height:0.6, contentDirection: "row", alignItems:"center", justifyContent:"center"}]}>
-        <block args={[{width:1.2, height:0.5, margin:0.04, justifyContent:"center"}]}>
-          <text content={"rotating\naxes"}/>
+      <block args={[{...args,width:2.8, height:0.6, flexDirection: "row", alignItems:"center", justifyContent:"center"}]}>
+        <block args={[{...args,width:1, height:0.5, margin:0.04, justifyContent:"center"}]}>
+          <text _textContent-value={"rotating\naxes"}/>
         </block>       
         <FixAxisButton axisStr={"X"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
         <FixAxisButton axisStr={"Y"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
@@ -58,16 +73,16 @@ export default function OperatingBlock() {
         <FixRotateButton args={[buttonArgs]} stateAttribute={UiStates.button} axisStr={"Z"} /> */}
       </block>
 
-      {/* <block args={[{width:3, height:0.6, contentDirection: "row", alignItems:"center", justifyContent:"start"}]}>
+      {/* <block args={[{width:3, height:0.6, flexDirection: "row", alignItems:"center", justifyContent:"start"}]}>
         <block args={[{width:0.7, height:0.5, margin:0.05, justifyContent:"center"}]}>
-          <text content={"fix\nplane"}/>
+          <text _textContent-value={"fix\nplane"}/>
         </block>
         <FixTranslateButton args={[{...buttonArgs, width:0.55}]} stateAttribute={UiStates.button} translateAxesStr={"XY"} />
         <FixTranslateButton args={[{...buttonArgs, width:0.55}]} stateAttribute={UiStates.button} translateAxesStr={"YZ"} />
         <FixTranslateButton args={[{...buttonArgs, width:0.55}]} stateAttribute={UiStates.button} translateAxesStr={"ZX"} />
       </block> */}
       {/* <block args={[{width:"auto", height:"auto"}]}> 
-        <text content={"setting - how to operate\n"}/>
+        <text _textContent-value={"setting - how to operate\n"}/>
       </block> */}
     </LayeredBlock>
   )
