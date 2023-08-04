@@ -5,7 +5,7 @@ import parser from "./seriesParsers";
 
 export default function App() {
 
-  const [serialNumber, setSerialNumber] = useState("SN000-000-0000");
+  const [serialNumber, setSerialNumber] = useState("SN000-DEV-0000");
   const [urlFlag, setUrlFlag] = useState(true);
   const [message, setMessage] = useState("");
   const [accData, setAccData] = useState([]);
