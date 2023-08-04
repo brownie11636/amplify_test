@@ -5,7 +5,7 @@ import { useModeStore } from "/store/zustand/mode.js"
 
 export default function LayeredBlock({layer, ...props}) {
   const ref = useRef();
-  const layerRef = useRef(useModeStore.getState().controllerMode === layer ? 0: 1);
+  const layerRef = useRef(useModeStore.getState().controllerMode === layer ? 0: 3);
 
   useEffect(()=>{
     const unsubModeStore = useModeStore.subscribe(
@@ -14,16 +14,17 @@ export default function LayeredBlock({layer, ...props}) {
         // console.log(prevState)
 
         if(state.controllerMode === layer) layerRef.current = 0; //visible and interactive
-        else layerRef.current = 1;  //invisible and non interactive
+        // else layerRef.current = 1;  //layer 1, 2 is half-visible(left, right) in VR
+        else layerRef.current = 3;  //invisible and non interactive
 
         ref.current.traverse((obj3d)=>obj3d.layers.set(layerRef.current))
 
     })
 
     // ref.current.traverse((obj3d)=>obj3d.layers.set(layerRef.current))
-    ref.current.addAfterUpdate = () => {
-      // ref.current.traverse((obj3d)=>obj3d.layers.set(layerRef.current))
-    }
+    // ref.current.addAfterUpdate(() => {
+    //   // ref.current.traverse((obj3d)=>obj3d.layers.set(layerRef.current))
+    // })
 
     
     return ()=> {

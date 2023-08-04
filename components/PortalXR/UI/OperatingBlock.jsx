@@ -212,24 +212,17 @@ function FixAxisButton( {axisStr, type, ...props}){
 
     if(useModeStore.getState()[type+"Axes"][i]) buttonRef.current.setState("active");
     
-    axesRef.current.position.y += 0.05;
-
-    buttonRef.current.add(dummy)
-    dummy.lookAt(0,0,0);
-    // console.log(dummy.rotation)
-    q.setFromEuler(dummy.rotation).invert()
-    axesRef.current.setRotationFromQuaternion(q)
-    buttonRef.current.remove(dummy);
+    
 
     switch(axisStr){
       case "X":
-        xRef.current.scale.set(1,3,3);
+        xRef.current.scale.set(1,5,5);
         break;
       case "Y":
-        yRef.current.scale.set(3,1,3);
+        yRef.current.scale.set(5,1,5);
         break;
       case "Z":
-        zRef.current.scale.set(3,3,1);
+        zRef.current.scale.set(5,5,1);
         break;
     }
     
@@ -238,6 +231,16 @@ function FixAxisButton( {axisStr, type, ...props}){
     }
   },[])
 
+  let j=0
+  useFrame(() =>{
+    if(j<1){
+      // console.log(axesRef.current.getWorldQuaternion(q))
+      axesRef.current.getWorldQuaternion(q)
+      axesRef.current.setRotationFromQuaternion(q.invert())
+      j++
+    }
+  })
+
   return (
     <Button 
       ref={buttonRef}
@@ -245,13 +248,18 @@ function FixAxisButton( {axisStr, type, ...props}){
       onClick={()=>{updateAxes(axisStr)}}
       {...props} 
     >
-      <block offset={0.2} args={[{width:0.001,height:0.001, borderOpacity:0,backgroundOpacity:0,}]}>
-        <group ref={axesRef} >
-          <Box ref={xRef} args={[0.2,0.01,0.01]} material-color="red" />  
-          <Box ref={yRef} args={[0.01,0.2,0.01]} material-color="green" />
-          <Box ref={zRef} args={[0.01,0.01,0.2]} material-color="blue" />
+      {/* <block offset={0.2} args={[{width:0.001,height:0.001, borderOpacity:0,backgroundOpacity:0,}]}> */}
+        <group ref={axesRef} 
+        position={[0,0,0.2]} 
+        >
+          {/* <Box ref={xRef} args={[3,0.01,0.01]} material-color="red" />  
+          <Box ref={yRef} args={[0.01,3,0.01]} material-color="green" />
+          <Box ref={zRef} args={[0.01,0.01,3]} material-color="blue" /> */}
+          <Box ref={xRef} args={[0.3,0.01,0.01]} material-color="red" />  
+          <Box ref={yRef} args={[0.01,0.3,0.01]} material-color="green" />
+          <Box ref={zRef} args={[0.01,0.01,0.3]} material-color="blue" />
         </group>
-      </block>
+      {/* </block> */}
     </Button>
   )
 }
