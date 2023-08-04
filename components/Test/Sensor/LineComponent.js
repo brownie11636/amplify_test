@@ -99,10 +99,6 @@ export default function App() {
   };
   
   useEffect(() => {
-    setAccData([]);
-    setPrsData([]);
-    setTrhData([]);
-
     const timeout0 = setInterval(()=> {
       fetch(mqtt_url+serialNumber+"/message")
       .then(response => {
@@ -112,7 +108,7 @@ export default function App() {
         return response.json();
       })
       .then(data => {
-        console.log(data.data.content);
+        // console.log(data.data.content);
         let newMessage = data.data.content.map((e) => ({
           time: e.insert_date,
           message: e.payload
@@ -134,7 +130,9 @@ export default function App() {
       })
       .then(data => {
         let arr = data.data.content;
-        setAccData(parser(arr,"acc"));
+        let temp =parser(arr,"acc"); 
+        console.log("temp,",temp)
+        setAccData(temp);
       })
       .catch(error => {
         console.error('Error:', error);
