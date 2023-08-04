@@ -207,9 +207,10 @@ export class PortalCommClient {
       userId : this.profile.id,
       isHost : false,
     }
-    let serviceType = serviceId.split(':')[0]; // webrtc:~~
+    // let serviceType = serviceId.split(':')[0]; // webrtc:~~
     //webrtc:~~~ , robot:~~~~
-    this.sockets[nsp].emit("joining service", "PUT", serviceType, msg, (res) => {
+    this.sockets[nsp].emit("joining service", "PUT", msg, (res) => {
+    // this.sockets[nsp].emit("joining service", "PUT", serviceType, msg, (res) => {
       if(res.status === "fail") {
         alert('can not exit service');
       } else {

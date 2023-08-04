@@ -1,16 +1,19 @@
 import * as THREE from 'three'
 import { forwardRef, useRef, useState, useMemo, useEffect, useContext} from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useLoader } from '@react-three/fiber'
 import { Html, Text } from "@react-three/drei"
 import { useXR, useController } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 
 import { PortalCommContext } from '../../utils/contexts/portalComm';
 import * as myGamepadInput from '../../libs/XR/myGamepadInput'
 import { GamepadContext } from './GamepadContext'
+import { useXRStore } from "../../store/zustand/XR.js"
 
 import Box from './boxes'
+import { setRequestMeta } from 'next/dist/server/request-meta'
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 const RAD2DEG = THREE.MathUtils.RAD2DEG;
 
@@ -41,9 +44,11 @@ let packet = { }
 export default function PortalArm(type, path, ...props) {
 
   const {commClientV01} = useContext(PortalCommContext);
-  const gamepadRef = useContext(GamepadContext);
   const ref = useRef();
-  const {controllers} = useXR();
+  const squeezePressed_R = useRef({now:false, prev:false})
+  const controllerMode = useRef(useXRStore.getState().controllerMode);
+  const stickUp_R = useRef(useXRStore.getState().stickUp_R)
+  const stickDown_R = useRef(useXRStore.getState().stickDown_R)
 
   const rightController = useController('right');
   const leftController = useController('left');
@@ -53,8 +58,9 @@ export default function PortalArm(type, path, ...props) {
   const [armAngles, setArmAngles] = useState([60,-90,90,0,30,0])
   const [loader, setLoader] = useState(new GLTFLoader())
   const armRef = useRef([]);
-  const [conPos, setConPos]= useState(new THREE.Vector3);
-  const [conRot, setConRot]= useState(new THREE.Vector3);
+  // const [conPos, setConPos]= useState(new THREE.Vector3);
+  // const [conRot, setConRot]= useState(new THREE.Vector3);
+  
   const [gripDistance, setGripDistance] = useState(50);
   const [gripDirection, setGripDirection] = useState(1);
 
@@ -63,6 +69,7 @@ export default function PortalArm(type, path, ...props) {
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath("/3d_models/libs/draco/")
     setLoader((gltfLoader) => gltfLoader.setDRACOLoader(dracoLoader));
+    
     console.log("socketid in PortalArm.jsx")
     console.log(commClientV01.socket.id)
     commClientV01.socket.on("robot",(type, packet)=>{
@@ -92,17 +99,28 @@ export default function PortalArm(type, path, ...props) {
     }
     //commClient.socket callback -> 명령 들어왓을때 setArmAngles하기
     //commClient.socket callback -> 명령 들어왓을때 setGripperAngles하기
-    ref.current.position.x = 0.3;
+    // ref.current.position.x = 0.3;
 
     console.log("robot comm on")
+
+    const unsubXRStore = useXRStore.subscribe((state) => {
+      controllerMode.current = state.controllerMode
+      squeezePressed_R.current.prev = squeezePressed_R.current.now;
+      squeezePressed_R.current.now = state.squeezePressed_R
+      stickUp_R.current = state.stickUp_R;
+      stickDown_R.current = state.stickDown_R;
+    })
     
     return () => {
       commClientV01.socket.off("robot")
       console.log("robot comm off")
+      unsubXRStore();
     }
   }, []);
 
   //socket io callback을 붙히기
+  let pos;
+  let rot;
   useFrame((state, delta, XRFrame)=> { 
     if(XRFrame){
       // console.log(delta)
@@ -111,26 +129,23 @@ export default function PortalArm(type, path, ...props) {
       if (acculTime > 0.05){
         // console.log(acculTime)
         acculTime = 0
-        let right = {...gamepadRef.current.right};
   
-        if (right.new.buttons[1] === 1){  //squeeze
+        if (controllerMode.current === "operating" 
+          && squeezePressed_R.current === true){  //squeeze
           //controller 6DOF
           if(rightController){
-            right.controller = rightController.controller;
             // let pos = ref.current.worldToLocal(
             //   right.controller.position.sub(armPosVec)).toArray();
-            let pos = armRef.current.children[0].worldToLocal(
-              right.controller.position).toArray();
+            pos = armRef.current.children[0].worldToLocal(
+              rightController.controller.position).toArray();
             // console.log(armRef.current.children[0]);
             pos = [-pos[0], pos[2], pos[1]]
             pos = pos.map((val) => Math.round(val*10000)/10000)
-            setConPos(pos);
 
-            let rot = right.controller.rotation.clone().reorder("XZY").toArray().map((val)=>Math.round(val*10000)/10000)
+            let rot = rightController.controller.rotation.clone().reorder("XZY").toArray().map((val)=>Math.round(val*10000)/10000)
             // console.log(rot)
             rot = [-rot[0]+(3.141592/2), rot[2], rot[1]]
             // console.log(typeof rot[0], typeof rot[1], typeof rot[2])
-            setConRot(rot)
           }
 
           packet = { 
@@ -139,40 +154,52 @@ export default function PortalArm(type, path, ...props) {
             msg:{
               type:"set_pos", 
               data:{
-                arm:[...conPos,...conRot],
+                arm:[...pos,...rot],
                 grip: Math.floor(gripDistance * 10) 
               }
             }
           } 
-          // console.log(packet)
+          console.log("send C2C packet")
           // console.log(packet.msg.data.arm);
           commClientV01.socket.emit("robot", "C2C", packet, (res) => {
-            // console.log("msg-v0 response:",res)
+          // console.log("msg-v0 response:",res)
           } )
         }
-        if (right.new.buttons[5] !== right.prev.buttons[5] 
-          &&right.new.buttons[5] > 0.8){
-          packet = { 
-            from: commClientV01.socket.id, 
-            to:commClientV01.connectedModules[0],
-            msg: {
-              type:"get_pos"
-            } 
-          }
-          commClientV01.socket.emit("robot","C2C",packet)        
-          console.log("request robot angles")
-          console.log(packet)
-        }
+        // if (right.new.buttons[5] !== right.prev.buttons[5] 
+        //   &&right.new.buttons[5] > 0.8){
+        //   packet = { 
+        //     from: commClientV01.socket.id, 
+        //     to:commClientV01.connectedModules[0],
+        //     msg: {
+        //       type:"get_pos"
+        //     } 
+        //   }
+        //   commClientV01.socket.emit("robot","C2C",packet)        
+        //   console.log("request robot angles")
+        //   console.log(packet)
+        // }
 
 
 
-        if (right.new.buttons[4] !== right.prev.buttons[4] 
-            &&right.new.buttons[4] > 0.8){
-          setGripDirection((direction) => - direction);
-        }
-        if (right.new.buttons[0] > 0.5) {
+        // if (right.new.buttons[4] !== right.prev.buttons[4] 
+        //     &&right.new.buttons[4] > 0.8){
+        //   setGripDirection((direction) => - direction);
+        // }
+        // if (right.new.buttons[0] > 0.5) {
+        //   setGripDistance((distance) => {
+        //     let result = (distance + 30* delta * gripDirection)
+        //     if (result > 100) return 100;
+        //     else if (result < 1) return 1;
+        //     else return result
+        //   })
+        // }
+        if (stickUp_R === true || stickDown_R === true ) {
           setGripDistance((distance) => {
-            let result = (distance + 30* delta * gripDirection)
+            let dir
+            if(stickUp_R === true) dir = 1;
+            else if (stickDown_R) dir = -1;
+
+            let result = (distance + dir * 30 * delta)
             if (result > 100) return 100;
             else if (result < 1) return 1;
             else return result
@@ -208,14 +235,15 @@ export default function PortalArm(type, path, ...props) {
       <Table loader={loader}>
         <Arm ref={armRef} loader={loader} depth={6} angles={armAngles} positions={[armPos,...armGeometries]}>
           <Gripper loader={loader} geoConfig={gripperGeometries} gripDistance={gripDistance}/>
-        {/* <Box position={[-1.2, 0, 0]} /> */}
         </Arm>
       </Table> 
+      {/* <Table loader={loader} position={[1,0,0]}/>
+      <Table loader={loader} position={[2,0,0]}/> */}
       <group position={armPos}>
         <BoundaryBox color="red" boundary={boundary}/>
       </group>
 
-      <Text fontSize={0.5} position={[-10,1,-10]} rotation={[0,45*DEG2RAD,0]} color="black">            
+      {/* <Text fontSize={0.5} position={[-10,1,-10]} rotation={[0,45*DEG2RAD,0]} color="black">            
         {conPos[0]}
       </Text>
       <Text fontSize={0.5} position={[-10,0,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
@@ -226,7 +254,7 @@ export default function PortalArm(type, path, ...props) {
       </Text>
       <Text fontSize={0.5} position={[-10,-2,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
         grip: {gripDistance}
-      </Text>
+      </Text> */}
       
     </group>
   )
@@ -276,7 +304,7 @@ const Model = forwardRef( function Model ({loader, modelConfig, position=[0,0,0]
   );
 });
 
-const Table = ({loader, children, position, ...props}) => {
+const Table = ({loader, children, ...props}) => {
   const modelConfig = {
     path: "/3d_models/portalarm/UR5e_ver/table/GLTFs/table.gltf",
     matParams: {
@@ -288,10 +316,21 @@ const Table = ({loader, children, position, ...props}) => {
     }
   }
 
+  // const model = useLoader(STLLoader,'/3d_models/portalarm/UR5e_ver/table/STLs/table.STL')
+  // console.log(model)
+
+
   return (
-    <Model loader={loader} modelConfig={modelConfig} position={position}>
+    <Model loader={loader} modelConfig={modelConfig} {...props}>
       {children}
     </Model>
+    // <group {...props}>
+    //   <mesh >    
+    //     <primitive object={model} attach="geometry"/>
+    //     <meshPhongMaterial {...modelConfig.matParams} />
+    //   </mesh>
+    //   {children}
+    // </group>
   )
 }
 const ArmConfigs = setArmConfigs();
@@ -455,7 +494,7 @@ const gripperPositions = setGripperPositions();
 const Gripper = ({loader, geoConfig, gripDistance, children,...props}) => {
 
   const ref = useRef([]);
-  const gamepadRef = useContext(GamepadContext);
+  // const gamepadRef = useContext(GamepadContext);
   const colorRef = useRef(0x999999)
   const [index, setIndex] = useState(0)
 
@@ -476,15 +515,15 @@ const Gripper = ({loader, geoConfig, gripDistance, children,...props}) => {
     
     grip(gripDistance, ref.current)
     
-    if (gamepadRef.current.right.new.buttons[4] !== gamepadRef.current.right.prev.buttons[4] 
-      && gamepadRef.current.right.new.buttons[4] > 0.8){
-      ref.current[0].traverse((obj) => {
-        // if (obj.type === "Mesh") obj.material.color.set(direction === 1 ? 0x777777 : 0x999999 );
-        if (obj.type === "Mesh") obj.material.color.set(colorRef.current);
-      });
-      colorRef.current = colorRef.current === 0x777777 ? 0x999999 : 0x777777;
-      setIndex((i)=>i+1)
-    }    
+    // if (gamepadRef.current.right.new.buttons[4] !== gamepadRef.current.right.prev.buttons[4] 
+    //   && gamepadRef.current.right.new.buttons[4] > 0.8){
+    //   ref.current[0].traverse((obj) => {
+    //     // if (obj.type === "Mesh") obj.material.color.set(direction === 1 ? 0x777777 : 0x999999 );
+    //     if (obj.type === "Mesh") obj.material.color.set(colorRef.current);
+    //   });
+    //   colorRef.current = colorRef.current === 0x777777 ? 0x999999 : 0x777777;
+    //   setIndex((i)=>i+1)
+    // }    
     // if ( distance < 1 || distance > 105) {
     //   console.error("gripeer: out of range")
     // } else {
@@ -494,9 +533,9 @@ const Gripper = ({loader, geoConfig, gripDistance, children,...props}) => {
   
   return(
     <>
-      <Text fontSize={0.5} position={[-10,-3,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
+      {/* <Text fontSize={0.5} position={[-10,-3,-10]} rotation={[0,45*DEG2RAD,0]} color="black">
         {gamepadRef.current.right.new.buttons[4]}
-      </Text>
+      </Text> */}
       <Model ref={el=>(ref.current[0]=el)} loader={loader} modelConfig={gripperConfigs[0]} position={gripperPositions[0]} rotation={rotations[0]}>
         <Model ref={el=>(ref.current[1]=el)} loader={loader} modelConfig={gripperConfigs[1]} position={gripperPositions[1]} rotation={rotations[1]}/>
         <Model ref={el=>(ref.current[2]=el)} loader={loader} modelConfig={gripperConfigs[2]} position={gripperPositions[2]} rotation={rotations[2]}>

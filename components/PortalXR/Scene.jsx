@@ -9,18 +9,33 @@ import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
 import { Leva, useControls } from 'leva'
 // import 'bootstrap/dist/css/bootstrap.css';
 
+import { useXRStore } from "../../store/zustand/XR.js"
 import DevBoard from "./DevBoard"
 import RemoteGroup from "./RemoteGroup"
 import { GamepadProvider } from "./GamepadContext"
+import { GamepadInput } from "./GamepadInput"
+import UiPanel from "./UI/UiPanel.jsx"
 
 // const Blob = dynamic(() => import('./Blob'), { ssr: false })
 
 export default function Scene(portalRTC, ...props) {
+  const triggerPressed_L = useRef({now:false, prev:false});
+  const switchMode = useXRStore.getState().switchMode;
+  console.log(process.env.NODE_ENV)
+  useEffect(() => useXRStore.subscribe(
+    (state) => {
+      setGamepadCallback(triggerPressed_L, state.triggerPressed_L, () => {
+      // setGamepadCallback(buttonBPressed_R, state.buttonBPressed_R, () => {
+        switchMode();
+        console.log("mode switched")
+      })
+      // console.log("dasf")
+    }
+  ), []);
 
-  useEffect(() => {
-    // console.log('in scene >>', props.PCD);
-    //setVid(document.getElementById('remotevideo'));
-  }, []);
+  useEffect(()=>{
+    console.log("Scence is rendered")
+  })
 
   return (
     <>
@@ -37,6 +52,9 @@ export default function Scene(portalRTC, ...props) {
 
             <Controllers />
             <Hands />
+            <GamepadInput />
+            {/* <UiPanel /> */}
+            <UiPanel position={[-2,2,-3]}/>
 
 
             {/* <Blob route='/' position-y={-0.75} /> */}
@@ -88,3 +106,14 @@ function Environment() {
   return null
 }
 
+const setGamepadCallback = (padRef, padState, pressCallback = null, releaseCallback = null) => {
+  if (padRef.hasOwnProperty("current")){
+    padRef.current.prev = padRef.current.now;
+    padRef.current.now = padState;
+    // console.log("asdf")
+    if (padRef.current.now !== padRef.current.prev){
+      if (padRef.current.now === true && pressCallback !== null) pressCallback()
+      else if (padRef.current.now === false && releaseCallback !== null) releaseCallback()
+    }
+  }
+}

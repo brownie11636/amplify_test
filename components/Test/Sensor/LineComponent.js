@@ -5,16 +5,15 @@ import parser from "./seriesParsers";
 
 export default function App() {
 
-  const [serialNumber, setSerialNumber] = useState("SN000-000-0000");
+  const [serialNumber, setSerialNumber] = useState("SN000-DEV-0000");
   const [urlFlag, setUrlFlag] = useState(true);
   const [message, setMessage] = useState("");
   const [accData, setAccData] = useState([]);
   const [prsData, setPrsData] = useState([]);
   const [trhData, setTrhData] = useState([]);
-  const mqtt_url = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload/topic?topic=perpet/';
-  const mqtt_url2 = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload';
-
-  const options = {
+  const [xTimeRange, setXTimeRange] = useState(20);
+  const [messageLog, setMessageLog] = useState([]);
+  const [options, setOptions] = useState({
     chart: {
       id: 'realtime',
       height: 350,
@@ -36,19 +35,21 @@ export default function App() {
     stroke: {
       curve: 'straight'
     },
-    xaxis: {
-      type: "numeric",
-    },
     grid: {
       row: {
         colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
         opacity: 0.5
       },
     },
+    xaxis: {
+      type: "numeric"
+    },
     markers: {
       size: 0
     },
-  };
+  });
+  const mqtt_url = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload/topic?topic=perpet/';
+  const mqtt_url2 = 'https://jayutest.best:58004/iot-service/v1/mqtt/payload';
 
   const DoubleYaxisOption = [
     { 
@@ -93,10 +94,32 @@ export default function App() {
     setMessage(event.target.value);
   };
 
+  const onChangeXTimeRange = (event) => {
+    setXTimeRange(event.target.value);
+  };
+  
   useEffect(() => {
-    setAccData([]);
-    setPrsData([]);
-    setTrhData([]);
+    const timeout0 = setInterval(()=> {
+      fetch(mqtt_url+serialNumber+"/message")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // console.log(data.data.content);
+        let newMessage = data.data.content.map((e) => ({
+          time: e.insert_date,
+          message: e.payload
+        }));
+        setMessageLog(newMessage.reverse());
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }, 1000);
+
     const timeout1 = setInterval(() => {
       fetch(mqtt_url+serialNumber+"/acc")
       .then(response => {
@@ -106,9 +129,10 @@ export default function App() {
         return response.json();
       })
       .then(data => {
-        console.log(data.data.content);
         let arr = data.data.content;
-        setAccData(parser(arr,"acc"));
+        let temp =parser(arr,"acc"); 
+        console.log("temp,",temp)
+        setAccData(temp);
       })
       .catch(error => {
         console.error('Error:', error);
@@ -124,7 +148,6 @@ export default function App() {
         return response.json();
       })
       .then(data => {
-        console.log(data.data.content);
         let arr = data.data.content;
         setPrsData(parser(arr,"prs"));
       })
@@ -142,7 +165,6 @@ export default function App() {
         return response.json();
       })
       .then(data => {
-        // console.log(data.data.content);
         let arr = data.data.content;
         setTrhData(parser(arr,"trh"));
       })
@@ -152,6 +174,7 @@ export default function App() {
     }, 1000)
 
     return () => {
+      clearInterval(timeout0);
       clearInterval(timeout1);
       clearInterval(timeout2);
       clearInterval(timeout3);
@@ -172,7 +195,7 @@ export default function App() {
       },
       body: JSON.stringify({
         topic: "perpet/"+serialNumber+"/message",
-        payload: message
+        payload: message,
       })
     })
       .then(response => {
@@ -187,6 +210,11 @@ export default function App() {
         console.error('Error:', error);
       });
   };
+
+  const xTimeRangeSubmit = (e) => {
+    setOptions({ ...options, xaxis: {type: "numeric", range: 1000*xTimeRange}});
+    console.log(options);
+  }
 
   return (
     <div style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
@@ -204,7 +232,7 @@ export default function App() {
         <input type="submit" value="submit" onClick={urlSubmit} />
       </div>
       <div className={styles.login_id}>
-        <h4>Patient message</h4>
+        <h4>Label message</h4>
         <input
           id="message"
           value={message}
@@ -215,6 +243,37 @@ export default function App() {
       </div>
       <div className={styles.submit}>
         <input type="submit" value="submit" onClick={messageSubmit} />
+      </div>
+      <div className={styles.login_id}>
+        <h4>set Xaxis range in second </h4>
+        <input
+          id="xrange"
+          value={xTimeRange}
+          onChange={onChangeXTimeRange}
+          type="number"
+          placeholder="Xaxis range in second"
+        />
+      </div>
+      <div className={styles.submit}>
+        <input type="submit" value="submit" onClick={xTimeRangeSubmit} />
+      </div>
+      <div style={{ width: '80%', marginTop: 30, marginBottom: 30 }}>
+        <div style={{ display: 'flex', fontWeight: 'bold' }}>
+          <div style={{ flex: 1 }}>Time</div>
+          <div style={{ flex: 1 }}>Writer</div>
+          <div style={{ flex: 1 }}>Location</div>
+          <div style={{ flex: 3 }}>Message</div>
+          <div style={{ flex: 2 }}>Note</div>
+        </div>
+        {messageLog.map((entry, index) => (
+          <div key={index} style={{ display: 'flex', borderBottom: '1px solid #ccc' }}>
+            <div style={{ flex: 1 }}>{entry.time}</div>
+            <div style={{ flex: 1 }}></div>
+            <div style={{ flex: 1 }}></div>
+            <div style={{ flex: 3 }}>{entry.message}</div>
+            <div style={{ flex: 2 }}></div>
+          </div>
+        ))}
       </div>
       <ApexChartLine data={accData} options={{ ...options, title: {text: "Accelerometer"}}}/>
       <ApexChartLine data={prsData} options={{ ...options, title: {text: "pressure"}}}/>

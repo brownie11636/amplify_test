@@ -25,13 +25,13 @@ export default function parser(packet, parser_id){
         }
         if (idx>5) {
           if (idx%3 == 0) {
-            array0.push(Buffer.from(datum, 'hex').readUInt8());
+            array0.push(Buffer.from(datum, 'hex').readInt8());
           }
           if (idx%3 == 1) {
-            array1.push(Buffer.from(datum, 'hex').readUInt8());
+            array1.push(Buffer.from(datum, 'hex').readInt8());
           }
           if (idx%3 == 2) {
-            array2.push(Buffer.from(datum, 'hex').readUInt8());
+            array2.push(Buffer.from(datum, 'hex').readInt8());
           }
         }
       })
@@ -106,7 +106,7 @@ export default function parser(packet, parser_id){
     const dataArray = timeArray.map((time, index) => {
       return ([time, pressureArray[index]]);
     });
-    console.log(dataArray);
+    
     return ([
       {
         "name": "pressure",
@@ -134,7 +134,6 @@ export default function parser(packet, parser_id){
           timeHex += datum;
           if (idx==5) {
             timeArray.push(Buffer.from(timeHex, 'hex').readUInt32LE());
-            console.log(Buffer.from(timeHex, 'hex').readUInt32LE());
             for (let j=0;j<19;j++) {
               timeArray.push(timeArray.at(-1)+dt);
             }

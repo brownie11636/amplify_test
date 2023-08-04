@@ -17,7 +17,6 @@ import PortalArm from './PortalArm'
 export default function RemoteGroup({XRscale, ...props}) {
 
   const ref = useRef();
-  const gamepadRef = useContext(GamepadContext)
 
   useEffect(() => {
     console.log('in scene >> remotegroup');
@@ -25,7 +24,7 @@ export default function RemoteGroup({XRscale, ...props}) {
 
   useFrame((state, delta, XRFrame) => {
     if(XRFrame){
-      // let right = gamepadRef.current.right;
+
       if (true){
 
       }
@@ -38,7 +37,11 @@ export default function RemoteGroup({XRscale, ...props}) {
       <Suspense >
         <PortalArm />
       </Suspense>
-      <SpatialVideo scale={1} rotation={[0,-70*THREE.MathUtils.DEG2RAD,0]} position={[-0.7,0.93,-0.43]}/>
+      <SpatialVideo 
+        scale={1} 
+        rotation={[0, -61*THREE.MathUtils.DEG2RAD, 0]} 
+        position={[-0.88, 1.02, -0.28]}
+      />
       {/* <Box position={[-1.2, 0, 0]} />
       <Box position={[1.2, 0, 0]} />     */}
     </group>
