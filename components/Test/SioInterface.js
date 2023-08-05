@@ -2,6 +2,8 @@ import { Suspense, createContext,useContext, useEffect, useState, useMemo, useRe
 import dynamic from 'next/dynamic'
 
 import { PortalCommContext } from '../../utils/contexts/portalComm';
+import ApexChartLine from './Sensor/ApexChartLine';
+
 
 // const Scene = dynamic(() => import("../../components/PortalXR/Scene"), { ssr: true })
 // import Scene from "../../components/PortalXR/Scene";
@@ -10,12 +12,52 @@ export const RgbdContext = createContext();
 export const PortalRTCContext = createContext();
 
 const SioInterface = () => {
-  const [dataArray, setDataArray] = useState([]);
   const {commClientV01} = useContext(PortalCommContext);
   const [inputString, setInputString] = useState("(string-type input)");
   const inputJsonString_default = {"type":"set_pos","data":{"arm":[-0.1074,-0.4774,0.2029,1.135,-3.047,2.150],"grip":500}};
   //convert json to string
   const [inputJsonString, setInputJsonString] = useState(JSON.stringify(inputJsonString_default));
+  const [chartData, setChartData] = useState([]);
+
+
+  const [options, setOptions] = useState({
+    chart: {
+      id: 'realtime',
+      height: 350,
+      type: 'line',
+      animations: {
+        enabled: false,
+        easing: 'linear',
+        dynamicAnimation: {
+          speed: 1000
+        }
+      },
+      toolbar: {
+        show: false
+      },
+    },
+    xaxis: {
+      type: "datetime",
+      // type: "numeric"
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      curve: 'straight'
+    },
+    grid: {
+      row: {
+        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+        opacity: 0.5
+      },
+    },
+    markers: {
+      size: 0
+    },
+  });
+
+
   const portalRTCRef = useRef();
   // const svcSltOpt = uesRef();
 
@@ -27,15 +69,7 @@ const SioInterface = () => {
     console.log("received packet:", packet);
   });
   
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newData = { data: 'data' };
-      setDataArray((prevDataArray) => [...prevDataArray, newData]);
-    }, 1000);
-
-    // Clean up the interval on component unmount
-    return () => clearInterval(interval);
-  }, []);
+  const [dataArray, setDataArray] = useState([]);
 
 
   const updateRobotSelect = (modules) => {
@@ -78,6 +112,13 @@ const SioInterface = () => {
       const inputJson = JSON.parse(inputJsonString);
       console.log("inputJsonString:",inputJson);
 
+      //set current time, and merge it with inputJson.data.arm
+      let time = new Date().getTime();
+
+
+      setDataArray((prevDataArray) => [...prevDataArray, [time, ...inputJson.data.arm]]);
+      console.log("data22Array:", dataArray);
+
       let msg = {from:commClientV01.socket.id, to:robotSlt.current.options[robotSlt.current.selectedIndex].value, msg:inputJson};
 
       commClientV01.socket.emit("robot", "C2C", msg,(res) => {
@@ -89,6 +130,48 @@ const SioInterface = () => {
       return;
     }
   }
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Convert the data to the format expected by ApexCharts
+      const timeArray = dataArray.map(data => data[0]);
+      const dataArrayX = dataArray.map(data => data[1]);
+      const dataArrayY = dataArray.map(data => data[2]);
+      const dataArrayZ = dataArray.map(data => data[3]);
+    
+      const dataSeriesX = timeArray.map((time, index) => ({ x: time, y: dataArrayX[index] }));
+      const dataSeriesY = timeArray.map((time, index) => ({ x: time, y: dataArrayY[index] }));
+      const dataSeriesZ = timeArray.map((time, index) => ({ x: time, y: dataArrayZ[index] }));
+    
+      console.log("dataSeriesX:", dataSeriesX);
+      console.log("dataArray2222:", dataArray)
+
+      const tempData =  [
+        {
+          "name": "x",
+          "data": dataSeriesX
+        },
+        {
+          "name": "y",
+          "data": dataSeriesY
+        },
+        {
+          "name": "z",
+          "data": dataSeriesZ
+        }
+      ]
+    
+      setChartData(tempData);
+
+
+
+    }, 100);
+    // Clean up the interval on component unmount
+    return () => clearInterval(interval);
+  }, [dataArray]);
+
+
 
   return (
     <>
@@ -157,6 +240,8 @@ const SioInterface = () => {
             <span>send json</span>
           </button>
         </div>
+        <ApexChartLine data={chartData} options={{ ...options, title: {text: "robot coordinate"}}}/>
+
       </section>
     </>
   );

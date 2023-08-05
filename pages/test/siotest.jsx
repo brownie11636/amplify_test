@@ -1,6 +1,6 @@
-import { PortalCommContext, commClient, commClientV01 } from '../../utils/contexts/portalComm.js';
-import SioInterface from  "../../components/Test/sioInterface";
-import MainLayout from "../../components/Main/MainLayout.jsx"
+import { PortalCommContext, commClient, commClientV01 } from '../../utils/contexts/portalComm';
+import SioInterface from  "../../components/Test/SioInterface"
+import MainLayout from "../../components/Main/MainLayout"
 
 // import dynamic from 'next/dynamic'
 // const Scene = dynamic(() => import("../../components/Canvas/Scene"), { ssr: true })
