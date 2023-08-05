@@ -9,9 +9,9 @@ import { PortalCommContext } from '../../utils/contexts/portalComm';
 export const RgbdContext = createContext();
 export const PortalRTCContext = createContext();
 
-const XRContainer = () => {
+const SioInterface = () => {
+  const [dataArray, setDataArray] = useState([]);
   const {commClientV01} = useContext(PortalCommContext);
-
   const [inputString, setInputString] = useState("(string-type input)");
   const inputJsonString_default = {"type":"set_pos","data":{"arm":[-0.1074,-0.4774,0.2029,1.135,-3.047,2.150],"grip":500}};
   //convert json to string
@@ -21,20 +21,22 @@ const XRContainer = () => {
 
   const robotSlt = useRef();
 
-
-  const depthSrcRef = useRef();
-  const rgbSrcRef = useRef();
-
-  const onLoadRgbImg = useCallback (() => {
-    //console.log('image lo!!!!!!!!!!!')
-    portalRTCRef.current.rgbImg = rgbSrcRef.current;
-    
-  }, [])
-  const onLoadDepthImg = useCallback (() => {
-    portalRTCRef.current.depthImg = depthSrcRef.current;
-    
-  }, [])
+ 
+  commClientV01.socket.on("robot", (type, packet) => {
+    console.log("received type:", type);
+    console.log("received packet:", packet);
+  });
   
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newData = { data: 'data' };
+      setDataArray((prevDataArray) => [...prevDataArray, newData]);
+    }, 1000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(interval);
+  }, []);
+
 
   const updateRobotSelect = (modules) => {
     //module: List of moduleJSONs
@@ -53,14 +55,14 @@ const XRContainer = () => {
   }
 
 //convert json to string
-// setInputJsonString(JSON.stringify(inputJsonString_default));
+
 
   // Event handler to handle text input changes
   const onChangeInputString = (event) => {
     setInputString(event.target.value);
   }; 
   const onChangeInputJson = (event) => {
-    setInputJson(event.target.value);
+    setInputJsonString(event.target.value);
   }; 
 
 
@@ -76,13 +78,11 @@ const XRContainer = () => {
       const inputJson = JSON.parse(inputJsonString);
       console.log("inputJsonString:",inputJson);
 
-      commClientV01.socket.emit("query-module-portal", "filter",(res) => {
-        updateRobotSelect(res)
-      })
+      let msg = {from:commClientV01.socket.id, to:robotSlt.current.options[robotSlt.current.selectedIndex].value, msg:inputJson};
 
-      // commClientV01.socket.emit("robot", "C2C", inputJson,(res) => {
-      //   console.log("response for connection request:", res);
-      // })
+      commClientV01.socket.emit("robot", "C2C", msg,(res) => {
+        console.log("response for connection request:", res);
+      })
       
     } catch (e) {
       console.log("inputJsonString is not valid json");
@@ -157,19 +157,11 @@ const XRContainer = () => {
             <span>send json</span>
           </button>
         </div>
-
-
-
       </section>
-      <div style={{position:"absolute", top:"500px", left:"-2000px", width:"3000", height:"3000", zIndex:"111"}}>
-        <img ref={depthSrcRef} src="/depth-sample-img.png" width="1280" height="720" style={{width:"1280px", height:"720px"}} onLoad={onLoadDepthImg} loading='auto'/>
-        <img ref={rgbSrcRef} src="/rgb-sample-img.jpeg" width="1280" height="720" style={{width:"1280px", height:"720px"}}  onLoad={onLoadRgbImg} loading='auto'/>
-      </div>
-
     </>
   );
 };
 
 
 
-export default XRContainer;
+export default SioInterface;

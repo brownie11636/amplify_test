@@ -54,6 +54,11 @@ export default function dummyRobot(){
       // })
     }
     console.log(commClientV01.current.socket.id)
+
+    socket.on("robot", (packet) => {
+      console.log("received packet:", packet);
+    });
+
     console.log(socketPoint_dev)
   },[])
 
