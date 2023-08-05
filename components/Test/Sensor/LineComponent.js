@@ -130,9 +130,7 @@ export default function App() {
       })
       .then(data => {
         let arr = data.data.content;
-        let temp =parser(arr,"acc"); 
-        console.log("temp,",temp)
-        setAccData(temp);
+        setAccData(parser(arr,"acc"));
       })
       .catch(error => {
         console.error('Error:', error);
