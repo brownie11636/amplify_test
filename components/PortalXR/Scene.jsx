@@ -42,7 +42,9 @@ export default function Scene(portalRTC, ...props) {
             <GamepadInput />
             {/* <UiPanel /> */}
             <StatPanel position={[-1.5,4.5,-1.5]}/>
-            <UiPanel position={[-2,2,-3]}/>
+            <UiPanel 
+            scale={0.5} 
+            position={[-2,2,-3]}/>
 
 
             {/* <Blob route='/' position-y={-0.75} /> */}

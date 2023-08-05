@@ -36,7 +36,7 @@ export default function StatPanel(props){
     // const robotoFontFamily = ThreeMeshUI.FontLibrary.addFontFamily( "Roboto" );
     // robotoFontFamily.addVariant("normal","normal","/fonts/Roboto-msdf.json","/fonts/Roboto-msdf.png")
     
-    panelRef.current.lookAt(0,0,0);
+    panelRef.current.lookAt(0,1,0);
 
     return () => {}
   },[])  
