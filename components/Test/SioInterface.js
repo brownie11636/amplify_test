@@ -117,7 +117,7 @@ const SioInterface = () => {
 
 
       setDataArray((prevDataArray) => [...prevDataArray, [time, ...inputJson.data.arm]]);
-      console.log("data22Array:", dataArray);
+      console.log("dataArray:", dataArray);
 
       let msg = {from:commClientV01.socket.id, to:robotSlt.current.options[robotSlt.current.selectedIndex].value, msg:inputJson};
 
@@ -144,9 +144,6 @@ const SioInterface = () => {
       const dataSeriesY = timeArray.map((time, index) => ({ x: time, y: dataArrayY[index] }));
       const dataSeriesZ = timeArray.map((time, index) => ({ x: time, y: dataArrayZ[index] }));
     
-      console.log("dataSeriesX:", dataSeriesX);
-      console.log("dataArray2222:", dataArray)
-
       const tempData =  [
         {
           "name": "x",
