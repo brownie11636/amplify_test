@@ -81,5 +81,6 @@ export const width990px = `w-[12.65533333rem] sm:w-[25.31066667rem] md:w-[37.966
 
 export const letterSpacing10percent = `tracking-[0.1rem] sm:tracking-[0.2rem] md:tracking-[0.3rem] lg:tracking-[0.4rem] xl:tracking-[0.5rem] 2xl:tracking-[0.6rem]`;
 
+export const lineHeight30px = `leading-[0.3125rem] sm:leading-[0.625rem] md:leading-[0.9375rem] lg:leading-[1.25rem] xl:leading-[1.5625rem] 2xl:leading-[1.875rem]`;
 export const lineHeight49px = `leading-[0.5104166667rem] sm:leading-[1.020833333rem] md:leading-[1.53125rem] lg:leading-[2.041666667rem] xl:leading-[2.552083333rem] 2xl:leading-[3.0625rem]`;
 export const lineHeight68px = `leading-[0.7083333333rem] sm:leading-[1.416666667rem] md:leading-[2.125rem] lg:leading-[2.833333333rem] xl:leading-[3.541666667rem] 2xl:leading-[4.25rem]`;

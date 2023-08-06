@@ -289,10 +289,12 @@ const ArmController = ({ visible, setVisible }) => {
                 <div className="flex justify-center items-center w-[22px] h-[30px] bg-[#182A5B]">
                   <span className="text-white text-base">{item}</span>
                 </div>
-                <div className="w-[106px] h-full flex justify-center items-center">
+                <div className="w-[84px] h-full flex justify-center items-center border-b border-b-[#182A5B]">
                   <span className="text-[#222222] text-sm">value</span>
                 </div>
-                <span className="h-full flex items-end text-base text-[#222222]">mm</span>
+                <span className="pl-[8px] h-full flex items-end text-base text-[#222222] font-[Roboto] relative top-[4.5px]">
+                  mm
+                </span>
               </div>
             ))}
           </div>
@@ -358,7 +360,7 @@ const RotateArm = ({ name, id, value, setValue, step }) => {
         >
           <Image src={"/images/main/controller/plus.svg"} fill alt="" />
         </div>
-        <div className="flex flex-col gap-[14px]">
+        <div className="flex flex-col gap-[0px]">
           <div className="w-[300px] h-[12px] bg-[#F2F2F2] overflow-hidden relative">
             <div
               id={id}
