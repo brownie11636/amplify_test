@@ -13,7 +13,7 @@ const MainView = () => {
         <div className="w-[100px] h-[50px] flex justify-center items-center">
           <span>View3</span>
         </div>
-        <button className="absolute right-[20px] top-[10px] w-[130px] h-[40px] bg-[#182a5b]">
+        <button className="absolute right-[20px] top-[10px] w-[130px] h-[40px] bg-[#182a5b] hover:bg-[#569EF5]">
           <span className="text-white">XR view</span>
         </button>
       </div>
