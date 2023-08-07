@@ -1,91 +1,87 @@
-import React, { useState, useEffect, useRef, forwardRef } from 'react'
+import React, { useState, useEffect, useRef, forwardRef, useLayoutEffect } from 'react'
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber'
+import { Box } from '@react-three/drei'
 // import ThreeMeshUI from 'three-, mesh-ui'
 // import ThreeMeshUI from 'https://cdn.skypack.dev/three-mesh-ui'
-import ThreeMeshUI from '../three-mesh-ui/three-mesh-ui'
+// import ThreeMeshUI from '../three-mesh-ui/three-mesh-ui'
+import ThreeMeshUI from '../three-mesh-ui-7.1.5/src/three-mesh-ui'
 import * as THREE from 'three'
+import { Interactive, useInteraction } from '@react-three/xr'
 
-import { useXRStore } from "../../../store/zustand/XR.js"
+import { useModeStore } from "/store/zustand/mode.js"
+import * as color from "./colors.js"
+import * as UiStates from "./UiStates"
+import LayeredBlock from "./components/LayeredBlock"
+import Button from "./components/Button"
+import OperatingBlock from './OperatingBlock'
 
 extend(ThreeMeshUI);
 
-// const defaultColor = new THREE.Color(0xffffff);    //white
-const defaultColor = new THREE.Color(0x9d78ae);   //purple
-const buttonColor = new THREE.Color(0x664455)
-const selectedColor = new THREE.Color(0xe36dc2);
+/**
+ * TODO:
+ *  THREE.3dObject.traverse 사용해서 three-mesh-ui frame, text 검사 해서 layer 변경
+ *  StatBoard 만들기 (FPS 확인용)
+ */
+
 
 export default function UiPanel(props){
-  const triggerPressed_R = useRef({now:false, prev:false})
-  const controlMode = useRef(useXRStore.getState().controllerMode)
   const panelRef = useRef();
-  const modeBlockRef = useRef();
-  const contentBlockRef = useRef();
-  const prevRef = useRef();
-  const textRef = useRef();
-  const modeRef = useRef();
-  const defaultButtonRef = useRef();
-  const operatingButtonRef = useRef();
-  const settingButtonRef = useRef();
-
-  const camera = useThree((state) => state.camera)
 
   useEffect(() => {
     console.log("mounted!!!!!!!!")
-    const unsubXRStore = useXRStore.subscribe(
-      (state,prevState) => {
-        modeRef.current.set({content:"MODE:\n"+ state.controllerMode})
-        controlMode.current = state.controllerMode; 
-        // setGamepadCallback(triggerPressed_R,state.triggerPressed_R,()=>console.log("pressed"), ()=>console.log("released"))
-        console.log(state)
-        console.log(prevState)
-    })
 
-    panelRef.current.lookAt(0,0,0);
+    const robotoFontFamily = ThreeMeshUI.FontLibrary.addFontFamily( "Roboto" );
+    robotoFontFamily.addVariant("normal","normal","/fonts/Roboto-msdf.json","/fonts/Roboto-msdf.png")
+
+    panelRef.current.lookAt(0,1,0);
+
     console.log(panelRef.current)
-    defaultButtonRef.current.layers.set(4);
 
     return () => {
       console.log("unmounted")
-      unsubXRStore()
     }
   },[])  
-  
-  useEffect(() => {
-    console.log("camera")
-    console.log(camera)
-  },[camera])
 
   useFrame(() => {
-    modeRef.current.set({content:"MODE:\n"+ controlMode.current});
-    // prevRef.current.set({content:triggerPressed_R.current.prev +"\n"})
-    // textRef.current.set({content:triggerPressed_R.current.now+"\n"});
-    // textRef.current.content = triggerPressed_R.current+"\n";
     ThreeMeshUI.update()
-    // console.log(triggerPressed_R.current)
+    // console.log(panelRef.current)
   })
   
-  const [accentColor] = useState(() => new THREE.Color('white'))
-
   useEffect(()=>{
     console.log("UiPanel is rendered")
   })
+
+  const args = {
+    width:"100%",
+    height:"100%",
+    backgroundColor:color.portalPurple,
+    // backgroundOpacity:1,
+    flexDirection:"row",
+    borderRadius:0.1,
+    borderColor:color.black,
+    padding:0.01,
+    margin:0.01,
+    borderWidth:0.01,
+  }
 
   return (
     <block
       ref={panelRef}
       args={[{
-        width: 4,
-        height: 1.9,
+        ...args,
+        width: 4.5,
+        height: 4,
         fontSize: 0.2,
         // backgroundOpacity: 0.5,
-        backgroundColor: defaultColor,
-        fontFamily: '/fonts/Roboto-msdf.json',
-        fontTexture: '/fonts/Roboto-msdf.png',
-        contentDirection: "row",
-        alignItems: "start",
-        // justifyContent: "start",
-        // justifycontent: "space-evenly",
-        borderRadius: 0.1,
+        // backgroundColor: color.portalPurple,
+        fontFamily: 'Roboto',
+        // fontFamily: '/fonts/Roboto-msdf.json',
+        // fontTexture: '/fonts/Roboto-msdf.png',
+        flexDirection: "column",
+        // alignItems: "start",
+        // justifyContent: "center",
+        // justifyContent: "space-evenly",
+        // borderRadius: 0.1,
 
         // padding: 0.075,
       }]}
@@ -93,119 +89,128 @@ export default function UiPanel(props){
       // onUpdate={self=>self.lookAt(0,0,0)}
     >
       {/* <axesHelper args={[1]}/> */}
-      <block ref={modeBlockRef} 
-        args={[{width:1.5, height:1.9,backgroundOpacity:0.2,}]} 
-      >
-        {/* <axesHelper args={[1]} /> */}
-        <block args={[{width:1.5, height:0.45,backgroundOpacity:0,margin:0.1, interLine: 0.05,}]}>
-          <text ref={modeRef} 
-            // content={ "MODE:\n"+controlMode.current } 
-          />
-        </block>
-        <block args={[{backgroundOpacity:0}]}>
-          <ModeButton ref={defaultButtonRef} content={"default"} />
-          <ModeButton ref={operatingButtonRef} content={"operating"} />
-          <ModeButton ref={settingButtonRef} content={"setting"}/>
+      <block args={[{...args, height:"50%", borderWidth:0.02,}]} >
+        <ModePanel args={[{...args, width:"30%", flexDirection:"column"}]} />
+        <block args={[{...args, width:"70%", flexDirection:"column"}]} >
+          <OperatingBlock args={[{...args,flexDirection:"column"}]} />
         </block>
       </block>
-      <block ref={contentBlockRef}
-        args={[{width:2.5, height:1.9,backgroundOpacity:0,borderOpacity:1,borderWidth:0.02,borderColor:new THREE.Color(0x000000)}]} 
-      >
-        {}
+      <block args={[{ 
+        ...args,
+        width:"100%", 
+        height:"50%",
+        borderWidth:0.02,
+      }]} >
+        {/* <text 
+          // args={[{textContent:"dasfasd"}]}
+          _textContent-value={"status block?\n"}
+        /> */}
+        {/* <text 
+          args={[{textContent:"dasfasd"}]}
+          // _textContent-value={"status block?\n"}
+        /> */}
+        
+        {/* <text content={"XR Zoom?"}/> */}
       </block>
     </block>
   )
 }
 
-const ModeButton = forwardRef(function ModeButton({mode, content, onClick, ...props}, button) {
-  // const button = _button;
-  // const button = useRef();
+const ModePanel = (props) =>{
+  const modeTextRef = useRef();
+  const defaultRef = useRef(); 
+  const operatingRef = useRef(); 
+  const settingRef = useRef(); 
+  const buttonRefs = [defaultRef,operatingRef,settingRef];
+  const switchMode = useModeStore.getState().switchMode;
 
-  const controlMode = useRef(useXRStore.getState().controllerMode); 
-  const switchMode = useXRStore.getState().switchMode;
 
-  useEffect(()=>{
-    console.log(button)
-    button.current.setupState({
-      state: "default",
-      attributes: {
-        backgroundColor: buttonColor,
-        backgroundOpacity: 1,
+  useEffect(() => {
+    console.log("mounted!!!!!!!!")
+    // console.log(color.black)
+    const unsubModeStore = useModeStore.subscribe(
+      (state,prevState) => {
+        /////////////////////////////////////////////
+        // modeTextRef.current.set({content:"MODE:\n"})// 
+        //////////////////////////////////////////// 
+        // modeTextRef.current.set({content:"MODE:\n"+ state.controllerMode})
+        // console.log(state.controllerMode)
+
+        for ( let i = 0 ; i < 3 ; i++){
+          let text
+          buttonRefs[i].current.traverse((obj)=>{
+            // console.log(obj)
+            if (obj.isText) {
+              // console.log(obj.content)
+              text = obj._textContent._value
+            }
+          })
+          // console.log(buttonRefs[i].current)
+          buttonRefs[i].current.isActive = (text === state.controllerMode)
+          if (!buttonRefs[i].current.isActive) buttonRefs[i].current.setState("idle")
+        }
       }
-    })
-    button.current.setupState({
-      state: "hovered",
-      attributes: {        
-        backgroundColor: buttonColor,
-        backgroundOpacity: 0.7,
-      }
-    })
-    button.current.setupState({
-      state: "selected",
-      attributes: {
-        backgroundColor: selectedColor,
-        backgroundOpacity: 1,
-      }
-    })
+    )
 
-    button.current.setState("default")
-    console.log(button.current)
-    console.log(button.current.childrenUIs)
-    console.log(button.current.currentState)
-  },[]);
+    buttonRefs[0].current.isActive = true;
+    buttonRefs[0].current.setState("active")
 
-  useEffect(()=>{
-    console.log(content+" button rendered")
-    console.log(button.current)
-  });
 
-  useFrame(()=>{
-    ThreeMeshUI.update()
+    return () => {
+      console.log("unmounted")
+      unsubModeStore()
+    }
+  },[])  
 
+  useFrame(() => {
+    // modeRef.current.set({content:"MODE:\n"+ controlMode.current});
+    // prevRef.current.set({content:triggerPressed_R.current.prev +"\n"})
+    // textRef.current.set({content:triggerPressed_R.current.now+"\n"});
+    // textRef.current.content = triggerPressed_R.current+"\n";
   })
+  
+    const args = {
+      width:"100%",
+      height:"100%",
+      backgroundColor:color.portalPurple,
+      // backgroundOpacity:1,
+      flexDirection:"column",
+      borderRadius:0.1,
+      borderColor:color.black,
+      borderWidth:0.02,
+      padding:0.02,
+      margin:0.02,
+      justiyContent:"center",
+      alignItems:"center",
+    }
+
+  const modeButtonArgs = {
+    ...args,
+    width: "100%",
+    height: "33%",
+    // height: 0.3,
+    backgroundColor: color.darkPurple,
+    // alignItems:"stretch",
+    margin:[0.05, 0.02, 0.05, 0.02]
+  }
 
   return (
-    <block
-      ref={button}
-      onPointerEnter={() => button.current.setState("hovered")}
-      onPointerLeave={() => button.current.setState("default")}
-      onPointerDown={() => button.current.setState("selected")}
-      onPointerUp={(e) => {
-        e.stopPropagation()
-        button.current.setState("hovered")
-        console.log("swithMode button clicked")
-        // onClick()
-        switchMode(content);
-      }}
-      args={[{
-        width: 1.2,
-        height: 0.3,
-        fontSize: 0.2,
-        margin:0.05,
-        // backgroundOpacity: 0.5,
-        backgroundColor: buttonColor,
-        // fontFamily: '/fonts/Roboto-msdf.json',
-        // fontTexture: '/fonts/Roboto-msdf.png',
-        justfycontent: "center",
-        // borderRadius: 0.1,
-        padding: 0.05,
-        
-      }]}
-      {...props}
-      >
-      <text content={content}/>
+    <block args={props.args}
+    // args={[{...args, width:"30%",}]} 
+    >
+      <block args={[{...args, height:"25%",backgroundOpacity:0, lineHeight: 0.05,}]}>
+        {/* <text ref={modeTextRef} content={ "MODE:\ndefault" } /> */}
+        <text ref={modeTextRef} args={[{height:"100%", alignItems:"center", textAlign:"center"}]} _textContent-value={ "MODE:" } />
+      </block>
+      <block args={[{...args, width:"100%",height:"75%",alignItems:"stretch",
+        // backgroundOpacity:0
+      }]}>
+        <Button ref={defaultRef} onClick={()=>{switchMode("default")}} args={[modeButtonArgs]} stateAttribute={UiStates.button} textContent={"default"} />
+        <Button ref={operatingRef} onClick={()=>{switchMode("operating")}} args={[modeButtonArgs]} stateAttribute={UiStates.button} textContent={"operating"} />
+        <Button ref={settingRef} onClick={()=>{switchMode("setting")}} args={[modeButtonArgs]} stateAttribute={UiStates.button} textContent={"setting"}/>
+      </block>
     </block>
-  );
-})
-
-const setGamepadCallback = (padRef, padState, pressCallback, releaseCallback) => {
-  if (padRef.hasOwnProperty("current")){
-    padRef.current.prev = padRef.current.now;
-    padRef.current.now = padState;
-    // console.log("asdf")
-    if (padRef.current.now !== padRef.current.prev){
-      if (padRef.current.now === true) pressCallback()
-      else if (padRef.current.now === false) releaseCallback()
-    }
-  }
+  )
 }
+
+

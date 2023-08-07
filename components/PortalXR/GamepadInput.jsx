@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import { useXR } from '@react-three/xr'
 import { shallow } from "zustand/shallow"
 
-import { useXRStore } from "../../store/zustand/XR"
+import { useXRGamepadStore } from "../../store/zustand/XRGamepad"
 import * as myGamepadInput from '../../libs/XR/myGamepadInput'
 
 const deadZone = 0.1; 
@@ -15,34 +15,34 @@ export const GamepadInput = (props) => {
   const { session } = useXR();
   const gamepadRef = useRef(myGamepadInput.create());
 
-  const updateTriggerPressed_R = useXRStore((state)=>state.updateTriggerPressed_R);
-  const updateSqueezePressed_R = useXRStore((state)=>state.updateSqueezePressed_R);
-  const updateTouchpadPressed_R = useXRStore((state)=>state.updateTouchpadPressed_R);
-  const updateStickPressed_R = useXRStore((state)=>state.updateStickPressed_R);
-  const updateButtonAPressed_R = useXRStore((state)=>state.updateButtonAPressed_R);
-  const updateButtonBPressed_R = useXRStore((state)=>state.updateButtonBPressed_R);
-  const updateTouchpadRight_R = useXRStore((state)=>state.updateTouchpadRight_R);
-  const updateTouchpadLeft_R = useXRStore((state)=>state.updateTouchpadLeft_R);
-  const updateTouchpadUp_R = useXRStore((state)=>state.updateTouchpadUp_R);
-  const updateTouchpadDown_R = useXRStore((state)=>state.updateTouchpadDown_R);
-  const updateStickRight_R = useXRStore((state)=>state.updateStickRight_R);
-  const updateStickLeft_R = useXRStore((state)=>state.updateStickLeft_R);
-  const updateStickUp_R = useXRStore((state)=>state.updateStickUp_R);
-  const updateStickDown_R = useXRStore((state)=>state.updateStickDown_R);
-  const updateTriggerPressed_L = useXRStore((state)=>state.updateTriggerPressed_L);
-  const updateSqueezePressed_L = useXRStore((state)=>state.updateSqueezePressed_L);
-  const updateTouchpadPressed_L = useXRStore((state)=>state.updateTouchpadPressed_L);
-  const updateStickPressed_L = useXRStore((state)=>state.updateStickPressed_L);
-  const updateButtonXPressed_L = useXRStore((state)=>state.updateButtonXPressed_L);
-  const updateButtonYPressed_L = useXRStore((state)=>state.updateButtonYPressed_L);
-  const updateTouchpadRight_L = useXRStore((state)=>state.updateTouchpadRight_L);
-  const updateTouchpadLeft_L = useXRStore((state)=>state.updateTouchpadLeft_L);
-  const updateTouchpadUp_L = useXRStore((state)=>state.updateTouchpadUp_L);
-  const updateTouchpadDown_L = useXRStore((state)=>state.updateTouchpadDown_L);
-  const updateStickRight_L = useXRStore((state)=>state.updateStickRight_L);
-  const updateStickLeft_L = useXRStore((state)=>state.updateStickLeft_L);
-  const updateStickUp_L = useXRStore((state)=>state.updateStickUp_L);
-  const updateStickDown_L = useXRStore((state)=>state.updateStickDown_L);
+  const updateTriggerPressed_R = useXRGamepadStore((state)=>state.updateTriggerPressed_R);
+  const updateSqueezePressed_R = useXRGamepadStore((state)=>state.updateSqueezePressed_R);
+  const updateTouchpadPressed_R = useXRGamepadStore((state)=>state.updateTouchpadPressed_R);
+  const updateStickPressed_R = useXRGamepadStore((state)=>state.updateStickPressed_R);
+  const updateButtonAPressed_R = useXRGamepadStore((state)=>state.updateButtonAPressed_R);
+  const updateButtonBPressed_R = useXRGamepadStore((state)=>state.updateButtonBPressed_R);
+  const updateTouchpadRight_R = useXRGamepadStore((state)=>state.updateTouchpadRight_R);
+  const updateTouchpadLeft_R = useXRGamepadStore((state)=>state.updateTouchpadLeft_R);
+  const updateTouchpadUp_R = useXRGamepadStore((state)=>state.updateTouchpadUp_R);
+  const updateTouchpadDown_R = useXRGamepadStore((state)=>state.updateTouchpadDown_R);
+  const updateStickRight_R = useXRGamepadStore((state)=>state.updateStickRight_R);
+  const updateStickLeft_R = useXRGamepadStore((state)=>state.updateStickLeft_R);
+  const updateStickUp_R = useXRGamepadStore((state)=>state.updateStickUp_R);
+  const updateStickDown_R = useXRGamepadStore((state)=>state.updateStickDown_R);
+  const updateTriggerPressed_L = useXRGamepadStore((state)=>state.updateTriggerPressed_L);
+  const updateSqueezePressed_L = useXRGamepadStore((state)=>state.updateSqueezePressed_L);
+  const updateTouchpadPressed_L = useXRGamepadStore((state)=>state.updateTouchpadPressed_L);
+  const updateStickPressed_L = useXRGamepadStore((state)=>state.updateStickPressed_L);
+  const updateButtonXPressed_L = useXRGamepadStore((state)=>state.updateButtonXPressed_L);
+  const updateButtonYPressed_L = useXRGamepadStore((state)=>state.updateButtonYPressed_L);
+  const updateTouchpadRight_L = useXRGamepadStore((state)=>state.updateTouchpadRight_L);
+  const updateTouchpadLeft_L = useXRGamepadStore((state)=>state.updateTouchpadLeft_L);
+  const updateTouchpadUp_L = useXRGamepadStore((state)=>state.updateTouchpadUp_L);
+  const updateTouchpadDown_L = useXRGamepadStore((state)=>state.updateTouchpadDown_L);
+  const updateStickRight_L = useXRGamepadStore((state)=>state.updateStickRight_L);
+  const updateStickLeft_L = useXRGamepadStore((state)=>state.updateStickLeft_L);
+  const updateStickUp_L = useXRGamepadStore((state)=>state.updateStickUp_L);
+  const updateStickDown_L = useXRGamepadStore((state)=>state.updateStickDown_L);
 
   useFrame((state, delta, XRFrame) => {
     if(XRFrame){

@@ -9,33 +9,20 @@ import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
 import { Leva, useControls } from 'leva'
 // import 'bootstrap/dist/css/bootstrap.css';
 
-import { useXRStore } from "../../store/zustand/XR.js"
-import DevBoard from "./DevBoard"
 import RemoteGroup from "./RemoteGroup"
 import { GamepadProvider } from "./GamepadContext"
 import { GamepadInput } from "./GamepadInput"
 import UiPanel from "./UI/UiPanel.jsx"
+import StatPanel from "./UI/StatPanel.jsx"
 
 // const Blob = dynamic(() => import('./Blob'), { ssr: false })
 
 export default function Scene(portalRTC, ...props) {
-  const triggerPressed_L = useRef({now:false, prev:false});
-  const switchMode = useXRStore.getState().switchMode;
   console.log(process.env.NODE_ENV)
-  useEffect(() => useXRStore.subscribe(
-    (state) => {
-      setGamepadCallback(triggerPressed_L, state.triggerPressed_L, () => {
-      // setGamepadCallback(buttonBPressed_R, state.buttonBPressed_R, () => {
-        switchMode();
-        console.log("mode switched")
-      })
-      // console.log("dasf")
-    }
-  ), []);
 
-  useEffect(()=>{
-    console.log("Scence is rendered")
-  })
+  useEffect(() => {
+
+  }, []);
 
   return (
     <>
@@ -54,7 +41,10 @@ export default function Scene(portalRTC, ...props) {
             <Hands />
             <GamepadInput />
             {/* <UiPanel /> */}
-            <UiPanel position={[-2,2,-3]}/>
+            <StatPanel position={[-1.5,4.5,-1.5]}/>
+            <UiPanel 
+            scale={0.5} 
+            position={[-2,2,-3]}/>
 
 
             {/* <Blob route='/' position-y={-0.75} /> */}
@@ -65,8 +55,7 @@ export default function Scene(portalRTC, ...props) {
             {/* <VideoText position={[0, 1.3, -2]} />      */}
             {/* <Suspense fallback={null}> */}
             <GamepadProvider>
-              {/* <DevBoard /> */}
-              <RemoteGroup />
+              {/* <RemoteGroup /> */}
 
             </GamepadProvider>
             {/* </Suspense> */}

@@ -37,6 +37,7 @@ const XRContainer = () => {
   //onMount
   useEffect(() => {
     if(commClient.sockets[socketNsp].id === undefined){
+      console.log("socket.id:"+commClient.sockets[socketNsp])
       commClient.sockets[socketNsp].on("connect",() => {
         console.log("initiated socket.id:",commClient.sockets[socketNsp].id);
         commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
