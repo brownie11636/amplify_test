@@ -38,7 +38,7 @@ const Account = () => {
 };
 export default Account;
 
-const DeleteModal = ({ visible, setVisible }) => {
+const DeleteModal = ({ visible, setVisible, url }) => {
   return (
     <div
       className={`${
