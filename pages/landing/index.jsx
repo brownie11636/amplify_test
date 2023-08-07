@@ -84,7 +84,12 @@ const LandingPage = () => {
       <div
         className={`flex flex-col w-full h-fit bg-[#F3F3F3] justify-center items-center font-['Inter'] ${py80px}`}
       >
-        <picture className={`relative flex opacity-60 ${width300px} ${height74px}`}>
+        <picture
+          className={`relative flex opacity-60 cursor-pointer ${width300px} ${height74px}`}
+          onClick={() => {
+            router.push("/main");
+          }}
+        >
           <Image src={`/images/landing/logo.svg`} alt="" fill="fill" />
         </picture>
         <div className={`w-screen flex justify-center ${mt50px}`}>
