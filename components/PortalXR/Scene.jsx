@@ -44,7 +44,7 @@ export default function Scene(portalRTC, ...props) {
             <StatPanel position={[-1.5,4.5,-1.5]}/>
             <UiPanel 
             scale={0.5} 
-            position={[-2,2,-3]}/>
+            position={[2,2,-3]}/>
 
 
             {/* <Blob route='/' position-y={-0.75} /> */}
@@ -55,7 +55,7 @@ export default function Scene(portalRTC, ...props) {
             {/* <VideoText position={[0, 1.3, -2]} />      */}
             {/* <Suspense fallback={null}> */}
             <GamepadProvider>
-              {/* <RemoteGroup /> */}
+              <RemoteGroup />
 
             </GamepadProvider>
             {/* </Suspense> */}

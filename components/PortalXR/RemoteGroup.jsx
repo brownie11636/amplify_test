@@ -32,7 +32,10 @@ export default function RemoteGroup({XRscale, ...props}) {
   })
   
   return (
-    <group ref={ref} scale={1} >
+    <group ref={ref} 
+      scale={1.5} 
+      position={[-0.3,-0.3,0]} 
+    >
       {/* <RobotArm  /> */}
       {/* <Suspense > */}
         <PortalArm />

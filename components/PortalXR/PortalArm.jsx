@@ -1,18 +1,18 @@
 import * as THREE from 'three'
 import { forwardRef, useRef, useState, useMemo, useEffect, useContext} from 'react'
 import { useFrame, useLoader } from '@react-three/fiber'
-import { Html, Text, Sphere, Box } from "@react-three/drei"
+import { Sphere, Box } from "@react-three/drei"
 import { useXR, useController } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 
 import { PortalCommContext } from '../../utils/contexts/portalComm';
-import * as myGamepadInput from '../../libs/XR/myGamepadInput'
-import { GamepadContext } from './GamepadContext'
 import { useXRGamepadStore } from "../../store/zustand/XRGamepad.js"
 import { useModeStore } from "../../store/zustand/mode.js"
 import { useControlStore } from "../../store/zustand/control.js"
+
+import Model from "./components/Model"
 
 // import Box from './boxes'
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
@@ -60,6 +60,7 @@ export default function PortalArm(type, path, ...props) {
   const armAngles = [60,-90,90,0,30,0]
   const [loader, setLoader] = useState(new GLTFLoader())
   const armRef = useRef([{},{},{},{},{},{},{}]);
+  const gripperRef = useRef([{},{},{},{},{},{},{},{},{}]);
   const controlGuideRef = useRef();
   // const [conPos, setConPos]= useState(new THREE.Vector3);
   // const [conRot, setConRot]= useState(new THREE.Vector3);
@@ -98,6 +99,16 @@ export default function PortalArm(type, path, ...props) {
     //commClient.socket callback -> 명령 들어왓을때 setGripperAngles하기
     // ref.current.position.x = 0.3;
 
+    // console.log("gripperpqerweqr")
+    // console.log(gripperRef.current[1].position)
+    // console.log(gripperRef.current[0].localToWorld(
+    //   gripperRef.current[1].position
+    // ))
+
+    // console.log(ref.current.worldToLocal(gripperRef.current[0].localToWorld(
+    //   gripperRef.current[1].position
+    // )))
+
     const unsubXRGamepadStore = useXRGamepadStore.subscribe((state) => {
       squeezePressed_R.current.prev = squeezePressed_R.current.now;
       squeezePressed_R.current.now = state.squeezePressed_R
@@ -125,9 +136,25 @@ export default function PortalArm(type, path, ...props) {
   let posTest = new THREE.Vector3(1,1,1);
   let storeDistance
   let dir = 1
+  let i = 0;
   useFrame((state, delta, XRFrame)=> { 
-    ang += delta;
-    useControlStore.setState({actualAngles_q:[ang,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
+
+    if(i<2){
+      // Initial setting of ControlGuide. 
+      // Excute it in second frame to refer Gripper's position and rotation.
+      i++
+      controlGuideRef.current.position.copy(
+        ref.current.worldToLocal(
+          gripperRef.current[0].localToWorld(
+            gripperRef.current[0].position.clone()
+          ).clone())
+      );
+      gripperRef.current[0].getWorldQuaternion(
+        controlGuideRef.current.rotation)
+    }
+
+    // ang += delta;
+    useControlStore.setState({actualAngles_q:[ang*DEG2RAD,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
     // useControlStore.setState({actualAngles_q:[60*DEG2RAD,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
     // updateActualAngles_q([ang,-90,90,0,30,0])
     storeDistance = useControlStore.getState().gripDistance
@@ -145,10 +172,10 @@ export default function PortalArm(type, path, ...props) {
         // console.log(acculTime)
         acculTime = 0
         if (controllerMode.current === "operating" && rightController){
-            controlGuideRef.current.position.copy(
-              armRef.current[0].worldToLocal(
-                rightController.controller.position));
-            controlGuideRef.current.rotation.copy(rightController.controller.rotation);
+            // controlGuideRef.current.position.copy(
+            //   armRef.current[0].worldToLocal(           //convert to local  
+            //     rightController.controller.position));  //world position
+            // controlGuideRef.current.rotation.copy(rightController.controller.rotation);
 
             if (squeezePressed_R.current === true){  //squeeze
               //controller 6DOF
@@ -202,22 +229,29 @@ export default function PortalArm(type, path, ...props) {
 
   return(
     <group ref={ref}>
+
       <Table loader={loader}>
         <Arm ref={armRef} loader={loader} depth={6} angles={armAngles} positions={[armPos,...armGeometries]}>
-          <Gripper loader={loader} geoConfig={gripperGeometries} />
+          <Gripper ref={gripperRef} loader={loader} geoConfig={gripperGeometries} />
         </Arm>
       </Table> 
       {/* <Table loader={loader} position={[1,0,0]}/>
       <Table loader={loader} position={[2,0,0]}/> */}
+
       <group position={armPos}>
-        <BoundaryBox color="red" boundary={boundary}/>
+        <BoundaryBox color="red" boundary={boundary} />
       </group>
-      <group ref={controlGuideRef}>
+
+      <ControlGuide ref={controlGuideRef}
+        // initialConfig={gripper} 
+      />
+      {/* <group ref={controlGuideRef}>
         <Box args={[0.2,0.01,0.01]} material-color="red"/>
         <Box args={[0.01,0.2,0.01]} material-color="green"/>
         <Box args={[0.01,0.01,0.2]} material-color="blue"/>
         <axesHelper args={[0.5]}/>
-      </group>
+      </group> */}
+      
       {/* <Text fontSize={0.5} position={[-10,1,-10]} rotation={[0,45*DEG2RAD,0]} color="black">            
         {pos[0]}
       </Text>
@@ -235,49 +269,6 @@ export default function PortalArm(type, path, ...props) {
   )
 
 }
-
-const Model = forwardRef( function Model ({loader, modelConfig, position=[0,0,0], rotation=[0,0,0], ...props}, forwardedRef) {
-
-  const path = modelConfig.path
-  const [geo,setGeo] = useState(new THREE.BufferGeometry);
-
-  useEffect(()=>{
-    // console.log("modelConfig")
-    // console.log(modelConfig)
-    const loadGLTF = async () => {
-      // console.log("paaaaaath",path)
-      let gltf = await loader.loadAsync(path);
-      setGeo((geo_) => geo_ = gltf.scene.children[0].geometry) ;
-    }
-
-    // const loadGLTF =  () => {
-    //   console.log("paaaaaath",path)
-    //   // let gltf =  
-    //   loader.load(path,(gltf) =>{
-    //     setGeo((geo_) => geo_ = gltf.scene.children[0].geometry) ;
-    //   } 
-    //   );
-    // 
-
-    loadGLTF();
-
-    // console.log("model loaded")
-    
-  },[])
-
-  return (
-    <group ref={forwardedRef} position={position} rotation={rotation} >
-      <mesh >    
-     {/* <group > */}
-      {/* <mesh ref={forwardedRef} position={position} rotation={rotation} > */}
-        {/* <primitive object={gltf.scene.children[0].geometry} attach="geometry"/> */}
-        <primitive object={geo} attach="geometry"/>
-        <meshPhongMaterial {...modelConfig.matParams} />
-      </mesh>
-      {props.children}
-    </group>
-  );
-});
 
 const Table = ({loader, children, ...props}) => {
   const modelConfig = {
@@ -412,9 +403,9 @@ const Arm = forwardRef( function Arm ({loader, index=0, angles=[0,0,0,0,0,0], po
 const gripperConfigs = setGripperConfigs();
 const gripperPositions = setGripperPositions();
 
-const Gripper = ({loader, geoConfig, children,...props}) => {
+const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...props},ref) {
 
-  const ref = useRef([]);
+  // const ref = useRef([]);
   // const gamepadRef = useContext(GamepadContext);
   const colorRef = useRef(0x999999)
   const [index, setIndex] = useState(0)
@@ -488,7 +479,7 @@ const Gripper = ({loader, geoConfig, children,...props}) => {
       </Model>
     </>
   )
-}
+})
 
 function setGripperPositions() {
   const gripperGeometries = [
@@ -587,3 +578,278 @@ const BoundaryBox = ({boundary, position, color, ...props}) => {
     </mesh>
   )
 }
+
+/**
+ * squeeze 했을때만 controller와 6dof 동기화 
+ * socket명령을 보낼때는 armbase(armRef[0])와의 상대위치를 보내야하니까 상위 컴포넌트에서 보냄
+ * 축 고정 및 정렬 등과 같은 상태값에따른 거동은 컴포넌트 내에서 처리
+ * 
+ * align시에 포지션 및 로테이션이 바뀔텐데 이전 값도 갖고 있어야함 squeeze가 풀리면 해당작업을 하도록 함 
+ * nonAlignedStateRef.current에 이전값을 저장하고 이걸 기준으로 rotation을 set하는 걸로
+ * 이 값은 컨트롤러가 아니라 로봇의 state를 저장하고 있는걸로 볼 수 있음
+ * 
+ * 처리했음 - 초기 rotation 및 position 세팅은 gripper의 위치 참조해서 상위 컴포넌트에서 설정함.
+ * align시에 가까운 방향으로 정렬하게 해야함
+ */
+const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...props}, ref) {
+  if (!ref) ref = useRef();
+  
+  const rightController = useController('right');
+  const squeezePressed_R = useRef({now:false, prev:false})
+
+  const controlRef = useRef();
+  const initialRotationRef = useRef();
+  const globalAxisRef = useRef();
+
+
+  const translatingAxesRef = useRef(useModeStore.getState().translatingAxes);
+  const rotatingAxesRef = useRef(useModeStore.getState().rotatingAxes);
+  const alignedAxesRef = useRef(useModeStore.getState().alignedAxes);
+  const coordinateRef = useRef(useModeStore.getState().coordinate)
+
+  // const convertAxisToStr = (axisNum,option = "upper") => {
+  //   if (option === "upper") axisNum += 88
+  //   else if (option === "lower") axisNum += 120
+    
+  //   return String.fromCharCode(axisNum)
+  // }
+
+  const rotatingOrder = useRef("XYZ");
+  const getRotatingOrder = (rotatingAxes, alignIndex, coordinate) => {
+    let end = ""
+    let order = ""
+    let isBase = (coordinate === "base"); //true @ base, false @ TCP
+    // console.log(isBase)
+    
+    order = rotatingAxes.reduce((a,c,i)=> {
+      if (c === isBase) return a + String.fromCharCode(i+88);
+      else {
+        end = end + String.fromCharCode(i+88);
+        return a
+      }
+    },"")
+
+
+    // 3 free rotating axis -> XYZ
+    // 1 free rotating axis -> free, fixed, fixed
+    // if(alignIndex === 0) {
+      // order = rotatingAxes.reduce((a,c,i)=> {
+      //   if (c === true) return a + String.fromCharCode(i+88);
+      //   else {
+      //     end = end + String.fromCharCode(i+88);
+      //     return a
+      //   }
+      // },"")
+    // }
+
+    // 1 aligned axis -> fixed, fixed, aligned(free or fixed)
+    // 2 aligned axis -> fixed, fixed aligned, fixed aligned
+    // 3 aligned axis -> fixed aligned, fixed aligned, fixed aligned
+    // if(alignIndex > 0){
+    //   order = rotatingAxes.reduce((a,c,i)=> {
+    //     if (c !== true) return a + String.fromCharCode(i+88);
+    //     else {
+    //       end = end + String.fromCharCode(i+88);
+    //       return a
+    //     }
+    //   },"")
+    // }
+
+    return order + end;
+  }
+  
+  const getAlignIndex = (alignedAxes) => alignedAxes.reduce((a,c) => a + c);
+  const alignIndex = useRef({now:getAlignIndex(alignedAxesRef.current), prev:0})
+  const needAlignAngle = useRef(false);
+  const alignAngle = useRef([]);
+  const alignUnitAngle = useRef(0.5*Math.PI)
+  const alignOrder = useRef([])
+
+  const controllerModeRef = useRef(useModeStore.getState().controllerModeRef)
+
+  const nonAlignedRef = useRef(new THREE.Euler);
+
+  useEffect(()=>{
+    const unsubXRGamepadStore = useXRGamepadStore.subscribe((state) => {
+      squeezePressed_R.current.prev = squeezePressed_R.current.now;
+      squeezePressed_R.current.now = state.squeezePressed_R
+    })
+
+    const unsubModeStore = useModeStore.subscribe(
+      (state, prevState) => {
+        // console.log("changed!!!")
+        // console.log(state)
+        // console.log(prevState)
+        // console.log(aaa)
+        controllerModeRef.current = state.controllerMode;
+
+        translatingAxesRef.current = state.translatingAxes;
+        rotatingAxesRef.current = state.rotatingAxes;
+        alignedAxesRef.current = state.alignedAxes;
+        coordinateRef.current = state.coordinate;
+
+        alignIndex.current.prev = alignIndex.current.now
+        alignIndex.current.now = getAlignIndex(state.alignedAxes);
+
+        rotatingOrder.current = getRotatingOrder(
+          rotatingAxesRef.current, 
+          alignIndex.current.now,
+          coordinateRef.current);
+        // console.log(state)
+        ref.current.rotation.reorder(rotatingOrder.current)
+        // console.log(rotatingOrder.current)
+
+
+        console.log(alignIndex.current)
+
+        // let alignChanged = state.alignedAxes.reduce((a,c,i) => {
+        //   if( c === prevState.alignedAxes[i] ) return a;
+        //   else return [...a,i]
+        // },[]);
+        // console.log(alignChanged)
+
+        if (alignIndex.current.now !== alignIndex.current.prev){ 
+          
+        //   alignOrder.current.push(...alignChanged)
+          needAlignAngle.current = true;
+          if (alignIndex.current.prev === 0) nonAlignedRef.current.copy(ref.current.rotation.clone());
+
+        // } else if (alignIndex.current.now < alignIndex.current.prev){ // decrease
+            
+        //   for(let i = 0; i < alignChanged.length; i++) {
+        //     for(let j = 0; j < alignOrder.current.length; j++){
+        //       if(alignOrder.current[j] === alignChanged[i]){
+        //         alignOrder.current.splice(j, 1);
+        //         j--;
+        //       }
+        //     }
+        //   }
+        }
+        console.log(needAlignAngle.current)
+      }
+    )
+    
+    return () => {
+      unsubXRGamepadStore();
+      unsubModeStore();
+    }
+  },[])
+
+  const controller = {
+    localPosition: new THREE.Vector3, 
+    alignedRotation: new THREE.Euler,
+  }
+  
+  let axis = "";
+  let order = "";
+  let tmp_q = new THREE.Quaternion;
+
+  useFrame((state,delta,xrFrame) => {
+    if (rightController){
+      if (!squeezePressed_R.current.now){
+
+        //convert 
+        controller.localPosition.copy(
+          ref.current.parent.worldToLocal(
+            rightController.controller.position))
+
+        translatingAxesRef.current.forEach((val,i) => {
+          axis = String.fromCharCode(i+120);  //ascii of x,y,z are 120, 121, 122
+          if ( val === true ) {     
+            ref.current.position[axis] = controller.localPosition[axis] 
+          }
+        })
+
+        /**
+         * alignIndex === 0
+         *  free axis 갯수에 따라서 오일러 각도 계산 순서 바꿔가면서 계산
+         *    free axis 3개 -> 그냥 그대로
+         *    free axis 2개 -> 자유로운 축을 먼저 계산 -> 생략
+         *    free axis 1개 -> 자유로운 축을 먼저 계산
+         * alignIndex === 1
+         *  어차피 free axis 갯수 한개
+         *  align 된 걸 나중에 계산 order: fix,fix,aligned(free)
+         * 
+         * 먼저 aligneIndex > 1 일때 order 랑 align 각도들 정해주고
+         * 그다음에 일괄적으로 freeaxis 갯수따라서 계산 진행하면 될듯
+         * 
+         * 
+         * reorder
+         */
+        // if ( alignIndex.current.now > 0 ) {  // 1 aligned axis -> 2 fixed angle  // 2 axis aligned axis -> 3 fixed angle
+        // if ( alignIndex.current.now > 0 && alignIndex.current.now < 3 ) {  // 1 aligned axis -> 2 fixed angle  // 2 axis aligned axis -> 3 fixed angle
+          // console.log(alignIndex)
+        if(needAlignAngle.current){
+          alignAngle.current = [0,0,0];
+          console.log(alignIndex.current.now)
+          console.log(rotatingOrder.current)
+          for (let i=0;i<1+alignIndex.current.now;i++){
+
+            if (coordinateRef.current === "TCP"){
+              axis = rotatingOrder.current.toLowerCase().slice(i,i+1)
+            } else if (coordinateRef.current === "base"){
+              axis = rotatingOrder.current.toLowerCase().slice(2-alignIndex.current.now+i,2-alignIndex.current.now+i+1)
+            }
+            // console.log(2-alignIndex.current.now+i)
+            // console.log(axis)
+
+            alignAngle.current[i] = (ref.current.rotation[axis] + 2.0*Math.PI) % alignUnitAngle.current;
+            
+            if( alignAngle.current[i] > 0.5*alignUnitAngle.current ) alignAngle.current[i] -= alignUnitAngle.current;
+
+            ref.current.rotation[axis] -= alignAngle.current[i];
+            // console.log(controller.alignedRotation)
+            // console.log(controller.alignedRotation[axis])
+
+            // console.log("dasfd")
+
+            // if( alignAngle.current[i] > 0.5*alignUnitAngle.current ) ref.current.rotation[axis] += alignUnitAngle.current;
+            
+            
+            // ref.current.rotation[axis] = controller.alignedRotation[axis];
+            console.log(axis,": ",ref.current.rotation[axis]*RAD2DEG)
+
+          }
+          needAlignAngle.current = false;
+        }
+        // }
+
+        rightController.controller.getWorldQuaternion(controller.alignedRotation)
+        controller.alignedRotation.reorder(rotatingOrder.current)
+        // console.log("dsfasd")
+        rotatingAxesRef.current.forEach((val,i) => {
+          axis = String.fromCharCode(i+120);  //ascii of x,y,z are 120, 121, 122
+          if ( val === true ) {     
+            ref.current.rotation[axis] = controller.alignedRotation[axis] 
+            // console.log(ref.current.rotation[axis]*RAD2DEG)
+          }
+          console.log(axis,": ",ref.current.rotation[axis]*RAD2DEG)
+          console.log(rotatingAxesRef.current);
+        })
+
+      } else {
+
+      }
+    }
+    // ref.current.getWorldQuaternion(tmp_q)
+    // globalAxisRef.current.rotation.setFromQuaternion(ref.current.getWorldQuaternion().invert())
+    globalAxisRef.current.rotation.setFromQuaternion(ref.current.getWorldQuaternion(tmp_q).invert())
+  })
+
+  return (
+    <group ref={controlRef} >
+      <group ref={initialRotationRef} >
+        <group ref={ref} {...props} >
+          <Box args={[0.2,0.01,0.01]} position={[0.05, 0, 0]} material-color="red"/>
+          <Box args={[0.01,0.2,0.01]} position={[0, 0.05, 0]} material-color="green"/>
+          <Box args={[0.01,0.01,0.2]} position={[0, 0, 0.05]} material-color="blue"/>
+
+          {/* <Box args={[0.2,0.01,0.01]} material-color="red"/>
+          <Box args={[0.01,0.2,0.01]} material-color="green"/>
+          <Box args={[0.01,0.01,0.2]} material-color="blue"/> */}
+          <axesHelper ref={globalAxisRef} args={[0.5]}/>
+        </group>
+      </group>
+    </group>
+  );
+});
