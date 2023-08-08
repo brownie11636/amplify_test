@@ -15,6 +15,18 @@
   button {
     user-select: none;
   }
+  input::-webkit-input-placeholder {
+    color: #7d7d7d !important;
+  }
+  input:-ms-input-placeholder {
+    color: #7d7d7d !important;
+  }
+  textarea::-webkit-input-placeholder {
+    color: #7d7d7d !important;
+  }
+  textarea:-ms-input-placeholder {
+    color: #7d7d7d !important;
+  }
   .tw_bg_blue {
     background-color: blue;
   }
@@ -45,4 +57,12 @@
     fill: #374151;
     transform: translateX(8%) translateY(-33%) rotate(0deg);
   }
+  input:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
 }
+/* .focus\:outline-none:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+} */

@@ -4,11 +4,11 @@ import CardForm from "../../../components/Main/MyPage/CardForm";
 import { useEffect } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { CustomerAtom, DeleteModalAtom } from "../../../recoil/AtomStore";
+import { CustomerAtom, DeleteModalAtom, companyAtom } from "../../../recoil/AtomStore";
 
 const Account = () => {
   const router = useRouter();
-  const [customerItem, setCustomerItem] = useRecoilState(CustomerAtom);
+  const [companyItem, setCompanyItem] = useRecoilState(companyAtom);
   const [visibleDeleteModal, setVisibleDeleteModal] = useRecoilState(DeleteModalAtom);
   const sub = router.pathname.includes("account")
     ? "계정관리"
@@ -16,22 +16,23 @@ const Account = () => {
     ? "현장관리"
     : "로봇관리";
   useEffect(() => {
-    getCustomer();
+    getCompany();
   }, []);
-  const getCustomer = async () => {
-    const response = await axios.get("https://localhost:3333/api/mongo/customer");
-    setCustomerItem(response.data?.data);
+  const getCompany = async () => {
+    const response = await axios.get("https://localhost:3333/api/mongo/company");
+    setCompanyItem(response.data?.data);
   };
+  // console.log(companyItem);
   return (
     <MainLayout>
-      <div className="w-full h-full overflow-scroll">
-        <div className="flex relative h-[168px] w-screen bg-[#182A5B]">
-          <span className="pl-[60px] pt-[60px] text-white text-xl">{sub}</span>
+      <section className="flex flex-col min-w-fit w-full h-full overflow-scroll">
+        <div className="flex min-h-[10.5rem] w-[calc(100%_+_7.5rem)] bg-[#182A5B]">
+          <span className="flex pl-[60px] pt-[60px] text-white text-xl">{sub}</span>
         </div>
-        <span className="relative -top-[48px] left-[60px]">
-          <CardForm data={customerItem[0]} type={1} />
-        </span>
-      </div>
+        <div className="relative w-fit -top-[48px] left-[60px]">
+          <CardForm data={companyItem} type={1} />
+        </div>
+      </section>
       <DeleteModal visible={visibleDeleteModal} setVisible={setVisibleDeleteModal} />
     </MainLayout>
   );

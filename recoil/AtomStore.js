@@ -4,7 +4,10 @@ export const DeleteModalAtom = atom({
   key: "DeleteModalAtom",
   default: false,
 });
-
+export const companyAtom = atom({
+  key: "companyAtom",
+  default: [],
+});
 export const CustomerAtom = atom({
   key: "CustomerAtom",
   default: [],
@@ -12,6 +15,14 @@ export const CustomerAtom = atom({
 export const CheckedValueAtom = atom({
   key: "CheckedValueAtom",
   default: [],
+});
+export const CheckedCompanyItemAtom = atom({
+  key: "CheckedCompanyItemAtom",
+  default: "",
+});
+export const CheckedAccountItemAtom = atom({
+  key: "CheckedAccountItemAtom",
+  default: "",
 });
 export const CheckedCustomerItemAtom = atom({
   key: "CheckedCustomerItemAtom",
@@ -21,4 +32,9 @@ export const CheckedCustomerItemAtom = atom({
 export const CheckedCustomerPartItemAtom = atom({
   key: "CheckedCustomerPartItemAtom",
   default: "",
+});
+
+export const CreateAccountItemAtom = atom({
+  key: "CreateAccountItemAtom",
+  default: false,
 });
