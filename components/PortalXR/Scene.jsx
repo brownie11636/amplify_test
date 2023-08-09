@@ -14,6 +14,7 @@ import { GamepadProvider } from "./GamepadContext"
 import { GamepadInput } from "./GamepadInput"
 import UiBoard from "./UI/UiBoard.jsx"
 import StatBoard from "./UI/StatBoard.jsx"
+import ConsoleBoard from "./UI/ConsoleBoard.jsx"
 
 // const Blob = dynamic(() => import('./Blob'), { ssr: false })
 
@@ -45,6 +46,10 @@ export default function Scene(portalRTC, ...props) {
             <UiBoard 
             scale={0.5} 
             position={[2,2,-3]}/>
+            <ConsoleBoard 
+              numLines={10}
+              position={[2,1,-3]}
+            />
 
 
             {/* <Blob route='/' position-y={-0.75} /> */}
