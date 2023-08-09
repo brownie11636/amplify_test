@@ -1,4 +1,4 @@
-import LocalDataUploader from "../../../components/Test/LocalData/uploader";
+import LocalDataUploader from "../../../components/Test/LocalData/Uploader";
 
 const uploaderTest = ()=> {
   return (
