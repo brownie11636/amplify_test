@@ -1,24 +1,75 @@
 import { atom } from "recoil";
 
+export const CompanyItemAtom = atom({
+  key: "CompanyItemAtom",
+  default: [],
+});
 export const DeleteModalAtom = atom({
   key: "DeleteModalAtom",
   default: false,
 });
-
-export const CustomerAtom = atom({
-  key: "CustomerAtom",
-  default: [],
+export const CheckedCompanyItemAtom = atom({
+  key: "CheckedCompanyItemAtom",
+  default: null,
 });
-export const CheckedValueAtom = atom({
-  key: "CheckedValueAtom",
-  default: [],
-});
-export const CheckedCustomerItemAtom = atom({
-  key: "CheckedCustomerItemAtom",
+export const CheckedAccountItemAtom = atom({
+  key: "CheckedAccountItemAtom",
   default: "",
 });
+export const CreateAccountItemAtom = atom({
+  key: "CreateAccountItemAtom",
+  default: false,
+});
 
-export const CheckedCustomerPartItemAtom = atom({
-  key: "CheckedCustomerPartItemAtom",
-  default: "",
+//
+
+export const CreateFieldItemAtom = atom({
+  key: "CreateFieldItemAtom",
+  default: false,
+});
+export const FieldItemAtom = atom({
+  key: "FieldItemAtom",
+  default: [],
+});
+export const CheckedFieldItemAtom = atom({
+  key: "CheckedFieldItemAtom",
+  default: null,
+});
+export const FieldSelectedRadioAtom = atom({
+  key: "FieldSelectedRadioAtom",
+  default: "fieldList",
+});
+
+//
+
+export const EngineerAndOperatorItemAtom = atom({
+  key: "EngineerAndOperatorItemAtom",
+  default: [],
+});
+export const CreateEngineerAndOperatorItemAtom = atom({
+  key: "CreateEngineerAndOperatorItemAtom",
+  default: false,
+});
+export const CheckedEngineerAndOperatorItemAtom = atom({
+  key: "CheckedEngineerAndOperatorItemAtom",
+  default: null,
+});
+
+//
+
+export const RobotItemAtom = atom({
+  key: "RobotItemAtom",
+  default: [],
+});
+export const CreateRobotItemAtom = atom({
+  key: "CreateRobotItemAtom",
+  default: false,
+});
+export const CheckedRobotItemAtom = atom({
+  key: "CheckedRobotItemAtom",
+  default: null,
+});
+export const RobotSelectedRadioAtom = atom({
+  key: "RobotSelectedRadioAtom",
+  default: "robot",
 });
