@@ -69,7 +69,7 @@ export default function UiPanel(props){
       ref={panelRef}
       args={[{
         ...args,
-        width: 4.5,
+        width: 5.5,
         height: 4,
         fontSize: 0.2,
         // backgroundOpacity: 0.5,
@@ -90,8 +90,8 @@ export default function UiPanel(props){
     >
       {/* <axesHelper args={[1]}/> */}
       <block args={[{...args, height:"50%", borderWidth:0.02,}]} >
-        <ModePanel args={[{...args, width:"30%", flexDirection:"column"}]} />
-        <block args={[{...args, width:"70%", flexDirection:"column"}]} >
+        <ModePanel args={[{...args, width:"25%", flexDirection:"column"}]} />
+        <block args={[{...args, width:"75%", flexDirection:"column"}]} >
           <OperatingBlock args={[{...args,flexDirection:"column"}]} />
         </block>
       </block>
@@ -198,11 +198,11 @@ const ModePanel = (props) =>{
     <block args={props.args}
     // args={[{...args, width:"30%",}]} 
     >
-      <block args={[{...args, height:"25%",backgroundOpacity:0, lineHeight: 0.05,}]}>
+      <block args={[{...args, height:"20%",backgroundOpacity:0, lineHeight: 0.05,borderOpacity:0,}]}>
         {/* <text ref={modeTextRef} content={ "MODE:\ndefault" } /> */}
         <text ref={modeTextRef} args={[{height:"100%", alignItems:"center", textAlign:"center"}]} _textContent-value={ "MODE:" } />
       </block>
-      <block args={[{...args, width:"100%",height:"75%",alignItems:"stretch",
+      <block args={[{...args, width:"100%",height:"80%",alignItems:"stretch",
         // backgroundOpacity:0
       }]}>
         <Button ref={defaultRef} onClick={()=>{switchMode("default")}} args={[modeButtonArgs]} stateAttribute={UiStates.button} textContent={"default"} />
