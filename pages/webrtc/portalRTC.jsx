@@ -24,8 +24,6 @@ export default function portalRTC(){
                     </WebrtcContainer>
                 </MainLayout>            
             </PortalCommContext.Provider>
-
-   
     );
 }
 
