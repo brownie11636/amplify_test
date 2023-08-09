@@ -119,7 +119,7 @@ const Test = ({}) => {
               <span className="text-base text-[#222222]">그래프설정</span>
             </div>
           </div>
-          <div className="w-full max-w-[984px] h-[222px] flex items-center gap-[20px] bg-white px-[40px] overflow-x-scroll">
+          <div className="w-full max-w-[984px] h-[222px] flex items-center gap-[20px] bg-white px-[40px] overflow-x-scroll scrollbar-hide">
             {data ? (
               <>
                 <PieChart data={data} type={true} />

@@ -4,11 +4,11 @@ import CardForm from "../../../components/Main/MyPage/CardForm";
 import { useEffect } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { CustomerAtom, DeleteModalAtom, companyAtom } from "../../../recoil/AtomStore";
+import { CompanyItemAtom, DeleteModalAtom } from "../../../recoil/AtomStore";
 
 const Account = () => {
   const router = useRouter();
-  const [companyItem, setCompanyItem] = useRecoilState(companyAtom);
+  const [companyItem, setCompanyItem] = useRecoilState(CompanyItemAtom);
   const [visibleDeleteModal, setVisibleDeleteModal] = useRecoilState(DeleteModalAtom);
   const sub = router.pathname.includes("account")
     ? "계정관리"
@@ -22,10 +22,9 @@ const Account = () => {
     const response = await axios.get("https://localhost:3333/api/mongo/company");
     setCompanyItem(response.data?.data);
   };
-  // console.log(companyItem);
   return (
     <MainLayout>
-      <section className="flex flex-col min-w-fit w-full h-full overflow-scroll">
+      <section className="flex flex-col min-w-fit w-full h-full overflow-scroll scrollbar-hide">
         <div className="flex min-h-[10.5rem] w-[calc(100%_+_7.5rem)] bg-[#182A5B]">
           <span className="flex pl-[60px] pt-[60px] text-white text-xl">{sub}</span>
         </div>

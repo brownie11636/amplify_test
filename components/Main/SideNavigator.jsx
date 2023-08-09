@@ -1,8 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
-import path from "path";
 
 const SideNavigator = () => {
   const [isAllSelected, setIsAllSelected] = useState(false);
@@ -17,21 +16,6 @@ const SideNavigator = () => {
     { text: "CB1-반도체B", checked: false },
     { text: "CB1-반도체C", checked: false },
   ];
-
-  const routeHandler = (path) => {
-    switch (path) {
-      case path.includes("account"):
-        return;
-        break;
-      case path.includes("field"):
-        break;
-      case path.includes("robot"):
-        break;
-
-      default:
-        break;
-    }
-  };
 
   // set initial state
   useEffect(() => {
@@ -198,14 +182,106 @@ const SideNavigator = () => {
 export default SideNavigator;
 
 const MyPageSideNavigator = () => {
+  const router = useRouter();
+  const pathName = router.pathname;
+
   return (
     <ul className="w-full h-full">
-      <li className="w-full h-[3.125rem]">
-        <picture className="relative w-full h-full">
+      <div className=" px-[1.5625rem] py-[2.5rem]">
+        <button className="flex justify-center items-center w-[15.625rem] h-[2.75rem] bg-[#182A5B]">
+          <span className="text-base text-white">로봇조작</span>
+        </button>
+      </div>
+      <li
+        className={`flex gap-[1.25rem] items-center w-[18.75rem] h-[3.125rem] pl-[1.5rem] cursor-pointer relative group ${
+          pathName.includes("account") ? "bg-white" : ""
+        }`}
+        onClick={() => {
+          router.push("/myPage/account");
+        }}
+      >
+        <div className="hidden absolute left-0 h-full w-[0.5rem] bg-[#182A5B]" />
+        <picture className="flex relative w-[1.75rem] h-[1.75rem]">
           <Image src={"/images/main/myPage/account.svg"} fill alt="" draggable={false} />
         </picture>
+        <span className="text-base text-[#222222]">계정관리</span>
       </li>
+      <li
+        className={`flex gap-[1.25rem] items-center w-[18.75rem] h-[3.125rem] pl-[1.5rem] cursor-pointer relative group ${
+          pathName.includes("field") ? "bg-white" : ""
+        }`}
+        onClick={() => {
+          router.push("/myPage/field");
+        }}
+      >
+        <div className="hidden absolute left-0 h-full w-[0.5rem] bg-[#182A5B]" />
+        <picture className="flex relative w-[1.75rem] h-[1.75rem]">
+          <Image src={"/images/main/myPage/field.svg"} fill alt="" draggable={false} />
+        </picture>
+        <span className="text-base text-[#222222]">현장</span>
+      </li>
+
+      <label
+        className="flex items-center justify-between pl-[1.5rem] pr-[1.125rem] w-full cursor-pointer"
+        htmlFor={`robotListNav`}
+      >
+        <li className="flex gap-[1.25rem] items-center w-[18.75rem] h-[3.125rem] relative group">
+          <div className="hidden absolute left-0 h-full w-[0.5rem] bg-[#182A5B]" />
+          <picture className="flex relative w-[1.75rem] h-[1.75rem]">
+            <Image src={"/images/main/myPage/robot.svg"} fill alt="" draggable={false} />
+          </picture>
+          <span className="text-base text-[#222222]">로봇</span>
+        </li>
+
+        <input
+          type="checkbox"
+          id={`robotListNav`}
+          className="peer hidden"
+          onChange={(e) => {
+            const target = document.querySelector(`.robotListNav`);
+            if (e.target.checked) {
+              target.classList.remove("hidden");
+            } else {
+              target.classList.add("hidden");
+            }
+          }}
+        />
+        <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative flex peer-checked:hidden">
+          <Image src={`/images/main/arrow-down.svg`} fill alt="" />
+        </picture>
+        <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative hidden peer-checked:flex">
+          <Image src={`/images/main/arrow-up.svg`} fill alt="" />
+        </picture>
+      </label>
+      <div className="hidden robotListNav pl-[4rem]">
+        <div
+          className="text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer"
+          onClick={() => {
+            router.push("/myPage/robot");
+          }}
+        >
+          <span>보유 로봇 리스트</span>
+        </div>
+        <div
+          className="text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer"
+          onClick={() => {
+            router.push("/myPage/robot/new");
+          }}
+        >
+          <span>로봇 신규등록</span>
+        </div>
+        <div
+          className="text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer"
+          onClick={() => {
+            router.push("/myPage/robot/management");
+          }}
+        >
+          <span>로봇 배치관리</span>
+        </div>
+      </div>
     </ul>
   );
 };
-//50px convert to rem
+// 1px convert to rem = 0.0625rem
+// 300px convert to rem = 18.75rem
+// 50px convert to rem = 3.125rem
