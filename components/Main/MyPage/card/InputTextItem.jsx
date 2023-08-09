@@ -1,7 +1,7 @@
 export const InputTextItem = ({ title, type, id, value, placeholder }) => {
   return (
     <div
-      className={`flex flex-col items-start justify-between ${
+      className={`flex flex-col w-full items-start justify-between ${
         type === "camera" ? "" : "mt-[2.625rem]"
       }`}
     >

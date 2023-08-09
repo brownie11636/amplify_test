@@ -18,43 +18,13 @@ export const RobotCard2 = ({ children, data }) => {
   const CreateRobotItem = useRecoilValue(CreateRobotItemAtom);
   return (
     <>
-      <div className="py-[2.625rem] w-fit h-fit bg-white relative ">
-        <div className="flex ml-[3.75rem]">
-          <label htmlFor="robotList">
-            <input
-              type="radio"
-              name="robotList"
-              id="robotList"
-              className="peer hidden"
-              defaultChecked
-              onChange={(e) => {
-                if (e.target.checked) {
-                  setFieldSelectedRadio(e.target.id);
-                }
-              }}
-            />
-            <div className="flex justify-center items-center cursor-pointer text-[#7D7D7D] border-b border-b-[#DCDCDC] w-[8.75rem] h-[2.5rem] peer-checked:border-b-[#182A5B] peer-checked:text-[#222222]">
-              <span className="text-base">{"로봇정보"}</span>
-            </div>
-          </label>
-          <label htmlFor="cameraList">
-            <input
-              type="radio"
-              name="robotList"
-              id="cameraList"
-              className="peer hidden"
-              onChange={(e) => {
-                if (e.target.checked) {
-                  setFieldSelectedRadio(e.target.id);
-                }
-              }}
-            />
-            <div className="flex justify-center items-center cursor-pointer text-[#7D7D7D] border-b border-b-[#DCDCDC] w-[8.75rem] h-[2.5rem] peer-checked:border-b-[#182A5B] peer-checked:text-[#222222]">
-              <span className="text-base">{"카메라정보"}</span>
-            </div>
-          </label>
+      <div className="py-[2.625rem] w-fit h-fit bg-white relative">
+        <div className="flex items-center ml-[2.5rem] mb-[0.625rem]">
+          <span id="fieldName" className="text-[#222222] text-lg">
+            신규 로봇 등록
+          </span>
         </div>
-        <div id="fieldForm" className="flex gap-[5rem] px-[3.75rem]">
+        <div id="fieldForm" className="flex gap-[5rem] px-[2.5rem]">
           <div>
             <InputTextItem title="로봇 ID" id="id" value={data?.id} placeholder={""} />
             <InputTextItem

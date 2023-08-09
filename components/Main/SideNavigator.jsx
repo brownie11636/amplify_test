@@ -193,32 +193,40 @@ const MyPageSideNavigator = () => {
         </button>
       </div>
       <li
-        className={`flex gap-[1.25rem] items-center w-[18.75rem] h-[3.125rem] pl-[1.5rem] cursor-pointer relative group ${
-          pathName.includes("account") ? "bg-white" : ""
-        }`}
+        className={`flex gap-[1.25rem] items-center w-[18.75rem] h-[3.125rem] pl-[1.5rem] cursor-pointer relative group`}
         onClick={() => {
           router.push("/myPage/account");
         }}
       >
-        <div className="hidden absolute left-0 h-full w-[0.5rem] bg-[#182A5B]" />
-        <picture className="flex relative w-[1.75rem] h-[1.75rem]">
+        <picture className="flex relative w-[1.75rem] h-[1.75rem] z-10">
           <Image src={"/images/main/myPage/account.svg"} fill alt="" draggable={false} />
         </picture>
-        <span className="text-base text-[#222222]">계정관리</span>
+        <div
+          className={`w-[calc(100%_-_0.0625rem)] h-full absolute z-0 left-0 top-0 bg-[#ffffff] ${
+            pathName.includes("/myPage/account") ? "block" : "hidden"
+          }`}
+        >
+          <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+        </div>
+        <span className="text-base text-[#222222] z-10">계정관리</span>
       </li>
       <li
-        className={`flex gap-[1.25rem] items-center w-[18.75rem] h-[3.125rem] pl-[1.5rem] cursor-pointer relative group ${
-          pathName.includes("field") ? "bg-white" : ""
-        }`}
+        className={`flex gap-[1.25rem] items-center w-[18.75rem] h-[3.125rem] pl-[1.5rem] cursor-pointer relative group`}
         onClick={() => {
           router.push("/myPage/field");
         }}
       >
-        <div className="hidden absolute left-0 h-full w-[0.5rem] bg-[#182A5B]" />
-        <picture className="flex relative w-[1.75rem] h-[1.75rem]">
+        <picture className="flex relative w-[1.75rem] h-[1.75rem] z-10">
           <Image src={"/images/main/myPage/field.svg"} fill alt="" draggable={false} />
         </picture>
-        <span className="text-base text-[#222222]">현장</span>
+        <div
+          className={`w-[calc(100%_-_0.0625rem)] h-full absolute z-0 left-0 top-0 bg-[#ffffff] ${
+            pathName.includes("/myPage/field") ? "block" : "hidden"
+          }`}
+        >
+          <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+        </div>
+        <span className="text-base text-[#222222] z-10">현장관리</span>
       </li>
 
       <label
@@ -230,7 +238,7 @@ const MyPageSideNavigator = () => {
           <picture className="flex relative w-[1.75rem] h-[1.75rem]">
             <Image src={"/images/main/myPage/robot.svg"} fill alt="" draggable={false} />
           </picture>
-          <span className="text-base text-[#222222]">로봇</span>
+          <span className="text-base text-[#222222]">로봇관리</span>
         </li>
 
         <input
@@ -253,30 +261,59 @@ const MyPageSideNavigator = () => {
           <Image src={`/images/main/arrow-up.svg`} fill alt="" />
         </picture>
       </label>
-      <div className="hidden robotListNav pl-[4rem]">
+      <div
+        className={`${
+          pathName.includes("/myPage/robot") ? "block" : "hidden"
+        } robotListNav pl-[4rem]`}
+      >
         <div
-          className="text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer"
+          className={`text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer relative`}
           onClick={() => {
             router.push("/myPage/robot");
           }}
         >
-          <span>보유 로봇 리스트</span>
+          <div
+            className={`w-[calc(100%_-_0.0625rem)] h-full absolute z-0 -left-[4rem] top-0 bg-[#ffffff] ${
+              pathName.includes("/robot") &&
+              !pathName.includes("new") &&
+              !pathName.includes("management")
+                ? "block"
+                : "hidden"
+            }`}
+          >
+            <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+          </div>
+          <span className="z-10">보유 로봇 리스트</span>
         </div>
         <div
-          className="text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer"
+          className={`text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer relative`}
           onClick={() => {
             router.push("/myPage/robot/new");
           }}
         >
-          <span>로봇 신규등록</span>
+          <div
+            className={`w-[calc(100%_-_0.0625rem)] h-full absolute z-0 -left-[4rem] top-0 bg-[#ffffff] ${
+              pathName.includes("/robot/new") ? "block" : "hidden"
+            }`}
+          >
+            <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+          </div>
+          <span className="z-10">로봇 신규등록</span>
         </div>
         <div
-          className="text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer"
+          className={`text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer relative`}
           onClick={() => {
             router.push("/myPage/robot/management");
           }}
         >
-          <span>로봇 배치관리</span>
+          <div
+            className={`w-[calc(100%_-_0.0625rem)] h-full absolute z-0 -left-[4rem] top-0 bg-[#ffffff] ${
+              pathName.includes("/robot/management") ? "block" : "hidden"
+            }`}
+          >
+            <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+          </div>
+          <span className="z-10">로봇 배치관리</span>
         </div>
       </div>
     </ul>
