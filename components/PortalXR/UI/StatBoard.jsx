@@ -22,8 +22,8 @@ const defaultColor = new THREE.Color(0x9d78ae);   //purple
 const buttonColor = new THREE.Color(0x664455)
 const selectedColor = new THREE.Color(0xe36dc2);
 
-export default function StatPanel(props){
-  const panelRef = useRef();
+export default function StatBoard(props){
+  const boardRef = useRef();
   const fpsRef = useRef();
   const modeTextRef = useRef();
 
@@ -36,7 +36,7 @@ export default function StatPanel(props){
     // const robotoFontFamily = ThreeMeshUI.FontLibrary.addFontFamily( "Roboto" );
     // robotoFontFamily.addVariant("normal","normal","/fonts/Roboto-msdf.json","/fonts/Roboto-msdf.png")
     
-    panelRef.current.lookAt(0,1,0);
+    boardRef.current.lookAt(0,1,0);
 
     return () => {}
   },[])  
@@ -62,7 +62,7 @@ export default function StatPanel(props){
 
   return (
     <block
-      ref={panelRef}
+      ref={boardRef}
       args={[{
         width: 1,
         height: 0.8,

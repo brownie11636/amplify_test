@@ -12,8 +12,8 @@ import { Leva, useControls } from 'leva'
 import RemoteGroup from "./RemoteGroup"
 import { GamepadProvider } from "./GamepadContext"
 import { GamepadInput } from "./GamepadInput"
-import UiPanel from "./UI/UiPanel.jsx"
-import StatPanel from "./UI/StatPanel.jsx"
+import UiBoard from "./UI/UiBoard.jsx"
+import StatBoard from "./UI/StatBoard.jsx"
 
 // const Blob = dynamic(() => import('./Blob'), { ssr: false })
 
@@ -41,8 +41,8 @@ export default function Scene(portalRTC, ...props) {
             <Hands />
             <GamepadInput />
             {/* <UiPanel /> */}
-            <StatPanel position={[-1.5,4.5,-1.5]}/>
-            <UiPanel 
+            <StatBoard position={[-1.5,2.5,-1.5]}/>
+            <UiBoard 
             scale={0.5} 
             position={[2,2,-3]}/>
 

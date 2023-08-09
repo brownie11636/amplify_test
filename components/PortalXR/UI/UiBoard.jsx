@@ -24,8 +24,8 @@ extend(ThreeMeshUI);
  */
 
 
-export default function UiPanel(props){
-  const panelRef = useRef();
+export default function UiBoard(props){
+  const boardRef = useRef();
 
   useEffect(() => {
     console.log("mounted!!!!!!!!")
@@ -33,9 +33,9 @@ export default function UiPanel(props){
     const robotoFontFamily = ThreeMeshUI.FontLibrary.addFontFamily( "Roboto" );
     robotoFontFamily.addVariant("normal","normal","/fonts/Roboto-msdf.json","/fonts/Roboto-msdf.png")
 
-    panelRef.current.lookAt(0,1,0);
+    boardRef.current.lookAt(0,1,0);
 
-    console.log(panelRef.current)
+    console.log(boardRef.current)
 
     return () => {
       console.log("unmounted")
@@ -44,7 +44,7 @@ export default function UiPanel(props){
 
   useFrame(() => {
     ThreeMeshUI.update()
-    // console.log(panelRef.current)
+    // console.log(boardRef.current)
   })
   
   useEffect(()=>{
@@ -66,7 +66,7 @@ export default function UiPanel(props){
 
   return (
     <block
-      ref={panelRef}
+      ref={boardRef}
       args={[{
         ...args,
         width: 5.5,
