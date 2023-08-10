@@ -1,3 +1,4 @@
+import _ from "lodash"
 import * as THREE from 'three'
 import { forwardRef, useRef, useState, useMemo, useEffect, useContext} from 'react'
 import { useFrame, useLoader } from '@react-three/fiber'
@@ -590,9 +591,15 @@ const BoundaryBox = ({boundary, position, color, ...props}) => {
  * 
  * 처리했음 - 초기 rotation 및 position 세팅은 gripper의 위치 참조해서 상위 컴포넌트에서 설정함.
  * align시에 가까운 방향으로 정렬하게 해야함
+ * 
+ * TODO:
+ *  align 했을때 바로 반영
+ *  
  */
 const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...props}, ref) {
   if (!ref) ref = useRef();
+
+  const vrLog = useControlStore.getState().updateNewLog;
   
   const rightController = useController('right');
   const squeezePressed_R = useRef({now:false, prev:false})
@@ -601,59 +608,25 @@ const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...prop
   const initialRotationRef = useRef();
   const globalAxisRef = useRef();
 
-
   const translatingAxesRef = useRef(useModeStore.getState().translatingAxes);
   const rotatingAxesRef = useRef(useModeStore.getState().rotatingAxes);
   const alignedAxesRef = useRef(useModeStore.getState().alignedAxes);
   const coordinateRef = useRef(useModeStore.getState().coordinate)
 
-  // const convertAxisToStr = (axisNum,option = "upper") => {
-  //   if (option === "upper") axisNum += 88
-  //   else if (option === "lower") axisNum += 120
-    
-  //   return String.fromCharCode(axisNum)
-  // }
-
   const rotatingOrder = useRef("XYZ");
-  const getRotatingOrder = (rotatingAxes, alignIndex, coordinate) => {
+  const getRotatingOrder = (rotatingAxes, alignedAxes, coordinate) => {
     let end = ""
     let order = ""
     let isBase = (coordinate === "base"); //true @ base, false @ TCP
-    // console.log(isBase)
+    let axes = _.isEqual(rotatingAxes,[false,false,false])? alignedAxes : rotatingAxes;
     
-    order = rotatingAxes.reduce((a,c,i)=> {
+    order = axes.reduce((a,c,i)=> {
       if (c === isBase) return a + String.fromCharCode(i+88);
       else {
         end = end + String.fromCharCode(i+88);
         return a
       }
     },"")
-
-
-    // 3 free rotating axis -> XYZ
-    // 1 free rotating axis -> free, fixed, fixed
-    // if(alignIndex === 0) {
-      // order = rotatingAxes.reduce((a,c,i)=> {
-      //   if (c === true) return a + String.fromCharCode(i+88);
-      //   else {
-      //     end = end + String.fromCharCode(i+88);
-      //     return a
-      //   }
-      // },"")
-    // }
-
-    // 1 aligned axis -> fixed, fixed, aligned(free or fixed)
-    // 2 aligned axis -> fixed, fixed aligned, fixed aligned
-    // 3 aligned axis -> fixed aligned, fixed aligned, fixed aligned
-    // if(alignIndex > 0){
-    //   order = rotatingAxes.reduce((a,c,i)=> {
-    //     if (c !== true) return a + String.fromCharCode(i+88);
-    //     else {
-    //       end = end + String.fromCharCode(i+88);
-    //       return a
-    //     }
-    //   },"")
-    // }
 
     return order + end;
   }
@@ -663,13 +636,20 @@ const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...prop
   const needAlignAngle = useRef(false);
   const alignAngle = useRef([]);
   const alignUnitAngle = useRef(0.5*Math.PI)
-  const alignOrder = useRef([])
 
   const controllerModeRef = useRef(useModeStore.getState().controllerModeRef)
 
   const nonAlignedRef = useRef(new THREE.Euler);
 
+  const offsetRef = useRef({position:new THREE.Vector3, quaternion:new THREE.Quaternion,})
+  offsetRef.current.quaternion.identity();
+  const isOffsetUpdated = useRef(false);
+  let q = new THREE.Quaternion;
+  let e = new THREE.Euler;
+  
+
   useEffect(()=>{
+    
     const unsubXRGamepadStore = useXRGamepadStore.subscribe((state) => {
       squeezePressed_R.current.prev = squeezePressed_R.current.now;
       squeezePressed_R.current.now = state.squeezePressed_R
@@ -677,53 +657,34 @@ const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...prop
 
     const unsubModeStore = useModeStore.subscribe(
       (state, prevState) => {
-        // console.log("changed!!!")
-        // console.log(state)
-        // console.log(prevState)
-        // console.log(aaa)
-        controllerModeRef.current = state.controllerMode;
 
+        controllerModeRef.current = state.controllerMode;
+        
         translatingAxesRef.current = state.translatingAxes;
         rotatingAxesRef.current = state.rotatingAxes;
         alignedAxesRef.current = state.alignedAxes;
         coordinateRef.current = state.coordinate;
-
+        
         alignIndex.current.prev = alignIndex.current.now
         alignIndex.current.now = getAlignIndex(state.alignedAxes);
-
+        
         rotatingOrder.current = getRotatingOrder(
           rotatingAxesRef.current, 
-          alignIndex.current.now,
-          coordinateRef.current);
-        // console.log(state)
+          alignedAxesRef.current,
+          coordinateRef.current
+        );
+        
+        // let isRotatingReleased = rotatingAxesRef.current.reduce((a,c,i)=>{
+        //   return a || (c === false && prevState.rotatingAxes[i] === true)
+        // }, false)
+        
         ref.current.rotation.reorder(rotatingOrder.current)
-        // console.log(rotatingOrder.current)
 
+        if (alignIndex.current.now !== alignIndex.current.prev && alignIndex.current.now !== 0){ 
 
-        console.log(alignIndex.current)
-
-        // let alignChanged = state.alignedAxes.reduce((a,c,i) => {
-        //   if( c === prevState.alignedAxes[i] ) return a;
-        //   else return [...a,i]
-        // },[]);
-        // console.log(alignChanged)
-
-        if (alignIndex.current.now !== alignIndex.current.prev){ 
-          
-        //   alignOrder.current.push(...alignChanged)
           needAlignAngle.current = true;
           if (alignIndex.current.prev === 0) nonAlignedRef.current.copy(ref.current.rotation.clone());
 
-        // } else if (alignIndex.current.now < alignIndex.current.prev){ // decrease
-            
-        //   for(let i = 0; i < alignChanged.length; i++) {
-        //     for(let j = 0; j < alignOrder.current.length; j++){
-        //       if(alignOrder.current[j] === alignChanged[i]){
-        //         alignOrder.current.splice(j, 1);
-        //         j--;
-        //       }
-        //     }
-        //   }
         }
         console.log(needAlignAngle.current)
       }
@@ -737,52 +698,58 @@ const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...prop
 
   const controller = {
     localPosition: new THREE.Vector3, 
-    alignedRotation: new THREE.Euler,
+    rotation: new THREE.Euler,
   }
   
   let axis = "";
-  let order = "";
   let tmp_q = new THREE.Quaternion;
 
   useFrame((state,delta,xrFrame) => {
     if (rightController){
-      if (!squeezePressed_R.current.now){
+      if (!squeezePressed_R.current.now){   // squeeze released (it can be replaced by the case when trigger value true -> false)
 
-        //convert 
+        isOffsetUpdated.current = false;
+
+      } else {  //squeeze pressed
+
+        //convert coordinate of position
         controller.localPosition.copy(
           ref.current.parent.worldToLocal(
-            rightController.controller.position))
+            rightController.controller.position));
 
+        // get quaternion
+        rightController.controller.getWorldQuaternion(q)
+
+        // calculate offset only in the first frame of squeezing session
+        if (isOffsetUpdated.current === false){
+          // position offset
+          offsetRef.current.position.subVectors(ref.current.position, controller.localPosition);
+          // quaternion offset
+          ref.current.getWorldQuaternion(offsetRef.current.quaternion);
+          offsetRef.current.quaternion.premultiply(q.clone().invert());
+          
+          isOffsetUpdated.current = true;
+        }
+
+        q.multiply(offsetRef.current.quaternion);
+        controller.rotation.setFromQuaternion(q);
+        controller.rotation.reorder(rotatingOrder.current);
+        
+        // update ref position and rotation
+        // ref.current.position = controller.localPosition + offset.current.position
         translatingAxesRef.current.forEach((val,i) => {
           axis = String.fromCharCode(i+120);  //ascii of x,y,z are 120, 121, 122
           if ( val === true ) {     
-            ref.current.position[axis] = controller.localPosition[axis] 
+            ref.current.position[axis] = controller.localPosition[axis] + offsetRef.current.position[axis]
+            // ref.current.position[axis] = controller.localPosition[axis] 
           }
         })
 
-        /**
-         * alignIndex === 0
-         *  free axis 갯수에 따라서 오일러 각도 계산 순서 바꿔가면서 계산
-         *    free axis 3개 -> 그냥 그대로
-         *    free axis 2개 -> 자유로운 축을 먼저 계산 -> 생략
-         *    free axis 1개 -> 자유로운 축을 먼저 계산
-         * alignIndex === 1
-         *  어차피 free axis 갯수 한개
-         *  align 된 걸 나중에 계산 order: fix,fix,aligned(free)
-         * 
-         * 먼저 aligneIndex > 1 일때 order 랑 align 각도들 정해주고
-         * 그다음에 일괄적으로 freeaxis 갯수따라서 계산 진행하면 될듯
-         * 
-         * 
-         * reorder
-         */
-        // if ( alignIndex.current.now > 0 ) {  // 1 aligned axis -> 2 fixed angle  // 2 axis aligned axis -> 3 fixed angle
-        // if ( alignIndex.current.now > 0 && alignIndex.current.now < 3 ) {  // 1 aligned axis -> 2 fixed angle  // 2 axis aligned axis -> 3 fixed angle
-          // console.log(alignIndex)
         if(needAlignAngle.current){
           alignAngle.current = [0,0,0];
           console.log(alignIndex.current.now)
           console.log(rotatingOrder.current)
+          // ref.current.rotation.reorder(rotatingOrder.current)
           for (let i=0;i<1+alignIndex.current.now;i++){
 
             if (coordinateRef.current === "TCP"){
@@ -798,42 +765,30 @@ const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...prop
             if( alignAngle.current[i] > 0.5*alignUnitAngle.current ) alignAngle.current[i] -= alignUnitAngle.current;
 
             ref.current.rotation[axis] -= alignAngle.current[i];
-            // console.log(controller.alignedRotation)
-            // console.log(controller.alignedRotation[axis])
-
-            // console.log("dasfd")
-
-            // if( alignAngle.current[i] > 0.5*alignUnitAngle.current ) ref.current.rotation[axis] += alignUnitAngle.current;
-            
-            
-            // ref.current.rotation[axis] = controller.alignedRotation[axis];
-            console.log(axis,": ",ref.current.rotation[axis]*RAD2DEG)
+            // console.log(axis,": ",ref.current.rotation[axis]*RAD2DEG)
 
           }
           needAlignAngle.current = false;
         }
-        // }
 
-        rightController.controller.getWorldQuaternion(controller.alignedRotation)
-        controller.alignedRotation.reorder(rotatingOrder.current)
+
         // console.log("dsfasd")
         rotatingAxesRef.current.forEach((val,i) => {
           axis = String.fromCharCode(i+120);  //ascii of x,y,z are 120, 121, 122
           if ( val === true ) {     
-            ref.current.rotation[axis] = controller.alignedRotation[axis] 
+            ref.current.rotation[axis] = controller.rotation[axis] 
             // console.log(ref.current.rotation[axis]*RAD2DEG)
           }
-          console.log(axis,": ",ref.current.rotation[axis]*RAD2DEG)
-          console.log(rotatingAxesRef.current);
         })
-
-      } else {
-
       }
     }
     // ref.current.getWorldQuaternion(tmp_q)
     // globalAxisRef.current.rotation.setFromQuaternion(ref.current.getWorldQuaternion().invert())
     globalAxisRef.current.rotation.setFromQuaternion(ref.current.getWorldQuaternion(tmp_q).invert())
+  })
+
+  useEffect(()=>{
+    vrLog("controlGuide is rendered!")
   })
 
   return (

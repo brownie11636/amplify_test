@@ -45,10 +45,10 @@ export default function Scene(portalRTC, ...props) {
             <StatBoard position={[-1.5,2.5,-1.5]}/>
             <UiBoard 
             scale={0.5} 
-            position={[2,2,-3]}/>
+            position={[1,2,-3]}/>
             <ConsoleBoard 
               numLines={10}
-              position={[2,1,-3]}
+              position={[3,1.5,-1.5]}
             />
 
 
