@@ -23,7 +23,7 @@ export default function ConsoleBoard({numLines, ...props}){
   const textRef = useRef();
   let textContent = ""
   let lineCount = 1;
-
+  let logCount = 0
 
   useEffect(() => {
     console.log("mounted!!!!!!!!")
@@ -38,12 +38,13 @@ export default function ConsoleBoard({numLines, ...props}){
         console.log(numLines)
         if (lineCount > numLines){
           console.log(textContent.indexOf("\n"))
-          textContent = textContent.slice(textContent.indexOf("\n")+2)
+          textContent = textContent.slice(textContent.indexOf("\n")+1)
         }
-        textContent = textContent+"\n"+"LOG"+log;
+        textContent = textContent+"\n"+"log."+logCount+": "+log;
         console.log(textContent)
         textRef.current.set({textContent: textContent})
         lineCount++
+        logCount++
       }
     )
 
@@ -80,7 +81,7 @@ export default function ConsoleBoard({numLines, ...props}){
     <block
       ref={boardRef}
       args={[{
-        width: 3,
+        width: 2.5,
         // height: height,
         // height: numLines * 0.12,
         height: 1.3,
@@ -119,9 +120,12 @@ export default function ConsoleBoard({numLines, ...props}){
     // > */}
       <text 
         ref={textRef} 
-        // args={[{width:"100%", height:"100%",
+        args={[{
+          // width:"100%", height:"100%",
+        justifyContent:"end",
+        flexDirection:"column-reverse"
         // alignItems:"center"
-      // }]} 
+      }]} 
         // _textContent-value={"XR Zoom?\nXR Zoom?\nXR Zoom?\n"}
       />
     </block>
