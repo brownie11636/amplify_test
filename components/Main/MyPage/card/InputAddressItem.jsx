@@ -39,7 +39,8 @@ export const InputAddressItem = ({ title, id, zipCode, address, detailAddress })
           id="postcode"
           className="flex w-[8.75rem] h-[3.125rem] border-b border-b-[#182A5B] text-sm text-[#222222] pl-[1.25rem] focus:outline-none placeholder:text[#7D7D7D]"
           placeholder={`우편번호 검색`}
-          value={zipCode || ""}
+          readOnly
+          defaultValue={zipCode || ""}
           onClick={onClickAddress}
         />
         <button
@@ -55,7 +56,8 @@ export const InputAddressItem = ({ title, id, zipCode, address, detailAddress })
           id="address"
           className="flex w-full h-[3.125rem] border-b border-b-[#182A5B] text-sm text-[#222222] pl-[1.25rem] mt-[0.625rem] focus:outline-none placeholder:text[#7D7D7D]"
           placeholder={`주소를 검색해 주세요.`}
-          value={address || ""}
+          defaultValue={address || ""}
+          readOnly
           onClick={onClickAddress}
         />
       </div>
@@ -65,7 +67,7 @@ export const InputAddressItem = ({ title, id, zipCode, address, detailAddress })
           id="address2"
           className="flex w-full h-[3.125rem] border-b border-b-[#182A5B] text-sm text-[#222222] pl-[1.25rem] mt-[0.625rem] focus:outline-none placeholder:text[#7D7D7D]"
           placeholder={`상세주소를 입력해 주세요.`}
-          value={detailAddress || ""}
+          defaultValue={detailAddress || ""}
         />
       </div>
     </div>

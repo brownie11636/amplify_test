@@ -30,21 +30,24 @@ export const EngineerAndOperator = ({ children }) => {
     console.log(engineerAndOperator);
     console.log("checkedTaskItem");
     console.log(checkedTaskItem);
+    let filtered = engineerAndOperator;
+    //  filtered = filtered?.filter((item) => {
+    //   console.log("item.task");
+    //   console.log(item.task);
+    //   console.log(item.task?.includes(checkedTaskItem));
+    //   return item.task?.includes(checkedTaskItem);
+    // });
     if (value) {
-      let filtered = engineerAndOperator.filter((item) => {
+      filtered = filtered.filter((item) => {
         return item.name.includes(value);
       });
-      filtered = checkedTaskItem
-        ? filtered.map((item) => {
-            return item["task"] === checkedTaskItem;
-          })
-        : null;
+      console.log("filtered");
       console.log(filtered);
       setFilteredArray(filtered);
     } else {
       setFilteredArray(engineerAndOperator);
     }
-  }, [session, value, engineerAndOperator]);
+  }, [session, value, engineerAndOperator, checkedTaskItem]);
 
   const getEngineerAndOperator = async (e) => {
     const res = await axios.post("https://localhost:3333/api/mongo/engineerAndOperator", {
@@ -57,6 +60,7 @@ export const EngineerAndOperator = ({ children }) => {
   };
   return (
     <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative">
+      <div className="fixed flex justify-center mt-[12rem] "></div>
       <div className="px-[2.625rem]">
         <div className="mb-[2.625rem]">
           <span className="text-[#222222] text-lg">{"엔지니어 & 오퍼레이터"}</span>

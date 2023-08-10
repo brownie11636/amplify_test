@@ -41,8 +41,9 @@ const CardForm = ({ data, type }) => {
   useEffect(() => {
     console.log("CheckedFieldItem");
     console.log(CheckedFieldItem);
-    console.log(session);
-  }, [CheckedCompanyItem, CheckedFieldItem, CheckedAccountItem, session]);
+    console.log("CreateFieldItem");
+    console.log(CreateFieldItem);
+  }, [CheckedCompanyItem, CreateFieldItem, CheckedFieldItem, CheckedAccountItem, session]);
   return (
     <>
       <Head>
@@ -63,19 +64,11 @@ const CardForm = ({ data, type }) => {
         </div>
       ) : type === 2 ? (
         <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
-          <FieldList data={data}></FieldList>
-          {FieldSelectedRadio === "robotList" ? (
-            <RobotCard />
-          ) : !CreateFieldItem && !CheckedFieldItem ? null : CreateFieldItem ? (
-            <FieldCard />
-          ) : CreateFieldItem && CheckedFieldItem ? (
-            <FieldCard />
-          ) : CheckedFieldItem ? (
-            <FieldCard data={CheckedFieldItem} />
-          ) : null}
+          <FieldList data={data} />
+          {FieldSelectedRadio === "fieldList" ? <FieldCard /> : <RobotCard />}
 
-          <EngineerAndOperator></EngineerAndOperator>
-          <EngineerAndOperatorCard data={checkedEngineerAndOperator}></EngineerAndOperatorCard>
+          <EngineerAndOperator />
+          <EngineerAndOperatorCard data={checkedEngineerAndOperator} />
         </div>
       ) : type === 3 ? (
         <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">

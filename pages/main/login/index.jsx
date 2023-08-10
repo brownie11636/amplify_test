@@ -80,7 +80,7 @@ const Login = () => {
           </span>
           <span className="w-[400px] h-[50px] flex">
             <input
-              type="text"
+              type="password"
               placeholder="PW"
               ref={pwRef}
               className="w-full h-full flex text-[#182a5b] bg-white border-b border-solid border-b-[#182A5B] pl-[20px] placeholder-[#7d7d7d]"

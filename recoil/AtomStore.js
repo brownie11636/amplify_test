@@ -43,7 +43,14 @@ export const FieldSelectedRadioAtom = atom({
   key: "FieldSelectedRadioAtom",
   default: "fieldList",
 });
-
+export const DeleteFieldModalAtom = atom({
+  key: "DeleteFieldModalAtom",
+  default: false,
+});
+export const DeleteFieldDataAtom = atom({
+  key: "DeleteFieldDataAtom",
+  default: null,
+});
 //
 
 export const EngineerAndOperatorItemAtom = atom({
