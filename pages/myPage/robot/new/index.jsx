@@ -6,6 +6,7 @@ import CardForm from "../../../../components/Main/MyPage/CardForm";
 const New = () => {
   const router = useRouter();
   useEffect(() => {}, []);
+
   return (
     <MainLayout>
       <section className="flex flex-col min-w-fit w-full h-full overflow-scroll scrollbar-hide">

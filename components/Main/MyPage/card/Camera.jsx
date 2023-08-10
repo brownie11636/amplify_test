@@ -1,6 +1,9 @@
+import { useRouter } from "next/router";
 import { InputTextItem } from "./InputTextItem";
-
+import { RobotCard2Submit } from "./RobotCard2";
 export const Camera = () => {
+  const router = useRouter();
+  const pathName = router.pathname;
   return (
     <div className="p-[1.875rem] w-fit h-fit bg-white relative ">
       <div className="flex flex-col">
@@ -93,7 +96,10 @@ export const Camera = () => {
             </div>
           </div>
         </div>
-        <button className="w-[17.5rem] h-[2.5rem] mt-[1.875rem] bg-[#182A5B] flex justify-center items-center self-end">
+        <button
+          className="w-[17.5rem] h-[2.5rem] mt-[1.875rem] bg-[#182A5B] flex justify-center items-center self-end"
+          onClick={pathName.includes("new") ? RobotCard2Submit : null}
+        >
           <span className="text-white text-base">등록</span>
         </button>
       </div>

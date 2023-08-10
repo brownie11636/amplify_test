@@ -1,21 +1,15 @@
-import { useRef, useState } from "react";
-import { useRecoilValue } from "recoil";
-import {
-  CheckedFieldItemAtom,
-  CreateFieldItemAtom,
-  CreateRobotItemAtom,
-} from "../../../../recoil/AtomStore";
 import Image from "next/image";
 import { InputTextItem } from "./InputTextItem";
 import { InputAddressItem } from "./InputAddressItem";
 import axios from "axios";
 import { InputTextArea } from "./InputTextArea";
 import { InputSelect } from "./InputSelect";
+import { useRouter } from "next/router";
 
 export const RobotCard2 = ({ children, data }) => {
-  const CreateFieldItem = useRecoilValue(CreateFieldItemAtom);
-  const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
-  const CreateRobotItem = useRecoilValue(CreateRobotItemAtom);
+  const router = useRouter();
+  const pathName = router.pathname;
+
   return (
     <>
       <div className="py-[2.625rem] w-fit h-fit bg-white relative">
@@ -49,12 +43,7 @@ export const RobotCard2 = ({ children, data }) => {
             <InputSelect title="배치 공정" id="tasks" value={data?.tasks} />
           </div>
           <div className="w-[20rem]">
-            <InputTextItem
-              title="시리얼 번호"
-              id="serialNumber"
-              value={data?.serialNumber}
-              placeholder={""}
-            />
+            <InputTextItem title="공급사" id="vender" value={data?.serialNumber} placeholder={""} />
             <InputAddressItem title="공급사 주소" id="venderAddress" value={data?.venderAddress} />
             <InputTextItem
               title="공급사 연락처"
@@ -68,65 +57,6 @@ export const RobotCard2 = ({ children, data }) => {
               value={data?.venderEmail}
               placeholder={""}
             />
-            {CreateFieldItem ? (
-              <button
-                className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
-                onClick={async () => {
-                  for (const items of document
-                    .getElementById("fieldForm")
-                    .querySelectorAll("input")) {
-                    if (items.value === "") {
-                      alert("빈칸을 모두 입력해주세요.");
-                      return;
-                    }
-                  }
-                  const fieldName = document.getElementById("fieldName").value;
-                  const fieldPhoneNumber = document.getElementById("fieldPhoneNumber").value;
-                  const processCount = document.getElementById("processCount").value;
-                  const fieldManager = document.getElementById("fieldManager").value;
-                  const managerPhoneNumber = document.getElementById("managerPhoneNumber").value;
-                  const managerEmail = document.getElementById("managerEmail").value;
-                  const fieldAddress = document
-                    .getElementById("fieldAddress")
-                    .querySelectorAll("input");
-                  const zipCode = fieldAddress[0].value;
-                  const address = fieldAddress[1].value;
-                  const detailAddress = fieldAddress[2].value;
-                  const data = {
-                    fieldName,
-                    fieldPhoneNumber,
-                    processCount,
-                    fieldManager,
-                    managerPhoneNumber,
-                    managerEmail,
-                    zipCode,
-                    address,
-                    detailAddress,
-                  };
-                  console.log(data);
-                  const res = await axios.post("https://localhost:3333/api/mongo/field", data);
-                  console.log(res);
-                  if (res.data.result === 1) {
-                    alert("등록되었습니다.");
-                    window.location.reload();
-                  } else {
-                    alert("등록에 실패하였습니다.");
-                  }
-                }}
-              >
-                <picture className="relative w-[0.875rem] h-[0.75rem]">
-                  <Image src={`/images/main/myPage/check.svg`} fill alt="" />
-                </picture>
-                <span className="text-base text-white">등록</span>
-              </button>
-            ) : (
-              <button className="w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center">
-                <picture className="relative w-[0.875rem] h-[0.75rem]">
-                  <Image src={`/images/main/myPage/edit.svg`} fill alt="" />
-                </picture>
-                <span className="text-white">수정</span>
-              </button>
-            )}
           </div>
         </div>
       </div>
@@ -135,3 +65,48 @@ export const RobotCard2 = ({ children, data }) => {
 };
 // 1px convert to rem === 0.0625rem
 // 60px convert to rem === 3.75rem
+
+export const RobotCard2Submit = async () => {
+  for (const items of document.getElementById("fieldForm").querySelectorAll("input")) {
+    if (items.value === "") {
+      alert("빈칸을 모두 입력해주세요.");
+      return;
+    }
+  }
+  const id = document.getElementById("id").value;
+  const serialNumber = document.getElementById("serialNumber").value;
+  const nickName = document.getElementById("nickName").value;
+  const descriptions = document.getElementById("descriptions").value;
+  const field = document.getElementById("field").value;
+  const tasks = document.getElementById("tasks").value;
+  const vender = document.getElementById("vender").value;
+  const venderPhone = document.getElementById("venderPhone").value;
+  const venderEmail = document.getElementById("venderEmail").value;
+  const venderAddress = document.getElementById("venderAddress").querySelectorAll("input");
+  const zipCode = venderAddress[0].value;
+  const address = venderAddress[1].value;
+  const detailAddress = venderAddress[2].value;
+  const data = {
+    id,
+    serialNumber,
+    nickName,
+    descriptions,
+    field,
+    tasks,
+    vender,
+    venderPhone,
+    venderEmail,
+    zipCode,
+    address,
+    detailAddress,
+  };
+  console.log(data);
+  const res = await axios.post("https://localhost:3333/api/mongo/robot", data);
+  console.log(res);
+  if (res.data.result === 1) {
+    alert("등록되었습니다.");
+    window.location.reload();
+  } else {
+    alert("등록에 실패하였습니다.");
+  }
+};

@@ -1,14 +1,17 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { CheckedFieldItemAtom, CreateFieldItemAtom } from "../../../../recoil/AtomStore";
 import Image from "next/image";
 import { InputTextItem } from "./InputTextItem";
 import { InputAddressItem } from "./InputAddressItem";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
-export const FieldCard = ({ children, data }) => {
+export const FieldCard = ({ children }) => {
+  const { data: session } = useSession();
   const CreateFieldItem = useRecoilValue(CreateFieldItemAtom);
   const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
+  useEffect(() => {}, [CheckedFieldItem]);
   return (
     <>
       <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative ">
@@ -31,45 +34,45 @@ export const FieldCard = ({ children, data }) => {
                 <Image src={`/images/main/myPage/company.svg`} fill alt="" draggable={false} />
               </picture>
               <span id="fieldName" className="text-[#222222] text-lg">
-                {CheckedFieldItem?.fieldName}
+                {CheckedFieldItem ? CheckedFieldItem?.fieldName : ""}
               </span>
             </div>
           )}
           <InputTextItem
             title="현장 전화번호"
             id="fieldPhoneNumber"
-            value={CheckedFieldItem?.fieldPhoneNumber}
+            value={CheckedFieldItem ? CheckedFieldItem?.fieldPhoneNumber : ""}
             placeholder={""}
           />
           <InputAddressItem
             title="현장 주소"
             id="fieldAddress"
-            zipCode={CheckedFieldItem?.zipCode}
-            address={CheckedFieldItem?.address}
-            detailAddress={CheckedFieldItem?.detailAddress}
+            zipCode={CheckedFieldItem ? CheckedFieldItem?.zipCode : ""}
+            address={CheckedFieldItem ? CheckedFieldItem?.address : ""}
+            detailAddress={CheckedFieldItem ? CheckedFieldItem?.detailAddress : ""}
           />
           <InputTextItem
             title="공정 수"
             id="processCount"
-            value={CheckedFieldItem?.processCount}
+            value={CheckedFieldItem ? CheckedFieldItem?.processCount : ""}
             placeholder={"'-'를 포함하여 입력"}
           />
           <InputTextItem
             title="현장 관리자"
             id="fieldManager"
-            value={CheckedFieldItem?.fieldManager}
+            value={CheckedFieldItem ? CheckedFieldItem?.fieldManager : ""}
             placeholder={"'-'를 포함하여 입력"}
           />
           <InputTextItem
             title="관리자 연락처"
             id="managerPhoneNumber"
-            value={CheckedFieldItem?.managerPhoneNumber}
+            value={CheckedFieldItem ? CheckedFieldItem?.managerPhoneNumber : ""}
             placeholder={"'-'를 포함하여 입력"}
           />
           <InputTextItem
             title="관리자 이메일"
             id="managerEmail"
-            value={CheckedFieldItem?.managerEmail}
+            value={CheckedFieldItem ? CheckedFieldItem?.managerEmail : ""}
             placeholder={"'-'를 포함하여 입력"}
           />
           {CreateFieldItem ? (
@@ -97,15 +100,17 @@ export const FieldCard = ({ children, data }) => {
                 const address = fieldAddress[1].value;
                 const detailAddress = fieldAddress[2].value;
                 const data = {
+                  companyNumber: session.token.user.affiliation,
+                  processCount,
                   fieldName,
                   fieldPhoneNumber,
-                  processCount,
                   fieldManager,
                   managerPhoneNumber,
                   managerEmail,
                   zipCode,
                   address,
                   detailAddress,
+                  processCount,
                 };
                 console.log(data);
                 const res = await axios.post("https://localhost:3333/api/mongo/field", data);

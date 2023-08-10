@@ -1,22 +1,26 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import MainLayout from "../../../components/Main/MainLayout";
-import { RobotItemAtom } from "../../../recoil/AtomStore";
+import { RobotItemListAtom } from "../../../recoil/AtomStore";
 import { useRecoilState } from "recoil";
 import CardForm from "../../../components/Main/MyPage/CardForm";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 const RobotList = () => {
   const router = useRouter();
-
-  const [robotItem, SetRobotItem] = useRecoilState(RobotItemAtom);
+  const { data: session } = useSession();
+  console.log(session?.token?.user?.affiliation);
+  const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
 
   useEffect(() => {
     getRobot();
-  }, []);
+  }, [session]);
   const getRobot = async () => {
-    const response = await axios.get("https://localhost:3333/api/mongo/robot");
-    SetRobotItem(response.data?.data);
+    const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
+      companyNumber: session?.token?.user?.affiliation,
+    });
+    SetRobotItemList(response.data?.data);
   };
   return (
     <MainLayout>
@@ -25,7 +29,7 @@ const RobotList = () => {
           <span className="flex pl-[60px] pt-[60px] text-white text-xl"></span>
         </div>
         <div className="relative w-fit -top-[48px] left-[60px]">
-          <CardForm data={robotItem} type={3} />
+          <CardForm data={robotItemList} type={3} />
         </div>
       </section>
     </MainLayout>

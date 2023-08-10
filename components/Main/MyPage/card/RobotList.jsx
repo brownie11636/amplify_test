@@ -10,7 +10,7 @@ import {
 export const RobotList = ({ children, data }) => {
   const searchRef = useRef();
   const [value, setValue] = useState("");
-  const [filteredArray, setFilteredArray] = useState([...data]);
+  const [filteredArray, setFilteredArray] = useState();
 
   const setFieldSelectedRadio = useSetRecoilState(FieldSelectedRadioAtom);
   const setCreateFieldItem = useSetRecoilState(CreateFieldItemAtom);
@@ -23,7 +23,7 @@ export const RobotList = ({ children, data }) => {
       console.log(filtered);
       setFilteredArray(filtered);
     } else {
-      setFilteredArray([...data]);
+      setFilteredArray(data ? [...data] : []);
     }
   }, [value, data]);
   return (

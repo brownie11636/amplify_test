@@ -1,20 +1,24 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   CheckedEngineerAndOperatorItemAtom,
-  CheckedFieldItemAtom,
   CreateFieldItemAtom,
 } from "../../../../recoil/AtomStore";
 import { InputTextItem } from "./InputTextItem";
 import { InputSelect } from "./InputSelect";
+import axios from "axios";
 
 export const EngineerAndOperatorCard = ({ children, data }) => {
   const searchRef = useRef();
+  const [value, setValue] = useState("");
+  const [filteredArray, setFilteredArray] = useState();
+
   const CreateFieldItem = useRecoilValue(CreateFieldItemAtom);
-  const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
-  const checkedEngineerAndOperator = useSetRecoilState(CheckedEngineerAndOperatorItemAtom);
-  useEffect(() => {}, [checkedEngineerAndOperator]);
+  const [checkedEngineerAndOperator, setCheckedEngineerAndOperator] = useRecoilState(
+    CheckedEngineerAndOperatorItemAtom
+  );
+  useEffect(() => {}, [CreateFieldItem]);
   return (
     <>
       <div className="flex flex-col gap-[1.25rem] py-[2.625rem] w-[22.5rem] h-fit bg-white relative ">

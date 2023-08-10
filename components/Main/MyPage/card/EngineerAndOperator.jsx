@@ -5,37 +5,55 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   CheckedEngineerAndOperatorItemAtom,
   CheckedFieldItemAtom,
+  CheckedTaskItemAtom,
   EngineerAndOperatorItemAtom,
 } from "../../../../recoil/AtomStore";
+import { useSession } from "next-auth/react";
 
-export const EngineerAndOperator = ({ children, data }) => {
+export const EngineerAndOperator = ({ children }) => {
+  const { data: session } = useSession();
   const searchRef = useRef();
   const [value, setValue] = useState("");
-  const [filteredArray, setFilteredArray] = useState([...data]);
+  const [filteredArray, setFilteredArray] = useState([]);
 
+  const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
+  const checkedTaskItem = useRecoilValue(CheckedTaskItemAtom);
   const [engineerAndOperator, setEngineerAndOperator] = useRecoilState(EngineerAndOperatorItemAtom);
   const [checkedEngineerAndOperator, setCheckedEngineerAndOperator] = useRecoilState(
     CheckedEngineerAndOperatorItemAtom
   );
-  console.log(checkedEngineerAndOperator);
   useEffect(() => {
     getEngineerAndOperator();
-  }, []);
+  }, [checkedTaskItem, CheckedFieldItem]);
   useEffect(() => {
+    console.log("engineerAndOperator");
+    console.log(engineerAndOperator);
+    console.log("checkedTaskItem");
+    console.log(checkedTaskItem);
     if (value) {
-      const filtered = data.filter((item) => {
-        return item.fieldName.includes(value);
+      let filtered = engineerAndOperator.filter((item) => {
+        return item.name.includes(value);
       });
+      filtered = checkedTaskItem
+        ? filtered.map((item) => {
+            return item["task"] === checkedTaskItem;
+          })
+        : null;
       console.log(filtered);
       setFilteredArray(filtered);
     } else {
-      setFilteredArray([...engineerAndOperator]);
+      setFilteredArray(engineerAndOperator);
     }
-  }, [value, engineerAndOperator]);
+  }, [session, value, engineerAndOperator]);
 
-  const getEngineerAndOperator = async () => {
-    const response = await axios.get("https://localhost:3333/api/mongo/engineerAndOperator");
-    setEngineerAndOperator(response?.data?.data);
+  const getEngineerAndOperator = async (e) => {
+    const res = await axios.post("https://localhost:3333/api/mongo/engineerAndOperator", {
+      taskCount: checkedTaskItem,
+      fieldIndex: CheckedFieldItem?.index,
+      companyNumber: session?.token?.user?.affiliation,
+    });
+    console.log(res);
+    setEngineerAndOperator(res?.data?.data);
   };
   return (
     <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative">
