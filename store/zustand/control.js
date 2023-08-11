@@ -46,7 +46,11 @@ export const useControlStore = create(
 
     //   return {consoleLogs: logs}
     // }),
-
+    depthMax: 3,
+    // updateDepthMax: (number) => set((state) => {
+    //    return {depthMax: 10}
+      
+    // })
   }))
 )
 // export const useControlStore = create((set) => ({

@@ -1,7 +1,7 @@
 
 // S3 Push 
 export const socketPoint = `https://api.portal301.com`;
-export const socketPoint_dev = `https://192.168.0.29:3333`;
+export const socketPoint_dev = `https://192.168.0.35:3333`;
 // export const socketPoint_dev = `https://192.168.0.22:3333`;
 // export const socketPoint_dev = `https://localhost:3333`;
 export const socketNsp = `/`;
