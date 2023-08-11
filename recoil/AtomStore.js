@@ -88,3 +88,26 @@ export const RobotSelectedRadioAtom = atom({
   key: "RobotSelectedRadioAtom",
   default: "robot",
 });
+export const CreateRobotSelectedFieldAtom = atom({
+  key: "CreateRobotSelectedFieldAtom",
+  default: null,
+});
+
+//
+
+export const SelectedRobotAtom = atom({
+  key: "SelectedRobotAtom",
+  default: null,
+});
+export const SelectedCompanyAtom = atom({
+  key: "SelectedCompanyAtom",
+  default: null,
+});
+export const SelectedFieldAtom = atom({
+  key: "SelectedFieldAtom",
+  default: null,
+});
+export const SelectedTaskAtom = atom({
+  key: "SelectedTaskAtom",
+  default: null,
+});

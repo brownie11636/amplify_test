@@ -11,6 +11,10 @@ import {
   CreateFieldItemAtom,
   DeleteModalAtom,
   FieldSelectedRadioAtom,
+  SelectedCompanyAtom,
+  SelectedFieldAtom,
+  SelectedRobotAtom,
+  SelectedTaskAtom,
 } from "../../../recoil/AtomStore";
 import Head from "next/head";
 import axios from "axios";
@@ -25,6 +29,10 @@ import { RobotCard } from "./card/RobotCard";
 import { RobotCard2 } from "./card/RobotCard2";
 import { Camera } from "./card/Camera";
 import { useSession } from "next-auth/react";
+import { SelectRobot } from "./managementList/SelectRobot";
+import { SelectCompany } from "./managementList/SelectCompany";
+import { PopRobot } from "./managementList/PopRobot";
+import { SelectField } from "./managementList/SelectField";
 
 const CardForm = ({ data, type }) => {
   const { data: session } = useSession();
@@ -36,14 +44,20 @@ const CardForm = ({ data, type }) => {
   const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
   const FieldSelectedRadio = useRecoilValue(FieldSelectedRadioAtom);
 
+  const selectedRobot = useRecoilValue(SelectedRobotAtom);
+  const selectedCompany = useRecoilValue(SelectedCompanyAtom);
+  const selectedField = useRecoilValue(SelectedFieldAtom);
+  const selectedTask = useRecoilValue(SelectedTaskAtom);
+
   const checkedEngineerAndOperator = useSetRecoilState(CheckedEngineerAndOperatorItemAtom);
 
-  useEffect(() => {
-    console.log("CheckedFieldItem");
-    console.log(CheckedFieldItem);
-    console.log("CreateFieldItem");
-    console.log(CreateFieldItem);
-  }, [CheckedCompanyItem, CreateFieldItem, CheckedFieldItem, CheckedAccountItem, session]);
+  useEffect(() => {}, [
+    CheckedCompanyItem,
+    CreateFieldItem,
+    CheckedFieldItem,
+    CheckedAccountItem,
+    session,
+  ]);
   return (
     <>
       <Head>
@@ -72,13 +86,20 @@ const CardForm = ({ data, type }) => {
         </div>
       ) : type === 3 ? (
         <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
-          <RobotList data={data}></RobotList>
-          <RobotCard2 />
+          <RobotList data={data} type={type}></RobotList>
+          <RobotCard2 type={type} />
         </div>
       ) : type === 4 ? (
         <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
-          <RobotCard2 />
+          <RobotCard2 data={data} />
           <Camera />
+        </div>
+      ) : type === 5 ? (
+        <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
+          <SelectRobot />
+          {selectedRobot ? <SelectCompany /> : null}
+          {selectedCompany ? <SelectField /> : null}
+          <PopRobot />
         </div>
       ) : null}
     </>

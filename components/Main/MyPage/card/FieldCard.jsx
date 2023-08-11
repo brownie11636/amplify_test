@@ -108,7 +108,10 @@ export const FieldCard = ({}) => {
                 const address = fieldAddress[1].value;
                 const detailAddress = fieldAddress[2].value;
                 const data = {
-                  companyNumber: session.token.user.affiliation,
+                  companyNumber:
+                    session?.token?.user?.affiliation === "admin"
+                      ? "123"
+                      : session?.token?.user?.affiliation,
                   processCount,
                   fieldName,
                   fieldPhoneNumber,

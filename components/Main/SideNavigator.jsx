@@ -188,7 +188,12 @@ const MyPageSideNavigator = () => {
   return (
     <ul className="w-full h-full">
       <div className=" px-[1.5625rem] py-[2.5rem]">
-        <button className="flex justify-center items-center w-[15.625rem] h-[2.75rem] bg-[#182A5B]">
+        <button
+          className="flex justify-center items-center w-[15.625rem] h-[2.75rem] bg-[#182A5B]"
+          onClick={() => {
+            router.push("/main");
+          }}
+        >
           <span className="text-base text-white">로봇조작</span>
         </button>
       </div>

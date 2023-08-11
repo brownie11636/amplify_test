@@ -53,7 +53,8 @@ export const EngineerAndOperator = ({ children }) => {
     const res = await axios.post("https://localhost:3333/api/mongo/engineerAndOperator", {
       taskCount: checkedTaskItem,
       fieldIndex: CheckedFieldItem?.index,
-      companyNumber: session?.token?.user?.affiliation,
+      companyNumber:
+        session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
     });
     console.log(res);
     setEngineerAndOperator(res?.data?.data);
@@ -79,7 +80,7 @@ export const EngineerAndOperator = ({ children }) => {
             <Image src={`/images/main/mypage/search.svg`} fill alt="" />
           </span>
         </div>
-        <button
+        {/* <button
           className="flex justify-center items-center gap-[0.625rem] w-full h-[2.625rem] my-[1.125rem] bg-[#182A5B]"
           onClick={async (e) => {}}
         >
@@ -87,14 +88,16 @@ export const EngineerAndOperator = ({ children }) => {
             <Image src={`/images/main/mypage/plus.svg`} fill alt="" />
           </picture>
           <span className="text-white">신규등록</span>
-        </button>
+        </button> */}
       </div>
-      <div className="py-[1.125rem]">
+      <div className="py-[2.5rem]">
         <ul className="flex flex-col h-fit">
           {filteredArray?.map((item, index) => {
             return (
               <li
-                className="flex flex-col justify-between py-[0.625rem] border-b border-b-[#DCDCDC] cursor-pointer"
+                className={`flex flex-col justify-between border-b border-b-[#DCDCDC] cursor-pointer ${
+                  index === 0 && "border-t border-t-[#DCDCDC]"
+                }`}
                 key={`en${item?.name}${index}`}
                 onClick={() => {
                   setCheckedEngineerAndOperator(item);

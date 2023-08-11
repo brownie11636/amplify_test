@@ -10,7 +10,9 @@ import { useSession } from "next-auth/react";
 const RobotList = () => {
   const router = useRouter();
   const { data: session } = useSession();
-  console.log(session?.token?.user?.affiliation);
+  console.log(
+    session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation
+  );
   const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
 
   useEffect(() => {
@@ -18,7 +20,8 @@ const RobotList = () => {
   }, [session]);
   const getRobot = async () => {
     const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
-      companyNumber: session?.token?.user?.affiliation,
+      companyNumber:
+        session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
     });
     SetRobotItemList(response.data?.data);
   };

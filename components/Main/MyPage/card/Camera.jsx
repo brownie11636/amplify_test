@@ -1,9 +1,63 @@
 import { useRouter } from "next/router";
 import { InputTextItem } from "./InputTextItem";
-import { RobotCard2Submit } from "./RobotCard2";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import axios from "axios";
+// import { RobotCard2Submit } from "./RobotCard2";
 export const Camera = () => {
   const router = useRouter();
   const pathName = router.pathname;
+  const { data: session } = useSession();
+  useEffect(() => {
+    console.log("session");
+    console.log(session);
+  }, [session]);
+  const RobotCard2Submit = async () => {
+    for (const items of document.getElementById("fieldForm").querySelectorAll("input")) {
+      if (items.value === "") {
+        alert("빈칸을 모두 입력해주세요.");
+        return;
+      }
+    }
+    const id = document.getElementById("id").value;
+    const serialNumber = document.getElementById("serialNumber").value;
+    const nickName = document.getElementById("nickName").value;
+    const descriptions = document.getElementById("descriptions").value;
+    const field = document.getElementById("field").value;
+    const tasks = document.getElementById("tasks").value;
+    const vender = document.getElementById("vender").value;
+    const venderPhone = document.getElementById("venderPhone").value;
+    const venderEmail = document.getElementById("venderEmail").value;
+    const venderAddress = document.getElementById("venderAddress").querySelectorAll("input");
+    const zipCode = venderAddress[0].value;
+    const address = venderAddress[1].value;
+    const detailAddress = venderAddress[2].value;
+    const data = {
+      companyNumber:
+        session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
+      id,
+      serialNumber,
+      nickName,
+      descriptions,
+      field,
+      tasks,
+      vender,
+      venderPhone,
+      venderEmail,
+      zipCode,
+      address,
+      detailAddress,
+    };
+    console.log(data);
+    const res = await axios.post("https://localhost:3333/api/mongo/robot", data);
+    console.log(res);
+    if (res.data.result === 1) {
+      alert("등록되었습니다.");
+      window.location.reload();
+    } else {
+      alert("등록에 실패하였습니다.");
+    }
+  };
   return (
     <div className="p-[1.875rem] w-fit h-fit bg-white relative ">
       <div className="flex flex-col">
