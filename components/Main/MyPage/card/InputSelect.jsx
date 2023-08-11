@@ -41,7 +41,7 @@ export const InputSelect = ({ title, type, id, value, currentValue, CheckedField
             }
           }}
         >
-          <option value={null}>선택해 주세요.</option>
+          <option value={0}>선택해 주세요.</option>
           {type === "fields" ? (
             value?.map((item, index) => {
               return (

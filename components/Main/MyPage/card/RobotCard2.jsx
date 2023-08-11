@@ -1,9 +1,6 @@
-import Image from "next/image";
-import { InputTextItem } from "./InputTextItem";
-import { InputAddressItem } from "./InputAddressItem";
 import axios from "axios";
-import { InputTextArea } from "./InputTextArea";
-import { InputSelect } from "./InputSelect";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -13,9 +10,13 @@ import {
   RobotItemListAtom,
   RobotSelectedRadioAtom,
 } from "../../../../recoil/AtomStore";
-import { useSession } from "next-auth/react";
+import { InputAddressItem } from "./InputAddressItem";
+import { InputSelect } from "./InputSelect";
+import { InputTextArea } from "./InputTextArea";
+import { InputTextItem } from "./InputTextItem";
 
 export const RobotCard2 = ({ children, data, type }) => {
+  const { data: session } = useSession();
   const router = useRouter();
   const pathName = router.pathname;
   const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
@@ -29,6 +30,7 @@ export const RobotCard2 = ({ children, data, type }) => {
     console.log(createRobotSelectedField);
     console.log("checkedRobotItem");
     console.log(checkedRobotItem);
+    console.log(session);
   }, [robotItemList, createRobotSelectedField, checkedRobotItem]);
   return (
     <>
@@ -151,7 +153,48 @@ export const RobotCard2 = ({ children, data, type }) => {
             {type === 3 ? (
               <button
                 className="w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center"
-                onClick={async () => {}}
+                onClick={async () => {
+                  const id = document.getElementById("id").value;
+                  const serialNumber = document.getElementById("serialNumber").value;
+                  const nickName = document.getElementById("nickName").value;
+                  const descriptions = document.getElementById("descriptions").value;
+                  const field = document.getElementById("field").value;
+                  const tasks = document.getElementById("tasks").value;
+                  const vender = document.getElementById("vender").value;
+                  const venderAddress = document
+                    .getElementById("venderAddress")
+                    .querySelectorAll("input");
+                  const zipCode = venderAddress[0].value;
+                  const address = venderAddress[1].value;
+                  const detailAddress = venderAddress[2].value;
+                  const venderPhone = document.getElementById("venderPhone").value;
+                  const venderEmail = document.getElementById("venderEmail").value;
+
+                  const data = {
+                    companyNumber: session?.token?.user?.affiliation,
+                    id,
+                    serialNumber,
+                    nickName,
+                    descriptions,
+                    field,
+                    tasks,
+                    vender,
+                    zipCode,
+                    address,
+                    detailAddress,
+                    venderPhone,
+                    venderEmail,
+                  };
+                  console.log(data);
+                  const res = await axios.put("https://localhost:3333/api/mongo/robot", data);
+                  console.log(res);
+                  if (res.data.result === 1) {
+                    alert("수정되었습니다.");
+                    window.location.reload();
+                  } else {
+                    alert("수정에 실패하였습니다.");
+                  }
+                }}
               >
                 <picture className="relative w-[0.875rem] h-[0.75rem]">
                   <Image src={`/images/main/myPage/edit.svg`} fill alt="" />
