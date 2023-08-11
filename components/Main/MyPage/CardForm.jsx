@@ -11,6 +11,10 @@ import {
   CreateFieldItemAtom,
   DeleteModalAtom,
   FieldSelectedRadioAtom,
+  SelectedCompanyAtom,
+  SelectedFieldAtom,
+  SelectedRobotAtom,
+  SelectedTaskAtom,
 } from "../../../recoil/AtomStore";
 import Head from "next/head";
 import axios from "axios";
@@ -24,8 +28,14 @@ import { RobotList } from "./card/RobotList";
 import { RobotCard } from "./card/RobotCard";
 import { RobotCard2 } from "./card/RobotCard2";
 import { Camera } from "./card/Camera";
+import { useSession } from "next-auth/react";
+import { SelectRobot } from "./managementList/SelectRobot";
+import { SelectCompany } from "./managementList/SelectCompany";
+import { PopRobot } from "./managementList/PopRobot";
+import { SelectField } from "./managementList/SelectField";
 
 const CardForm = ({ data, type }) => {
+  const { data: session } = useSession();
   const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
   const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
   const CheckedAccountItem = useRecoilValue(CheckedAccountItemAtom);
@@ -34,14 +44,20 @@ const CardForm = ({ data, type }) => {
   const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
   const FieldSelectedRadio = useRecoilValue(FieldSelectedRadioAtom);
 
+  const selectedRobot = useRecoilValue(SelectedRobotAtom);
+  const selectedCompany = useRecoilValue(SelectedCompanyAtom);
+  const selectedField = useRecoilValue(SelectedFieldAtom);
+  const selectedTask = useRecoilValue(SelectedTaskAtom);
+
   const checkedEngineerAndOperator = useSetRecoilState(CheckedEngineerAndOperatorItemAtom);
 
-  useEffect(() => {
-    console.log("CheckedFieldItem");
-    console.log(CreateFieldItem);
-    console.log(CheckedFieldItem);
-    console.log(typeof CheckedFieldItem);
-  }, [CheckedCompanyItem, CheckedFieldItem]);
+  useEffect(() => {}, [
+    CheckedCompanyItem,
+    CreateFieldItem,
+    CheckedFieldItem,
+    CheckedAccountItem,
+    session,
+  ]);
   return (
     <>
       <Head>
@@ -55,34 +71,35 @@ const CardForm = ({ data, type }) => {
             <Company data={CheckedCompanyItem} isCreate={CreateAccountItem} />
           ) : null}
           {CreateAccountItem ? null : CheckedCompanyItem && !CheckedAccountItem ? (
-            <Part sub="관리자" isCreate={CreateAccountItem} />
+            <Part isCreate={CreateAccountItem} />
           ) : CheckedAccountItem ? (
             <Part data={CheckedAccountItem} isCreate={CreateAccountItem} />
           ) : null}
         </div>
       ) : type === 2 ? (
         <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
-          <FieldList data={data}></FieldList>
-          {FieldSelectedRadio === "robotList" ? (
-            <RobotCard />
-          ) : !CreateFieldItem && !CheckedFieldItem ? null : CreateFieldItem ? (
-            <FieldCard />
-          ) : CheckedFieldItem ? (
-            <FieldCard data={CheckedFieldItem} />
-          ) : null}
+          <FieldList data={data} />
+          {FieldSelectedRadio === "fieldList" ? <FieldCard /> : <RobotCard />}
 
-          <EngineerAndOperator data={""}></EngineerAndOperator>
-          <EngineerAndOperatorCard data={checkedEngineerAndOperator}></EngineerAndOperatorCard>
+          <EngineerAndOperator />
+          <EngineerAndOperatorCard data={checkedEngineerAndOperator} />
         </div>
       ) : type === 3 ? (
         <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
-          <RobotList data={data}></RobotList>
-          <RobotCard2 />
+          <RobotList data={data} type={type}></RobotList>
+          <RobotCard2 type={type} />
         </div>
       ) : type === 4 ? (
         <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
-          <RobotCard2 />
+          <RobotCard2 data={data} />
           <Camera />
+        </div>
+      ) : type === 5 ? (
+        <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
+          <SelectRobot />
+          {selectedRobot ? <SelectCompany /> : null}
+          {selectedCompany ? <SelectField /> : null}
+          <PopRobot />
         </div>
       ) : null}
     </>
@@ -91,10 +108,12 @@ const CardForm = ({ data, type }) => {
 export default CardForm;
 
 const Company = ({ data }) => {
-  const searchRef = useRef(null);
-  const [value, setValue] = useState("");
+  const { data: session } = useSession();
   const setVisibleDeleteModal = useSetRecoilState(DeleteModalAtom);
   const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
+  useEffect(() => {
+    console.log(session);
+  }, [session]);
   return (
     <>
       <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative ">
@@ -168,10 +187,7 @@ const Company = ({ data }) => {
                   detailAddress,
                 };
                 console.log(data);
-                const res = await axios.post(
-                  "https://localhost:3333/api/mongo/createAccount",
-                  data
-                );
+                const res = await axios.post("https://localhost:3333/api/mongo/company", data);
                 console.log(res);
                 if (res.data.result === 1) {
                   alert("등록되었습니다.");
@@ -238,7 +254,11 @@ const Part = ({ data, sub, isCreate }) => {
               <Image src={`/images/main/myPage/folder.svg`} fill alt="" draggable={false} />
             </picture>
             <span id="part" className="text-[#222222] text-lg">
-              {sub}
+              <select name="selectedPart" id="selectedPart">
+                <option value="admin">관리자</option>
+                <option value="engineer">엔지니어</option>
+                <option value="operator">오퍼레이터</option>
+              </select>
             </span>
           </div>
           <InputTextItem
@@ -282,16 +302,15 @@ const Part = ({ data, sub, isCreate }) => {
                     continue;
                   }
                 }
-                const part = document.getElementById("part").innerText;
+                const part = document.getElementById("selectedPart").value;
                 const id = targetArr[0].value;
                 const password = targetArr[1].value;
                 const name = targetArr[3].value;
                 const phone = targetArr[4].value;
                 const email = targetArr[5].value;
                 const data = {
-                  parent: CheckedCompanyItem?.companyNumber,
-                  sub:
-                    part === "관리자" ? "admins" : part === "엔지니어" ? "engineers" : "operators",
+                  companyNumber: CheckedCompanyItem?.companyNumber,
+                  part,
                   id,
                   password,
                   name,
@@ -345,99 +364,6 @@ const Part = ({ data, sub, isCreate }) => {
   );
 };
 
-// const UserList = ({ data }) => {
-//   console.log(data);
-//   return (
-//     <ul className="flex flex-col w-full min-h-[3.125rem] bg-white relative">
-//       {data[0]?.admins?.map((el, i) => () => (
-//         <li
-//           key={`adminPart${idx}${i}`}
-//           className="flex flex-col min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer"
-//         >
-//           <label
-//             htmlFor={`adminPart${idx}${i}`}
-//             className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer"
-//           >
-//             {/* <div className="flex flex-col h-[3.125rem] pl-[4.25rem] w-full cursor-pointer"> */}
-//             <div className="py-[1rem] flex gap-[1.125rem]">
-//               <picture className="w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
-//                 <Image src={`/images/main/myPage/person.svg`} fill alt="" />
-//               </picture>
-//               <span className="text-[#222222] text-base">{el?.name}</span>
-//             </div>
-//             {/* </div> */}
-//           </label>
-//           <input
-//             type="checkbox"
-//             id={`adminPart${idx}${i}`}
-//             className="peer "
-//             onChange={(e) => {
-//               const target = e.target.nextSibling;
-//               if (e.target.checked) {
-//                 target.classList.remove("hidden");
-//               } else {
-//                 target.classList.add("hidden");
-//               }
-//             }}
-//           />
-//           <div className="w-full h-full absolute left-0 top-0 bg-[#182A5B1A] hidden">
-//             <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
-//           </div>
-//         </li>
-//       ))}
-//     </ul>
-//   );
-// };
-// const PartList = ({ children }) => {
-//   const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
-//   return (
-//     <ul className="flex flex-col w-full min-h-[3.125rem] bg-white">
-//       {["관리자", "엔지니어", "오퍼레이터"].map((element, idx) => (
-//         <li
-//           key={`company${idx}`}
-//           className="flex flex-col min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer"
-//           onClick={() => {}}
-//         >
-//           <label
-//             htmlFor={`company${idx}`}
-//             className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer"
-//           >
-//             <div className="py-[1rem] flex gap-[1.125rem]">
-//               <picture className="select-none w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
-//                 <Image src={`/images/main/myPage/folder.svg`} fill alt="" />
-//               </picture>
-//               <span className="text-[#222222] text-base">{element}</span>
-//             </div>
-//             <input
-//               type="checkbox"
-//               id={`company${idx}`}
-//               className="peer hidden"
-//               onChange={(e) => {
-//                 const target = document.querySelector(`.company${idx}`);
-//                 if (CheckedCompanyItem?.admins?.length === 0) {
-//                   return;
-//                 } else {
-//                   if (e.target.checked) {
-//                     target.classList.remove("hidden");
-//                   } else {
-//                     target.classList.add("hidden");
-//                   }
-//                 }
-//               }}
-//             />
-//             <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative flex peer-checked:hidden">
-//               <Image src={`/images/main/arrow-down.svg`} fill alt="" />
-//             </picture>
-//             <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative hidden peer-checked:flex">
-//               <Image src={`/images/main/arrow-up.svg`} fill alt="" />
-//             </picture>
-//           </label>
-//           <div className={`company${idx} hidden`}>{children}</div>
-//         </li>
-//       ))}
-//     </ul>
-//   );
-// };
 const CompanyList = ({ data }) => {
   const searchRef = useRef(null);
 
@@ -459,7 +385,6 @@ const CompanyList = ({ data }) => {
       setFilteredArray(data);
     }
   }, [value, data]);
-  console.log(CheckedCompanyItem);
   return (
     <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative">
       <div className="px-[2.625rem]">
@@ -495,9 +420,9 @@ const CompanyList = ({ data }) => {
         </button>
       </div>
       <div className="py-[1.125rem]">
-        <div className="flex flex-col h-fit">
+        <ul className="flex flex-col h-fit">
           {filteredArray?.map((item, index) => (
-            <div
+            <li
               key={`${item.companyName}${index}`}
               className={`flex flex-col min-h-[3.125rem] border-[#E0E0E0] border-b ${
                 index === 0 ? "border-t" : ""
@@ -539,16 +464,15 @@ const CompanyList = ({ data }) => {
                 </picture>
               </label>
               <div className={`list${index} hidden`}>
-                <div className="flex flex-col w-full min-h-[3.125rem] bg-white">
+                <ul className="flex flex-col w-full min-h-[3.125rem] bg-white">
                   {[
                     { id: "admin", sub: "관리자" },
                     { id: "engineer", sub: "엔지니어" },
                     { id: "operator", sub: "오퍼레이터" },
                   ].map((element, idx) => (
-                    <div
+                    <li
                       key={`${element.id}${index}${idx}`}
                       className="flex flex-col min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer"
-                      onClick={() => {}}
                     >
                       <label
                         htmlFor={`${element.id}${index}${idx}`}
@@ -597,7 +521,55 @@ const CompanyList = ({ data }) => {
                           {element.id === "admin" &&
                             item?.admins?.map((el, i) => {
                               return (
-                                <div
+                                <li
+                                  key={`adminPart${index}${idx}${i}`}
+                                  className="flex flex-col w-full min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer relative"
+                                >
+                                  <label
+                                    htmlFor={`adminPart${index}${idx}${i}`}
+                                    className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer z-10"
+                                  >
+                                    <div className="flex flex-col h-[3.125rem] w-full cursor-pointer">
+                                      <div className="py-[1rem] flex gap-[1.125rem]">
+                                        <picture className="w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
+                                          <Image
+                                            src={`/images/main/myPage/person.svg`}
+                                            fill
+                                            alt=""
+                                          />
+                                        </picture>
+                                        <span className="text-[#222222] text-base">{el?.name}</span>
+                                      </div>
+                                    </div>
+                                  </label>
+                                  <input
+                                    type="radio"
+                                    name={`adminPart${index}`}
+                                    id={`adminPart${index}${idx}${i}`}
+                                    className="peer hidden"
+                                    onChange={() => {
+                                      document
+                                        .getElementsByName(`adminPart${index}`)
+                                        .forEach((element) => {
+                                          if (!element.checked) {
+                                            element.nextSibling.classList.add("hidden");
+                                          } else {
+                                            element.nextSibling.classList.remove("hidden");
+                                            setCheckedAccountItem(el);
+                                          }
+                                        });
+                                    }}
+                                  />
+                                  <div className="w-[calc(100%_+_0.875rem)] h-full absolute z-0 -left-[0.875rem] top-0 bg-[#182A5B1A] hidden peer-checked:block">
+                                    <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+                                  </div>
+                                </li>
+                              );
+                            })}
+                          {element.id === "engineer" &&
+                            item?.engineers?.map((el, i) => {
+                              return (
+                                <li
                                   key={`adminPart${index}${idx}${i}`}
                                   className="flex flex-col w-full min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer relative"
                                   onClick={() => {}}
@@ -620,35 +592,87 @@ const CompanyList = ({ data }) => {
                                     </div>
                                   </label>
                                   <input
-                                    type="checkbox"
+                                    type="radio"
+                                    name={`adminPart${index}`}
                                     id={`adminPart${index}${idx}${i}`}
                                     className="peer hidden"
-                                    onChange={(e) => {
-                                      const target = e.target.nextSibling;
-                                      if (e.target.checked) {
-                                        setCheckedAccountItem(el);
-                                        target.classList.remove("hidden");
-                                      } else {
-                                        setCheckedAccountItem(null);
-                                        target.classList.add("hidden");
-                                      }
+                                    onChange={() => {
+                                      document
+                                        .getElementsByName(`adminPart${index}`)
+                                        .forEach((element) => {
+                                          if (!element.checked) {
+                                            element.nextSibling.classList.add("hidden");
+                                          } else {
+                                            element.nextSibling.classList.remove("hidden");
+                                            setCheckedAccountItem(el);
+                                          }
+                                        });
                                     }}
                                   />
                                   <div className="w-[calc(100%_+_0.875rem)] h-full absolute z-0 -left-[0.875rem] top-0 bg-[#182A5B1A] hidden">
                                     <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
                                   </div>
-                                </div>
+                                </li>
+                              );
+                            })}
+                          {element.id === "operator" &&
+                            item?.operators?.map((el, i) => {
+                              return (
+                                <li
+                                  key={`adminPart${index}${idx}${i}`}
+                                  className="flex flex-col w-full min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer relative"
+                                  onClick={() => {}}
+                                >
+                                  <label
+                                    htmlFor={`adminPart${index}${idx}${i}`}
+                                    className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer z-10"
+                                  >
+                                    <div className="flex flex-col h-[3.125rem] w-full cursor-pointer">
+                                      <div className="py-[1rem] flex gap-[1.125rem]">
+                                        <picture className="w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
+                                          <Image
+                                            src={`/images/main/myPage/person.svg`}
+                                            fill
+                                            alt=""
+                                          />
+                                        </picture>
+                                        <span className="text-[#222222] text-base">{el?.name}</span>
+                                      </div>
+                                    </div>
+                                  </label>
+                                  <input
+                                    type="radio"
+                                    name={`adminPart${index}`}
+                                    id={`adminPart${index}${idx}${i}`}
+                                    className="peer hidden"
+                                    onChange={() => {
+                                      document
+                                        .getElementsByName(`adminPart${index}`)
+                                        .forEach((element) => {
+                                          if (!element.checked) {
+                                            element.nextSibling.classList.add("hidden");
+                                          } else {
+                                            element.nextSibling.classList.remove("hidden");
+                                            setCheckedAccountItem(el);
+                                          }
+                                        });
+                                    }}
+                                  />
+                                  <div className="w-[calc(100%_+_0.875rem)] h-full absolute z-0 -left-[0.875rem] top-0 bg-[#182A5B1A] hidden peer-checked:block">
+                                    <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+                                  </div>
+                                </li>
                               );
                             })}
                         </ul>
                       </div>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </div>
   );

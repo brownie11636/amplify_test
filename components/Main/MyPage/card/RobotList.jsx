@@ -3,27 +3,25 @@ import { useEffect, useRef, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import {
   CheckedFieldItemAtom,
+  CheckedRobotItemAtom,
   CreateFieldItemAtom,
   FieldSelectedRadioAtom,
 } from "../../../../recoil/AtomStore";
 
-export const RobotList = ({ children, data }) => {
+export const RobotList = ({ children, data, type }) => {
   const searchRef = useRef();
   const [value, setValue] = useState("");
-  const [filteredArray, setFilteredArray] = useState([...data]);
-
-  const setFieldSelectedRadio = useSetRecoilState(FieldSelectedRadioAtom);
-  const setCreateFieldItem = useSetRecoilState(CreateFieldItemAtom);
-  const setCheckedFieldItem = useSetRecoilState(CheckedFieldItemAtom);
+  const [filteredArray, setFilteredArray] = useState();
+  const setCheckedRobotItem = useSetRecoilState(CheckedRobotItemAtom);
   useEffect(() => {
     if (value) {
-      const filtered = data.filter((item) => {
-        return item.fieldName.includes(value);
+      const filtered = data?.robots?.filter((item) => {
+        return item?.serialNumber?.includes(value);
       });
       console.log(filtered);
       setFilteredArray(filtered);
     } else {
-      setFilteredArray([...data]);
+      setFilteredArray(data ? data?.robots : []);
     }
   }, [value, data]);
   return (
@@ -47,76 +45,50 @@ export const RobotList = ({ children, data }) => {
           </span>
         </div>
       </div>
-      <div className="py-[1.125rem]">
+      <div className="py-[2.5rem]">
         <ul className="flex flex-col h-fit">
           {filteredArray?.map((item, index) => {
+            console.log("item");
+            console.log(item);
             return (
               <li
-                className="flex flex-col justify-between py-[0.625rem] border-b border-b-[#DCDCDC] cursor-pointer"
-                key={`${item?.fieldName}${index}`}
+                className={`flex flex-col justify-between border-b border-b-[#DCDCDC] cursor-pointer ${
+                  index === 0 ? "border-t border-t-[#DCDCDC]" : ""
+                }`}
+                key={`${item?.serialNumber}${index}`}
                 onClick={() => {
-                  setCreateFieldItem(false);
-                  setCheckedFieldItem(item);
+                  setCheckedRobotItem(item);
                 }}
               >
                 <label
-                  className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer"
+                  className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer relative"
                   htmlFor={`list${index}`}
                 >
                   <div className="py-[1rem] flex gap-[1.125rem]">
-                    <picture className="select-none w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
-                      <Image src={`/images/main/mypage/field.svg`} fill alt="" />
+                    <picture className="select-none w-[1.5rem] h-[1.5rem] top-[0.0625rem] relative">
+                      <Image src={`/images/main/mypage/robot.svg`} fill alt="" />
                     </picture>
-                    <span className="text-[#222222] text-base">{item?.fieldName}</span>
+                    <span className="text-[#222222] text-base">{item?.nickName}</span>
                   </div>
                   <input
-                    type="checkbox"
+                    type="radio"
+                    name="list"
                     id={`list${index}`}
                     className="peer hidden"
-                    onChange={(e) => {
-                      const target = document.querySelector(`.list${index}`);
-                      if (e.target.checked) {
-                        target.classList.remove("hidden");
-                      } else {
-                        target.classList.add("hidden");
-                      }
+                    onChange={() => {
+                      document.getElementsByName(`task${index}`).forEach((element) => {
+                        if (!element.checked) {
+                          element.nextSibling.classList.add("hidden");
+                        } else {
+                          element.nextSibling.classList.remove("hidden");
+                        }
+                      });
                     }}
                   />
-                  <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative flex peer-checked:hidden">
-                    <Image src={`/images/main/arrow-down.svg`} fill alt="" />
-                  </picture>
-                  <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative hidden peer-checked:flex">
-                    <Image src={`/images/main/arrow-up.svg`} fill alt="" />
-                  </picture>
+                  <div className="w-[calc(100%)] h-full absolute z-0 -left-0 top-0 bg-[#182A5B1A] hidden peer-checked:block">
+                    <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+                  </div>
                 </label>
-                <div className={`list${index} hidden`}>
-                  <ul className="flex flex-col w-full min-h-[3.125rem] bg-white">
-                    {item?.tasks?.map((element, idx) => {
-                      return (
-                        <li
-                          key={`${element.id}${index}${idx}`}
-                          className="flex flex-col min-h-[3.125rem] items-center cursor-pointer"
-                          onClick={() => {}}
-                        >
-                          <label
-                            htmlFor={`${element.id}${index}${idx}`}
-                            className="flex items-center w-full cursor-pointer"
-                          >
-                            <div className="flex py-[1rem] pl-[4.75rem]">
-                              <span className="text-[#222222] text-base">{element?.taskName}</span>
-                            </div>
-                            <input
-                              type="checkbox"
-                              id={`${element.id}${index}${idx}`}
-                              className="peer hidden"
-                              onChange={(e) => {}}
-                            />
-                          </label>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
               </li>
             );
           })}
@@ -126,4 +98,4 @@ export const RobotList = ({ children, data }) => {
   );
 };
 // 1px convert to rem = 0.0625rem
-//
+// 24px convert to rem = 1.5rem

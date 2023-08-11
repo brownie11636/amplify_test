@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import {
   CheckedFieldItemAtom,
+  CheckedTaskItemAtom,
   CreateFieldItemAtom,
   FieldSelectedRadioAtom,
 } from "../../../../recoil/AtomStore";
@@ -15,6 +16,7 @@ export const FieldList = ({ children, data }) => {
   const setFieldSelectedRadio = useSetRecoilState(FieldSelectedRadioAtom);
   const setCreateFieldItem = useSetRecoilState(CreateFieldItemAtom);
   const setCheckedFieldItem = useSetRecoilState(CheckedFieldItemAtom);
+  const setCheckedTaskItem = useSetRecoilState(CheckedTaskItemAtom);
   useEffect(() => {
     if (value) {
       const filtered = data.filter((item) => {
@@ -97,7 +99,9 @@ export const FieldList = ({ children, data }) => {
           {filteredArray?.map((item, index) => {
             return (
               <li
-                className="flex flex-col justify-between py-[0.625rem] border-b border-b-[#DCDCDC] cursor-pointer"
+                className={`flex flex-col justify-between py-[0.625rem] border-b border-b-[#DCDCDC] cursor-pointer ${
+                  index === 0 ? "border-t" : ""
+                }`}
                 key={`${item?.fieldName}${index}`}
                 onClick={() => {
                   setCreateFieldItem(false);
@@ -136,26 +140,42 @@ export const FieldList = ({ children, data }) => {
                 </label>
                 <div className={`list${index} hidden`}>
                   <ul className="flex flex-col w-full min-h-[3.125rem] bg-white">
-                    {item?.tasks?.map((element, idx) => {
+                    {[...Array(item?.processCount).keys()]?.map((element, idx) => {
                       return (
                         <li
                           key={`${element.id}${index}${idx}`}
                           className="flex flex-col min-h-[3.125rem] items-center cursor-pointer"
-                          onClick={() => {}}
+                          onClick={() => {
+                            setCheckedTaskItem(element + 1);
+                          }}
                         >
                           <label
                             htmlFor={`${element.id}${index}${idx}`}
-                            className="flex items-center w-full cursor-pointer"
+                            className="flex items-center w-full cursor-pointer relative"
                           >
                             <div className="flex py-[1rem] pl-[4.75rem]">
-                              <span className="text-[#222222] text-base">{element?.taskName}</span>
+                              <span className="text-[#222222] text-base">{`제 ${
+                                element + 1
+                              } 공정`}</span>
                             </div>
                             <input
-                              type="checkbox"
+                              type="radio"
+                              name={`task`}
                               id={`${element.id}${index}${idx}`}
                               className="peer hidden"
-                              onChange={(e) => {}}
+                              onChange={() => {
+                                document.getElementsByName(`task${index}`).forEach((element) => {
+                                  if (!element.checked) {
+                                    element.nextSibling.classList.add("hidden");
+                                  } else {
+                                    element.nextSibling.classList.remove("hidden");
+                                  }
+                                });
+                              }}
                             />
+                            <div className="w-[calc(100%)] h-full absolute z-0 -left-0 top-0 bg-[#182A5B1A] hidden peer-checked:block">
+                              <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+                            </div>
                           </label>
                         </li>
                       );

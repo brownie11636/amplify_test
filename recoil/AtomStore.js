@@ -35,11 +35,22 @@ export const CheckedFieldItemAtom = atom({
   key: "CheckedFieldItemAtom",
   default: null,
 });
+export const CheckedTaskItemAtom = atom({
+  key: "CheckedTaskItemAtom",
+  default: null,
+});
 export const FieldSelectedRadioAtom = atom({
   key: "FieldSelectedRadioAtom",
   default: "fieldList",
 });
-
+export const DeleteFieldModalAtom = atom({
+  key: "DeleteFieldModalAtom",
+  default: false,
+});
+export const DeleteFieldDataAtom = atom({
+  key: "DeleteFieldDataAtom",
+  default: null,
+});
 //
 
 export const EngineerAndOperatorItemAtom = atom({
@@ -52,13 +63,17 @@ export const CreateEngineerAndOperatorItemAtom = atom({
 });
 export const CheckedEngineerAndOperatorItemAtom = atom({
   key: "CheckedEngineerAndOperatorItemAtom",
-  default: null,
+  default: [],
 });
 
 //
 
 export const RobotItemAtom = atom({
   key: "RobotItemAtom",
+  default: [],
+});
+export const RobotItemListAtom = atom({
+  key: "RobotItemListAtom",
   default: [],
 });
 export const CreateRobotItemAtom = atom({
@@ -72,4 +87,27 @@ export const CheckedRobotItemAtom = atom({
 export const RobotSelectedRadioAtom = atom({
   key: "RobotSelectedRadioAtom",
   default: "robot",
+});
+export const CreateRobotSelectedFieldAtom = atom({
+  key: "CreateRobotSelectedFieldAtom",
+  default: null,
+});
+
+//
+
+export const SelectedRobotAtom = atom({
+  key: "SelectedRobotAtom",
+  default: null,
+});
+export const SelectedCompanyAtom = atom({
+  key: "SelectedCompanyAtom",
+  default: null,
+});
+export const SelectedFieldAtom = atom({
+  key: "SelectedFieldAtom",
+  default: null,
+});
+export const SelectedTaskAtom = atom({
+  key: "SelectedTaskAtom",
+  default: null,
 });
