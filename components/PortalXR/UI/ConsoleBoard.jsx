@@ -1,7 +1,7 @@
 import _ from "lodash"
 import React, { useState, useEffect, useRef, forwardRef, useLayoutEffect } from 'react'
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber'
-import ThreeMeshUI from '../three-mesh-ui-7.1.5/src/three-mesh-ui'
+import ThreeMeshUI from './three-mesh-ui-7.1.5/src/three-mesh-ui'
 
 import { useModeStore } from "/store/zustand/mode.js"
 import * as color from "./colors.js"
