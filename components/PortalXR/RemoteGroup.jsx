@@ -38,7 +38,7 @@ export default function RemoteGroup({XRscale, ...props}) {
     >
       {/* <RobotArm  /> */}
       {/* <Suspense > */}
-        <PortalArm />
+        {/* <PortalArm /> */}
       {/* </Suspense> */}
       <SpatialVideo 
         scale={1} 

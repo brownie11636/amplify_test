@@ -13,7 +13,9 @@ import * as color from "./colors.js"
 import * as UiStates from "./UiStates"
 import LayeredBlock from "./components/LayeredBlock"
 import Button from "./components/Button"
+import DefaultBlock from "./DefaultBlock"
 import OperatingBlock from './OperatingBlock'
+import SettingBlock from './SettingBlock'
 
 extend(ThreeMeshUI);
 
@@ -90,10 +92,12 @@ export default function UiBoard(props){
     >
       {/* <axesHelper args={[1]}/> */}
       <block args={[{...args, height:"50%", borderWidth:0.02,}]} >
-        <ModePanel args={[{...args, width:"25%", flexDirection:"column"}]} />
-        <block args={[{...args, width:"75%", flexDirection:"column"}]} >
-          <OperatingBlock args={[{...args,flexDirection:"column"}]} />
-        </block>
+        <ModeBlock args={[{...args, width:"25%", flexDirection:"column"}]} />
+          <block args={[{...args,height:"100%", width:"75%"}]} position={[0,0,0]} >
+            <DefaultBlock args={[{...args,flexDirection:"column",autoLayout:false}]} />
+            <OperatingBlock args={[{...args,flexDirection:"column",autoLayout:false}]} />
+            <SettingBlock args={[{...args,flexDirection:"column"}]} />
+          </block>
       </block>
       <block args={[{ 
         ...args,
@@ -116,7 +120,7 @@ export default function UiBoard(props){
   )
 }
 
-const ModePanel = (props) =>{
+const ModeBlock = (props) =>{
   const modeTextRef = useRef();
   const defaultRef = useRef(); 
   const operatingRef = useRef(); 
