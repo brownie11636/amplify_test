@@ -21,23 +21,21 @@ extend(ThreeMeshUI);
 
 /**
  * TODO:
- *  THREE.3dObject.traverse 사용해서 three-mesh-ui frame, text 검사 해서 layer 변경
- *  StatBoard 만들기 (FPS 확인용)
+ *  setting block 설정
+ *  
  */
 
 
 export default function UiBoard(props){
   const boardRef = useRef();
-
+  
   useEffect(() => {
     console.log("mounted!!!!!!!!")
-
+    
     const robotoFontFamily = ThreeMeshUI.FontLibrary.addFontFamily( "Roboto" );
     robotoFontFamily.addVariant("normal","normal","/fonts/Roboto-msdf.json","/fonts/Roboto-msdf.png")
 
     boardRef.current.lookAt(0,1,0);
-
-    console.log(boardRef.current)
 
     return () => {
       console.log("unmounted")
@@ -46,7 +44,6 @@ export default function UiBoard(props){
 
   useFrame(() => {
     ThreeMeshUI.update()
-    // console.log(boardRef.current)
   })
   
   useEffect(()=>{
@@ -96,7 +93,7 @@ export default function UiBoard(props){
           <block args={[{...args,height:"100%", width:"75%"}]} position={[0,0,0]} >
             <DefaultBlock args={[{...args,flexDirection:"column",autoLayout:false}]} />
             <OperatingBlock args={[{...args,flexDirection:"column",autoLayout:false}]} />
-            <SettingBlock args={[{...args,flexDirection:"column"}]} />
+            <SettingBlock args={[{...args,flexDirection:"column",autoLayout:false}]} />
           </block>
       </block>
       <block args={[{ 
@@ -116,6 +113,7 @@ export default function UiBoard(props){
         
         {/* <text content={"XR Zoom?"}/> */}
       </block>
+      
     </block>
   )
 }

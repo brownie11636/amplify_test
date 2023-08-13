@@ -30,6 +30,14 @@ const RAD2DEG = THREE.MathUtils.RAD2DEG;
  *  align 했을때 바로 반영
  *  
  */
+
+
+/**
+ * 
+ * TODO: threejs example/webxr/pointdrag 처럼 
+ * attach함수를 쓴듯한 거동을 활용하는 세팅도 설정할 수 있도록
+ * 
+ */
 const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...props}, ref) {
   if (!ref) ref = useRef();
 
@@ -80,6 +88,11 @@ const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...prop
   const isOffsetUpdated = useRef(false);
   let q = new THREE.Quaternion();
   let e = new THREE.Euler();
+
+  const controlAxesHelper = new THREE.AxesHelper(1);
+  const controlHelper = new THREE.Group();
+  controlHelper.rotation.set(-0.5*Math.PI,0,0);
+  controlHelper.add(controlAxesHelper);
   
 
   useEffect(()=>{
@@ -124,9 +137,14 @@ const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...prop
       }
     )
     
+    // rightController.controller.add(controlHelper);
+    
     return () => {
       unsubXRGamepadStore();
       unsubModeStore();
+      // if(controlHelper.parent === rightController.controller){
+      //   rightController.controller.remove(controlHelper);
+      // }
     }
   },[])
 
@@ -137,22 +155,26 @@ const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...prop
   
   let axis = "";
   let tmp_q = new THREE.Quaternion();
-
   useFrame((state,delta,xrFrame) => {
     if (rightController){
+      if(controlHelper.parent !== rightController.controller){
+          rightController.controller.add(controlHelper);
+        }
       if (!squeezePressed_R.current.now){   // squeeze released (it can be replaced by the case when trigger value true -> false)
 
         isOffsetUpdated.current = false;
 
       } else {  //squeeze pressed
-
+        
         //convert coordinate of position
         controller.localPosition.copy(
           ref.current.parent.worldToLocal(
-            rightController.controller.position));
+            // rightController.controller.position));
+            controlHelper.getWorldPosition(controller.localPosition)));
 
         // get quaternion
-        rightController.controller.getWorldQuaternion(q)
+        // rightController.controller.getWorldQuaternion(q)
+        controlHelper.getWorldQuaternion(q)
 
         // calculate offset only in the first frame of squeezing session
         if (isOffsetUpdated.current === false){

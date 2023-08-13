@@ -25,7 +25,7 @@ export default function DefaultBlock(props) {
     height: "100%",
     backgroundColor: color.portalPurple,
     // backgroundOpacity: 1,
-    flexDirection: "row",    
+    flexDirection: "column",    
     justifyContent: "center",
     borderRadius: 0.1,
     borderColor: color.black,
@@ -48,8 +48,8 @@ export default function DefaultBlock(props) {
     height: "50%", 
     justifyContent: "center",
     alignItems:"center", 
-    lineHeight: 1,
-    // padding:0.05,
+    lineHeight: 1.1,
+    padding:0.05,
   }
 
   const textContainerArgs = {
@@ -63,22 +63,28 @@ export default function DefaultBlock(props) {
     <LayeredBlock layer={"default"} args={props.args}>
       <block args={[innerContainerArgs]} >
         <text args={[{
-            textContent:
-              `operating:`
+          margin:[0,0,0.05,0],
+          textContent:
+            `operating:`
           }]} 
         />
         <text args={[{
-            textContent:
-              `squeeze right controller and play robot!
-              at release, you can set axes and align.`
+          textContent:
+            `squeeze right controller and play robot!
+            at release, you can set axes and align.`
           }]} 
         />
       </block>
       <block args={[innerContainerArgs]} >
         <text args={[{
-            textContent:
-            `setting:\n
-            confirm your virtual environment's scale,
+          margin:[0,0,0.05,0],
+          textContent:
+            `setting:`
+          }]} 
+        />
+        <text args={[{
+          textContent:
+            `confirm your virtual environment's scale,
             3D video's position and pose`
           }]} 
         />

@@ -51,6 +51,7 @@ export const useControlStore = create(
     //    return {depthMax: 10}
       
     // })
+    sliderData:3,
   }))
 )
 // export const useControlStore = create((set) => ({

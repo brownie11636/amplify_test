@@ -69,7 +69,7 @@ export default function PortalArm(type, path, ...props) {
   const armAngles = [60,-90,90,0,30,0]
   const [loader, setLoader] = useState(new GLTFLoader())
   const armRef = useRef([{},{},{},{},{},{},{}]);
-  const gripperRef = useRef([{},{},{},{},{},{},{},{},{}]);
+  const gripperRef = useRef([{},{},{},{},{},{},{},{},{},{}]);
   const controlGuideRef = useRef();
   // const [conPos, setConPos]= useState(new THREE.Vector3);
   // const [conRot, setConRot]= useState(new THREE.Vector3);
@@ -87,9 +87,12 @@ export default function PortalArm(type, path, ...props) {
     commClientV01.socket.on("robot",(type, packet)=>{
       console.log(type)
       console.log(packet)
+      vrLog(type)
+      vrLog(packet)
 
       if(type === "C2C" && packet.msg.type === "_q"){
         useControlStore.setState({actualAngles_q:packet.msg.payload})
+        console.log(useControlStore.getState().actualAngles_q)
       }
     })
 
@@ -128,6 +131,8 @@ export default function PortalArm(type, path, ...props) {
       controllerMode.current = state.controllerMode
     })
     
+    useControlStore.setState({actualAngles_q:[60*DEG2RAD,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
+
     return () => {
       commClientV01.socket.off("robot")
       console.log("robot comm off")
@@ -160,12 +165,13 @@ export default function PortalArm(type, path, ...props) {
             gripperRef.current[0].position.clone()
           ).clone())
       );
-      gripperRef.current[0].getWorldQuaternion(
+      gripperRef.current[9].getWorldQuaternion(
         controlGuideRef.current.rotation)
+        console.log(controlGuideRef.current.rotation)
     }
 
     // ang += delta;
-    useControlStore.setState({actualAngles_q:[ang*DEG2RAD,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
+    // useControlStore.setState({actualAngles_q:[ang*DEG2RAD,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
     // useControlStore.setState({actualAngles_q:[60*DEG2RAD,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
     // updateActualAngles_q([ang,-90,90,0,30,0])
     // console.log(storeDistance)
@@ -202,14 +208,21 @@ export default function PortalArm(type, path, ...props) {
               pos = [-pos[0], pos[2], pos[1]];
               pos = pos.map((val) => Math.round(val*10000)/10000)
               
-              vrLog("x: "+pos[0]+", y: "+pos[1]+",z: "+pos[2]);
+              // vrLog("x: "+pos[0]+", y: "+pos[1]+",z: "+pos[2]);
                 
-              euler.copy(rightController.controller.rotation)
-              rot = rightController.controller.rotation.clone().reorder("XZY").toArray().map((val)=>Math.round(val*10000)/10000)
-              // console.log(rot)
-              // rot = 
-              rot = [-rot[0]+(3.141592/2), rot[2], rot[1]]
+              euler.copy(controlGuideRef.current.rotation.clone());
+              // euler.copy(controlGuideRef.current.rotation).reorder("ZYX");
+              // euler.x -= 0.5 * Math.PI;
+              // euler.reorder("XZY");
+              // rot = euler.toArray()
+              rot = euler.reorder("XZY").toArray()
+              vrLog(rot[3]);
+              rot = rot.map((val)=>Math.round(val*10000)/10000)
+              // rot = euler.toArray().map((val)=>Math.round(val*10000)/10000)
+              rot = [-rot[0], rot[2], rot[1]]
+              // rot = [-rot[0], -rot[1], rot[2]]
               // console.log(typeof rot[0], typeof rot[1], typeof rot[2])
+              vrLog("rot x: "+rot[0]+", y: "+rot[1]+",z: "+rot[2]);
 
               packet = { 
                 from: commClientV01.socket.id, 
@@ -218,7 +231,7 @@ export default function PortalArm(type, path, ...props) {
                   type:"set_pos", 
                   data:{
                     arm:[...pos,...rot],
-                    // grip: Math.floor(gipDistance * 10) 
+                    grip: Math.floor(gripDistanceRef.current * 10) 
                   }
                 }
               } 

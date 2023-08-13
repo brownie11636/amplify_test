@@ -7,14 +7,25 @@ import * as color from "./colors.js"
 import * as UiStates from "./UiStates"
 import LayeredBlock from "./components/LayeredBlock"
 import Button from "./components/Button"
+import { useControlStore } from "/store/zustand/control.js"
 import { useModeStore } from "/store/zustand/mode.js"
 
+import { RayGrab } from "@react-three/xr"
+
+/**
+ * TODO:
+ *  슬라이드 형태의 UI 세팅?
+ *  컨트롤러 버튼을 통한 세팅? 이를 안내하는 UI?
+ *    <RayGrab /> 보기
+ *    or onSelect를 통해 컨트롤러와 바인딩
+ *    or threejs example/webxr/pointerdrag 요게 딱이다
+ */
 
 export default function SettingBlock(props) {
   // const ref = useRef();
   // const testRef = useRef();
   useEffect(()=>{
-  
+    
     return () => {
 
     }
@@ -26,7 +37,7 @@ export default function SettingBlock(props) {
     backgroundColor: color.portalPurple,
     // backgroundOpacity: 1,
     flexDirection: "row",    
-    justifyContent: "center",
+    // justifyContent: "center",
     borderRadius: 0.1,
     borderColor: color.black,
     // padding: 0.01,
@@ -47,12 +58,14 @@ export default function SettingBlock(props) {
     // width: 2.8, 
     height: "33%", 
     justifyContent: "start", 
+    alignItems: "center"
   }
 
   const textContainerArgs = {
     ...args,
-    width: 1.2, 
-    height: 0.5, 
+    width: "25%", 
+    height: "100%", 
+    alignItems:"center",
     // margin: 0.01, 
   }
 
@@ -61,188 +74,92 @@ export default function SettingBlock(props) {
       <block args={[innerContainerArgs]}>
         <block args={[textContainerArgs]}>
           {/* <text _textContent-value={"fix\naxis"}/> */}
-          <text args={[{textAlign:"center",}]} _textContent-value={"Free axes\n(translating)"}/>
+          <text args={[{textAlign:"center",}]} _textContent-value={"slide"}/>
         </block>
-        <AxisButton axisStr={"X"} type={"translating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-        <AxisButton axisStr={"Y"} type={"translating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-        <AxisButton axisStr={"Z"} type={"translating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
+        <Slider args={[{...args,width:"50%",height:"100%"}]}/>
       </block>
-      <block args={[innerContainerArgs]}>
-        <block args={[{...textContainerArgs}]}>
-          <text args={[{textAlign:"center",}]} _textContent-value={"Free axes\n(rotating)"}/>
-        </block>       
-        <AxisButton axisStr={"X"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-        <AxisButton axisStr={"Y"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-        <AxisButton axisStr={"Z"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-        <AxisButton axisStr={"XYZ"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-        <AxisButton axisStr={"FIX\nALL"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-      </block>
-      <block args={[{...innerContainerArgs, padding:0,}]}>
-        <block args={[{...innerContainerArgs, height:"100%", width:"55%", margin:0,}]}>
-          <block args={[{...textContainerArgs, width:0.55,}]}>
-            <text args={[{textAlign:"center",}]} _textContent-value={"align\naxes"}/>
-          </block>       
-          <AxisButton axisStr={"X"} type={"aligned"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-          <AxisButton axisStr={"Y"} type={"aligned"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-          <AxisButton axisStr={"Z"} type={"aligned"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-        </block>
-        <block args={[{...innerContainerArgs, height:"100%", width:"45%", margin:0,}]}>
-          <block args={[{...textContainerArgs, width:0.55,}]}>
-            <text args={[{textAlign:"center",}]} _textContent-value={"coordinate"}/>
-          </block>   
-          <CoordinateButton coordStr={"base"} args={[{...buttonArgs, width:0.5, }]} stateAttribute={UiStates.button} />
-          <CoordinateButton coordStr={"TCP"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-        </block>
-      </block>
+        {/* <block args={[innerContainerArgs]} /> */}
+        {/* <block args={[{...props.args,width:2}]} /> */}
     </LayeredBlock>
   )
 }
 
 
-function AxisButton( {axisStr, type, ...props}){
-  const buttonRef = useRef();
-  const capitalType = type.charAt(0).toUpperCase()+type.slice(1);
-  // console.log(capitalType);
-  const updateAxes = useModeStore.getState()["update"+capitalType+"Axes"];
-  // console.log(useModeStore.getState()["update"+capitalType+"Axes"])
-  // console.log(updateAxes)
-  // const setIndex = () => {
-  //   if (axisStr === "X") return 0;
-  //   if (axisStr === "Y") return 1;
-  //   if (axisStr === "Z") return 2;
-  // }
-  const i = axisStr.length === 1 ? axisStr.charCodeAt([0]) - 88 : null;  //88: ASCII code of "X", axisStr shoud be "X"||"Y"||"Z"
-  // console.log(i)
-  
-  const axesRef = useRef();
-  const q = new THREE.Quaternion;
-  const dummy = new THREE.Object3D;
-  // const axisGeo = {length:0.2, width:0.01}
-  const xRef = useRef();
-  const yRef = useRef();
-  const zRef = useRef();
+/**
+ * IDEA:
+ *    슬라이드 버튼과 ghost 슬라이드 버튼을 만듬
+ *    슬라이드 버튼의 포지션은 slideRef.current.parent.worldToLocal(ghostRef.current.getWorldPosition) 의 (x,0,0)를 따라다님
+ *    onSelect되면 e.target.controller 로 컨트롤러 정보를 가져옴
+ *    onFrame 안에서 고스트 슬라이드 버튼은 컨트롤러에 attach
+ *    onSelectEnd 되면 ghost의 포지션은 슬라이드 버튼을 복사
+ *    이동말고 앞에 투명 ref 달아서 걔 크기 조절
+ */
+function Slider( {args,min, max, sliderSize = {width:0.1,height:0.3}, ...props}){
+  const railRef = useRef();
+  const sliderRef = useRef();
+  const ghostRef = useRef();
+
+  const frontRef = useRef();
+  // const backRef = useRef();
+
+
+  const railArgs = {
+    backgroundColor: color.darkPurple,
+    width: "90%",
+    height: "10%",
+    // alignItems:"center"
+    justifyContent:"start",
+    borderRadius: 0,
+  }
+
+  const sliderArgs = {
+    ...railArgs,
+    ...sliderSize,
+    backgroundOpacity: 1,
+    // autoLayout: false,
+  }
+
+  const ghostArgs = {
+    height: sliderArgs.height,
+    width: sliderArgs.width,
+    backgroundOpacity: 0,
+  }
+
+  const frontArgs = {
+    ...ghostArgs,
+    width: "0.01%"
+  }
 
   useEffect(() => {
-    const unsubModeStore = useModeStore.subscribe(
-      (state, prevState) => {
-        // if(type === "rotating" && axisStr === "X")
-        // console.log(state.rotatingAxes)
-        // buttonRef.current.isActive = state.rotateAxes[i];
-        buttonRef.current.isActive = state[type+"Axes"][i];
-        if (!state[type+"Axes"][i]) buttonRef.current.setState("idle")
-        else buttonRef.current.setState("active")
+    const unsubSliderData = useControlStore.subscribe(
+      (state)=>state.sliderData,
+      (data)=>{
+
       }
     )
 
-    if(useModeStore.getState()[type+"Axes"][i]) buttonRef.current.setState("active");
-    
-    console.log(axisStr)
-    console.log(i)
-    console.log(useModeStore.getState()[type+"Axes"][i])
-    console.log(useModeStore.getState()[type+"Axes"])
 
-    switch(axisStr){
-      case "X":
-        xRef.current.scale.set(1,5,5);
-        break;
-      case "Y":
-        yRef.current.scale.set(5,1,5);
-        break;
-      case "Z":
-        zRef.current.scale.set(5,5,1);
-        break;
-      case "XYZ":
-        xRef.current.scale.set(1,5,5);
-        yRef.current.scale.set(5,1,5);
-        zRef.current.scale.set(5,5,1);
-    }
     
     return () => {
-      unsubModeStore();
+      unsubSliderData();
     }
   },[])
 
-  let j=0
   useFrame(() =>{
-    if(j<1){
-      // console.log(axesRef.current.getWorldQuaternion(q))
-      axesRef.current.getWorldQuaternion(q)
-      axesRef.current.setRotationFromQuaternion(q.invert())
-      j++
-    }
+    // sliderRef.current.position.x = -1;
+    
   })
 
   return (
-    <Button 
-      ref={buttonRef}
-      textContent={axisStr} 
-      onClick={()=>{
-        updateAxes(axisStr)
-        // console.log("states")
-        // console.log(useModeStore.getState().rotatingAxes)
-        // console.log(useModeStore.getState().alignedAxes)
-      }}
-      {...props} 
+    <block 
+      // {...props}
+      args={[{...args[0],borderWidth:0,justifyContent:"center"}]} 
     >
-      {/* <block offset={0.2} args={[{width:0.001,height:0.001, borderOpacity:0,backgroundOpacity:0,}]}> */}
-        <group ref={axesRef} 
-        position={[0,0,0.2]} 
-        >
-          {/* <Box ref={xRef} args={[3,0.01,0.01]} material-color="red" />  
-          <Box ref={yRef} args={[0.01,3,0.01]} material-color="green" />
-          <Box ref={zRef} args={[0.01,0.01,3]} material-color="blue" /> */}
-          <Box ref={xRef} args={[0.3,0.01,0.01]} material-color="red" />  
-          <Box ref={yRef} args={[0.01,0.3,0.01]} material-color="green" />
-          <Box ref={zRef} args={[0.01,0.01,0.3]} material-color="blue" />
-        </group>
-      {/* </block> */}
-    </Button>
-  )
-}
-
-function CoordinateButton( {coordStr, ...props}){
-  const buttonRef = useRef();
-  const updateCoordinate = useModeStore.getState().updateCoordinate;
-  
-  useEffect(() => {
-
-    const unsubModeStore = useModeStore.subscribe(
-      (state, prevState) => {
-
-        buttonRef.current.isActive = state.coordinate === coordStr? true : false;
-        
-        if (state.coordinate !== coordStr) {
-          buttonRef.current.setState("idle");
-        }
-        else {
-          buttonRef.current.setState("active");
-        }
-      }
-    )
-
-    if(useModeStore.getState().coordinate === coordStr) {
-      buttonRef.current.setState("active");
-    };
-    
-    return () => {
-      unsubModeStore();
-    }
-  },[])
-
-
-  return (
-    <Button 
-      ref={buttonRef}
-      textContent={coordStr} 
-      onClick={()=>{
-        updateCoordinate(coordStr)
-        // console.log("states")
-        // console.log(useModeStore.getState().rotatingAxes)
-        // console.log(useModeStore.getState().alignedAxes)
-      }}
-      {...props} 
-    >
-      
-    </Button>
+      <block ref={railRef} args={[railArgs]} >
+        <block ref={frontRef} args={[frontArgs]} />   {/* 위치 조절용 */}
+        <block ref={sliderRef} args={[sliderArgs]} />
+        <block ref={ghostRef} args={[ghostArgs]} />   {/* 컨트롤러 제어 및 위치 탐색 용 */}
+      </block>
+    </block>
   )
 }

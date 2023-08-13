@@ -136,10 +136,10 @@ function AxisButton( {axisStr, type, ...props}){
 
     if(useModeStore.getState()[type+"Axes"][i]) buttonRef.current.setState("active");
     
-    console.log(axisStr)
-    console.log(i)
-    console.log(useModeStore.getState()[type+"Axes"][i])
-    console.log(useModeStore.getState()[type+"Axes"])
+    // console.log(axisStr)
+    // console.log(i)
+    // console.log(useModeStore.getState()[type+"Axes"][i])
+    // console.log(useModeStore.getState()[type+"Axes"])
 
     switch(axisStr){
       case "X":

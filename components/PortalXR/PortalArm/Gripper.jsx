@@ -4,6 +4,7 @@ import { forwardRef, useRef, useState, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useModeStore } from "../../../store/zustand/mode.js"
 import { useControlStore } from "../../../store/zustand/control.js"
+import { useXRGamepadStore } from "../../../store/zustand/XRGamepad.js"
 
 import Model from "../components/Model"
 
@@ -43,6 +44,11 @@ const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...prop
   // const gamepadRef = useContext(GamepadContext);
   const colorRef = useRef(0x999999)
   const [index, setIndex] = useState(0)
+  
+  const squeezePressed_R = useRef(useXRGamepadStore.getState().squeezePressed_R)
+  const stickUp_R = useRef(useXRGamepadStore.getState().stickUp_R)
+  const stickDown_R = useRef(useXRGamepadStore.getState().stickDown_R) 
+  const increaseGripDistance = useControlStore((state)=>state.increaseGripDistance);
 
   const rotations = useMemo(() => {
     let rotations = []
@@ -58,16 +64,24 @@ const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...prop
   })
 
   useEffect(()=>{
+    
     grip(50, ref.current);
+    
     const unsubGrip = useControlStore.subscribe(
       (state)=>state.gripDistance,
-      (distance)=>grip(distance, ref.current));
-      // (state)=>[state.actualAngles_q,state.gripDistance],
-      // ([angles,distance])=>{
-      //   console.log(angles)
-      //   console.log(distance) 
-      // });
-    return () => unsubGrip();
+      (distance)=>grip(distance, ref.current)
+    );
+    
+    const unsubXRGamepadStore = useXRGamepadStore.subscribe((state) => {
+      squeezePressed_R.current = state.squeezePressed_R
+      stickUp_R.current = state.stickUp_R;
+      stickDown_R.current = state.stickDown_R;
+    })
+      
+    return () => {
+      unsubGrip();
+      unsubXRGamepadStore();
+    }
   },[])
 
   useEffect(() => console.log("gripper is rendered"),)
@@ -109,7 +123,10 @@ const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...prop
             <Model ref={el=>(ref.current[8]=el)} loader={loader} modelConfig={gripperConfigs[8]} position={gripperPositions[8]} rotation={rotations[8]}/>
           </Model>
         </Model>
-
+        <group 
+          ref={el=>(ref.current[9]=el)} //for control rotation offset
+          rotation={[-0.5*Math.PI, 0, 0]} 
+        />
       </Model>
     </>
   )

@@ -56,6 +56,7 @@ const Arm = forwardRef( function Arm ({loader, index=0, angles=[0,0,0,0,0,0], po
 
   // const [rotation, setRotation] = useState([0,0,0]);
   const ref = useRef([]);
+  const vrLog = useControlStore.getState().updateNewLog;
 
   useEffect(() => {
     // console.log(useControlStore.subscribe)
@@ -63,6 +64,7 @@ const Arm = forwardRef( function Arm ({loader, index=0, angles=[0,0,0,0,0,0], po
       (state)=>state.actualAngles_q,
       (angles)=>{
         // console.log(state)
+        // vrLog(toString(angles))
       for (let i=0; i<6; i++){
         forwardedRef.current[i + 2].rotation.fromArray(rotAxes[i].map((val) => val * angles[i]))
       }
