@@ -46,12 +46,12 @@ export default function OperatingBlock(props) {
     ...args,
     // width: 2.8, 
     height: "33%", 
-    alignItems: "center", 
+    justifyContent: "start", 
   }
 
   const textContainerArgs = {
     ...args,
-    width: 1.3, 
+    width: 1.2, 
     height: 0.5, 
     // margin: 0.01, 
   }
@@ -61,27 +61,38 @@ export default function OperatingBlock(props) {
       <block args={[innerContainerArgs]}>
         <block args={[textContainerArgs]}>
           {/* <text _textContent-value={"fix\naxis"}/> */}
-          <text _textContent-value={"Free axes\n(translating)"}/>
+          <text args={[{textAlign:"center",}]} _textContent-value={"Free axes\n(translating)"}/>
         </block>
         <AxisButton axisStr={"X"} type={"translating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
         <AxisButton axisStr={"Y"} type={"translating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
         <AxisButton axisStr={"Z"} type={"translating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
       </block>
       <block args={[innerContainerArgs]}>
-        <block args={[textContainerArgs]}>
-          <text _textContent-value={"Free axes\n(rotating)"}/>
+        <block args={[{...textContainerArgs}]}>
+          <text args={[{textAlign:"center",}]} _textContent-value={"Free axes\n(rotating)"}/>
         </block>       
         <AxisButton axisStr={"X"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
         <AxisButton axisStr={"Y"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
         <AxisButton axisStr={"Z"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
+        <AxisButton axisStr={"XYZ"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
+        <AxisButton axisStr={"FIX\nALL"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
       </block>
-      <block args={[innerContainerArgs]}>
-        <block args={[textContainerArgs]}>
-          <text _textContent-value={"align\naxes"}/>
-        </block>       
-        <AxisButton axisStr={"X"} type={"aligned"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-        <AxisButton axisStr={"Y"} type={"aligned"} args={[buttonArgs]} stateAttribute={UiStates.button} />
-        <AxisButton axisStr={"Z"} type={"aligned"} args={[buttonArgs]} stateAttribute={UiStates.button} />
+      <block args={[{...innerContainerArgs, padding:0,}]}>
+        <block args={[{...innerContainerArgs, height:"100%", width:"55%", margin:0,}]}>
+          <block args={[{...textContainerArgs, width:0.55,}]}>
+            <text args={[{textAlign:"center",}]} _textContent-value={"align\naxes"}/>
+          </block>       
+          <AxisButton axisStr={"X"} type={"aligned"} args={[buttonArgs]} stateAttribute={UiStates.button} />
+          <AxisButton axisStr={"Y"} type={"aligned"} args={[buttonArgs]} stateAttribute={UiStates.button} />
+          <AxisButton axisStr={"Z"} type={"aligned"} args={[buttonArgs]} stateAttribute={UiStates.button} />
+        </block>
+        <block args={[{...innerContainerArgs, height:"100%", width:"45%", margin:0,}]}>
+          <block args={[{...textContainerArgs, width:0.55,}]}>
+            <text args={[{textAlign:"center",}]} _textContent-value={"coordinate"}/>
+          </block>   
+          <CoordinateButton coordStr={"base"} args={[{...buttonArgs, width:0.5, }]} stateAttribute={UiStates.button} />
+          <CoordinateButton coordStr={"TCP"} args={[buttonArgs]} stateAttribute={UiStates.button} />
+        </block>
       </block>
     </LayeredBlock>
   )
@@ -100,7 +111,7 @@ function AxisButton( {axisStr, type, ...props}){
   //   if (axisStr === "Y") return 1;
   //   if (axisStr === "Z") return 2;
   // }
-  const i = axisStr.charCodeAt([0]) - 88;  //88: ASCII code of "X", axisStr shoud be "X"||"Y"||"Z"
+  const i = axisStr.length === 1 ? axisStr.charCodeAt([0]) - 88 : null;  //88: ASCII code of "X", axisStr shoud be "X"||"Y"||"Z"
   // console.log(i)
   
   const axesRef = useRef();
@@ -114,16 +125,21 @@ function AxisButton( {axisStr, type, ...props}){
   useEffect(() => {
     const unsubModeStore = useModeStore.subscribe(
       (state, prevState) => {
-        // console.log(state.rotateAxes)
+        // if(type === "rotating" && axisStr === "X")
+        // console.log(state.rotatingAxes)
         // buttonRef.current.isActive = state.rotateAxes[i];
         buttonRef.current.isActive = state[type+"Axes"][i];
         if (!state[type+"Axes"][i]) buttonRef.current.setState("idle")
+        else buttonRef.current.setState("active")
       }
     )
 
     if(useModeStore.getState()[type+"Axes"][i]) buttonRef.current.setState("active");
     
-    
+    // console.log(axisStr)
+    // console.log(i)
+    // console.log(useModeStore.getState()[type+"Axes"][i])
+    // console.log(useModeStore.getState()[type+"Axes"])
 
     switch(axisStr){
       case "X":
@@ -135,6 +151,10 @@ function AxisButton( {axisStr, type, ...props}){
       case "Z":
         zRef.current.scale.set(5,5,1);
         break;
+      case "XYZ":
+        xRef.current.scale.set(1,5,5);
+        yRef.current.scale.set(5,1,5);
+        zRef.current.scale.set(5,5,1);
     }
     
     return () => {
@@ -176,6 +196,53 @@ function AxisButton( {axisStr, type, ...props}){
           <Box ref={zRef} args={[0.01,0.01,0.3]} material-color="blue" />
         </group>
       {/* </block> */}
+    </Button>
+  )
+}
+
+function CoordinateButton( {coordStr, ...props}){
+  const buttonRef = useRef();
+  const updateCoordinate = useModeStore.getState().updateCoordinate;
+  
+  useEffect(() => {
+
+    const unsubModeStore = useModeStore.subscribe(
+      (state, prevState) => {
+
+        buttonRef.current.isActive = state.coordinate === coordStr? true : false;
+        
+        if (state.coordinate !== coordStr) {
+          buttonRef.current.setState("idle");
+        }
+        else {
+          buttonRef.current.setState("active");
+        }
+      }
+    )
+
+    if(useModeStore.getState().coordinate === coordStr) {
+      buttonRef.current.setState("active");
+    };
+    
+    return () => {
+      unsubModeStore();
+    }
+  },[])
+
+
+  return (
+    <Button 
+      ref={buttonRef}
+      textContent={coordStr} 
+      onClick={()=>{
+        updateCoordinate(coordStr)
+        // console.log("states")
+        // console.log(useModeStore.getState().rotatingAxes)
+        // console.log(useModeStore.getState().alignedAxes)
+      }}
+      {...props} 
+    >
+      
     </Button>
   )
 }

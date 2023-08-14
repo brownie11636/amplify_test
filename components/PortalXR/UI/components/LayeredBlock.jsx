@@ -35,6 +35,8 @@ export default function LayeredBlock({layer, ...props}) {
   let i=0
   useFrame(() =>{
     if(i<50){
+      ref.current.autoLayout = false;
+      ref.current.position.set (0,0,0)
       ref.current.traverse((obj3d)=>obj3d.layers.set(layerRef.current))
       i++
     }
