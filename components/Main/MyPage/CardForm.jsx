@@ -394,7 +394,7 @@ const CompanyList = ({ data }) => {
     <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative">
       <div className="px-[2.625rem]">
         <div className="mb-[2.625rem]">
-          <span className="text-[#222222] text-lg">{"계정 목록"}</span>
+          <span className="text-[#222222] text-lg">{"그룹"}</span>
         </div>
         <div className="flex h-[3.125rem] relative">
           <input
@@ -490,7 +490,7 @@ const CompanyList = ({ data }) => {
                           <span className="text-[#222222] text-base">{element.sub}</span>
                         </div>
                         <input
-                          type="checkbox"
+                          type="radio"
                           id={`${element.id}${index}${idx}`}
                           className="peer hidden"
                           onChange={(e) => {
