@@ -325,5 +325,3 @@ const MyPageSideNavigator = () => {
   );
 };
 // 1px convert to rem = 0.0625rem
-// 300px convert to rem = 18.75rem
-// 50px convert to rem = 3.125rem
