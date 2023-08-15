@@ -54,6 +54,11 @@ export const useControlStore = create(
     // })
     sliderData:3,
 
+    rgbdProperty: {
+      min: 0.2,
+      max: 3,
+      bitDepth: 8.0,
+    },
     spatialVideo: {
       position:[-0.88, 1.02, -0.28],
       rotation:[0, -61 * Math.PI/180, 0,"YXZ"],

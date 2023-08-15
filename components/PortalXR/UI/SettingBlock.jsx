@@ -76,13 +76,20 @@ export default function SettingBlock(props) {
     width: "50%"
   }
 
-   const ref = useRef();
+  //  const ref = useRef();
+   const spatialVideoTextRef = useRef();
+   const remoteGroupTextRef = useRef();
   // const testRef = useRef();
   useEffect(()=>{
-    ref.current.addAfterUpdate(()=>{
-      ref.current.rotation.z = Math.PI/2
-      ref.current.position.x = -0.05;
-      ref.current.position.y = 0;
+    spatialVideoTextRef.current.addAfterUpdate(()=>{
+      spatialVideoTextRef.current.rotation.z = Math.PI/2
+      spatialVideoTextRef.current.position.x = -0.05;
+      spatialVideoTextRef.current.position.y = 0;
+    })
+    remoteGroupTextRef.current.addAfterUpdate(()=>{
+      remoteGroupTextRef.current.rotation.z = Math.PI/2
+      remoteGroupTextRef.current.position.x = -0.05;
+      remoteGroupTextRef.current.position.y = 0;
     })
     return () => {
 
@@ -94,7 +101,7 @@ export default function SettingBlock(props) {
       <block args={[innerContainerArgs]}>
         <block args={[{...textContainerArgs}]}>
           <block args={[{...args, width:"40%"}]}>
-            <text ref={ref} args={[{width:"200%", height:"50%", textAlign:"center",}]} _textContent-value={"Spatial\nvideo"}/>
+            <text ref={spatialVideoTextRef} args={[{width:"200%", height:"50%", textAlign:"center",}]} _textContent-value={"Spatial\nvideo"}/>
           </block>
           <block args={[{...args, width:"60%", flexDirection:"column"}]}>
             <text args={[{...args, height:"50%", textAlign:"center",}]} _textContent-value={"position"}/>
@@ -117,22 +124,29 @@ export default function SettingBlock(props) {
         {/* <SliderInput args={[{...args,width:"50%",height:"100%"}]} stateAttribute={UiStates.button} /> */}
       </block>
       <block args={[innerContainerArgs]}>
-        <text args={[{...textContainerArgs, textAlign:"center",}]} _textContent-value={"Spatial\nvideo"}/>
-        <block args={[{ ...args, width: "75%", flexDirection:"column" }]} >
+        <block args={[{...textContainerArgs}]}>
+          <block args={[{...args, width:"40%"}]}>
+            <text ref={remoteGroupTextRef} args={[{width:"200%", height:"50%", textAlign:"center",}]} _textContent-value={"remote\ngroup"}/>
+          </block>
+          <block args={[{...args, width:"60%", flexDirection:"column"}]}>
+            <text args={[{...args, height:"50%", textAlign:"center",}]} _textContent-value={"position"}/>
+            <text args={[{...args, height:"50%", textAlign:"center",}]} _textContent-value={"scale"}/>
+          </block>
+        </block>
+        <block args={[{ ...args, width: "65%", flexDirection:"column" }]} >
           <block args={[{ ...args, height: "50%", }]} >
-          {/* <ButtonContainer args={[positionContainerArgs]} target={"spatialVideo"} axisStr={"X"} type={"position"} /> */}
-
+            <ButtonContainer args={[positionContainerArgs]} target={"remoteGroup"} axisStr={"X"} type={"position"} />
+            <ButtonContainer args={[positionContainerArgs]} target={"remoteGroup"} axisStr={"Y"} type={"position"} />
+            <ButtonContainer args={[positionContainerArgs]} target={"remoteGroup"} axisStr={"Z"} type={"position"} />
           </block>
           <block args={[{ ...args, height: "50%", }]} >
-          
+            <ButtonContainer args={[rotationContainerArgs]} target={"remoteGroup"} axisStr={"X"} type={"scale"} />
           </block>
 
 
         </block>
         {/* <SliderInput args={[{...args,width:"50%",height:"100%"}]} stateAttribute={UiStates.button} /> */}
       </block>
-        {/* <block args={[innerContainerArgs]} /> */}
-        {/* <block args={[{..().props.args,width:2}]} /> */}
     </LayeredBlock>
   )
 }
@@ -160,7 +174,8 @@ function ButtonContainer ({target, axisStr, type, ...props}) {
   const textRef = useRef();
   const axisLowercase = String.fromCharCode(axisStr.charCodeAt([0]) + 32)
   const i = axisStr.charCodeAt([0]) - 88;
-  const initialValue = useControlStore.getState().spatialVideo[type][i];
+  const initialValue = (type !== "scale") ? useControlStore.getState()[target][type][i]
+                                          : useControlStore.getState()[target][type];
   const vrLog = useControlStore.getState().updateNewLog;
 
   useEffect(()=>{
@@ -168,13 +183,21 @@ function ButtonContainer ({target, axisStr, type, ...props}) {
       (state)=>state[target],
       (targetState,_targetState) => {     // _value is previous, range is not used yet 
         vrLog(targetState[type])
-        if ( targetState[type][i] !== _targetState[type][i]){
-        // if (spatialVideo[type][axisLowercase] !== _spatialVideo[type][axisLowercase]){
-          textRef.current.set({
-            textContent: 
-              (type === "rotation") ? (targetState[type][i]*180/Math.PI).toFixed(2)
-                                    : targetState[type][i].toFixed(2),
-          })
+        
+        if (type !== "scale"){
+          if ( targetState[type][i] !== _targetState[type][i]){
+            textRef.current.set({
+              textContent: 
+                (type === "rotation") ? (targetState[type][i]*180/Math.PI).toFixed(2)
+                                      : targetState[type][i].toFixed(2),
+            })
+          }
+        } else {
+          if ( targetState[type] !== _targetState[type]){
+            textRef.current.set({
+              textContent: targetState[type].toFixed(2),
+            })
+          }
         }
 
       }

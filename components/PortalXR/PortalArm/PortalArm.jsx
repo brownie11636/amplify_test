@@ -15,6 +15,7 @@ import { useControlStore } from "../../../store/zustand/control.js"
 
 import Model from "../components/Model"
 import Table from "./Table"
+import KariTable from "./KariTable"
 import Arm from "./Arm"
 import Gripper from "./Gripper"
 import ControlGuide from "./ControlGuide"
@@ -23,7 +24,8 @@ import ControlGuide from "./ControlGuide"
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
 const RAD2DEG = THREE.MathUtils.RAD2DEG;
 
-const armPos =  [0, 0.717, 0]
+const armPos =  [0, 0.935, 0]
+// const armPos =  [0, 0.717, 0]
 const armPosVec = new THREE.Vector3().fromArray(armPos);
 const armGeometries = [
   [0, 0.0991, 0],
@@ -291,11 +293,13 @@ export default function PortalArm(type, path, ...props) {
   return(
     <group ref={ref}>
 
-      <Table loader={loader}>
+      <KariTable >
+      {/* <Table loader={loader}> */}
         <Arm ref={armRef} loader={loader} depth={6} angles={armAngles} positions={[armPos,...armGeometries]}>
           <Gripper ref={gripperRef} loader={loader} geoConfig={gripperGeometries} />
         </Arm>
-      </Table> 
+      </KariTable> 
+      {/* </Table>  */}
       {/* <Table loader={loader} position={[1,0,0]}/>
       <Table loader={loader} position={[2,0,0]}/> */}
 

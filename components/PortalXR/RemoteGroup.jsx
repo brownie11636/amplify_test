@@ -46,7 +46,7 @@ export default function RemoteGroup({XRscale, ...props}) {
         <PortalArm />
       {/* </Suspense> */}
       <SpatialVideo 
-        scale={1} 
+        // scale={1} 
         // rotation={[0, -61*THREE.MathUtils.DEG2RAD, 0]} 
         // position={[-0.88, 1.02, -0.28]}
       />
