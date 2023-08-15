@@ -305,7 +305,7 @@ const MyPageSideNavigator = () => {
           </div>
           <span className="z-10">로봇 신규등록</span>
         </div>
-        <div
+        {/* <div
           className={`text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer relative`}
           onClick={() => {
             router.push("/myPage/robot/management");
@@ -319,7 +319,7 @@ const MyPageSideNavigator = () => {
             <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
           </div>
           <span className="z-10">로봇 배치관리</span>
-        </div>
+        </div> */}
       </div>
     </ul>
   );
