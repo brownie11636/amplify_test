@@ -12,7 +12,7 @@ import { GamepadContext } from "./GamepadContext"
 
 const RobotArm = dynamic(() => import('./Robot_arm'), { ssr: false })
 // const PortalArm = dynamic(() => import('./PortalArm'), { ssr: false })
-import PortalArm from './PortalArm'
+import PortalArm from './PortalArm/PortalArm'
 
 export default function RemoteGroup({XRscale, ...props}) {
 
@@ -34,7 +34,7 @@ export default function RemoteGroup({XRscale, ...props}) {
   return (
     <group ref={ref} 
       scale={1.5} 
-      position={[-0.3,-0.3,0]} 
+      position={[-0.3,-0.4,0.3]} 
     >
       {/* <RobotArm  /> */}
       {/* <Suspense > */}

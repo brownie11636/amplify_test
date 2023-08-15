@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 export const useModeStore = create((set) => ({
+  
   controllerMode: "default",
   switchMode: (modeStr) => set((state) => {
     if ( modeStr === "default" 
@@ -21,6 +22,8 @@ export const useModeStore = create((set) => ({
       return {controllerMode: state.controllerMode}
     }
   }),
+
+  isSync: false,
 
   coordinate: "base",
   updateCoordinate: (coordStr) => set((state) => {

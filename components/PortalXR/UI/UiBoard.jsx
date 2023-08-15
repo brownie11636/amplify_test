@@ -4,7 +4,7 @@ import { Box } from '@react-three/drei'
 // import ThreeMeshUI from 'three-, mesh-ui'
 // import ThreeMeshUI from 'https://cdn.skypack.dev/three-mesh-ui'
 // import ThreeMeshUI from '../three-mesh-ui/three-mesh-ui'
-import ThreeMeshUI from '../three-mesh-ui-7.1.5/src/three-mesh-ui'
+import ThreeMeshUI from './three-mesh-ui-7.1.5/src/three-mesh-ui'
 import * as THREE from 'three'
 import { Interactive, useInteraction } from '@react-three/xr'
 
@@ -13,29 +13,29 @@ import * as color from "./colors.js"
 import * as UiStates from "./UiStates"
 import LayeredBlock from "./components/LayeredBlock"
 import Button from "./components/Button"
+import DefaultBlock from "./DefaultBlock"
 import OperatingBlock from './OperatingBlock'
+import SettingBlock from './SettingBlock'
 
 extend(ThreeMeshUI);
 
 /**
  * TODO:
- *  THREE.3dObject.traverse 사용해서 three-mesh-ui frame, text 검사 해서 layer 변경
- *  StatBoard 만들기 (FPS 확인용)
+ *  setting block 설정
+ *  
  */
 
 
-export default function UiPanel(props){
-  const panelRef = useRef();
-
+export default function UiBoard(props){
+  const boardRef = useRef();
+  
   useEffect(() => {
     console.log("mounted!!!!!!!!")
-
+    
     const robotoFontFamily = ThreeMeshUI.FontLibrary.addFontFamily( "Roboto" );
     robotoFontFamily.addVariant("normal","normal","/fonts/Roboto-msdf.json","/fonts/Roboto-msdf.png")
 
-    panelRef.current.lookAt(0,1,0);
-
-    console.log(panelRef.current)
+    boardRef.current.lookAt(0,1,0);
 
     return () => {
       console.log("unmounted")
@@ -44,7 +44,6 @@ export default function UiPanel(props){
 
   useFrame(() => {
     ThreeMeshUI.update()
-    // console.log(panelRef.current)
   })
   
   useEffect(()=>{
@@ -66,7 +65,7 @@ export default function UiPanel(props){
 
   return (
     <block
-      ref={panelRef}
+      ref={boardRef}
       args={[{
         ...args,
         width: 5.5,
@@ -90,10 +89,12 @@ export default function UiPanel(props){
     >
       {/* <axesHelper args={[1]}/> */}
       <block args={[{...args, height:"50%", borderWidth:0.02,}]} >
-        <ModePanel args={[{...args, width:"25%", flexDirection:"column"}]} />
-        <block args={[{...args, width:"75%", flexDirection:"column"}]} >
-          <OperatingBlock args={[{...args,flexDirection:"column"}]} />
-        </block>
+        <ModeBlock args={[{...args, width:"25%", flexDirection:"column"}]} />
+          <block args={[{...args,height:"100%", width:"75%"}]} position={[0,0,0]} >
+            <DefaultBlock args={[{...args,flexDirection:"column",autoLayout:false}]} />
+            <OperatingBlock args={[{...args,flexDirection:"column",autoLayout:false}]} />
+            <SettingBlock args={[{...args,flexDirection:"column",autoLayout:false}]} />
+          </block>
       </block>
       <block args={[{ 
         ...args,
@@ -112,11 +113,12 @@ export default function UiPanel(props){
         
         {/* <text content={"XR Zoom?"}/> */}
       </block>
+      
     </block>
   )
 }
 
-const ModePanel = (props) =>{
+const ModeBlock = (props) =>{
   const modeTextRef = useRef();
   const defaultRef = useRef(); 
   const operatingRef = useRef(); 
