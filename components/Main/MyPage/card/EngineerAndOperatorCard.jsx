@@ -40,7 +40,7 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
   return (
     <>
       <div className="flex flex-col gap-[1.25rem] py-[2.625rem] w-[22.5rem] h-fit bg-white relative ">
-        <div id="fieldForm" className="px-[2.625rem]">
+        {/* <div id="fieldForm" className="px-[2.625rem]">
           <div className="flex items-center gap-[1.125rem]">
             <picture className="w-[1.375rem] h-[1.375rem] relative">
               <Image src={`/images/main/myPage/field.svg`} fill alt="" draggable={false} />
@@ -78,7 +78,7 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
             value={checkedEngineerAndOperator?.tasks}
             CheckedFieldItem={CheckedFieldItem}
           />
-          {/* {CreateFieldItem ? ( */}
+          {CreateFieldItem ? (
           <button
             className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
             onClick={async () => {
@@ -120,16 +120,16 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
             </picture>
             <span className="text-base text-white">등록</span>
           </button>
-          {/* ) : (
+          ) : (
             <button className="w-full h-[2.5rem] mt-[2.125rem] gap-[0.875rem] border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center">
               <picture className="relative w-[0.875rem] h-[0.75rem]">
                 <Image src={`/images/main/myPage/edit.svg`} fill alt="" />
               </picture>
               <span className="text-white">수정</span>
             </button>
-          )} */}
+          )}
         </div>
-        <div className="w-full h-[1.25rem] bg-[#F2F2F2]" />
+        <div className="w-full h-[1.25rem] bg-[#F2F2F2]" /> */}
         <div className="">
           <div className="flex h-[3.125rem] relative px-[2.625rem]">
             <input
