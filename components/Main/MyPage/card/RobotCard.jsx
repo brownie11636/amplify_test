@@ -59,10 +59,10 @@ export const RobotCard = ({ children, data }) => {
                 for (const items of document
                   .getElementById("fieldForm")
                   .querySelectorAll("input")) {
-                  if (items.value === "") {
-                    alert("빈칸을 모두 입력해주세요.");
-                    return;
-                  }
+                  // if (items.value === "") {
+                  //   alert("빈칸을 모두 입력해주세요.");
+                  //   return;
+                  // }
                 }
                 const fieldName = document.getElementById("fieldName").value;
                 const fieldPhoneNumber = document.getElementById("fieldPhoneNumber").value;

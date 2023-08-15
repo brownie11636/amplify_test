@@ -305,9 +305,14 @@ const Part = ({ data, sub, isCreate }) => {
                 const part = document.getElementById("selectedPart").value;
                 const id = targetArr[0].value;
                 const password = targetArr[1].value;
+                const password2 = targetArr[2].value;
                 const name = targetArr[3].value;
                 const phone = targetArr[4].value;
                 const email = targetArr[5].value;
+                if (password !== password2) {
+                  targetArr[2].focus();
+                  return alert("비밀번호가 일치하지 않습니다.");
+                }
                 const data = {
                   companyNumber: CheckedCompanyItem?.companyNumber,
                   part,

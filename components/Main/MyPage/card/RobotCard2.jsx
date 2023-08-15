@@ -214,10 +214,10 @@ export const RobotCard2 = ({ children, data, type }) => {
 export const RobotCard2Submit = async () => {
   const { data: session } = useSession();
   for (const items of document.getElementById("fieldForm").querySelectorAll("input")) {
-    if (items.value === "") {
-      alert("빈칸을 모두 입력해주세요.");
-      return;
-    }
+    // if (items.value === "") {
+    //   alert("빈칸을 모두 입력해주세요.");
+    //   return;
+    // }
   }
   const id = document.getElementById("id").value;
   const serialNumber = document.getElementById("serialNumber").value;

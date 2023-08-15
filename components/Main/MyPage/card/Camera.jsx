@@ -13,12 +13,12 @@ export const Camera = () => {
     console.log(session);
   }, [session]);
   const RobotCard2Submit = async () => {
-    for (const items of document.getElementById("fieldForm").querySelectorAll("input")) {
-      if (items.value === "") {
-        alert("빈칸을 모두 입력해주세요.");
-        return;
-      }
-    }
+    // for (const items of document.getElementById("fieldForm").querySelectorAll("input")) {
+    //   if (items.value === "") {
+    //     alert("빈칸을 모두 입력해주세요.");
+    //     return;
+    //   }
+    // }
     const id = document.getElementById("id").value;
     const serialNumber = document.getElementById("serialNumber").value;
     const nickName = document.getElementById("nickName").value;
@@ -55,7 +55,7 @@ export const Camera = () => {
       alert("등록되었습니다.");
       window.location.reload();
     } else {
-      alert("등록에 실패하였습니다.");
+      alert(res?.data?.msg);
     }
   };
   return (
