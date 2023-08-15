@@ -33,7 +33,8 @@ export const useControlStore = create(
     newLog:"",
     updateNewLog: (log) => set((state) => {
       console.log(state.newLog)
-      return {newLog: log}
+      if (log === state.newLog) return{newLog: log.slice(".")}
+      else return {newLog: log}
     }),
 
     // consoleLogs: [],
@@ -46,14 +47,27 @@ export const useControlStore = create(
 
     //   return {consoleLogs: logs}
     // }),
-    depthMax: 3,
+    visibleRange: {},
     // updateDepthMax: (number) => set((state) => {
     //    return {depthMax: 10}
       
     // })
     sliderData:3,
+
+    spatialVideo: {
+      position:[-0.88, 1.02, -0.28],
+      rotation:[0, -61 * Math.PI/180, 0,"YXZ"],
+      scale:1,
+      // rotation:[0, -61*THREE.MathUtils.DEG2RAD, 0,"YXZ"]
+    },
+
+    remoteGroup: {
+      position:[-0.3,-0.4,0.3],
+      rotation:[0,0,0,"XYZ"],
+      scale:1.5,
+    }
   }))
-)
+);
 // export const useControlStore = create((set) => ({
 //   actualAngles_q: {},
 //   // updateActualAngles_q: (angles) => set({actualAngles_q: angles}),

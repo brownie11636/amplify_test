@@ -133,7 +133,7 @@ const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...prop
           if (alignIndex.current.prev === 0) nonAlignedRef.current.copy(ref.current.rotation.clone());
 
         }
-        console.log(needAlignAngle.current)
+        // console.log(needAlignAngle.current)
       }
     )
     

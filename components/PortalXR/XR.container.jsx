@@ -86,6 +86,7 @@ const XRContainer = () => {
       return;
     }
     console.log(visibleRangeRef.current.max);
+    useControlStore.setState({visibleRange: {...visibleRangeRef.current}})
 
     visibleRangeRef.current.max = value;
     let selected = svcSlt.current.options[svcSlt.current.selectedIndex].value;

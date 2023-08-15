@@ -119,6 +119,14 @@ export const useModeStore = create((set) => ({
 
   }),
 
+  settingMode: {
+    target: "spatialVideo",
+    type: null,   // position, rotation, scale
+    axis: null,   // X Y Z
+    index: null,  // 0 for X, 1 for Y, 2 for Z
+  },
+
+
   // translateAxes: "XYZ",
   // updateTranslateAxes: (geoStr) => set((state) => {
   //   if(geoStr === "X"
@@ -143,4 +151,6 @@ export const useModeStore = create((set) => ({
   //   // console.log(axes)
   //   return {rotateAxes: axes};
   // }),
+
+  
 }))
