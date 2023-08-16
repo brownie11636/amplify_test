@@ -66,7 +66,7 @@ export const RobotList = ({ children, data, type }) => {
                 >
                   <div className="py-[1rem] flex gap-[1.125rem]">
                     <picture className="select-none w-[1.5rem] h-[1.5rem] top-[0.0625rem] relative">
-                      <Image src={`/images/main/mypage/robot.svg`} fill alt="" />
+                      <Image src={`/images/main/myPage/robot.svg`} fill alt="" />
                     </picture>
                     <span className="text-[#222222] text-base">{item?.nickName}</span>
                   </div>

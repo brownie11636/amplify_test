@@ -19,11 +19,11 @@ export const InputAddressItem = ({ title, id, zipCode, address, detailAddress })
           fullAddr += extraAddr !== "" ? ` (${extraAddr})` : "";
         }
         // 우편번호와 주소 정보를 해당 필드에 넣는다.
-        document.getElementById("postcode").value = data.zonecode; //5자리 새우편번호 사용
+        document.getElementById("zipCode").value = data.zonecode; //5자리 새우편번호 사용
         document.getElementById("address").value = fullAddr;
 
         // 커서를 상세주소 필드로 이동한다.
-        document.getElementById("address2").focus();
+        document.getElementById("detailAddress").focus();
       },
     }).open();
   };
@@ -36,7 +36,7 @@ export const InputAddressItem = ({ title, id, zipCode, address, detailAddress })
       <div className="flex w-full h-[3.125rem] items-center justify-between">
         <input
           type="text"
-          id="postcode"
+          id="zipCode"
           className="flex w-[8.75rem] h-[3.125rem] border-b border-b-[#182A5B] text-sm text-[#222222] pl-[1.25rem] focus:outline-none placeholder:text[#7D7D7D]"
           placeholder={`우편번호 검색`}
           readOnly
@@ -64,7 +64,7 @@ export const InputAddressItem = ({ title, id, zipCode, address, detailAddress })
       <div className="flex items-center">
         <input
           type="text"
-          id="address2"
+          id="detailAddress"
           className="flex w-full h-[3.125rem] border-b border-b-[#182A5B] text-sm text-[#222222] pl-[1.25rem] mt-[0.625rem] focus:outline-none placeholder:text[#7D7D7D]"
           placeholder={`상세주소를 입력해 주세요.`}
           defaultValue={detailAddress || ""}
