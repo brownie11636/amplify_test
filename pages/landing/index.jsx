@@ -114,6 +114,7 @@ const LandingPage = () => {
 export default LandingPage;
 
 const Block1 = () => {
+  const router = useRouter();
   return (
     <div className={`flex w-full relative justify-center items-center ${heightFlexible}`}>
       <picture className={`w-screen ${heightFlexible} -z-10 absolute top-0 left-0`}>
