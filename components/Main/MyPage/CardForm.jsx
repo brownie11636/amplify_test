@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import React, { Children, cloneElement, isValidElement, useEffect, useRef, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import {
   CheckedAccountItemAtom,
@@ -9,10 +9,12 @@ import {
   CheckedFieldItemAtom,
   CreateAccountItemAtom,
   CreateFieldItemAtom,
+  DeleteApiUriAtom,
   DeleteModalAtom,
   FieldSelectedRadioAtom,
   SelectedCompanyAtom,
   SelectedFieldAtom,
+  SelectedPartItemAtom,
   SelectedRobotAtom,
   SelectedTaskAtom,
 } from "../../../recoil/AtomStore";
@@ -110,10 +112,21 @@ export default CardForm;
 const Company = ({ data }) => {
   const { data: session } = useSession();
   const setVisibleDeleteModal = useSetRecoilState(DeleteModalAtom);
+  const setDeleteApiUrl = useSetRecoilState(DeleteApiUriAtom);
   const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
+  const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
   useEffect(() => {
-    console.log(session);
-  }, [session]);
+    if (CheckedCompanyItem) {
+      for (const key in CheckedCompanyItem) {
+        if (Object.hasOwnProperty.call(CheckedCompanyItem, key)) {
+          document.getElementById(`${key}`)
+            ? (document.getElementById(`${key}`).value = CheckedCompanyItem[key])
+            : null;
+        }
+      }
+    }
+  }, [session, CheckedCompanyItem]);
+
   return (
     <>
       <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative ">
@@ -212,7 +225,11 @@ const Company = ({ data }) => {
             <span
               className="flex text[#222222] text-base underline cursor-pointer mt-[2rem]"
               onClick={() => {
+                console.log(CheckedCompanyItem);
                 setVisibleDeleteModal(true);
+                setDeleteApiUrl(
+                  `https://localhost:3333/api/mongo/company?companyNumber=${CheckedCompanyItem?.companyNumber}`
+                );
               }}
             >
               계정삭제
@@ -227,9 +244,21 @@ const Company = ({ data }) => {
 const Part = ({ data, sub, isCreate }) => {
   const searchRef = useRef(null);
   const setVisibleDeleteModal = useSetRecoilState(DeleteModalAtom);
+  const setDeleteApiUrl = useSetRecoilState(DeleteApiUriAtom);
   const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
   const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
   const CheckedAccountItem = useRecoilValue(CheckedAccountItemAtom);
+  useEffect(() => {
+    if (!CheckedAccountItem) {
+      document
+        .querySelector(".userCard")
+        .querySelectorAll("input")
+        .forEach((element) => {
+          element.value = "";
+        });
+      document.querySelector(".userCard").value = "";
+    }
+  }, [CheckedAccountItem]);
   useEffect(() => {
     const password = document.getElementById("password");
     const passwordCheck = document.getElementById("passwordCheck");
@@ -248,7 +277,7 @@ const Part = ({ data, sub, isCreate }) => {
   return (
     <>
       <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative">
-        <div className="px-[2.625rem]">
+        <div className="userCard px-[2.625rem]">
           <div className="flex items-center gap-[1.125rem]">
             <picture className="w-[1.375rem] h-[1.375rem] relative">
               <Image src={`/images/main/myPage/folder.svg`} fill alt="" draggable={false} />
@@ -264,14 +293,14 @@ const Part = ({ data, sub, isCreate }) => {
           <InputTextItem
             title="아이디"
             id={"userId"}
-            value={data?.id}
+            value={CheckedAccountItem ? data?.id : ""}
             placeholder={"영문자+숫자, 20자제한, 특수기호 금지"}
           />
           <InputTextItem
             title="비밀번호"
             id={"password"}
             type="password"
-            value={data?.password}
+            value={CheckedAccountItem ? data?.password : ""}
             placeholder={"영문자+숫자, 20자 제한"}
           />
           {CheckedAccountItem ? null : (
@@ -283,11 +312,22 @@ const Part = ({ data, sub, isCreate }) => {
               placeholder={"비밀번호를 한번 더 입력"}
             />
           )}
-          <InputTextItem title="이름" value={data?.name} placeholder={"이름 입력"} />
-          <InputTextItem title="연락처" value={data?.phone} placeholder={"'-'를 포함하여 입력"} />
           <InputTextItem
+            id="name"
+            title="이름"
+            value={CheckedAccountItem ? data?.name : ""}
+            placeholder={"이름 입력"}
+          />
+          <InputTextItem
+            id="phone"
+            title="연락처"
+            value={CheckedAccountItem ? data?.phone : ""}
+            placeholder={"'-'를 포함하여 입력"}
+          />
+          <InputTextItem
+            id="email"
             title="이메일"
-            value={data?.email}
+            value={CheckedAccountItem ? data?.email : ""}
             placeholder={"이메일 주소를 끝까지 입력"}
           />
           {!CheckedAccountItem ? (
@@ -357,7 +397,11 @@ const Part = ({ data, sub, isCreate }) => {
             <span
               className="flex text[#222222] text-base underline cursor-pointer mt-[2.625rem]"
               onClick={() => {
+                console.log(CheckedAccountItem);
                 setVisibleDeleteModal(true);
+                setDeleteApiUrl(
+                  `https://localhost:3333/api/mongo/user?id=${CheckedAccountItem?.id}`
+                );
               }}
             >
               계정삭제
@@ -379,7 +423,27 @@ const CompanyList = ({ data }) => {
   const setCheckedCompanyItem = useSetRecoilState(CheckedCompanyItemAtom);
   const setCheckedAccountItem = useSetRecoilState(CheckedAccountItemAtom);
   const setCreateAccountItem = useSetRecoilState(CreateAccountItemAtom);
-
+  const setSelectedPartItem = useSetRecoilState(SelectedPartItemAtom);
+  const checkedAccountItem = useRecoilValue(CheckedAccountItemAtom);
+  useEffect(() => {
+    if (checkedAccountItem) {
+      const target = document.querySelector(".userCard").querySelectorAll("input");
+      const part = document.getElementById("selectedPart");
+      part.value = checkedAccountItem.part;
+      for (const key in checkedAccountItem) {
+        if (Object.hasOwnProperty.call(checkedAccountItem, key)) {
+          console.log(checkedAccountItem.id);
+          target.forEach((element) => {
+            if (element.id === "userId") {
+              element.value = checkedAccountItem.id;
+            } else if (element.id === key) {
+              element.value = checkedAccountItem[key];
+            }
+          });
+        }
+      }
+    }
+  }, [checkedAccountItem]);
   useEffect(() => {
     if (value) {
       const filtered = data.filter((item) => {
@@ -414,8 +478,8 @@ const CompanyList = ({ data }) => {
           className="flex justify-center items-center gap-[0.625rem] w-full h-[2.625rem] my-[1.125rem] bg-[#182A5B]"
           onClick={async (e) => {
             e.preventDefault();
-            setCreateAccountItem(true);
-            setCheckedAccountItem(null);
+            // setCreateAccountItem(true);
+            // setCheckedAccountItem(null);
           }}
         >
           <picture className="w-[0.75rem] h-[0.75rem] top-[0.0625rem] relative">
@@ -426,136 +490,151 @@ const CompanyList = ({ data }) => {
       </div>
       <div className="py-[1.125rem]">
         <ul className="flex flex-col h-fit">
-          {filteredArray?.map((item, index) => (
-            <li
-              key={`${item.companyName}${index}`}
-              className={`flex flex-col min-h-[3.125rem] border-[#E0E0E0] border-b ${
-                index === 0 ? "border-t" : ""
-              }`}
-              onClick={() => {
-                setCheckedCompanyItem(item);
-                setCreateAccountItem(false);
-                setCheckedAccountItem(null);
-              }}
-            >
-              <label
-                className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer"
-                htmlFor={`list${index}`}
+          {filteredArray?.map((item, index) => {
+            return (
+              <li
+                key={`${item.companyName}${index}`}
+                className={`flex flex-col min-h-[3.125rem] border-[#E0E0E0] border-b ${
+                  index === 0 ? "border-t" : ""
+                }`}
+                onClick={() => {
+                  setCheckedCompanyItem(item);
+                  // setCreateAccountItem(false);
+                  // setCheckedAccountItem(null);
+                }}
               >
-                <div className="py-[1rem] flex gap-[1.125rem]">
-                  <picture className="select-none w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
-                    <Image src={`/images/main/mypage/company.svg`} fill alt="" />
+                <label
+                  className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer"
+                  htmlFor={`list${index}`}
+                >
+                  <div className="py-[1rem] flex gap-[1.125rem]">
+                    <picture className="select-none w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
+                      <Image src={`/images/main/myPage/company.svg`} fill alt="" />
+                    </picture>
+                    <span className="text-[#222222] text-base">{item.companyName}</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    name="company"
+                    id={`list${index}`}
+                    className="peer hidden"
+                    onChange={(e) => {
+                      document.getElementsByName("company").forEach((element) => {
+                        if (!e.target === element) {
+                          element.checked = false;
+                        }
+                      });
+                      const target = document.querySelector(`.part${index}`);
+                      if (e.target.checked) {
+                        target.classList.remove("hidden");
+                      } else {
+                        target.classList.add("hidden");
+                      }
+                    }}
+                  />
+                  <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative flex peer-checked:hidden">
+                    <Image src={`/images/main/arrow-down.svg`} fill alt="" />
                   </picture>
-                  <span className="text-[#222222] text-base">{item.companyName}</span>
-                </div>
-                <input
-                  type="checkbox"
-                  id={`list${index}`}
-                  className="peer hidden"
-                  onChange={(e) => {
-                    const target = document.querySelector(`.list${index}`);
-                    if (e.target.checked) {
-                      target.classList.remove("hidden");
-                    } else {
-                      target.classList.add("hidden");
-                    }
-                  }}
-                />
-                <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative flex peer-checked:hidden">
-                  <Image src={`/images/main/arrow-down.svg`} fill alt="" />
-                </picture>
-                <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative hidden peer-checked:flex">
-                  <Image src={`/images/main/arrow-up.svg`} fill alt="" />
-                </picture>
-              </label>
-              <div className={`list${index} hidden`}>
-                <ul className="flex flex-col w-full min-h-[3.125rem] bg-white">
-                  {[
-                    { id: "admin", sub: "관리자" },
-                    { id: "engineer", sub: "엔지니어" },
-                    { id: "operator", sub: "오퍼레이터" },
-                  ].map((element, idx) => (
-                    <li
-                      key={`${element.id}${index}${idx}`}
-                      className="flex flex-col min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer"
-                    >
-                      <label
-                        htmlFor={`${element.id}${index}${idx}`}
-                        className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer"
+                  <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative hidden peer-checked:flex">
+                    <Image src={`/images/main/arrow-up.svg`} fill alt="" />
+                  </picture>
+                </label>
+                <div className={`part${index} hidden`}>
+                  <ul className="flex flex-col w-full min-h-[3.125rem] bg-white">
+                    {[
+                      { id: "admin", sub: "관리자" },
+                      { id: "engineer", sub: "엔지니어" },
+                      { id: "operator", sub: "오퍼레이터" },
+                    ].map((element, idx) => (
+                      <li
+                        key={`${element.id}${index}${idx}`}
+                        className="flex flex-col min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer"
+                        onClick={() => {}}
                       >
-                        <div className="py-[1rem] flex gap-[1.125rem]">
-                          <picture className="select-none w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
-                            <Image src={`/images/main/myPage/folder.svg`} fill alt="" />
-                          </picture>
-                          <span className="text-[#222222] text-base">{element.sub}</span>
-                        </div>
-                        <input
-                          type="radio"
-                          id={`${element.id}${index}${idx}`}
-                          className="peer hidden"
-                          onChange={(e) => {
-                            const target = document.querySelector(
-                              `.${
-                                element.id === "admin"
-                                  ? "admin"
-                                  : element.id === "engineer"
-                                  ? "engineer"
-                                  : "operator"
-                              }${index}${idx}`
-                            );
-                            if (item?.admins?.length === 0) {
-                              return;
-                            } else {
+                        <label
+                          htmlFor={`${element.id}${index}${idx}`}
+                          className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer"
+                        >
+                          <div className="py-[1rem] flex gap-[1.125rem]">
+                            <picture className="select-none w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
+                              <Image src={`/images/main/myPage/folder.svg`} fill alt="" />
+                            </picture>
+                            <span className="text-[#222222] text-base">{element.sub}</span>
+                          </div>
+                          <input
+                            type="radio"
+                            name={`part`}
+                            id={`${element.id}${index}${idx}`}
+                            className="peer hidden"
+                            onChange={(e) => {
                               if (e.target.checked) {
-                                target.classList.remove("hidden");
-                              } else {
-                                target.classList.add("hidden");
+                                setSelectedPartItem(element.id);
                               }
-                            }
-                          }}
-                        />
-                        <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative flex peer-checked:hidden">
-                          <Image src={`/images/main/arrow-down.svg`} fill alt="" />
-                        </picture>
-                        <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative hidden peer-checked:flex">
-                          <Image src={`/images/main/arrow-up.svg`} fill alt="" />
-                        </picture>
-                      </label>
-                      <div className={`${element.id}${index}${idx} hidden w-full`}>
-                        <ul className="flex flex-col w-full min-h-[3.125rem] bg-white">
-                          {element.id === "admin" &&
-                            item?.admins?.map((el, i) => {
-                              return (
-                                <li
-                                  key={`adminPart${index}${idx}${i}`}
-                                  className="flex flex-col w-full min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer relative"
-                                >
-                                  <label
-                                    htmlFor={`adminPart${index}${idx}${i}`}
-                                    className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer z-10"
+                              const target = document.querySelector(
+                                `.${
+                                  element.id === "admin"
+                                    ? "admin"
+                                    : element.id === "engineer"
+                                    ? "engineer"
+                                    : "operator"
+                                }${index}${idx}`
+                              );
+                              if (item?.admins?.length === 0) {
+                                return;
+                              } else {
+                                if (e.target.checked) {
+                                  target.classList.remove("hidden");
+                                } else {
+                                  target.classList.add("hidden");
+                                }
+                              }
+                            }}
+                          />
+                          <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative flex peer-checked:hidden">
+                            <Image src={`/images/main/arrow-down.svg`} fill alt="" />
+                          </picture>
+                          <picture className="select-none w-[1rem] h-[0.5rem] top-[0.0625rem] relative hidden peer-checked:flex">
+                            <Image src={`/images/main/arrow-up.svg`} fill alt="" />
+                          </picture>
+                        </label>
+                        <div className={`${element.id}${index}${idx} hidden w-full`}>
+                          <ul className="flex flex-col w-full min-h-[3.125rem] bg-white">
+                            {element.id === "admin" &&
+                              item?.admins?.map((el, i) => {
+                                return (
+                                  <li
+                                    key={`adminPart${index}${idx}${i}`}
+                                    className="flex flex-col w-full min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer relative"
                                   >
-                                    <div className="flex flex-col h-[3.125rem] w-full cursor-pointer">
-                                      <div className="py-[1rem] flex gap-[1.125rem]">
-                                        <picture className="w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
-                                          <Image
-                                            src={`/images/main/myPage/person.svg`}
-                                            fill
-                                            alt=""
-                                          />
-                                        </picture>
-                                        <span className="text-[#222222] text-base">{el?.name}</span>
+                                    <label
+                                      htmlFor={`adminPart${index}${idx}${i}`}
+                                      className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer z-10"
+                                    >
+                                      <div className="flex flex-col h-[3.125rem] w-full cursor-pointer">
+                                        <div className="py-[1rem] flex gap-[1.125rem]">
+                                          <picture className="w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
+                                            <Image
+                                              src={`/images/main/myPage/person.svg`}
+                                              fill
+                                              alt=""
+                                            />
+                                          </picture>
+                                          <span className="text-[#222222] text-base">
+                                            {el?.name}
+                                          </span>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </label>
-                                  <input
-                                    type="radio"
-                                    name={`adminPart${index}`}
-                                    id={`adminPart${index}${idx}${i}`}
-                                    className="peer hidden"
-                                    onChange={() => {
-                                      document
-                                        .getElementsByName(`adminPart${index}`)
-                                        .forEach((element) => {
+                                    </label>
+                                    <input
+                                      type="radio"
+                                      name={`users`}
+                                      id={`adminPart${index}${idx}${i}`}
+                                      className="peer hidden"
+                                      onChange={(e) => {
+                                        if (!e.target.checked) {
+                                          setCheckedAccountItem(null);
+                                        }
+                                        document.getElementsByName(`users`).forEach((element) => {
                                           if (!element.checked) {
                                             element.nextSibling.classList.add("hidden");
                                           } else {
@@ -563,48 +642,51 @@ const CompanyList = ({ data }) => {
                                             setCheckedAccountItem(el);
                                           }
                                         });
-                                    }}
-                                  />
-                                  <div className="w-[calc(100%_+_0.875rem)] h-full absolute z-0 -left-[0.875rem] top-0 bg-[#182A5B1A] hidden peer-checked:block">
-                                    <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
-                                  </div>
-                                </li>
-                              );
-                            })}
-                          {element.id === "engineer" &&
-                            item?.engineers?.map((el, i) => {
-                              return (
-                                <li
-                                  key={`adminPart${index}${idx}${i}`}
-                                  className="flex flex-col w-full min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer relative"
-                                  onClick={() => {}}
-                                >
-                                  <label
-                                    htmlFor={`adminPart${index}${idx}${i}`}
-                                    className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer z-10"
-                                  >
-                                    <div className="flex flex-col h-[3.125rem] w-full cursor-pointer">
-                                      <div className="py-[1rem] flex gap-[1.125rem]">
-                                        <picture className="w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
-                                          <Image
-                                            src={`/images/main/myPage/person.svg`}
-                                            fill
-                                            alt=""
-                                          />
-                                        </picture>
-                                        <span className="text-[#222222] text-base">{el?.name}</span>
-                                      </div>
+                                      }}
+                                    />
+                                    <div className="w-[calc(100%_+_0.875rem)] h-full absolute z-0 -left-[0.875rem] top-0 bg-[#182A5B1A] hidden peer-checked:block">
+                                      <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
                                     </div>
-                                  </label>
-                                  <input
-                                    type="radio"
-                                    name={`adminPart${index}`}
-                                    id={`adminPart${index}${idx}${i}`}
-                                    className="peer hidden"
-                                    onChange={() => {
-                                      document
-                                        .getElementsByName(`adminPart${index}`)
-                                        .forEach((element) => {
+                                  </li>
+                                );
+                              })}
+                            {element.id === "engineer" &&
+                              item?.engineers?.map((el, i) => {
+                                return (
+                                  <li
+                                    key={`adminPart${index}${idx}${i}`}
+                                    className="flex flex-col w-full min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer relative"
+                                    onClick={() => {}}
+                                  >
+                                    <label
+                                      htmlFor={`adminPart${index}${idx}${i}`}
+                                      className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer z-10"
+                                    >
+                                      <div className="flex flex-col h-[3.125rem] w-full cursor-pointer">
+                                        <div className="py-[1rem] flex gap-[1.125rem]">
+                                          <picture className="w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
+                                            <Image
+                                              src={`/images/main/myPage/person.svg`}
+                                              fill
+                                              alt=""
+                                            />
+                                          </picture>
+                                          <span className="text-[#222222] text-base">
+                                            {el?.name}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </label>
+                                    <input
+                                      type="radio"
+                                      name={`users`}
+                                      id={`adminPart${index}${idx}${i}`}
+                                      className="peer hidden"
+                                      onChange={(e) => {
+                                        if (!e.target.checked) {
+                                          setCheckedAccountItem(null);
+                                        }
+                                        document.getElementsByName(`users`).forEach((element) => {
                                           if (!element.checked) {
                                             element.nextSibling.classList.add("hidden");
                                           } else {
@@ -612,48 +694,51 @@ const CompanyList = ({ data }) => {
                                             setCheckedAccountItem(el);
                                           }
                                         });
-                                    }}
-                                  />
-                                  <div className="w-[calc(100%_+_0.875rem)] h-full absolute z-0 -left-[0.875rem] top-0 bg-[#182A5B1A] hidden">
-                                    <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
-                                  </div>
-                                </li>
-                              );
-                            })}
-                          {element.id === "operator" &&
-                            item?.operators?.map((el, i) => {
-                              return (
-                                <li
-                                  key={`adminPart${index}${idx}${i}`}
-                                  className="flex flex-col w-full min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer relative"
-                                  onClick={() => {}}
-                                >
-                                  <label
-                                    htmlFor={`adminPart${index}${idx}${i}`}
-                                    className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer z-10"
-                                  >
-                                    <div className="flex flex-col h-[3.125rem] w-full cursor-pointer">
-                                      <div className="py-[1rem] flex gap-[1.125rem]">
-                                        <picture className="w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
-                                          <Image
-                                            src={`/images/main/myPage/person.svg`}
-                                            fill
-                                            alt=""
-                                          />
-                                        </picture>
-                                        <span className="text-[#222222] text-base">{el?.name}</span>
-                                      </div>
+                                      }}
+                                    />
+                                    <div className="w-[calc(100%_+_0.875rem)] h-full absolute z-0 -left-[0.875rem] top-0 bg-[#182A5B1A] hidden">
+                                      <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
                                     </div>
-                                  </label>
-                                  <input
-                                    type="radio"
-                                    name={`adminPart${index}`}
-                                    id={`adminPart${index}${idx}${i}`}
-                                    className="peer hidden"
-                                    onChange={() => {
-                                      document
-                                        .getElementsByName(`adminPart${index}`)
-                                        .forEach((element) => {
+                                  </li>
+                                );
+                              })}
+                            {element.id === "operator" &&
+                              item?.operators?.map((el, i) => {
+                                return (
+                                  <li
+                                    key={`adminPart${index}${idx}${i}`}
+                                    className="flex flex-col w-full min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer relative"
+                                    onClick={() => {}}
+                                  >
+                                    <label
+                                      htmlFor={`adminPart${index}${idx}${i}`}
+                                      className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer z-10"
+                                    >
+                                      <div className="flex flex-col h-[3.125rem] w-full cursor-pointer">
+                                        <div className="py-[1rem] flex gap-[1.125rem]">
+                                          <picture className="w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
+                                            <Image
+                                              src={`/images/main/myPage/person.svg`}
+                                              fill
+                                              alt=""
+                                            />
+                                          </picture>
+                                          <span className="text-[#222222] text-base">
+                                            {el?.name}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </label>
+                                    <input
+                                      type="radio"
+                                      name={`users`}
+                                      id={`adminPart${index}${idx}${i}`}
+                                      className="peer hidden"
+                                      onChange={(e) => {
+                                        if (!e.target.checked) {
+                                          setCheckedAccountItem(null);
+                                        }
+                                        document.getElementsByName(`users`).forEach((element) => {
                                           if (!element.checked) {
                                             element.nextSibling.classList.add("hidden");
                                           } else {
@@ -661,27 +746,27 @@ const CompanyList = ({ data }) => {
                                             setCheckedAccountItem(el);
                                           }
                                         });
-                                    }}
-                                  />
-                                  <div className="w-[calc(100%_+_0.875rem)] h-full absolute z-0 -left-[0.875rem] top-0 bg-[#182A5B1A] hidden peer-checked:block">
-                                    <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
-                                  </div>
-                                </li>
-                              );
-                            })}
-                        </ul>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          ))}
+                                      }}
+                                    />
+                                    <div className="w-[calc(100%_+_0.875rem)] h-full absolute z-0 -left-[0.875rem] top-0 bg-[#182A5B1A] hidden peer-checked:block">
+                                      <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+                                    </div>
+                                  </li>
+                                );
+                              })}
+                          </ul>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>
   );
 };
-
 // 0.0625rem convert to rem = 0.0625rem
 // 68

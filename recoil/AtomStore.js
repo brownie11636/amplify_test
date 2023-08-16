@@ -14,7 +14,11 @@ export const CheckedCompanyItemAtom = atom({
 });
 export const CheckedAccountItemAtom = atom({
   key: "CheckedAccountItemAtom",
-  default: "",
+  default: null,
+});
+export const SelectedPartItemAtom = atom({
+  key: "SelectedPartItemAtom",
+  default: null,
 });
 export const CreateAccountItemAtom = atom({
   key: "CreateAccountItemAtom",
@@ -109,5 +113,12 @@ export const SelectedFieldAtom = atom({
 });
 export const SelectedTaskAtom = atom({
   key: "SelectedTaskAtom",
+  default: null,
+});
+
+//
+
+export const DeleteApiUriAtom = atom({
+  key: "DeleteApiUriAtom",
   default: null,
 });

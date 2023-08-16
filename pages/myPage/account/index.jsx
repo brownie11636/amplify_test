@@ -3,25 +3,33 @@ import { useRouter } from "next/router";
 import CardForm from "../../../components/Main/MyPage/CardForm";
 import { useEffect } from "react";
 import axios from "axios";
-import { useRecoilState } from "recoil";
-import { CompanyItemAtom, DeleteModalAtom } from "../../../recoil/AtomStore";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { CompanyItemAtom, DeleteApiUriAtom, DeleteModalAtom } from "../../../recoil/AtomStore";
+import { useSession } from "next-auth/react";
 
 const Account = () => {
   const router = useRouter();
+  const { data: session } = useSession();
   const [companyItem, setCompanyItem] = useRecoilState(CompanyItemAtom);
   const [visibleDeleteModal, setVisibleDeleteModal] = useRecoilState(DeleteModalAtom);
+  const deleteApiUrl = useRecoilValue(DeleteApiUriAtom);
   const sub = router.pathname.includes("account")
     ? "계정관리"
     : router.pathname.includes("field")
     ? "현장관리"
     : "로봇관리";
   useEffect(() => {
-    getCompany();
-  }, []);
+    if (session) {
+      getCompany();
+    }
+  }, [session]);
   const getCompany = async () => {
-    const response = await axios.get("https://localhost:3333/api/mongo/company");
+    const response = await axios.get(
+      `https://localhost:3333/api/mongo/company?affiliation=${session?.token?.user?.affiliation}`
+    );
     setCompanyItem(response.data?.data);
   };
+  console.log(companyItem);
   return (
     <MainLayout>
       <section className="flex flex-col min-w-fit w-full h-full overflow-scroll scrollbar-hide">
@@ -32,13 +40,18 @@ const Account = () => {
           <CardForm data={companyItem} type={1} />
         </div>
       </section>
-      <DeleteModal visible={visibleDeleteModal} setVisible={setVisibleDeleteModal} />
+      <DeleteModal
+        visible={visibleDeleteModal}
+        setVisible={setVisibleDeleteModal}
+        url={deleteApiUrl}
+      />
     </MainLayout>
   );
 };
 export default Account;
 
 const DeleteModal = ({ visible, setVisible, url }) => {
+  const router = useRouter();
   return (
     <div
       className={`${
@@ -60,7 +73,22 @@ const DeleteModal = ({ visible, setVisible, url }) => {
             <span className="text-[#FF0000]">복구 불가능</span>합니다.
           </span>
           <div className="flex mt-[4.375rem] justify-between">
-            <button className="w-[12.5rem] h-[2.5rem] bg-white">삭제</button>
+            <button
+              className="w-[12.5rem] h-[2.5rem] bg-white"
+              onClick={async () => {
+                const response = await axios.delete(url);
+                console.log(response);
+                setVisible(false);
+                if (response.data.result === 1) {
+                  alert("삭제되었습니다.");
+                  router.reload();
+                } else {
+                  alert("삭제에 실패하였습니다.");
+                }
+              }}
+            >
+              삭제
+            </button>
             <button
               className="w-[12.5rem] h-[2.5rem] bg-[#182A5B] text-white"
               onClick={() => {
