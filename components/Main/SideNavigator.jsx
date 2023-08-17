@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { use, useEffect, useState } from "react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 const SideNavigator = () => {
   const [isAllSelected, setIsAllSelected] = useState(false);
@@ -182,6 +182,7 @@ const SideNavigator = () => {
 export default SideNavigator;
 
 const MyPageSideNavigator = () => {
+  const { data: session } = useSession();
   const router = useRouter();
   const pathName = router.pathname;
 
@@ -290,21 +291,23 @@ const MyPageSideNavigator = () => {
           </div>
           <span className="z-10">보유 로봇 리스트</span>
         </div>
-        <div
-          className={`text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer relative`}
-          onClick={() => {
-            router.push("/myPage/robot/new");
-          }}
-        >
+        {session?.token?.user?.part === "admin" || session?.token?.user?.affiliation === "admin" ? (
           <div
-            className={`w-[calc(100%_-_0.0625rem)] h-full absolute z-0 -left-[4rem] top-0 bg-[#ffffff] ${
-              pathName.includes("/robot/new") ? "block" : "hidden"
-            }`}
+            className={`text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer relative`}
+            onClick={() => {
+              router.push("/myPage/robot/new");
+            }}
           >
-            <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+            <div
+              className={`w-[calc(100%_-_0.0625rem)] h-full absolute z-0 -left-[4rem] top-0 bg-[#ffffff] ${
+                pathName.includes("/robot/new") ? "block" : "hidden"
+              }`}
+            >
+              <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+            </div>
+            <span className="z-10">로봇 신규등록</span>
           </div>
-          <span className="z-10">로봇 신규등록</span>
-        </div>
+        ) : null}
         {/* <div
           className={`text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer relative`}
           onClick={() => {
