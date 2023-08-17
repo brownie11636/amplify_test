@@ -40,7 +40,7 @@ import { SelectCompany } from "./managementList/SelectCompany";
 import { PopRobot } from "./managementList/PopRobot";
 import { SelectField } from "./managementList/SelectField";
 
-const CardForm = ({ data, type }) => {
+const CardForm = ({ data, company, type }) => {
   const { data: session } = useSession();
   const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
   const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
@@ -86,7 +86,7 @@ const CardForm = ({ data, type }) => {
       ) : type === 3 ? (
         <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
           <RobotList data={data} type={type}></RobotList>
-          <RobotCard2 type={type} />
+          <RobotCard2 company={company} type={type} />
         </div>
       ) : type === 4 ? (
         <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
@@ -403,12 +403,12 @@ const Part = ({ data, sub, isCreate }) => {
                 setSelectedFieldInAccount(e.target.value);
                 console.log(
                   CheckedCompanyItem?.fields?.filter((item) => {
-                    return item?.fieldName === e.target.value ? item?.processCount : null;
+                    return item?.index === parseInt(e.target.value) ? item?.processCount : null;
                   })
                 );
                 setSelectedTaskInAccount(
                   CheckedCompanyItem?.fields?.filter((item) => {
-                    return item?.fieldName === e.target.value ? item?.processCount : null;
+                    return item?.index === parseInt(e.target.value) ? item?.processCount : null;
                   })
                 );
               }}
@@ -416,7 +416,7 @@ const Part = ({ data, sub, isCreate }) => {
               <option value="0">공정 선택</option>
               {CheckedCompanyItem?.fields?.map((item, index) => {
                 return (
-                  <option value={item?.fieldName} key={`selectField${index}`}>
+                  <option value={item?.index} key={`selectField${index}`}>
                     {item?.fieldName}
                   </option>
                 );

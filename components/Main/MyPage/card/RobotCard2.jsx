@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
+  CheckedCompanyItemAtom,
   CheckedRobotItemAtom,
   CreateRobotSelectedFieldAtom,
   RobotItemListAtom,
@@ -15,7 +16,7 @@ import { InputSelect } from "./InputSelect";
 import { InputTextArea } from "./InputTextArea";
 import { InputTextItem } from "./InputTextItem";
 
-export const RobotCard2 = ({ children, data, type }) => {
+export const RobotCard2 = ({ children, data, company, type }) => {
   const { data: session } = useSession();
   const router = useRouter();
   const pathName = router.pathname;
@@ -108,20 +109,31 @@ export const RobotCard2 = ({ children, data, type }) => {
               title="배치 현장"
               id="field"
               type={"fields"}
-              value={robotItemList?.fields}
+              value={company?.fields}
               currentValue={checkedRobotItem?.fields}
             />
-            <InputSelect
-              title="배치 공정"
-              id="tasks"
-              type="tasks"
-              value={
-                createRobotSelectedField && [
-                  ...Array(parseInt(createRobotSelectedField?.processCount)).keys(),
-                ]
-              }
-              currentValue={checkedRobotItem?.fields}
-            />
+            {/* {!selectedTaskInAccount ? null : (
+              <select name="selectTask" id="selectTask">
+                {[...Array(parseInt(selectedTaskInAccount[0]?.processCount) || 0).keys()]?.map(
+                  (item, index) => {
+                    return (
+                      <option value={item + 1} key={`selectTask${index}`}>
+                        {`제 ${item + 1} 공정`}
+                      </option>
+                    );
+                  }
+                )}
+              </select>
+            )} */}
+            {createRobotSelectedField ? (
+              <InputSelect
+                title="배치 공정"
+                id="tasks"
+                type="tasks"
+                value={[...Array(parseInt(createRobotSelectedField?.processCount)).keys()]}
+                currentValue={checkedRobotItem?.fields}
+              />
+            ) : null}
           </div>
           <div className="w-[20rem]">
             <InputTextItem

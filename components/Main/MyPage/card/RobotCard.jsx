@@ -7,8 +7,10 @@ import { InputAddressItem } from "./InputAddressItem";
 import axios from "axios";
 import { InputTextArea } from "./InputTextArea";
 import { InputSelect } from "./InputSelect";
+import { useSession } from "next-auth/react";
 
 export const RobotCard = ({ children, data }) => {
+  const { data: session } = useSession();
   const CreateFieldItem = useRecoilValue(CreateFieldItemAtom);
   const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
   return (

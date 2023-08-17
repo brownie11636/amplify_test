@@ -13,15 +13,17 @@ export const RobotList = ({ children, data, type }) => {
   const [value, setValue] = useState("");
   const [filteredArray, setFilteredArray] = useState();
   const setCheckedRobotItem = useSetRecoilState(CheckedRobotItemAtom);
+  console.log("data");
+  console.log(data);
   useEffect(() => {
     if (value) {
-      const filtered = data?.robots?.filter((item) => {
-        return item?.serialNumber?.includes(value);
+      const filtered = data?.filter((item) => {
+        return item?.nickName?.includes(value);
       });
       console.log(filtered);
       setFilteredArray(filtered);
     } else {
-      setFilteredArray(data ? data?.robots : []);
+      setFilteredArray(data);
     }
   }, [value, data]);
   return (

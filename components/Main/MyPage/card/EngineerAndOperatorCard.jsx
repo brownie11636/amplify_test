@@ -12,6 +12,7 @@ import { InputTextItem } from "./InputTextItem";
 import { InputSelect } from "./InputSelect";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { RobotList } from "./RobotList";
 
 export const EngineerAndOperatorCard = ({ children, data }) => {
   const searchRef = useRef();
@@ -20,20 +21,45 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
   const { data: session } = useSession();
   const CreateFieldItem = useRecoilValue(CreateFieldItemAtom);
   const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
-  const checkedTaskItem = useRecoilValue(CheckedTaskItemAtom);
+  const CheckedTaskItem = useRecoilValue(CheckedTaskItemAtom);
   const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
   const [checkedEngineerAndOperator, setCheckedEngineerAndOperator] = useRecoilState(
     CheckedEngineerAndOperatorItemAtom
   );
   const [selectedRobot, setSelectedRobot] = useState();
-  useEffect(() => {}, [robotItemList, CreateFieldItem]);
+  useEffect(() => {
+    // console.log(CheckedFieldItem);
+  }, [CreateFieldItem]);
   useEffect(() => {
     getRobot();
   }, [session]);
+  useEffect(() => {
+    let filtered = robotItemList;
+    filtered = filtered?.filter((item) => {
+      if (
+        item.field === CheckedFieldItem?.index?.toString() &&
+        item.task === CheckedTaskItem?.toString()
+      ) {
+        return item;
+      }
+    });
+    if (value) {
+      filtered = filtered?.filter((item) => {
+        return item?.nickName?.includes(value);
+      });
+      console.log(filtered);
+      setFilteredArray(filtered);
+    } else {
+      setFilteredArray(filtered);
+    }
+    console.log("robotItemList");
+    console.log(robotItemList);
+  }, [value, robotItemList]);
+
   const getRobot = async () => {
     const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
       companyNumber:
-        session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
+        session?.token?.user?.affiliation === "admin" ? "admin" : session?.token?.user?.affiliation,
     });
     SetRobotItemList(response.data?.data);
   };
@@ -145,7 +171,7 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
               <Image src={`/images/main/mypage/search.svg`} fill alt="" />
             </span>
           </div>
-          <div className="flex w-full h-[2.5rem] mt-[1.25rem] px-[2.625rem] justify-between">
+          {/* <div className="flex w-full h-[2.5rem] mt-[1.25rem] px-[2.625rem] justify-between">
             {[
               { sub: "삭제", url: "", image: "/images/main/myPage/x-mark-white.svg" },
               { sub: "등록", url: "", image: "/images/main/myPage/plus.svg" },
@@ -232,9 +258,9 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
                 </div>
               );
             })}
-          </div>
+          </div> */}
           <ul className="flex flex-col w-full min-h-[3.125rem] mt-[1.875rem] bg-white">
-            {robotItemList?.robots?.map((item, index) => {
+            {filteredArray?.map((item, index) => {
               return (
                 <li
                   key={`${item?.id}${index}`}

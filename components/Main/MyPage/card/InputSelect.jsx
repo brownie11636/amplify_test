@@ -34,10 +34,10 @@ export const InputSelect = ({ title, type, id, value, currentValue, CheckedField
           defaultValue={currentValue ? currentValue?.field : value}
           onChange={() => {
             if (type === "fields") {
-              const selectedField = value.filter((item) => {
+              const selectedField = value.find((item) => {
                 return item.index.toString() === selectRef?.current?.value;
               });
-              setCreateRobotSelectedField(selectedField[0]);
+              setCreateRobotSelectedField(selectedField);
             }
           }}
         >
@@ -62,6 +62,33 @@ export const InputSelect = ({ title, type, id, value, currentValue, CheckedField
             <option value={null}>선택된 현장이 존재하지 않습니다.</option>
           )}
         </select>
+
+        {/* <select
+              name="selectField"
+              id="selectField"
+              onChange={(e) => {
+                setSelectedFieldInAccount(e.target.value);
+                console.log(
+                  CheckedCompanyItem?.fields?.filter((item) => {
+                    return item?.index === parseInt(e.target.value) ? item?.processCount : null;
+                  })
+                );
+                setSelectedTaskInAccount(
+                  CheckedCompanyItem?.fields?.filter((item) => {
+                    return item?.index === parseInt(e.target.value) ? item?.processCount : null;
+                  })
+                );
+              }}
+            >
+              <option value="0">공정 선택</option>
+              {CheckedCompanyItem?.fields?.map((item, index) => {
+                return (
+                  <option value={item?.index} key={`selectField${index}`}>
+                    {item?.fieldName}
+                  </option>
+                );
+              })}
+            </select> */}
       </div>
     </div>
   );

@@ -17,44 +17,50 @@ export const EngineerAndOperator = ({ children }) => {
   const [filteredArray, setFilteredArray] = useState([]);
 
   const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
-  const checkedTaskItem = useRecoilValue(CheckedTaskItemAtom);
+  const CheckedTaskItem = useRecoilValue(CheckedTaskItemAtom);
   const [engineerAndOperator, setEngineerAndOperator] = useRecoilState(EngineerAndOperatorItemAtom);
   const [checkedEngineerAndOperator, setCheckedEngineerAndOperator] = useRecoilState(
     CheckedEngineerAndOperatorItemAtom
   );
   useEffect(() => {
     getEngineerAndOperator();
-  }, [checkedTaskItem, CheckedFieldItem]);
+  }, [CheckedTaskItem, CheckedFieldItem]);
   useEffect(() => {
     console.log("engineerAndOperator");
     console.log(engineerAndOperator);
-    console.log("checkedTaskItem");
-    console.log(checkedTaskItem);
+    console.log("CheckedFieldItem");
+    console.log(CheckedFieldItem);
+    console.log("CheckedTaskItem");
+    console.log(CheckedTaskItem);
     let filtered = engineerAndOperator;
-    //  filtered = filtered?.filter((item) => {
-    //   console.log("item.task");
-    //   console.log(item.task);
-    //   console.log(item.task?.includes(checkedTaskItem));
-    //   return item.task?.includes(checkedTaskItem);
-    // });
+    filtered = filtered?.filter((item) => {
+      if (item.part === "admin") {
+        return item;
+      } else if (
+        item.field === CheckedFieldItem?.index?.toString() &&
+        item.task === CheckedTaskItem?.toString()
+      ) {
+        return item;
+      }
+    });
+    console.log("filtered");
+    console.log(filtered);
     if (value) {
       filtered = filtered.filter((item) => {
         return item.name.includes(value);
       });
-      console.log("filtered");
-      console.log(filtered);
       setFilteredArray(filtered);
     } else {
-      setFilteredArray(engineerAndOperator);
+      setFilteredArray(filtered);
     }
-  }, [session, value, engineerAndOperator, checkedTaskItem]);
+  }, [session, value, engineerAndOperator, CheckedTaskItem]);
 
   const getEngineerAndOperator = async (e) => {
     const res = await axios.post("https://localhost:3333/api/mongo/engineerAndOperator", {
-      taskCount: checkedTaskItem,
+      taskCount: CheckedTaskItem,
       fieldIndex: CheckedFieldItem?.index,
       companyNumber:
-        session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
+        session?.token?.user?.affiliation === "admin" ? "admin" : session?.token?.user?.affiliation,
     });
     console.log(res);
     setEngineerAndOperator(res?.data?.data);
@@ -109,7 +115,7 @@ export const EngineerAndOperator = ({ children }) => {
                 >
                   <div className="py-[1rem] flex gap-[1.125rem]">
                     <picture className="select-none w-[1.125rem] h-[1.125rem] top-[0.0625rem] relative">
-                      <Image src={`/images/main/mypage/person.svg`} fill alt="" />
+                      <Image src={`/images/main/myPage/person.svg`} fill alt="" />
                     </picture>
                     <span className="text-[#222222] text-base">{item?.name}</span>
                   </div>
