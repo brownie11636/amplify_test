@@ -43,8 +43,6 @@ export const EngineerAndOperator = ({ children }) => {
         return item;
       }
     });
-    console.log("filtered");
-    console.log(filtered);
     if (value) {
       filtered = filtered.filter((item) => {
         return item.name.includes(value);

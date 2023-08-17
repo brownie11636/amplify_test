@@ -114,7 +114,6 @@ const Company = ({ data }) => {
   const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
   const CheckedAccountItem = useRecoilValue(CheckedAccountItemAtom);
   useEffect(() => {
-    console.log(CheckedCompanyItem);
     if (CheckedCompanyItem) {
       for (const key in CheckedCompanyItem) {
         if (Object.hasOwnProperty.call(CheckedCompanyItem, key)) {
@@ -128,7 +127,6 @@ const Company = ({ data }) => {
         .querySelector(".companyList")
         ?.querySelectorAll("input")
         .forEach((element) => {
-          console.log(element);
           element.value = "";
         });
     }
@@ -271,7 +269,6 @@ const Company = ({ data }) => {
             <span
               className="flex text[#222222] text-base underline cursor-pointer mt-[2rem]"
               onClick={() => {
-                console.log(CheckedCompanyItem);
                 setVisibleDeleteModal(true);
                 setDeleteApiUrl(
                   `https://localhost:3333/api/mongo/company?companyNumber=${CheckedCompanyItem?.companyNumber}`
@@ -303,7 +300,6 @@ const Part = ({ data, sub, isCreate }) => {
   const [selectedTaskInAccount, setSelectedTaskInAccount] =
     useRecoilState(SelectedTaskInAccountAtom);
   useEffect(() => {
-    console.log(CheckedAccountItem);
     if (!CheckedAccountItem) {
       document
         ?.querySelector(".userCard")
@@ -313,7 +309,7 @@ const Part = ({ data, sub, isCreate }) => {
         });
       document.querySelector(".userCard").value = "";
     }
-  }, [CheckedAccountItem]);
+  }, [CheckedAccountItem, selectedFieldInAccount, selectedTaskInAccount]);
   useEffect(() => {
     const password = document.getElementById("password");
     const passwordCheck = document.getElementById("passwordCheck");
@@ -399,13 +395,10 @@ const Part = ({ data, sub, isCreate }) => {
             <select
               name="selectField"
               id="selectField"
+              key={selectedFieldInAccount}
+              defaultValue={selectedFieldInAccount ? selectedFieldInAccount[0]?.index : 0}
               onChange={(e) => {
                 setSelectedFieldInAccount(e.target.value);
-                console.log(
-                  CheckedCompanyItem?.fields?.filter((item) => {
-                    return item?.index === parseInt(e.target.value) ? item?.processCount : null;
-                  })
-                );
                 setSelectedTaskInAccount(
                   CheckedCompanyItem?.fields?.filter((item) => {
                     return item?.index === parseInt(e.target.value) ? item?.processCount : null;
@@ -422,19 +415,21 @@ const Part = ({ data, sub, isCreate }) => {
                 );
               })}
             </select>
-            {!selectedTaskInAccount ? null : (
-              <select name="selectTask" id="selectTask">
-                {[...Array(parseInt(selectedTaskInAccount[0]?.processCount) || 0).keys()]?.map(
-                  (item, index) => {
-                    return (
-                      <option value={item + 1} key={`selectTask${index}`}>
-                        {`제 ${item + 1} 공정`}
-                      </option>
-                    );
-                  }
-                )}
-              </select>
-            )}
+            {/* {!selectedTaskInAccount ? null : ( */}
+            <select name="selectTask" id="selectTask">
+              {[
+                ...Array(
+                  parseInt(selectedTaskInAccount && selectedTaskInAccount[0]?.processCount) || 10
+                ).keys(),
+              ]?.map((item, index) => {
+                return (
+                  <option value={item + 1} key={`selectTask${index}`}>
+                    {`제 ${item + 1} 공정`}
+                  </option>
+                );
+              })}
+            </select>
+            {/* )} */}
           </div>
           {!CheckedAccountItem?.part === "admin" ? (
             <button
@@ -552,7 +547,6 @@ const Part = ({ data, sub, isCreate }) => {
             <span
               className="flex text[#222222] text-base underline cursor-pointer mt-[2.625rem]"
               onClick={() => {
-                console.log(CheckedAccountItem);
                 setVisibleDeleteModal(true);
                 setDeleteApiUrl(
                   `https://localhost:3333/api/mongo/user?id=${CheckedAccountItem?.id}`
@@ -572,7 +566,7 @@ const CompanyList = ({ data }) => {
   const searchRef = useRef(null);
   const { data: session } = useSession();
   const [value, setValue] = useState("");
-  const [filteredArray, setFilteredArray] = useState([...data]);
+  const [filteredArray, setFilteredArray] = useState();
   const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
   const createAccountItem = useRecoilValue(CreateAccountItemAtom);
   const checkedAccountItem = useRecoilValue(CheckedAccountItemAtom);
@@ -584,11 +578,13 @@ const CompanyList = ({ data }) => {
   useEffect(() => {
     if (checkedAccountItem) {
       const target = document?.querySelector(".userCard")?.querySelectorAll("input");
-      let part = document.getElementById("selectedPart")?.value;
-      part = checkedAccountItem?.part;
+      const selectField = document.getElementById("selectField");
+      const selectTask = document.getElementById("selectTask");
+      selectField === null ? null : (selectField.value = checkedAccountItem.field);
+      selectTask === null ? null : (selectTask.value = checkedAccountItem.task);
+
       for (const key in checkedAccountItem) {
         if (Object.hasOwnProperty.call(checkedAccountItem, key)) {
-          console.log(checkedAccountItem.id);
           target?.forEach((element) => {
             if (element.id === "userId") {
               element.value = checkedAccountItem.id;
@@ -601,8 +597,9 @@ const CompanyList = ({ data }) => {
     }
   }, [checkedAccountItem, CheckedCompanyItem]);
   useEffect(() => {
+    let filtered = data;
     if (value) {
-      const filtered = data.filter((item) => {
+      filtered = filtered.filter((item) => {
         return item.companyName.includes(value);
       });
       setFilteredArray(filtered);
@@ -610,7 +607,6 @@ const CompanyList = ({ data }) => {
       setFilteredArray(data);
     }
   }, [value, data]);
-  console.log(session);
   return (
     <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative">
       <div className="px-[2.625rem]">
@@ -800,7 +796,6 @@ const CompanyList = ({ data }) => {
                                       id={`adminPart${index}${idx}${i}`}
                                       className="peer hidden"
                                       onChange={(e) => {
-                                        console.log(CheckedCompanyItem);
                                         document.getElementsByName(`users`).forEach((element) => {
                                           if (e.target.checked) {
                                             if (element !== e.target) {
@@ -853,7 +848,6 @@ const CompanyList = ({ data }) => {
                                       id={`adminPart${index}${idx}${i}`}
                                       className="peer hidden"
                                       onChange={(e) => {
-                                        console.log(CheckedCompanyItem);
                                         document.getElementsByName(`users`).forEach((element) => {
                                           if (e.target.checked) {
                                             if (element !== e.target) {
@@ -908,7 +902,6 @@ const CompanyList = ({ data }) => {
                                       id={`adminPart${index}${idx}${i}`}
                                       className="peer hidden"
                                       onChange={(e) => {
-                                        console.log(CheckedCompanyItem);
                                         document.getElementsByName(`users`).forEach((element) => {
                                           if (e.target.checked) {
                                             if (element !== e.target) {

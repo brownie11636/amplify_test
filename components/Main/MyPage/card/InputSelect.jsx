@@ -4,23 +4,21 @@ import { useSetRecoilState } from "recoil";
 import { CreateRobotSelectedFieldAtom } from "../../../../recoil/AtomStore";
 
 export const InputSelect = ({ title, type, id, value, currentValue, CheckedFieldItem }) => {
-  const selectRef = useRef();
-  const setCreateRobotSelectedField = useSetRecoilState(CreateRobotSelectedFieldAtom);
-  useEffect(() => {
+  if (type === "tasks") {
     console.log("value");
     console.log(value);
     console.log("currentValue");
-    console.log(currentValue);
-    console.log(CheckedFieldItem);
-    if (currentValue) {
-      document.querySelector("select").value =
-        type === "fields" ? currentValue.field : currentValue.tasks;
-    }
-  }, [value, currentValue]);
+    console.log(parseInt(currentValue));
+  }
+  const selectRef = useRef();
+  const setCreateRobotSelectedField = useSetRecoilState(CreateRobotSelectedFieldAtom);
   useEffect(() => {
-    console.log("selectRef?.current?.value");
-    console.log(selectRef?.current?.value);
-  }, [selectRef?.current?.value]);
+    const selectField = document.getElementById("selectField");
+    const selectTask = document.getElementById("selectTask");
+    selectField === null ? null : (selectField.value = currentValue);
+    selectTask === null ? null : (selectTask.value = currentValue);
+  }, [value, currentValue, CheckedFieldItem, type]);
+  useEffect(() => {}, [selectRef?.current?.value]);
   return (
     <div className="flex flex-col items-start justify-between mt-[2.625rem]">
       <div className="flex items-center">
@@ -29,31 +27,46 @@ export const InputSelect = ({ title, type, id, value, currentValue, CheckedField
       </div>
       <div className="flex flex-col w-full h-fit justify-center border-b p-[1.25rem] focus:ring-0 focus:outline-none border-b-[#182A5B] relative">
         <select
-          id={id}
+          id={type === "fields" ? "selectField" : "selectTask"}
           ref={selectRef}
-          defaultValue={currentValue ? currentValue?.field : value}
+          defaultChecked={type === "fields" ? currentValue?.field : currentValue}
           onChange={() => {
             if (type === "fields") {
-              const selectedField = value.find((item) => {
+              const selectedField = value?.find((item) => {
                 return item.index.toString() === selectRef?.current?.value;
               });
               setCreateRobotSelectedField(selectedField);
+            } else {
+              const selectedTask = value?.find((item) => {
+                return item.index.toString() === selectRef?.current?.value;
+              });
+              setCreateRobotSelectedField(selectedTask);
             }
           }}
         >
           <option value={0}>선택해 주세요.</option>
           {type === "fields" ? (
-            value?.map((item, index) => {
-              return (
-                <option key={index} value={item?.index}>
-                  {item?.fieldName}
-                </option>
-              );
-            })
+            currentValue ? (
+              value?.map((item, index) => {
+                return (
+                  <option key={index} value={item?.index}>
+                    {item?.fieldName}
+                  </option>
+                );
+              })
+            ) : (
+              value?.map((item, index) => {
+                return (
+                  <option key={index} value={item?.index}>
+                    {item?.fieldName}
+                  </option>
+                );
+              })
+            )
           ) : type === "tasks" ? (
-            [...Array(CheckedFieldItem ? CheckedFieldItem?.processCount : value).keys()]?.map(
+            [...Array(CheckedFieldItem ? CheckedFieldItem?.processCount : 10).keys()]?.map(
               (item, index) => (
-                <option key={index} value={currentValue ? currentValue?.tasks : item + 1}>
+                <option key={index} value={index + 1}>
                   {`제 ${index + 1} 공정`}
                 </option>
               )

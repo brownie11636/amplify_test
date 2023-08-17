@@ -25,13 +25,8 @@ export const RobotCard2 = ({ children, data, company, type }) => {
   const checkedRobotItem = useRecoilValue(CheckedRobotItemAtom);
   const setRobotSelectRadio = useSetRecoilState(RobotSelectedRadioAtom);
   useEffect(() => {
-    console.log("robotItemList");
-    console.log(robotItemList);
-    console.log("createRobotSelectedField");
-    console.log(createRobotSelectedField);
-    console.log("checkedRobotItem");
+    console.log("checkedRobotItem?.field");
     console.log(checkedRobotItem);
-    console.log(session);
   }, [robotItemList, createRobotSelectedField, checkedRobotItem]);
   return (
     <>
@@ -110,30 +105,15 @@ export const RobotCard2 = ({ children, data, company, type }) => {
               id="field"
               type={"fields"}
               value={company?.fields}
-              currentValue={checkedRobotItem?.fields}
+              currentValue={checkedRobotItem?.field}
             />
-            {/* {!selectedTaskInAccount ? null : (
-              <select name="selectTask" id="selectTask">
-                {[...Array(parseInt(selectedTaskInAccount[0]?.processCount) || 0).keys()]?.map(
-                  (item, index) => {
-                    return (
-                      <option value={item + 1} key={`selectTask${index}`}>
-                        {`제 ${item + 1} 공정`}
-                      </option>
-                    );
-                  }
-                )}
-              </select>
-            )} */}
-            {createRobotSelectedField ? (
-              <InputSelect
-                title="배치 공정"
-                id="tasks"
-                type="tasks"
-                value={[...Array(parseInt(createRobotSelectedField?.processCount)).keys()]}
-                currentValue={checkedRobotItem?.fields}
-              />
-            ) : null}
+            <InputSelect
+              title="배치 공정"
+              id="tasks"
+              type="tasks"
+              value={parseInt(createRobotSelectedField?.processCount)}
+              currentValue={checkedRobotItem?.tasks || 10}
+            />
           </div>
           <div className="w-[20rem]">
             <InputTextItem
