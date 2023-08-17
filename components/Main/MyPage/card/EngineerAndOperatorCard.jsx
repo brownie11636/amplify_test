@@ -28,17 +28,20 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
   );
   const [selectedRobot, setSelectedRobot] = useState();
   useEffect(() => {
-    // console.log(CheckedFieldItem);
-  }, [CreateFieldItem]);
-  useEffect(() => {
     getRobot();
   }, [session]);
   useEffect(() => {
     let filtered = robotItemList;
     filtered = filtered?.filter((item) => {
+      console.log("item");
+      console.log(item);
+      console.log("item.field", "CheckedFieldItem?.index");
+      console.log(item.field, CheckedFieldItem?.index);
+      console.log("item.tasks", "CheckedTaskItem");
+      console.log(item.tasks, CheckedTaskItem);
       if (
-        item.field === CheckedFieldItem?.index?.toString() &&
-        item.task === CheckedTaskItem?.toString()
+        parseInt(item.field) === CheckedFieldItem?.index &&
+        parseInt(item.tasks) === CheckedTaskItem
       ) {
         return item;
       }
@@ -47,14 +50,11 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
       filtered = filtered?.filter((item) => {
         return item?.nickName?.includes(value);
       });
-      console.log(filtered);
       setFilteredArray(filtered);
     } else {
       setFilteredArray(filtered);
     }
-    console.log("robotItemList");
-    console.log(robotItemList);
-  }, [value, robotItemList]);
+  }, [value, robotItemList, CreateFieldItem, CheckedTaskItem]);
 
   const getRobot = async () => {
     const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
