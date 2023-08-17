@@ -150,12 +150,14 @@ export const Camera = () => {
             </div>
           </div>
         </div>
-        <button
-          className="w-[17.5rem] h-[2.5rem] mt-[1.875rem] bg-[#182A5B] flex justify-center items-center self-end"
-          onClick={pathName.includes("new") ? RobotCard2Submit : null}
-        >
-          <span className="text-white text-base">등록</span>
-        </button>
+        {session?.token?.user?.part === "admin" || session?.token?.user?.affiliation === "admin" ? (
+          <button
+            className="w-[17.5rem] h-[2.5rem] mt-[1.875rem] bg-[#182A5B] flex justify-center items-center self-end"
+            onClick={pathName.includes("new") ? RobotCard2Submit : null}
+          >
+            <span className="text-white text-base">등록</span>
+          </button>
+        ) : null}
       </div>
     </div>
   );

@@ -150,7 +150,9 @@ export const RobotCard2 = ({ children, data, type }) => {
               value={data ? robotItemList?.venderEmail : checkedRobotItem?.venderEmail}
               placeholder={""}
             />
-            {type === 3 ? (
+            {type === 3 &&
+            (session?.token?.user?.part === "admin" ||
+              session?.token?.user?.affiliation === "admin") ? (
               <button
                 className="w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center"
                 onClick={async () => {

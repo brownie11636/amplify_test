@@ -8,6 +8,7 @@ import {
   CheckedCompanyItemAtom,
   CheckedEngineerAndOperatorItemAtom,
   CheckedFieldItemAtom,
+  CheckedTaskItemAtom,
   CreateAccountItemAtom,
   CreateFieldItemAtom,
   DeleteApiUriAtom,
@@ -111,6 +112,7 @@ const Company = ({ data }) => {
   const setDeleteApiUrl = useSetRecoilState(DeleteApiUriAtom);
   const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
   const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
+  const CheckedAccountItem = useRecoilValue(CheckedAccountItemAtom);
   useEffect(() => {
     console.log(CheckedCompanyItem);
     if (CheckedCompanyItem) {
@@ -183,7 +185,9 @@ const Company = ({ data }) => {
             address={data?.address}
             detailAddress={data?.detailAddress}
           />
-          {CreateAccountItem ? (
+          {CreateAccountItem &&
+          (session?.token?.user?.part === "admin" ||
+            session?.token?.user?.affiliation === "admin") ? (
             <button
               className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
               onClick={async () => {
@@ -220,7 +224,8 @@ const Company = ({ data }) => {
               </picture>
               <span className="text-base text-white">등록</span>
             </button>
-          ) : (
+          ) : session?.token?.user?.part === "admin" ||
+            session?.token?.user?.affiliation === "admin" ? (
             <button
               className="w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center"
               onClick={async () => {
@@ -260,8 +265,9 @@ const Company = ({ data }) => {
               </picture>
               <span className="text-white">수정</span>
             </button>
-          )}
-          {CreateAccountItem ? null : (
+          ) : null}
+          {CreateAccountItem ? null : session?.token?.user?.part === "admin" ||
+            session?.token?.user?.affiliation === "admin" ? (
             <span
               className="flex text[#222222] text-base underline cursor-pointer mt-[2rem]"
               onClick={() => {
@@ -274,7 +280,7 @@ const Company = ({ data }) => {
             >
               계정삭제
             </span>
-          )}
+          ) : null}
         </div>
       </div>
     </>
@@ -283,7 +289,7 @@ const Company = ({ data }) => {
 
 const Part = ({ data, sub, isCreate }) => {
   const searchRef = useRef(null);
-
+  const { data: session } = useSession();
   const setVisibleDeleteModal = useSetRecoilState(DeleteModalAtom);
   const setDeleteApiUrl = useSetRecoilState(DeleteApiUriAtom);
   const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
@@ -322,7 +328,6 @@ const Part = ({ data, sub, isCreate }) => {
       }
     });
   }, []);
-
   return (
     <>
       <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative">
@@ -332,11 +337,20 @@ const Part = ({ data, sub, isCreate }) => {
               <Image src={`/images/main/myPage/folder.svg`} fill alt="" draggable={false} />
             </picture>
             <span id="part" className="text-[#222222] text-lg">
-              <select name="selectedPart" id="selectedPart">
-                <option value="admin">관리자</option>
-                <option value="engineer">엔지니어</option>
-                <option value="operator">오퍼레이터</option>
-              </select>
+              {session?.token?.user?.part === "admin" ||
+              session?.token?.user?.affiliation === "admin" ? (
+                <select name="selectedPart" id="selectedPart">
+                  <option value="admin">관리자</option>
+                  <option value="engineer">엔지니어</option>
+                  <option value="operator">오퍼레이터</option>
+                </select>
+              ) : CheckedAccountItem?.part === "admin" ? (
+                "관리자"
+              ) : CheckedAccountItem?.part === "engineer" ? (
+                "엔지니어"
+              ) : CheckedAccountItem?.part === "operator" ? (
+                "오퍼레이터"
+              ) : null}
             </span>
           </div>
           <InputTextItem
@@ -422,7 +436,7 @@ const Part = ({ data, sub, isCreate }) => {
               </select>
             )}
           </div>
-          {!CheckedAccountItem ? (
+          {!CheckedAccountItem?.part === "admin" ? (
             <button
               className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
               onClick={async (e) => {
@@ -465,8 +479,6 @@ const Part = ({ data, sub, isCreate }) => {
                   alert("등록되었습니다.");
                   return window.location.reload();
                 } else if (res.data.result === 0) {
-                  targetArr[0].value = "";
-                  targetArr[0].focus();
                   return alert(res.data.msg);
                 }
               }}
@@ -476,7 +488,8 @@ const Part = ({ data, sub, isCreate }) => {
               </picture>
               <span className="text-base text-white">등록</span>
             </button>
-          ) : (
+          ) : session?.token?.user?.part === "admin" ||
+            session?.token?.user?.id === CheckedAccountItem?.id ? (
             <div className="flex w-[17.5rem] h-[2.5rem] mt-[4.375rem] ">
               <button
                 className="select-none w-[8.75rem] h-[2.5rem]  border border-[#182A5B] border-solid flex justify-center items-center"
@@ -533,8 +546,9 @@ const Part = ({ data, sub, isCreate }) => {
                 <span className="text-white">수정</span>
               </button>
             </div>
-          )}
-          {CreateAccountItem ? null : (
+          ) : null}
+          {CreateAccountItem ? null : session?.token?.user?.part === "admin" ||
+            session?.token?.user?.affiliation === "admin" ? (
             <span
               className="flex text[#222222] text-base underline cursor-pointer mt-[2.625rem]"
               onClick={() => {
@@ -547,7 +561,7 @@ const Part = ({ data, sub, isCreate }) => {
             >
               계정삭제
             </span>
-          )}
+          ) : null}
         </div>
       </div>
     </>
@@ -596,6 +610,7 @@ const CompanyList = ({ data }) => {
       setFilteredArray(data);
     }
   }, [value, data]);
+  console.log(session);
   return (
     <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative">
       <div className="px-[2.625rem]">
@@ -616,7 +631,7 @@ const CompanyList = ({ data }) => {
             <Image src={`/images/main/mypage/search.svg`} fill alt="" />
           </span>
         </div>
-        {session?.token?.user === "admin" ? (
+        {session?.token?.user?.affiliation === "admin" ? (
           <button
             className="flex justify-center items-center gap-[0.625rem] w-full h-[2.625rem] my-[1.125rem] bg-[#182A5B]"
             onClick={async (e) => {
@@ -720,8 +735,20 @@ const CompanyList = ({ data }) => {
                                     : "operator"
                                 }${index}`
                               );
+                              document.getElementsByName(`users`).forEach((element) => {
+                                if (e.target.checked) {
+                                  if (element !== e.target) {
+                                    element.checked = false;
+                                  }
+                                }
+                                if (!element.checked) {
+                                  element.nextSibling.classList.add("hidden");
+                                } else {
+                                  element.nextSibling.classList.remove("hidden");
+                                }
+                              });
+                              setSelectedPartItem(element.id);
                               if (e.target.checked) {
-                                setSelectedPartItem(element.id);
                                 target.classList.remove("hidden");
                               } else {
                                 setCheckedAccountItem(null);
@@ -821,13 +848,18 @@ const CompanyList = ({ data }) => {
                                       </div>
                                     </label>
                                     <input
-                                      type="radio"
+                                      type="checkbox"
                                       name={`users`}
                                       id={`adminPart${index}${idx}${i}`}
                                       className="peer hidden"
                                       onChange={(e) => {
                                         console.log(CheckedCompanyItem);
                                         document.getElementsByName(`users`).forEach((element) => {
+                                          if (e.target.checked) {
+                                            if (element !== e.target) {
+                                              element.checked = false;
+                                            }
+                                          }
                                           if (!element.checked) {
                                             element.nextSibling.classList.add("hidden");
                                           } else {
@@ -871,13 +903,18 @@ const CompanyList = ({ data }) => {
                                       </div>
                                     </label>
                                     <input
-                                      type="radio"
+                                      type="checkbox"
                                       name={`users`}
                                       id={`adminPart${index}${idx}${i}`}
                                       className="peer hidden"
                                       onChange={(e) => {
                                         console.log(CheckedCompanyItem);
                                         document.getElementsByName(`users`).forEach((element) => {
+                                          if (e.target.checked) {
+                                            if (element !== e.target) {
+                                              element.checked = false;
+                                            }
+                                          }
                                           if (!element.checked) {
                                             element.nextSibling.classList.add("hidden");
                                           } else {

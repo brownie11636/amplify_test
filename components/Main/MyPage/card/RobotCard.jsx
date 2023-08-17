@@ -52,7 +52,9 @@ export const RobotCard = ({ children, data }) => {
           />
           <InputSelect title="배치 현장" id="field" value={data?.field} />
           <InputSelect title="배치 공정" id="tasks" value={data?.tasks} />
-          {CreateFieldItem ? (
+          {CreateFieldItem &&
+          (session?.token?.user?.part === "admin" ||
+            session?.token?.user?.affiliation === "admin") ? (
             <button
               className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
               onClick={async () => {
@@ -103,14 +105,15 @@ export const RobotCard = ({ children, data }) => {
               </picture>
               <span className="text-base text-white">등록</span>
             </button>
-          ) : (
+          ) : session?.token?.user?.part === "admin" ||
+            session?.token?.user?.affiliation === "admin" ? (
             <button className="w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center">
               <picture className="relative w-[0.875rem] h-[0.75rem]">
                 <Image src={`/images/main/myPage/edit.svg`} fill alt="" />
               </picture>
               <span className="text-white">수정</span>
             </button>
-          )}
+          ) : null}
           {CreateFieldItem ? null : (
             <span
               className="flex text[#222222] text-base underline cursor-pointer mt-[2rem]"
