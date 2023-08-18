@@ -124,7 +124,7 @@ function callUpdateFn(now, prev, updateFn0, updateFn1 = null) {
 //     "buttonY"
 //   ],
 // }
-// export default GamepadProvider
+
 /**       ----- RIGHT -----
  *  buttons
  *    0: Trigger      //  gripper control    

@@ -8,7 +8,6 @@ import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
 import SpatialVideo from './SpatialVideo';
 import sampleImg from "./sample_jpeg.jpeg";
 import { RgbdContext } from './XR.container';
-import { GamepadContext } from "./GamepadContext"
 import { useControlStore } from "../../store/zustand/control.js"
 
 
@@ -25,6 +24,21 @@ export default function RemoteGroup({XRscale, ...props}) {
     ref.current.position.fromArray(useControlStore.getState().remoteGroup.position)
     ref.current.rotation.fromArray(useControlStore.getState().remoteGroup.rotation)
     ref.current.scale.setScalar(useControlStore.getState().remoteGroup.scale)
+
+    const unsub = useControlStore.subscribe(
+      // (state)=>state.visibleRange,
+      // (range,_range) => {        // _value is previous, range is not used yet 
+      (state)=>state.remoteGroup,
+      (group) => {        
+        ref.current.position.fromArray(group.position)
+        ref.current.rotation.fromArray(group.rotation)
+        ref.current.scale.setScalar(group.scale)
+      }
+    );
+
+    return () => {
+      unsub()
+    }
   }, []);
 
   useFrame((state, delta, XRFrame) => {

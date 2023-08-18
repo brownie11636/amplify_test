@@ -164,7 +164,7 @@ const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...prop
 
         isOffsetUpdated.current = false;
 
-      } else {  //squeeze pressed
+      } else if ( controllerModeRef.current === "operating" ) {  //squeeze pressed
         
         //convert coordinate of position
         controller.localPosition.copy(

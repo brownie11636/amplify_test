@@ -9,7 +9,6 @@ import { shallow } from 'zustand/shallow'
 
 import { PortalCommContext } from '../../utils/contexts/portalComm';
 import { PortalRTCContext, RgbdContext } from './XR.container';
-import { GamepadContext } from "./GamepadContext"
 import { useControlStore } from "../../store/zustand/control.js"
 
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
@@ -19,7 +18,6 @@ const RAD2DEG = THREE.MathUtils.RAD2DEG;
 
 export default function SpatialVideo({mode, ...props}) {
   // const portaRTCRef = useContext(PortalRTCContext)
-  // const gamepadRef = useContext(GamepadContext)
   //const commClient = useContext(PortalCommContext);
   const {rgbSrcRef, depthSrcRef, visibleRangeRef} = useContext(RgbdContext);
   const portalRTCRef = useContext(PortalRTCContext);
@@ -42,7 +40,7 @@ export default function SpatialVideo({mode, ...props}) {
     // matRef.current.needsUpdate = true;
     //visibleRangeRef.current.needsUpdate = true;
     
-    const unsubDepthMax = useControlStore.subscribe(
+    const unsubSpatialVideo = useControlStore.subscribe(
       // (state)=>state.visibleRange,
       // (range,_range) => {        // _value is previous, range is not used yet 
       (state)=>[state.visibleRange,state.spatialVideo],
@@ -56,7 +54,7 @@ export default function SpatialVideo({mode, ...props}) {
         if (video !== _video){
           groupRef.current.position.fromArray(video.position);
           groupRef.current.rotation.fromArray(video.rotation);
-          // groupRef.current.scale.setScalar(video.scale);
+          groupRef.current.scale.setScalar(video.scale);
         }
 
       },
@@ -65,7 +63,7 @@ export default function SpatialVideo({mode, ...props}) {
     // const unsub
 
     return () => {
-      unsubDepthMax();
+      unsubSpatialVideo();
     }
   },[])
   
@@ -147,7 +145,7 @@ export default function SpatialVideo({mode, ...props}) {
     bitDepth: { type: 'f', value: 8.0 },
     texSize: { type: 'i2', value: [1280,720] },
     iK: { type: 'f4', value: [0, 0, 0, 0] },
-    scale: { type: 'f', value: 5.0 },
+    // scale: { type: 'f', value: 5.0 },
     ptSize: { type: 'f', value: 1.6 },
   }
 
@@ -281,7 +279,6 @@ const vertShader8bitSrc = `
     uniform float bitDepth;
 
     uniform vec4 iK; // 인트린직스 매트릭스 계수
-    uniform float scale; // 객체의 스케일?
     uniform float ptSize; // 랜더링할 포인트 사이즈
     
     // Filtering constants
@@ -308,12 +305,12 @@ const vertShader8bitSrc = `
 
         if (bitDepth == 8.0) {
           float gray = (texture2D(depthImg, lookupPt).r + texture2D(depthImg, lookupPt).g + texture2D(depthImg, lookupPt).b);
-          float pixelDepth = gray * (maxRange)/20.0;
+          float pixelDepth = gray * (maxRange)/3.0;
           return pixelDepth;
         }
         else if (bitDepth == 12.0) {
           float gray = texture2D(depthImg, lookupPt).r / 256.0 + texture2D(depthImg, lookupPt).g / 16.0 + texture2D(depthImg, lookupPt).b;
-          float pixelDepth = gray * (maxRange*3.0)/20.0;
+          float pixelDepth = gray * (maxRange);
           return pixelDepth;
         }
         float gray = (texture2D(depthImg, lookupPt).r + texture2D(depthImg, lookupPt).g + texture2D(depthImg, lookupPt).b)/3.0;
@@ -381,7 +378,7 @@ const vertShader8bitSrc = `
         
         float currDepth = getPixelDepth(pt); // 뎁스 계산
 
-        vec3 ptPos = scale * vec3(
+        vec3 ptPos = vec3(
             ((1.0000/699.0000) * float(ptX) - 646.8700/699.0000) * currDepth,
             ((1.0000/699.0000) * float(ptY) - 368.170/699.0000) * currDepth,
             -currDepth
@@ -408,7 +405,6 @@ const vertShaderSrc = `
     uniform sampler2D rgbImg; // 스트리밍 영상
 
     uniform vec4 iK; // 인트린직스 매트릭스 계수
-    uniform float scale; // 객체의 스케일?
     uniform float ptSize; // 랜더링할 포인트 사이즈
     
     // Filtering constants
@@ -495,7 +491,7 @@ const vertShaderSrc = `
         
         float currDepth = getPixelDepth(pt); // 뎁스 계산
 
-        vec3 ptPos = scale * vec3(
+        vec3 ptPos = vec3(
             ((1.0000/699.0000) * float(ptX) - 646.8700/699.0000) * currDepth,
             ((1.0000/699.0000) * float(ptY) - 368.170/699.0000) * currDepth,
             -currDepth

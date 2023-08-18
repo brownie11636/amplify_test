@@ -14,7 +14,7 @@ const Scene = dynamic(() => import("../../components/PortalXR/Scene"), { ssr: tr
 
 export const RgbdContext = createContext();
 export const PortalRTCContext = createContext();
-export const visibleRangeContext = createContext();
+// export const visibleRangeContext = createContext();
 
 const XRContainer = () => {
   const { commClient, commClientV01 } = useContext(PortalCommContext);
@@ -248,10 +248,21 @@ const XRContainer = () => {
                 if (res.status === "ok") {
                   console.log(commClientV01)
                   commClientV01.connectedModules.push(selected);
+
+                  let packet = { 
+                    from: commClientV01.socket.id, 
+                    to:commClientV01.connectedModules[0],
+                    msg: {
+                      type:"get_pos"
+                    } 
+                  }
+                  commClientV01.socket.emit("robot","C2C",packet)
                 }
                 console.log("module connected:", selected);
               });
               console.log("request robot connection", selected);
+
+              
             }}
           >connect robot</button>
         </div>
@@ -328,6 +339,8 @@ const XRContainer = () => {
       <div style={{ position: "absolute", top: "500px", left: "-2000px", width: "3000", height: "3000", zIndex: "111" }}>
         <img ref={depthSrcRef} src="/depth-sample-img.png" width="1280" height="720" style={{ width: "1280px", height: "720px" }} onLoad={onLoadDepthImg} loading='auto' />
         <img ref={rgbSrcRef} src="/rgb-sample-img.jpeg" width="1280" height="720" style={{ width: "1280px", height: "720px" }} onLoad={onLoadRgbImg} loading='auto' />
+        {/* <video className="w-[300px]" autoPlay playsInline ref={localVideo}/> */}
+
       </div>
 
     </>

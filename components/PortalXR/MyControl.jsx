@@ -9,7 +9,6 @@ import _ from "lodash"
 
 import { PortalCommContext } from '../../utils/contexts/portalComm';
 import { PortalRTCContext, RgbdContext } from './XR.container';
-import { GamepadContext } from "./GamepadContext"
 import { useXRGamepadStore } from "../../store/zustand/XRGamepad.js"
 import { useControlStore } from "../../store/zustand/control.js"
 import { useModeStore } from "../../store/zustand/mode.js"
@@ -88,7 +87,7 @@ export default function MyControl({ ...props}) {
           if(stickUp_R.current || stickDown_R.current) {
             let setJSON = {} 
             setJSON[mode.target] = _.cloneDeep(useControlStore.getState()[mode.target]);
-            setJSON[mode.target][mode.type][mode.index] += delta * 0.001 * (stickUp_R.current? 1 : -1)
+            setJSON[mode.target][mode.type] += delta * 0.05 * (stickUp_R.current? 1 : -1)
             useControlStore.setState({...setJSON})
           }
         }

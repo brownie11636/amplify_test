@@ -64,6 +64,8 @@ export default function PortalArm(type, path, ...props) {
 
   const gripDistanceRef = useRef(useControlStore.getState().gripDistance)
   const increaseGripDistance = useControlStore((state)=>state.increaseGripDistance);
+  const gripAngleRatioRef = useRef(useControlStore.getState().gripAngleRatio)
+  const increaseGripAngleRatio = useControlStore((state)=>state.increaseGripAngleRatio);
 
   const rightController = useController('right');
   const leftController = useController('left');
@@ -100,20 +102,22 @@ export default function PortalArm(type, path, ...props) {
       if(type === "C2C" && packet.msg.type === "_q"){
         useControlStore.setState({actualAngles_q:packet.msg.payload})
         console.log(useControlStore.getState().actualAngles_q)
+        vrLog("actual_q")
+        vrLog(packet.msg.payload)
       }
     })
 
-    if(commClientV01.connectedModules){
-      //request _q msg (robot joint angles) for initial angle
-      packet = { 
-        from: commClientV01.socket.id, 
-        to:commClientV01.connectedModules[0],
-        msg: {
-          type:"get_pos"
-        } 
-      }
-      commClientV01.socket.emit("robot","C2C",packet)
-    }
+    // if(commClientV01.connectedModules){
+    //   //request _q msg (robot joint angles) for initial angle
+    //   packet = { 
+    //     from: commClientV01.socket.id, 
+    //     to:commClientV01.connectedModules[0],
+    //     msg: {
+    //       type:"get_pos"
+    //     } 
+    //   }
+    //   commClientV01.socket.emit("robot","C2C",packet)
+    // }
     //commClient.socket callback -> 명령 들어왓을때 setArmAngles하기
     //commClient.socket callback -> 명령 들어왓을때 setGripperAngles하기
     // ref.current.position.x = 0.3;
@@ -138,14 +142,27 @@ export default function PortalArm(type, path, ...props) {
     })
     const unsubModeStore = useModeStore.subscribe((state) => {
       controllerMode.current = state.controllerMode
-    })
+    })    
     
+    const unsubControlStore = useControlStore.subscribe(
+      (state)=>state.gripAngleRatio,
+      // (state)=>state.gripDistance,
+      (gripAngleRatio) => {        
+      // (gripDistance) => {        
+        gripAngleRatioRef.current = gripAngleRatio
+        
+        // vrLog("gripDistance")
+        // vrLog(gripDistance)
+
+      }
+    );
     
     return () => {
       commClientV01.socket.off("robot")
       console.log("robot comm off")
       unsubXRGamepadStore();
       unsubModeStore();
+      unsubControlStore();
     }
   }, []);
 
@@ -164,10 +181,10 @@ export default function PortalArm(type, path, ...props) {
 
   useFrame((state, delta, XRFrame)=> { 
 
-    if(i<2){
+    if(!XRFrame){
       // Initial setting of ControlGuide. 
       // Excute it in second frame to refer Gripper's position and rotation.
-      i++
+      // i++
       controlGuideRef.current.position.copy(
         ref.current.worldToLocal(
           gripperRef.current[0].localToWorld(
@@ -176,22 +193,22 @@ export default function PortalArm(type, path, ...props) {
       );
       gripperRef.current[9].getWorldQuaternion(
         controlGuideRef.current.rotation)
-        console.log(controlGuideRef.current.rotation)
+        // console.log(controlGuideRef.current.rotation)
     }
 
-    if(i<3 && XRFrame){
-      if(commClientV01.connectedModules){
-        //request _q msg (robot joint angles) for initial angle
-        packet = { 
-          from: commClientV01.socket.id, 
-          to:commClientV01.connectedModules[0],
-          msg: {
-            type:"get_pos"
-          } 
-        }
-        commClientV01.socket.emit("robot","C2C",packet)
-      }
-    }
+    // if(i<3 && XRFrame){
+    //   if(commClientV01.connectedModules){
+    //     //request _q msg (robot joint angles) for initial angle
+    //     packet = { 
+    //       from: commClientV01.socket.id, 
+    //       to:commClientV01.connectedModules[0],
+    //       msg: {
+    //         type:"get_pos"
+    //       } 
+    //     }
+    //     commClientV01.socket.emit("robot","C2C",packet)
+    //   }
+    // }
 
     // ang += delta;
     // useControlStore.setState({actualAngles_q:[ang*DEG2RAD,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
@@ -239,21 +256,22 @@ export default function PortalArm(type, path, ...props) {
             // euler.reorder("XZY");
             // rot = euler.toArray()
             rot = euler.reorder("XZY").toArray()
-            vrLog(rot[3]);
+            // vrLog(rot[3]);
             rot = rot.map((val)=>Math.round(val*10000)/10000)
             // rot = euler.toArray().map((val)=>Math.round(val*10000)/10000)
             rot = [-rot[0], rot[2], rot[1]]
             // rot = [-rot[0], -rot[1], rot[2]]
             // console.log(typeof rot[0], typeof rot[1], typeof rot[2])
-            vrLog("rot x: "+rot[0]+", y: "+rot[1]+",z: "+rot[2]);
+            // vrLog("rot x: "+rot[0]+", y: "+rot[1]+",z: "+rot[2]);
 
-            if (stickRight_R.current) {
+            if (stickUp_R.current) {
             // if (stickUp_R.current) {
-              increaseGripDistance(-30 * delta)
-            } else if (stickLeft_R.current) {
+              // vrLog("open")
+              increaseGripAngleRatio(-300 * delta)
+              
+            } else if (stickDown_R.current) {
+              increaseGripAngleRatio(300 * delta)
             // } else if (stickDown_R.current) {
-              vrLog("close")
-              increaseGripDistance(30 * delta)
             }
 
             packet = { 
@@ -263,7 +281,7 @@ export default function PortalArm(type, path, ...props) {
                 type:"set_pos", 
                 data:{
                   arm:[...pos,...rot],
-                  grip: Math.floor(gripDistanceRef.current * 10) 
+                  grip: Math.floor(gripAngleRatioRef.current) 
                 }
               }
             } 

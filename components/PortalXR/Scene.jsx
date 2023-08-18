@@ -10,7 +10,6 @@ import { Leva, useControls } from 'leva'
 // import 'bootstrap/dist/css/bootstrap.css';
 
 import RemoteGroup from "./RemoteGroup"
-import { GamepadProvider } from "./GamepadContext"
 import { GamepadInput } from "./GamepadInput"
 import MyControl from "./MyControl"
 import UiBoard from "./UI/UiBoard.jsx"
@@ -62,10 +61,8 @@ export default function Scene(portalRTC, ...props) {
             <OrbitControls />
             {/* <VideoText position={[0, 1.3, -2]} />      */}
             {/* <Suspense fallback={null}> */}
-            <GamepadProvider>
-              <RemoteGroup />
+            <RemoteGroup />
 
-            </GamepadProvider>
             {/* </Suspense> */}
           </XR>
         </Canvas>

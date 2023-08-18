@@ -35,22 +35,24 @@ export default function KariTable({loader, children, ...props}){
 
   return (
     <group ref={ref} >
-      <Box args={[0.23, 0.935, 0.23]} position={[0, 0.935/2, 0]} material-wireframe />
-      <Box args={[0.23, 0.935, 0.23]} position={[0, 0.935/2, 0]} material-color="gray" material-transparent material-opacity={0.5} />
+      <group rotation={[0,-4 * Math.PI/180,0]} >
+        <Box args={[0.23, 0.935, 0.23]} position={[0, 0.935/2, 0]} material-wireframe />
+        <Box args={[0.23, 0.935, 0.23]} position={[0, 0.935/2, 0]} material-color="gray" material-transparent material-opacity={0.5} />
 
-      <Box args={[0.51, 0.935, 0.67]} position={[0, 0.935/2, -(0.23 + 0.67)/2]} material-wireframe />
-      <Box args={[0.51, 0.935, 0.67]} position={[0, 0.935/2, -(0.23 + 0.67)/2]} material-color="gray" material-transparent material-opacity={0.5} >  
-        
-        <Box args={[0.08, 0.445 * 2, 0.04]} position={[0, 0.935/2, -0.065-0.67/2]} material-wireframe />
-        <Box args={[0.08, 0.445 * 2, 0.04]} position={[0, 0.935/2, -0.065-0.67/2]} material-color="gray" material-transparent material-opacity={0.5} >
+        <Box args={[0.51, 0.935, 0.67]} position={[0, 0.935/2, -(0.23 + 0.67)/2]} material-wireframe />
+        <Box args={[0.51, 0.935, 0.67]} position={[0, 0.935/2, -(0.23 + 0.67)/2]} material-color="gray" material-transparent material-opacity={0.5} >  
+          
+          <Box args={[0.08, 0.443 * 2, 0.04]} position={[0, 0.935/2, -0.065-0.67/2]} material-wireframe />
+          <Box args={[0.08, 0.443 * 2, 0.04]} position={[0, 0.935/2, -0.065-0.67/2]} material-color="gray" material-transparent material-opacity={0.5} >
 
-          <Box args={[0.045, 0.045, 0.16]} position={[0, 0.445, 0.16/2]} material-wireframe />
-          <Box args={[0.045, 0.045, 0.16]} position={[0, 0.445, 0.16/2]} material-color="gray" material-transparent material-opacity={0.5} >
-          </Box>
+            <Box args={[0.04, 0.04, 0.155]} position={[0, 0.44, 0.155/2]} material-wireframe />
+            <Box args={[0.04, 0.04, 0.155]} position={[0, 0.44, 0.155/2]} material-color="gray" material-transparent material-opacity={0.5} >
+            </Box>
+
+          </Box> 
 
         </Box> 
-
-      </Box> 
+      </group>
       {children}
     </group>
   )
