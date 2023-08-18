@@ -127,7 +127,9 @@ const Block1 = () => {
       </picture>
       <div className={`flex w-screen ${heightFlexible} bg-opacity-50 bg-black z-10 absolute`}></div>
       <div className={`text-white flex flex-col w-[103.75rem] z-20 h-fit ${pt200px} ${pl240px}`}>
-        <span className={`uppercase font-['RobotoB'] z-30 ${letterSpacing10percent} ${text60px}`}>
+        <span
+          className={`uppercase w-fit font-['RobotoB'] z-30 ${letterSpacing10percent} ${text60px}`}
+        >
           portal
         </span>
         <span className={`whitespace-pre z-30 ${text34px} ${mt50px} ${mb100px}`}>

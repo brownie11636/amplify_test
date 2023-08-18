@@ -83,3 +83,5 @@ export const lineHeight30px = `leading-[0.3125rem] sm:leading-[0.625rem] md:lead
 export const lineHeight40px = `leading-[0.4166666667rem] sm:leading-[0.8333333333rem] md:leading-[1.25rem] lg:leading-[1.666666667rem] xl:leading-[2.083333333rem] 2xl:leading-[2.5rem]`;
 export const lineHeight49px = `leading-[0.5104166667rem] sm:leading-[1.020833333rem] md:leading-[1.53125rem] lg:leading-[2.041666667rem] xl:leading-[2.552083333rem] 2xl:leading-[3.0625rem]`;
 export const lineHeight68px = `leading-[0.7083333333rem] sm:leading-[1.416666667rem] md:leading-[2.125rem] lg:leading-[2.833333333rem] xl:leading-[3.541666667rem] 2xl:leading-[4.25rem]`;
+
+export const letterSpacing10percent = `tracking-[0.0533333333rem] sm:tracking-[0.1066666666rem] md:tracking-[0.16rem] lg:tracking-[0.2133333332rem] xl:tracking-[0.2666666665rem] 2xl:tracking-[0.322rem]`;
