@@ -133,7 +133,7 @@ const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...prop
           if (alignIndex.current.prev === 0) nonAlignedRef.current.copy(ref.current.rotation.clone());
 
         }
-        console.log(needAlignAngle.current)
+        // console.log(needAlignAngle.current)
       }
     )
     
@@ -164,7 +164,7 @@ const ControlGuide = forwardRef( function ControlGuide ({ initialConfig, ...prop
 
         isOffsetUpdated.current = false;
 
-      } else {  //squeeze pressed
+      } else if ( controllerModeRef.current === "operating" ) {  //squeeze pressed
         
         //convert coordinate of position
         controller.localPosition.copy(

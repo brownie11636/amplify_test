@@ -41,15 +41,7 @@ const gripperPositions = setGripperPositions();
 const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...props},ref) {
 
   // const ref = useRef([]);
-  // const gamepadRef = useContext(GamepadContext);
-  const colorRef = useRef(0x999999)
-  const [index, setIndex] = useState(0)
   
-  const squeezePressed_R = useRef(useXRGamepadStore.getState().squeezePressed_R)
-  const stickUp_R = useRef(useXRGamepadStore.getState().stickUp_R)
-  const stickDown_R = useRef(useXRGamepadStore.getState().stickDown_R) 
-  const increaseGripDistance = useControlStore((state)=>state.increaseGripDistance);
-
   const rotations = useMemo(() => {
     let rotations = []
     for (let i = 0; i<9; i++){
@@ -65,22 +57,22 @@ const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...prop
 
   useEffect(()=>{
     
-    grip(50, ref.current);
+    // grip(50, ref.current);
+    gripByAngleRatio(useControlStore.getState().gripAngleRatio, ref.current)
     
-    const unsubGrip = useControlStore.subscribe(
+    const unsubGripDistance = useControlStore.subscribe(
       (state)=>state.gripDistance,
       (distance)=>grip(distance, ref.current)
     );
     
-    const unsubXRGamepadStore = useXRGamepadStore.subscribe((state) => {
-      squeezePressed_R.current = state.squeezePressed_R
-      stickUp_R.current = state.stickUp_R;
-      stickDown_R.current = state.stickDown_R;
-    })
-      
+    const unsubGripAngleRatio = useControlStore.subscribe(
+      (state)=>state.gripAngleRatio,
+      (ratio)=>gripByAngleRatio(ratio, ref.current)
+    );
+    
     return () => {
-      unsubGrip();
-      unsubXRGamepadStore();
+      unsubGripDistance();
+      unsubGripAngleRatio();
     }
   },[])
 
@@ -181,12 +173,36 @@ function setGripperConfigs() {
 
 const grip = (distance, gripperLinks, type = "ROBOTIS_RH-P12-RN") => {
   if ( type === "ROBOTIS_RH-P12-RN" ){
-    if ( distance < 1 || distance > 105) {
+    if ( distance < 1 || distance > 99) {
+    // if ( distance < 1 || distance > 105) {
       console.error("gripper: out of range", distance);
       return;
     } else {
       // console.log("gripDistance:", distance)
       let angle = RAD2DEG * Math.asin(( distance - 8 ) / 2 / 57);
+      for (let i = 1; i < 8; i++ ){
+        let j = Math.floor((i - 1)/4);
+        let k = 1 + (i - 1)% 4
+        let rot = 2 * (j - 0.5) * angle * DEG2RAD; 
+        if ( k < 3) gripperLinks[i].rotation.y = rot; 
+        else if (k === 3) gripperLinks[i].rotation.y = angle * DEG2RAD;
+      } 
+    } 
+  } else {
+    console.error("not registed gripper");
+    return;
+  }
+}
+
+const gripByAngleRatio = (angleRatio, gripperLinks, type = "ROBOTIS_RH-P12-RN") => {
+  if ( type === "ROBOTIS_RH-P12-RN" ){
+    if ( angleRatio < 1 || angleRatio > 999) {
+    // if ( distance < 1 || distance > 105) {
+      console.error("gripper: out of range", distance);
+      return;
+    } else {
+      // console.log("gripDistance:", distance)
+      let angle = -4.02+(58.3+4.02)*(1000-angleRatio)/1000;   //angle === -4.02 closed angle === 58.3 open
       for (let i = 1; i < 8; i++ ){
         let j = Math.floor((i - 1)/4);
         let k = 1 + (i - 1)% 4

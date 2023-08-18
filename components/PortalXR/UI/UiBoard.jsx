@@ -68,7 +68,7 @@ export default function UiBoard(props){
       ref={boardRef}
       args={[{
         ...args,
-        width: 5.5,
+        width: 7,
         height: 4,
         fontSize: 0.2,
         // backgroundOpacity: 0.5,
@@ -89,8 +89,8 @@ export default function UiBoard(props){
     >
       {/* <axesHelper args={[1]}/> */}
       <block args={[{...args, height:"50%", borderWidth:0.02,}]} >
-        <ModeBlock args={[{...args, width:"25%", flexDirection:"column"}]} />
-          <block args={[{...args,height:"100%", width:"75%"}]} position={[0,0,0]} >
+        <ModeBlock args={[{...args, width:"20%", flexDirection:"column"}]} />
+          <block args={[{...args, width:"80%"}]} >
             <DefaultBlock args={[{...args,flexDirection:"column",autoLayout:false}]} />
             <OperatingBlock args={[{...args,flexDirection:"column",autoLayout:false}]} />
             <SettingBlock args={[{...args,flexDirection:"column",autoLayout:false}]} />

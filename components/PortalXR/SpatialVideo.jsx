@@ -5,10 +5,10 @@ import { useTexture, Line, Sphere, shaderMaterial } from '@react-three/drei'
 import { useXR } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { textureLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { shallow } from 'zustand/shallow'
 
 import { PortalCommContext } from '../../utils/contexts/portalComm';
 import { PortalRTCContext, RgbdContext } from './XR.container';
-import { GamepadContext } from "./GamepadContext"
 import { useControlStore } from "../../store/zustand/control.js"
 
 const DEG2RAD = THREE.MathUtils.DEG2RAD;
@@ -18,7 +18,6 @@ const RAD2DEG = THREE.MathUtils.RAD2DEG;
 
 export default function SpatialVideo({mode, ...props}) {
   // const portaRTCRef = useContext(PortalRTCContext)
-  const gamepadRef = useContext(GamepadContext)
   //const commClient = useContext(PortalCommContext);
   const {rgbSrcRef, depthSrcRef, visibleRangeRef} = useContext(RgbdContext);
   const portalRTCRef = useContext(PortalRTCContext);
@@ -31,31 +30,46 @@ export default function SpatialVideo({mode, ...props}) {
   const [depthMax, setDepthMax] = useState(useControlStore.getState().depthMax);
   console.log("Spatial Video renedered!!!!")
 
+  const vrLog = useControlStore.getState().updateNewLog;
+
   useEffect(()=>{
     rgbTexture.current.needsUpdate = true;
     depthTexture.current.needsUpdate = true;
+    groupRef.current.position.fromArray(useControlStore.getState().spatialVideo.position)
+    groupRef.current.rotation.fromArray(useControlStore.getState().spatialVideo.rotation)
     // matRef.current.needsUpdate = true;
     //visibleRangeRef.current.needsUpdate = true;
-    // console.log(rgbTexture.current);
-    // console.log(depthTexture.current);
-    // console.log(props.position)
-    const unsubDepthMax = useControlStore.subscribe(
-      (state)=>state.depthMax,
-      (max)=>{
-        console.log("set DepthMax: ", max)
-        console.log(typeof(max))
-        setDepthMax(max)
-      }
+    
+    const unsubSpatialVideo = useControlStore.subscribe(
+      // (state)=>state.visibleRange,
+      // (range,_range) => {        // _value is previous, range is not used yet 
+      (state)=>[state.visibleRange,state.spatialVideo],
+      ([range,video],[_range,_video]) => {        // _value is previous, range is not used yet 
+        // console.log(range,_range) 
+        // // console.log(video,_video) 
+        console.log(range,video,_range,_video) 
+        if (range !== _range){
+
+        }
+        if (video !== _video){
+          groupRef.current.position.fromArray(video.position);
+          groupRef.current.rotation.fromArray(video.rotation);
+          groupRef.current.scale.setScalar(video.scale);
+        }
+
+      },
+      { equalityFn: shallow }     //여러개의 selector 구독할때 필요
     );
+    // const unsub
 
     return () => {
-      unsubDepthMax();
+      unsubSpatialVideo();
     }
   },[])
   
-  let right;
-  let left;
-  let W
+  // let right;
+  // let left;
+  // let W
   let eulerData = new THREE.Euler();
   let quaternion = new THREE.Quaternion();
   quaternion.identity();
@@ -65,45 +79,24 @@ export default function SpatialVideo({mode, ...props}) {
 
   useFrame((state, delta, XRFrame)=>{
     matRef.current.needsUpdate = true;
-    // i += delta
-    // console.log(i);
-    // matRef.current.uniforms.visibleRange.value = i;
-    // matRef.current.uniforms.needsUpdate = true;
-    // matRef.current.uniforms.visibleRange.needsUpdate = true;
-
-    // yourMesh.material.uniforms.yourUniform.value = whatever;
-    // uniforms.visibleRange.value = visibleRangeRef.current;
-    // shaderMaterial.material.uniforms.visibleRange.value = visibleRangeRef.current;
 
     matRef.current.uniforms.minRange.value = visibleRangeRef.current.min;
     matRef.current.uniforms.maxRange.value = visibleRangeRef.current.max;
     matRef.current.uniforms.bitDepth.value = visibleRangeRef.current.bitDepth;
-    // matRef.current.uniforms = {rgbImg: { type: 't', value: rgbTexture.current },
-    // depthImg: { type: 't', value: depthTexture.current },
-    // texSize: { type: 'i2', value: [1280,720] },
-    // iK: { type: 'f4', value: [0, 0, 0, 0] },
-    // scale: { type: 'f', value: 5.0 },
-    // ptSize: { type: 'f', value: 1.6 },
-    // visibleRange: {value: visibleRangeRef.current}};
-    // matRef.current.uniforms.needsUpdate = true;
-    // console.log('visibleRangeRef.current : ', matRef.current.uniforms.visibleRange.value);
 
-    // console.log(rgbTexture.current);
-    // console.log(depthTexture.current);
-
-    right = gamepadRef.current.right;
-    left = gamepadRef.current.left
-    W = 0.005; 
-    if(controlRef.current){
-      groupRef.current.position.z += W * right.new.axes[2];
-      groupRef.current.position.x += W * right.new.axes[3];
-    } else {
-      groupRef.current.rotation.y += W * right.new.axes[2];
-      groupRef.current.position.y += W * right.new.axes[3];
-    }
-    groupRef.current.scale.x += 0.01 * left.new.axes[2];
-    groupRef.current.scale.y += 0.01 * left.new.axes[2];
-    groupRef.current.scale.z += 0.01 * left.new.axes[2];
+    // right = gamepadRef.current.right;
+    // left = gamepadRef.current.left
+    // W = 0.005; 
+    // if(controlRef.current){
+    //   groupRef.current.position.z += W * right.new.axes[2];
+    //   groupRef.current.position.x += W * right.new.axes[3];
+    // } else {
+    //   groupRef.current.rotation.y += W * right.new.axes[2];
+    //   groupRef.current.position.y += W * right.new.axes[3];
+    // }
+    // groupRef.current.scale.x += 0.01 * left.new.axes[2];
+    // groupRef.current.scale.y += 0.01 * left.new.axes[2];
+    // groupRef.current.scale.z += 0.01 * left.new.axes[2];
 
     //let eulerData = portalRTC.quaternion;
     // if(true){
@@ -131,9 +124,9 @@ export default function SpatialVideo({mode, ...props}) {
         // console.log('not changed : ', portalRTCRef.current.quaternion);
       }
     }
-    if (right.new.buttons[3] && right.prev.buttons[3]!==right.new.buttons[3]){
-      controlRef.current = !controlRef.current;
-    }
+    // if (right.new.buttons[3] && right.prev.buttons[3]!==right.new.buttons[3]){
+    //   controlRef.current = !controlRef.current;
+    // }
 
     if (rgbSrcRef.current.complete && depthSrcRef.current.complete){
       rgbTexture.current.needsUpdate=true
@@ -152,7 +145,7 @@ export default function SpatialVideo({mode, ...props}) {
     bitDepth: { type: 'f', value: 8.0 },
     texSize: { type: 'i2', value: [1280,720] },
     iK: { type: 'f4', value: [0, 0, 0, 0] },
-    scale: { type: 'f', value: 5.0 },
+    // scale: { type: 'f', value: 5.0 },
     ptSize: { type: 'f', value: 1.6 },
   }
 
@@ -178,7 +171,10 @@ export default function SpatialVideo({mode, ...props}) {
       // rotation={[0,-0.5,0]} 
       // {...props} 
     >
-      <MyFrustrum far={5} near={0.1}/>
+      {/* <MyFrustrum far={5} near={0.1}/> */}
+
+      <axesHelper args={[0.5]}/>
+
       <points ref={pointsRef} frustumCulled={false} >
         <shaderMaterial 
           ref={matRef}
@@ -193,7 +189,11 @@ export default function SpatialVideo({mode, ...props}) {
           <bufferAttribute attach="attributes-vertexIdx" count={numPoints} array={buffPointIndicesAttr} itemSize={1}/>
           <bufferAttribute attach="index" count={numPoints} array={buffIndices} itemSize={1}/>
         </bufferGeometry> 
+
+        <MyFrustrum far={5} near={0.1}/>
+
       </points>
+
       <Sphere args={[0.02]} material-color={"black"}/>
     </group>
   )
@@ -279,7 +279,6 @@ const vertShader8bitSrc = `
     uniform float bitDepth;
 
     uniform vec4 iK; // 인트린직스 매트릭스 계수
-    uniform float scale; // 객체의 스케일?
     uniform float ptSize; // 랜더링할 포인트 사이즈
     
     // Filtering constants
@@ -306,12 +305,12 @@ const vertShader8bitSrc = `
 
         if (bitDepth == 8.0) {
           float gray = (texture2D(depthImg, lookupPt).r + texture2D(depthImg, lookupPt).g + texture2D(depthImg, lookupPt).b);
-          float pixelDepth = gray * (maxRange)/20.0;
+          float pixelDepth = gray * (maxRange)/3.0;
           return pixelDepth;
         }
         else if (bitDepth == 12.0) {
           float gray = texture2D(depthImg, lookupPt).r / 256.0 + texture2D(depthImg, lookupPt).g / 16.0 + texture2D(depthImg, lookupPt).b;
-          float pixelDepth = gray * (maxRange*3.0)/20.0;
+          float pixelDepth = gray * (maxRange);
           return pixelDepth;
         }
         float gray = (texture2D(depthImg, lookupPt).r + texture2D(depthImg, lookupPt).g + texture2D(depthImg, lookupPt).b)/3.0;
@@ -379,7 +378,7 @@ const vertShader8bitSrc = `
         
         float currDepth = getPixelDepth(pt); // 뎁스 계산
 
-        vec3 ptPos = scale * vec3(
+        vec3 ptPos = vec3(
             ((1.0000/699.0000) * float(ptX) - 646.8700/699.0000) * currDepth,
             ((1.0000/699.0000) * float(ptY) - 368.170/699.0000) * currDepth,
             -currDepth
@@ -406,7 +405,6 @@ const vertShaderSrc = `
     uniform sampler2D rgbImg; // 스트리밍 영상
 
     uniform vec4 iK; // 인트린직스 매트릭스 계수
-    uniform float scale; // 객체의 스케일?
     uniform float ptSize; // 랜더링할 포인트 사이즈
     
     // Filtering constants
@@ -493,7 +491,7 @@ const vertShaderSrc = `
         
         float currDepth = getPixelDepth(pt); // 뎁스 계산
 
-        vec3 ptPos = scale * vec3(
+        vec3 ptPos = vec3(
             ((1.0000/699.0000) * float(ptX) - 646.8700/699.0000) * currDepth,
             ((1.0000/699.0000) * float(ptY) - 368.170/699.0000) * currDepth,
             -currDepth

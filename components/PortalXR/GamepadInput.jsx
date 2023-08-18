@@ -55,9 +55,11 @@ export const GamepadInput = (props) => {
       callUpdateFn(gamepadRef.current.right.new.buttons[4],gamepadRef.current.right.prev.buttons[4],updateButtonAPressed_R);
       callUpdateFn(gamepadRef.current.right.new.buttons[5],gamepadRef.current.right.prev.buttons[5],updateButtonBPressed_R);
       callUpdateFn(gamepadRef.current.right.new.axes[0],gamepadRef.current.right.prev.axes[0],updateTouchpadRight_R,updateTouchpadLeft_R);
-      callUpdateFn(gamepadRef.current.right.new.axes[1],gamepadRef.current.right.prev.axes[1],updateTouchpadUp_R,updateTouchpadDown_R);
+      callUpdateFn(gamepadRef.current.right.new.axes[1],gamepadRef.current.right.prev.axes[1],updateTouchpadDown_R,updateTouchpadUp_R);
+      // callUpdateFn(gamepadRef.current.right.new.axes[1],gamepadRef.current.right.prev.axes[1],updateTouchpadUp_R,updateTouchpadDown_R);
       callUpdateFn(gamepadRef.current.right.new.axes[2],gamepadRef.current.right.prev.axes[2],updateStickRight_R,updateStickLeft_R);
-      callUpdateFn(gamepadRef.current.right.new.axes[3],gamepadRef.current.right.prev.axes[3],updateStickUp_R,updateStickDown_R);
+      callUpdateFn(gamepadRef.current.right.new.axes[3],gamepadRef.current.right.prev.axes[3],updateStickDown_R, updateStickUp_R);
+      // callUpdateFn(gamepadRef.current.right.new.axes[3],gamepadRef.current.right.prev.axes[3],updateStickUp_R,updateStickDown_R);
       callUpdateFn(gamepadRef.current.left.new.buttons[0],gamepadRef.current.left.prev.buttons[0],updateTriggerPressed_L);
       callUpdateFn(gamepadRef.current.left.new.buttons[1],gamepadRef.current.left.prev.buttons[1],updateSqueezePressed_L);
       callUpdateFn(gamepadRef.current.left.new.buttons[2],gamepadRef.current.left.prev.buttons[2],updateTouchpadPressed_L);
@@ -65,9 +67,11 @@ export const GamepadInput = (props) => {
       callUpdateFn(gamepadRef.current.left.new.buttons[4],gamepadRef.current.left.prev.buttons[4],updateButtonXPressed_L);
       callUpdateFn(gamepadRef.current.left.new.buttons[5],gamepadRef.current.left.prev.buttons[5],updateButtonYPressed_L);
       callUpdateFn(gamepadRef.current.left.new.axes[0],gamepadRef.current.left.prev.axes[0],updateTouchpadRight_L,updateTouchpadLeft_L);
-      callUpdateFn(gamepadRef.current.left.new.axes[1],gamepadRef.current.left.prev.axes[1],updateTouchpadUp_L,updateTouchpadDown_L);
+      callUpdateFn(gamepadRef.current.left.new.axes[1],gamepadRef.current.left.prev.axes[1],updateTouchpadDown_L,updateTouchpadUp_L);
+      // callUpdateFn(gamepadRef.current.left.new.axes[1],gamepadRef.current.left.prev.axes[1],updateTouchpadUp_L,updateTouchpadDown_L);
       callUpdateFn(gamepadRef.current.left.new.axes[2],gamepadRef.current.left.prev.axes[2],updateStickRight_L,updateStickLeft_L);
-      callUpdateFn(gamepadRef.current.left.new.axes[3],gamepadRef.current.left.prev.axes[3],updateStickUp_L,updateStickDown_L);
+      callUpdateFn(gamepadRef.current.left.new.axes[3],gamepadRef.current.left.prev.axes[3],updateStickDown_L,updateStickUp_L);
+      // callUpdateFn(gamepadRef.current.left.new.axes[3],gamepadRef.current.left.prev.axes[3],updateStickUp_L,updateStickDown_L);
 
     }
   })
@@ -93,6 +97,7 @@ function callUpdateFn(now, prev, updateFn0, updateFn1 = null) {
     updateFn0(false);
     // console.log("released!")
   }
+
   if (updateFn1 !== null) {
 
     if (now < -1*threshold && prev > -1*threshold ) updateFn1(true) 
@@ -119,7 +124,7 @@ function callUpdateFn(now, prev, updateFn0, updateFn1 = null) {
 //     "buttonY"
 //   ],
 // }
-// export default GamepadProvider
+
 /**       ----- RIGHT -----
  *  buttons
  *    0: Trigger      //  gripper control    
