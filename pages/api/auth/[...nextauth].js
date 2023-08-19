@@ -29,8 +29,8 @@ export default NextAuth({
           console.log(response.data);
           return null;
         } else {
-          const { index, id, name, affiliation } = response.data.user;
-          return { index, id, name, affiliation };
+          const { index, id, name, affiliation, part } = response.data.user;
+          return { index, id, name, affiliation, part };
         }
       },
     }),

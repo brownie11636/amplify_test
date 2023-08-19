@@ -12,6 +12,7 @@ import { InputTextItem } from "./InputTextItem";
 import { InputSelect } from "./InputSelect";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { RobotList } from "./RobotList";
 
 export const EngineerAndOperatorCard = ({ children, data }) => {
   const searchRef = useRef();
@@ -20,27 +21,52 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
   const { data: session } = useSession();
   const CreateFieldItem = useRecoilValue(CreateFieldItemAtom);
   const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
-  const checkedTaskItem = useRecoilValue(CheckedTaskItemAtom);
+  const CheckedTaskItem = useRecoilValue(CheckedTaskItemAtom);
   const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
   const [checkedEngineerAndOperator, setCheckedEngineerAndOperator] = useRecoilState(
     CheckedEngineerAndOperatorItemAtom
   );
   const [selectedRobot, setSelectedRobot] = useState();
-  useEffect(() => {}, [robotItemList, CreateFieldItem]);
   useEffect(() => {
     getRobot();
   }, [session]);
+  useEffect(() => {
+    let filtered = robotItemList;
+    filtered = filtered?.filter((item) => {
+      console.log("item");
+      console.log(item);
+      console.log("item.field", "CheckedFieldItem?.index");
+      console.log(item.field, CheckedFieldItem?.index);
+      console.log("item.tasks", "CheckedTaskItem");
+      console.log(item.tasks, CheckedTaskItem);
+      if (
+        parseInt(item.field) === CheckedFieldItem?.index &&
+        parseInt(item.tasks) === CheckedTaskItem
+      ) {
+        return item;
+      }
+    });
+    if (value) {
+      filtered = filtered?.filter((item) => {
+        return item?.nickName?.includes(value);
+      });
+      setFilteredArray(filtered);
+    } else {
+      setFilteredArray(filtered);
+    }
+  }, [value, robotItemList, CreateFieldItem, CheckedTaskItem]);
+
   const getRobot = async () => {
     const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
       companyNumber:
-        session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
+        session?.token?.user?.affiliation === "admin" ? "admin" : session?.token?.user?.affiliation,
     });
     SetRobotItemList(response.data?.data);
   };
   return (
     <>
       <div className="flex flex-col gap-[1.25rem] py-[2.625rem] w-[22.5rem] h-fit bg-white relative ">
-        <div id="fieldForm" className="px-[2.625rem]">
+        {/* <div id="fieldForm" className="px-[2.625rem]">
           <div className="flex items-center gap-[1.125rem]">
             <picture className="w-[1.375rem] h-[1.375rem] relative">
               <Image src={`/images/main/myPage/field.svg`} fill alt="" draggable={false} />
@@ -78,7 +104,7 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
             value={checkedEngineerAndOperator?.tasks}
             CheckedFieldItem={CheckedFieldItem}
           />
-          {/* {CreateFieldItem ? ( */}
+          {CreateFieldItem ? (
           <button
             className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
             onClick={async () => {
@@ -120,16 +146,16 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
             </picture>
             <span className="text-base text-white">등록</span>
           </button>
-          {/* ) : (
+          ) : (
             <button className="w-full h-[2.5rem] mt-[2.125rem] gap-[0.875rem] border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center">
               <picture className="relative w-[0.875rem] h-[0.75rem]">
                 <Image src={`/images/main/myPage/edit.svg`} fill alt="" />
               </picture>
               <span className="text-white">수정</span>
             </button>
-          )} */}
+          )}
         </div>
-        <div className="w-full h-[1.25rem] bg-[#F2F2F2]" />
+        <div className="w-full h-[1.25rem] bg-[#F2F2F2]" /> */}
         <div className="">
           <div className="flex h-[3.125rem] relative px-[2.625rem]">
             <input
@@ -145,7 +171,7 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
               <Image src={`/images/main/mypage/search.svg`} fill alt="" />
             </span>
           </div>
-          <div className="flex w-full h-[2.5rem] mt-[1.25rem] px-[2.625rem] justify-between">
+          {/* <div className="flex w-full h-[2.5rem] mt-[1.25rem] px-[2.625rem] justify-between">
             {[
               { sub: "삭제", url: "", image: "/images/main/myPage/x-mark-white.svg" },
               { sub: "등록", url: "", image: "/images/main/myPage/plus.svg" },
@@ -232,9 +258,9 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
                 </div>
               );
             })}
-          </div>
+          </div> */}
           <ul className="flex flex-col w-full min-h-[3.125rem] mt-[1.875rem] bg-white">
-            {robotItemList?.robots?.map((item, index) => {
+            {filteredArray?.map((item, index) => {
               return (
                 <li
                   key={`${item?.id}${index}`}

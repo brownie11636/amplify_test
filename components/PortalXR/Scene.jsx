@@ -10,8 +10,8 @@ import { Leva, useControls } from 'leva'
 // import 'bootstrap/dist/css/bootstrap.css';
 
 import RemoteGroup from "./RemoteGroup"
-import { GamepadProvider } from "./GamepadContext"
 import { GamepadInput } from "./GamepadInput"
+import MyControl from "./MyControl"
 import UiBoard from "./UI/UiBoard.jsx"
 import StatBoard from "./UI/StatBoard.jsx"
 import ConsoleBoard from "./UI/ConsoleBoard.jsx"
@@ -40,17 +40,19 @@ export default function Scene(portalRTC, ...props) {
 
             <Controllers />
             <Hands />
+
             <GamepadInput />
+            <MyControl />
             {/* <UiPanel /> */}
             <StatBoard position={[-1.5,2.5,-1.5]}/>
             <UiBoard 
-            scale={0.5} 
-            position={[1,2,-3]}/>
+              scale={0.5} 
+              position={[1,3.5,-3]}/>
+              {/* position={[1,2,-3]}/> */}
             <ConsoleBoard 
               numLines={10}
               position={[3,1.5,-1.5]}
             />
-
 
             {/* <Blob route='/' position-y={-0.75} /> */}
             {/* <Suspense fallback={null}> */}
@@ -59,10 +61,8 @@ export default function Scene(portalRTC, ...props) {
             <OrbitControls />
             {/* <VideoText position={[0, 1.3, -2]} />      */}
             {/* <Suspense fallback={null}> */}
-            <GamepadProvider>
-              <RemoteGroup />
+            <RemoteGroup />
 
-            </GamepadProvider>
             {/* </Suspense> */}
           </XR>
         </Canvas>

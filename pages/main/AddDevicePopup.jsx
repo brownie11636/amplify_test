@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './AddDevicePopup.module.css';
+import styles from './Popup.module.css';
 import axios from "axios";
 
 const DevicePopup = ({ onClose, onSearch }) => {
@@ -11,7 +11,7 @@ const DevicePopup = ({ onClose, onSearch }) => {
     // Call the onSearch function and pass the serialNumber
     // const data = await onSearch(serialNumber);
       // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-      const fetchedDevices = await axios.post("https://localhost:3333/portalfetch/module-list", {
+      const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/list", {
         filter:{"serialNumber":serialNumber}
       });
 

@@ -5,9 +5,13 @@ import { useSearchParams } from "next/navigation";
 import styles from "./main.module.css";
 import DeviceListItem from "./deviceListItem";
 import TaskListItem from "./taskListItem";
-import AddDevicePopup from './AddDevicePopup'; // Import the popup component
+import AddModulePopup from './AddDevicePopup'; // Import the popup component
+import AddTaskPopup from './AddTaskPopup'; // Import the popup component
 import axios from "axios";
 import { useSession } from "next-auth/react";
+
+import PltModuleRoster from './PltModuleRoster';
+import PltTaskRoster from './PltTaskRoster';
 
 
 const Main = () => {
@@ -20,22 +24,35 @@ const Main = () => {
     // { alias: 'Device 5', serialNumber: '12345' , type: 'Robot', manufacturer: 'Universal Robots'},
     // { alias: 'Device 6', serialNumber: '67890' , type: 'Robot', manufacturer: 'Universal Robots'},
   ]);
-  const [tasks, setTasks] = useState(['Task 1', 'Task 2', 'Task 3']);
 
-  const [isPopupVisible, setPopupVisible] = useState(false);
-  const handleOpenPopup = () => {
-    setPopupVisible(true);
+
+  const [taskList, setTasks] = useState([
+    { id:"TN000-FAKE-0000", alias: 'TeleoperationTset', config: 'Robot', status: 'Universal Robots', descriptions:"not yet", createdAt:"2023...today"},
+  ]);
+
+  const [isAddModulePopupVisible, setAddModulePopupVisible] = useState(false);
+  const [isAddTaskPopupVisible, setAddTaskPopupVisible] = useState(false);
+  const handleAddModulePopup = () => {
+    setAddModulePopupVisible(true);
   };
 
-  const handleClosePopup = () => {
-    setPopupVisible(false);
+  const handleCloseAddModulePopup = () => {
+    setAddModulePopupVisible(false);
+  };
+
+  const handleAddTaskPopup = () => {
+    setAddTaskPopupVisible(true);
+  };
+
+  const handleCloseAddTaskPopup = () => {
+    setAddTaskPopupVisible(false);
   };
 
   const handleSearch = (serialNumber) => {
     // Implement search logic here
     console.log('Searching for serial number:', serialNumber);
     // Close the popup after performing the search
-    handleClosePopup();
+    // handleCloseAddModulePopup();
   };
 
 
@@ -71,25 +88,24 @@ const Main = () => {
       // setModuleList(response.data?.data);
 
       // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-      const fetchedDevices = await axios.post("https://localhost:3333/portalfetch/module-list", {
+      const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/module-list", {
         filter:{}
       });
       console.log(fetchedDevices?.data?.data);
-
-
-      // const fetchedDevices = await fetchDevicesFromAPI();
-      // const fetchedDevices = ['Device 1', 'Device 2', 'Device 3'];
       setModuleList(fetchedDevices?.data?.data?.reverse());
-      //inverse the sequence of Modulelist
-
-
     };
 
     const fetchTasks = async () => {
+      // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
+      const fetchedTasks = await axios.post("https://localhost:3333/fetch/v0.1/task/list", {
+        filter:{}
+      });
+      console.log(fetchedTasks?.data?.data);
+
       // Fetch tasks from an API and update the tasks state
       // const fetchedTasks = await fetchTasksFromAPI();
-      const fetchedTasks = ['Task 1', 'Task 2', 'Task 3'];
-      setTasks(fetchedTasks);
+      // const fetchedTasks = ['Task 1', 'Task 2', 'Task 3'];
+      setTasks(fetchedTasks?.data?.data?.reverse());
     };
 
     fetchDevices();
@@ -101,40 +117,10 @@ const Main = () => {
 
   return (
     <MainLayout>
-
         <div className={styles.container}>
-          <div className={styles.section}>
-            <div className={styles.header}>
-              <h2>Manage Devices</h2>
-              <button className={styles.addButton} onClick={handleOpenPopup}>+</button>
-            </div>
-            <div className={styles.list}>
-              {moduleList.map((device, index) => (
-                  // <div onClick={() => setSelectedDevice(device)}>
-                    <DeviceListItem key={index} device={device}/>
-                //  </div>
-              ))}
-            </div>
-          </div>
-          
-          <div className={styles.section}>
-            <div className={styles.header}>
-              <h2>Manage Tasks</h2>
-              <button className={styles.addButton}>+</button>
-            </div>
-            <div className={styles.list}>
-              {tasks.map((task, index) => (
-                <TaskListItem key={index} text={task} />
-              ))}
-            </div>
-          </div>
-          {isPopupVisible && (
-            <div className={styles.overlay}>
-              <AddDevicePopup onClose={handleClosePopup} onSearch={handleSearch} />
-            </div>
-          )}
+          <PltModuleRoster/>
+          <PltTaskRoster/>
         </div>
-
     </MainLayout>
   );
 };

@@ -15,13 +15,12 @@ export const RobotList = ({ children, data, type }) => {
   const setCheckedRobotItem = useSetRecoilState(CheckedRobotItemAtom);
   useEffect(() => {
     if (value) {
-      const filtered = data?.robots?.filter((item) => {
-        return item?.serialNumber?.includes(value);
+      const filtered = data?.filter((item) => {
+        return item?.nickName?.includes(value);
       });
-      console.log(filtered);
       setFilteredArray(filtered);
     } else {
-      setFilteredArray(data ? data?.robots : []);
+      setFilteredArray(data);
     }
   }, [value, data]);
   return (
@@ -48,8 +47,6 @@ export const RobotList = ({ children, data, type }) => {
       <div className="py-[2.5rem]">
         <ul className="flex flex-col h-fit">
           {filteredArray?.map((item, index) => {
-            console.log("item");
-            console.log(item);
             return (
               <li
                 className={`flex flex-col justify-between border-b border-b-[#DCDCDC] cursor-pointer ${
@@ -66,7 +63,7 @@ export const RobotList = ({ children, data, type }) => {
                 >
                   <div className="py-[1rem] flex gap-[1.125rem]">
                     <picture className="select-none w-[1.5rem] h-[1.5rem] top-[0.0625rem] relative">
-                      <Image src={`/images/main/mypage/robot.svg`} fill alt="" />
+                      <Image src={`/images/main/myPage/robot.svg`} fill alt="" />
                     </picture>
                     <span className="text-[#222222] text-base">{item?.nickName}</span>
                   </div>

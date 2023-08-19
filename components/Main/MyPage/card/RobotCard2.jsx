@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
+  CheckedCompanyItemAtom,
   CheckedRobotItemAtom,
   CreateRobotSelectedFieldAtom,
   RobotItemListAtom,
@@ -15,7 +16,7 @@ import { InputSelect } from "./InputSelect";
 import { InputTextArea } from "./InputTextArea";
 import { InputTextItem } from "./InputTextItem";
 
-export const RobotCard2 = ({ children, data, type }) => {
+export const RobotCard2 = ({ children, data, company, type }) => {
   const { data: session } = useSession();
   const router = useRouter();
   const pathName = router.pathname;
@@ -24,13 +25,8 @@ export const RobotCard2 = ({ children, data, type }) => {
   const checkedRobotItem = useRecoilValue(CheckedRobotItemAtom);
   const setRobotSelectRadio = useSetRecoilState(RobotSelectedRadioAtom);
   useEffect(() => {
-    console.log("robotItemList");
-    console.log(robotItemList);
-    console.log("createRobotSelectedField");
-    console.log(createRobotSelectedField);
-    console.log("checkedRobotItem");
+    console.log("checkedRobotItem?.field");
     console.log(checkedRobotItem);
-    console.log(session);
   }, [robotItemList, createRobotSelectedField, checkedRobotItem]);
   return (
     <>
@@ -108,19 +104,15 @@ export const RobotCard2 = ({ children, data, type }) => {
               title="배치 현장"
               id="field"
               type={"fields"}
-              value={robotItemList?.fields}
-              currentValue={checkedRobotItem?.fields}
+              value={company?.fields}
+              currentValue={checkedRobotItem?.field}
             />
             <InputSelect
               title="배치 공정"
               id="tasks"
               type="tasks"
-              value={
-                createRobotSelectedField && [
-                  ...Array(parseInt(createRobotSelectedField?.processCount)).keys(),
-                ]
-              }
-              currentValue={checkedRobotItem?.fields}
+              value={parseInt(createRobotSelectedField?.processCount)}
+              currentValue={checkedRobotItem?.tasks || 10}
             />
           </div>
           <div className="w-[20rem]">
@@ -150,7 +142,9 @@ export const RobotCard2 = ({ children, data, type }) => {
               value={data ? robotItemList?.venderEmail : checkedRobotItem?.venderEmail}
               placeholder={""}
             />
-            {type === 3 ? (
+            {type === 3 &&
+            (session?.token?.user?.part === "admin" ||
+              session?.token?.user?.affiliation === "admin") ? (
               <button
                 className="w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center"
                 onClick={async () => {

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import {
   CheckedFieldItemAtom,
   CheckedTaskItemAtom,
@@ -17,6 +17,7 @@ export const FieldList = ({ children, data }) => {
   const setCreateFieldItem = useSetRecoilState(CreateFieldItemAtom);
   const setCheckedFieldItem = useSetRecoilState(CheckedFieldItemAtom);
   const setCheckedTaskItem = useSetRecoilState(CheckedTaskItemAtom);
+  const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
   useEffect(() => {
     if (value) {
       const filtered = data.filter((item) => {
@@ -28,14 +29,15 @@ export const FieldList = ({ children, data }) => {
       setFilteredArray([...data]);
     }
   }, [value, data]);
+  console.log(CheckedFieldItem);
   return (
     <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative">
       <div className="px-[2.625rem]">
         <div className="flex mb-[2.625rem]">
-          <label htmlFor="fieldList">
+          {/* <label htmlFor="fieldList">
             <input
               type="radio"
-              name="fieldList"
+              name="fieldRadioList"
               id="fieldList"
               className="peer hidden"
               defaultChecked
@@ -52,7 +54,7 @@ export const FieldList = ({ children, data }) => {
           <label htmlFor="robotList">
             <input
               type="radio"
-              name="fieldList"
+              name="fieldRadioList"
               id="robotList"
               className="peer hidden"
               onChange={(e) => {
@@ -64,7 +66,10 @@ export const FieldList = ({ children, data }) => {
             <div className="flex justify-center items-center cursor-pointer text-[#7D7D7D] border-b border-b-[#DCDCDC] w-[8.75rem] h-[2.5rem] peer-checked:border-b-[#182A5B] peer-checked:text-[#222222]">
               <span className="text-base">{"로봇목록"}</span>
             </div>
-          </label>
+          </label> */}
+          <div className="flex items-center cursor-pointer text-[#7D7D7D] w-[8.75rem] h-[2.5rem] peer-checked:border-b-[#182A5B] peer-checked:text-[#222222]">
+            <span className="text-base">{"현장목록"}</span>
+          </div>
         </div>
 
         <div className="flex h-[3.125rem] relative">
@@ -103,10 +108,6 @@ export const FieldList = ({ children, data }) => {
                   index === 0 ? "border-t" : ""
                 }`}
                 key={`${item?.fieldName}${index}`}
-                onClick={() => {
-                  setCreateFieldItem(false);
-                  setCheckedFieldItem(item);
-                }}
               >
                 <label
                   className="flex items-center justify-between pl-[2.625rem] pr-[1.125rem] w-full cursor-pointer"
@@ -120,9 +121,20 @@ export const FieldList = ({ children, data }) => {
                   </div>
                   <input
                     type="checkbox"
+                    name="fieldList"
                     id={`list${index}`}
                     className="peer hidden"
                     onChange={(e) => {
+                      setCreateFieldItem(false);
+                      setCheckedFieldItem(item);
+                      document.getElementsByName(`fieldList`).forEach((element) => {
+                        if (element.checked) {
+                          if (e.target.id !== element.id) {
+                            element.checked = false;
+                            element?.parentNode?.nextSibling?.classList?.add("hidden");
+                          }
+                        }
+                      });
                       const target = document.querySelector(`.list${index}`);
                       if (e.target.checked) {
                         target.classList.remove("hidden");

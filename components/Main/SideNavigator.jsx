@@ -1,14 +1,15 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { use, useEffect, useState } from "react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 const SideNavigator = () => {
   const [isAllSelected, setIsAllSelected] = useState(false);
   const [allGroupIsChecked, setAllGroupIsChecked] = useState([]);
   const router = useRouter();
-
   const pathName = router.pathname;
+  const { data: session } = useSession();
+  console.log("(sideNavigator>session?:",session?.token?.user);
 
   // fetch data from server
   const navList = [
@@ -37,7 +38,7 @@ const SideNavigator = () => {
             className="font-['NotoSans'] font-medium text-2xl text-[#222222] w-fit select-none cursor-pointer"
             onClick={() => router.push("/main")}
           >
-            조각모음
+            {session?.token?.user.name}님,<br/> 안녕하세요.
           </span>
           <div className="mt-[40px] flex items-center">
             <span
@@ -182,6 +183,7 @@ const SideNavigator = () => {
 export default SideNavigator;
 
 const MyPageSideNavigator = () => {
+  const { data: session } = useSession();
   const router = useRouter();
   const pathName = router.pathname;
 
@@ -290,22 +292,24 @@ const MyPageSideNavigator = () => {
           </div>
           <span className="z-10">보유 로봇 리스트</span>
         </div>
-        <div
-          className={`text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer relative`}
-          onClick={() => {
-            router.push("/myPage/robot/new");
-          }}
-        >
+        {session?.token?.user?.part === "admin" || session?.token?.user?.affiliation === "admin" ? (
           <div
-            className={`w-[calc(100%_-_0.0625rem)] h-full absolute z-0 -left-[4rem] top-0 bg-[#ffffff] ${
-              pathName.includes("/robot/new") ? "block" : "hidden"
-            }`}
+            className={`text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer relative`}
+            onClick={() => {
+              router.push("/myPage/robot/new");
+            }}
           >
-            <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+            <div
+              className={`w-[calc(100%_-_0.0625rem)] h-full absolute z-0 -left-[4rem] top-0 bg-[#ffffff] ${
+                pathName.includes("/robot/new") ? "block" : "hidden"
+              }`}
+            >
+              <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
+            </div>
+            <span className="z-10">로봇 신규등록</span>
           </div>
-          <span className="z-10">로봇 신규등록</span>
-        </div>
-        <div
+        ) : null}
+        {/* <div
           className={`text-base text-[#222222] flex items-center w-[18.75rem] h-[3.125rem] cursor-pointer relative`}
           onClick={() => {
             router.push("/myPage/robot/management");
@@ -319,11 +323,9 @@ const MyPageSideNavigator = () => {
             <div className="flex h-full w-[0.5rem] bg-[#182A5B]" />
           </div>
           <span className="z-10">로봇 배치관리</span>
-        </div>
+        </div> */}
       </div>
     </ul>
   );
 };
 // 1px convert to rem = 0.0625rem
-// 300px convert to rem = 18.75rem
-// 50px convert to rem = 3.125rem

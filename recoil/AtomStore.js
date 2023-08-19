@@ -14,13 +14,24 @@ export const CheckedCompanyItemAtom = atom({
 });
 export const CheckedAccountItemAtom = atom({
   key: "CheckedAccountItemAtom",
-  default: "",
+  default: null,
+});
+export const SelectedPartItemAtom = atom({
+  key: "SelectedPartItemAtom",
+  default: null,
 });
 export const CreateAccountItemAtom = atom({
   key: "CreateAccountItemAtom",
   default: false,
 });
-
+export const SelectedFieldInAccountAtom = atom({
+  key: "SelectedFieldInAccountAtom",
+  default: null,
+});
+export const SelectedTaskInAccountAtom = atom({
+  key: "SelectedTaskInAccountAtom",
+  default: null,
+});
 //
 
 export const CreateFieldItemAtom = atom({
@@ -109,5 +120,20 @@ export const SelectedFieldAtom = atom({
 });
 export const SelectedTaskAtom = atom({
   key: "SelectedTaskAtom",
+  default: null,
+});
+
+//
+
+export const DeleteApiUriAtom = atom({
+  key: "DeleteApiUriAtom",
+  default: null,
+});
+export const ChangePasswordModalAtom = atom({
+  key: "ChangePasswordModalAtom",
+  default: false,
+});
+export const ChangePasswordDataAtom = atom({
+  key: "ChangePasswordDataAtom",
   default: null,
 });

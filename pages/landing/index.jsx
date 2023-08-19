@@ -68,16 +68,16 @@ const LandingPage = () => {
   return (
     <div className={`landing-page flex flex-col w-full h-full whitespace-pre font-['NotoSans']`}>
       <div className={`flex flex-col w-full ${heightScreen}`}>
-        <section className="flex w-screen justify-center items-center">
+        <section className="flex w-full justify-center items-center">
           <Block1 />
         </section>
-        <section className="flex w-screen justify-center items-center">
+        <section className="flex w-full justify-center items-center">
           <Block2 />
         </section>
-        <section className="flex w-screen justify-center items-center">
+        <section className="flex w-full justify-center items-center">
           <Block3 />
         </section>
-        <section className="flex w-screen justify-center items-center">
+        <section className="flex w-full justify-center items-center">
           <Block4 />
         </section>
       </div>
@@ -114,8 +114,9 @@ const LandingPage = () => {
 export default LandingPage;
 
 const Block1 = () => {
+  const router = useRouter();
   return (
-    <div className={`flex w-full relative items-center ${heightFlexible}`}>
+    <div className={`flex w-full relative justify-center items-center ${heightFlexible}`}>
       <picture className={`w-screen ${heightFlexible} -z-10 absolute top-0 left-0`}>
         <Image
           src={`/images/landing/landing.jpg`}
@@ -124,28 +125,29 @@ const Block1 = () => {
           alt=""
         />
       </picture>
-      <div className={`flex w-screen ${heightFlexible} bg-opacity-50 bg-black z-10`}>
-        <div className={`text-white flex flex-col w-screen h-fit ${pt200px} ${pl240px}`}>
-          <span className={`uppercase font-['RobotoB'] z-30 ${letterSpacing10percent} ${text60px}`}>
-            portal
-          </span>
-          <span className={`whitespace-pre z-30 ${text34px} ${mt50px} ${mb100px}`}>
-            {`로봇팔을 이용하여 더 다양하고,\n정교한 작업을 대신해보세요.\n로봇팔 업계 1위 업체,\n포탈에서 경험해보세요.`}
-          </span>
-          <button
-            className={`relative bg-black bg-opacity-50 flex justify-start items-center ${width600px} ${height90px} ${pl100px} hover:opacity-80`}
-            onClick={() => {
-              router.push("/main/login");
-            }}
+      <div className={`flex w-screen ${heightFlexible} bg-opacity-50 bg-black z-10 absolute`}></div>
+      <div className={`text-white flex flex-col w-[103.75rem] z-20 h-fit ${pt200px} ${pl240px}`}>
+        <span
+          className={`uppercase w-fit font-['RobotoB'] z-30 ${letterSpacing10percent} ${text60px}`}
+        >
+          portal
+        </span>
+        <span className={`whitespace-pre z-30 ${text34px} ${mt50px} ${mb100px}`}>
+          {`로봇팔을 이용하여 더 다양하고,\n정교한 작업을 대신해보세요.\n로봇팔 업계 1위 업체,\n포탈에서 경험해보세요.`}
+        </span>
+        <button
+          className={`relative bg-black bg-opacity-50 flex justify-start items-center ${width600px} ${height90px} ${pl100px} hover:opacity-80`}
+          onClick={() => {
+            router.push("/main/login");
+          }}
+        >
+          <span className={`${text30px}`}>로그인 / 서비스 이용하기</span>
+          <span
+            className={`${width50px} ${height50px} flex absolute top-[22.5%] right-[3.083333333333333%]`}
           >
-            <span className={`${text30px}`}>로그인 / 서비스 이용하기</span>
-            <span
-              className={`${width50px} ${height50px} flex absolute top-[22.5%] right-[3.083333333333333%]`}
-            >
-              <Image src={`/images/landing/chevron-right.svg`} alt="" fill="fill" />
-            </span>
-          </button>
-        </div>
+            <Image src={`/images/landing/chevron-right.svg`} alt="" fill="fill" />
+          </span>
+        </button>
       </div>
     </div>
   );
@@ -153,7 +155,7 @@ const Block1 = () => {
 const Block2 = () => {
   return (
     <div
-      className={`flex w-full flex-col bg-white items-center ${heightFlexible} ${px130px} ${pb200px}
+      className={`flex w-full max-w-[103.75rem] flex-col bg-white items-center ${heightFlexible} ${px130px} ${pb200px}
     `}
     >
       <span
@@ -217,7 +219,9 @@ const Block3 = () => {
     };
   }, []);
   return (
-    <div className={`flex flex-col w-full bg-[#F3F3F3] ${heightFlexible}`}>
+    <div
+      className={`flex flex-col w-fit max-w-[103.75rem] justify-center bg-[#F3F3F3] ${heightFlexible}`}
+    >
       <div className={`flex w-full h-full ${gap76px} ${px130px} ${pt150px}`}>
         <picture className={`${width800px} ${height450px} relative`}>
           <Image src={`/images/landing/robot-2.svg`} fill="fill" alt="" />
@@ -261,8 +265,12 @@ const Block3 = () => {
 
 const Block4 = () => {
   return (
-    <div className={`flex flex-col w-full bg-white ${heightFlexible}`}>
-      <div className={`flex flex-col w-full h-fit ${pl150px} ${pt170px}`}>
+    <div
+      className={`flex flex-col w-fit max-w-[103.75rem] justify-center bg-white ${heightFlexible}`}
+    >
+      <div
+        className={`flex flex-col w-fit max-w-[103.75rem] justify-center h-fit ${pl150px} ${pt170px}`}
+      >
         <picture className={`relative flex ${width300px} ${height74px} ${mb30px}`}>
           <Image src={`/images/landing/logo.svg`} alt="" fill="fill" />
         </picture>
@@ -320,3 +328,6 @@ const LogosComponent = ({ logo }) => {
     </div>
   );
 };
+// 1px convert to rem = 0.0625rem
+// 1660px convert to rem = 103.75rem
+// 1920px convert to rem = 120rem

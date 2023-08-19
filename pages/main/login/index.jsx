@@ -9,6 +9,7 @@ const Login = () => {
   const [idValue, setIdValue] = useState("");
   const [pwValue, setPwValue] = useState("");
   const router = useRouter();
+
   const submit = async (e) => {
     e.preventDefault();
     if (idValue === "" || pwValue === "") {
@@ -76,6 +77,16 @@ const Login = () => {
               onChange={() => {
                 setIdValue(idRef.current.value);
               }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  if (pwRef.current.value === "") {
+                    alert("비밀번호를 입력해주세요.");
+                    pwRef.current.focus();
+                    return;
+                  }
+                  submit(e);
+                }
+              }}
             />
           </span>
           <span className="w-[400px] h-[50px] flex">
@@ -86,6 +97,16 @@ const Login = () => {
               className="w-full h-full flex text-[#182a5b] bg-white border-b border-solid border-b-[#182A5B] pl-[20px] placeholder-[#7d7d7d]"
               onChange={() => {
                 setPwValue(pwRef.current.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  if (idRef.current.value === "") {
+                    alert("아이디를 입력해주세요.");
+                    idRef.current.focus();
+                    return;
+                  }
+                  submit(e);
+                }
               }}
             />
           </span>
