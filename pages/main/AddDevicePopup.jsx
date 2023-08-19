@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './AddDevicePopup.module.css';
+import axios from "axios";
 
 const DevicePopup = ({ onClose, onSearch }) => {
   const [serialNumber, setSerialNumber] = useState('');
@@ -9,13 +10,19 @@ const DevicePopup = ({ onClose, onSearch }) => {
   const handleSearch = async () => {
     // Call the onSearch function and pass the serialNumber
     // const data = await onSearch(serialNumber);
-    const data = {
-        status: 'Registered',
-        'device-type': 'Arm',
-        manufacturer: 'Arm Inc.',
+      // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
+      const fetchedDevices = await axios.post("https://localhost:3333/portalfetch/module-list", {
+        filter:{"serialNumber":serialNumber}
+      });
 
-    };
-    setFetchedData(data);
+    console.log(fetchedDevices?.data?.data)
+
+    // const data = {
+    //     status: 'Registered',
+    //     'device-type': 'Arm',
+    //     manufacturer: 'Arm Inc.',
+    // };
+    setFetchedData(fetchedDevices?.data?.data[0]);
   };
 
   const handleRegister = () => {
@@ -45,8 +52,11 @@ const DevicePopup = ({ onClose, onSearch }) => {
         <div className={styles.infoContainer}>
           <h3>Fetched Information</h3>
           <p>Status: {fetchedData.status}</p>
-          <p>Device Type: {fetchedData['device-type']}</p>
-          <p>Manufacturer: {fetchedData.manufacturer}</p>
+          <p>Device Type: {fetchedData.type}</p>
+          <p>Description: {fetchedData.descriptions}</p>
+          <p>Location: {fetchedData.location}</p>
+          <p>Vender: {fetchedData.vender}</p>
+          
           <div className={styles.inputContainer}>
             <input
                 type="password"

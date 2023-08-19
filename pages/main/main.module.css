@@ -64,7 +64,7 @@
 
 .serialNumber {
   font-size: 14px;
-  color: lightgray;
+  color: #A080FF;
   overflow: hidden; /* Hide overflow */
   text-overflow: ellipsis; /* Add ellipsis (...) when text overflows */
   white-space: nowrap; /* Prevent line break */

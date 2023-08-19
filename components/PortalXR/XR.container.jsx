@@ -76,7 +76,7 @@ const XRContainer = () => {
 
   }, [])
   const onLoadDepthImg = useCallback(() => {
-    portalRTCRef.current.depthImg = depthSrcRef.current;
+    portalRTCRef.current.depthImSSSg = depthSrcRef.current;
 
   }, [])
 
