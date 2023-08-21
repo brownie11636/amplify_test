@@ -3,14 +3,12 @@
     position: fixed;
     top: 50%;
     left: 50%;
+    width:500px;
     transform: translate(-50%, -50%);
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-
-
-    
   }
   
   .inputContainer {
@@ -89,4 +87,37 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+  }
+
+  .plusIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #DbEbff;
+    height: 100px;
+    width: 100%;
+    position: relative;
+    border-color: #6080ff;
+    border-width: 1px;
+    border-radius: 8px;
+  }
+  
+  .horizontalLine,
+  .verticalLine {
+    background-color: #6080ff;
+    position: absolute;
+  }
+  
+  .horizontalLine {
+    height: 12px;
+    width: 80px;
+    top: 45px; /* Vertically center the horizontal line */
+    left: auto; /* Adjust the position as needed */
+  }
+  
+  .verticalLine {
+    height: 80px;
+    width: 12px;
+    top: 10px; /* Adjust the position as needed */
+    left: auto; /* Horizontally center the vertical line */
   }

@@ -7,8 +7,9 @@ const SideNavigator = () => {
   const [isAllSelected, setIsAllSelected] = useState(false);
   const [allGroupIsChecked, setAllGroupIsChecked] = useState([]);
   const router = useRouter();
-
   const pathName = router.pathname;
+  const { data: session } = useSession();
+  console.log("(sideNavigator>session?:",session?.token?.user);
 
   // fetch data from server
   const navList = [
@@ -37,7 +38,7 @@ const SideNavigator = () => {
             className="font-['NotoSans'] font-medium text-2xl text-[#222222] w-fit select-none cursor-pointer"
             onClick={() => router.push("/main")}
           >
-            조각모음
+            {session?.token?.user.name}님,<br/> 안녕하세요.
           </span>
           <div className="mt-[40px] flex items-center">
             <span
