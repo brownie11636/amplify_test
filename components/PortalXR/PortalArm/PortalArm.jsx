@@ -1,7 +1,7 @@
 import _ from "lodash"
 import * as THREE from 'three'
 import { forwardRef, useRef, useState, useMemo, useEffect, useContext} from 'react'
-import { useFrame, useLoader } from '@react-three/fiber'
+import { useFrame, useLoader, useThree } from '@react-three/fiber'
 import { Sphere, Box } from "@react-three/drei"
 import { useXR, useController } from '@react-three/xr'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -77,6 +77,7 @@ export default function PortalArm(type, path, ...props) {
   const armRef = useRef([{},{},{},{},{},{},{}]);
   const gripperRef = useRef([{},{},{},{},{},{},{},{},{},{}]);
   const controlGuideRef = useRef();
+  const robotCoordinateRef = useRef();
   // const [conPos, setConPos]= useState(new THREE.Vector3);
   // const [conRot, setConRot]= useState(new THREE.Vector3);
   
@@ -156,7 +157,12 @@ export default function PortalArm(type, path, ...props) {
 
       }
     );
-    
+
+    // controlGuideRef.current.matrixAutoUpdate = false;
+    useControlStore.setState({actualAngles_q:[60*DEG2RAD,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
+
+    robotCoordinateRef.current.name = "robot_COORDINATE"
+
     return () => {
       commClientV01.socket.off("robot")
       console.log("robot comm off")
@@ -169,6 +175,8 @@ export default function PortalArm(type, path, ...props) {
   //socket io callback을 붙히기
   let pos = [0,0,0];
   let vec3 = new THREE.Vector3();
+  // let vec3_g = new THREE.Vector3();
+  // let vec3_c = new THREE.Vector3();
   let rot = [0,0,0];
   let ang = 60;
   let angles;
@@ -178,22 +186,21 @@ export default function PortalArm(type, path, ...props) {
   let dir = 1
   let i = 0;
   let iXR = 0;
+  const { scene } = useThree();
+
 
   useFrame((state, delta, XRFrame)=> { 
 
     if(!XRFrame){
       // Initial setting of ControlGuide. 
-      // Excute it in second frame to refer Gripper's position and rotation.
-      // i++
-      controlGuideRef.current.position.copy(
-        ref.current.worldToLocal(
-          gripperRef.current[0].localToWorld(
-            gripperRef.current[0].position.clone()
-          ).clone())
-      );
-      gripperRef.current[9].getWorldQuaternion(
-        controlGuideRef.current.rotation)
-        // console.log(controlGuideRef.current.rotation)
+      controlGuideRef.current.matrix.copy(controlGuideRef.current.parent.matrixWorld);
+      controlGuideRef.current.matrix.invert().multiply(gripperRef.current[0].matrixWorld);
+      controlGuideRef.current.matrix.decompose(
+        controlGuideRef.current.position,
+        controlGuideRef.current.quaternion,
+        controlGuideRef.current.scale
+      )
+      // console.log(controlGuideRef.current.position)
     }
 
     // if(i<3 && XRFrame){
@@ -211,7 +218,6 @@ export default function PortalArm(type, path, ...props) {
     // }
 
     // ang += delta;
-    // useControlStore.setState({actualAngles_q:[ang*DEG2RAD,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
     // useControlStore.setState({actualAngles_q:[60*DEG2RAD,-90*DEG2RAD,90*DEG2RAD,0,30*DEG2RAD,0]})
     // updateActualAngles_q([ang,-90,90,0,30,0])
     // console.log(storeDistance)
@@ -242,15 +248,16 @@ export default function PortalArm(type, path, ...props) {
             //   rightController.controller.position).toArray();
             
             // controlGuideRef 포지션을 가져옴
-            pos = armRef.current[1].worldToLocal(     // base model coordinate
-              controlGuideRef.current.getWorldPosition(vec3)).toArray();
+            pos = controlGuideRef.current.position.toArray();
+            // pos = armRef.current[0].worldToLocal(     // base model coordinate
+            //   controlGuideRef.current.getWorldPosition(vec3)).toArray();
 
             pos = [-pos[0], pos[2], pos[1]];
             pos = pos.map((val) => Math.round(val*10000)/10000)
             
             // vrLog("x: "+pos[0]+", y: "+pos[1]+",z: "+pos[2]);
               
-            euler.copy(controlGuideRef.current.rotation.clone());
+            euler.copy(controlGuideRef.current.rotation);
             // euler.copy(controlGuideRef.current.rotation).reorder("ZYX");
             // euler.x -= 0.5 * Math.PI;
             // euler.reorder("XZY");
@@ -265,13 +272,11 @@ export default function PortalArm(type, path, ...props) {
             // vrLog("rot x: "+rot[0]+", y: "+rot[1]+",z: "+rot[2]);
 
             if (stickUp_R.current) {
-            // if (stickUp_R.current) {
               // vrLog("open")
               increaseGripAngleRatio(-300 * delta)
               
             } else if (stickDown_R.current) {
               increaseGripAngleRatio(300 * delta)
-            // } else if (stickDown_R.current) {
             }
 
             packet = { 
@@ -292,13 +297,6 @@ export default function PortalArm(type, path, ...props) {
             })
           }
         }
-
-        // if (stickUp_R === true || stickDown_R === true ) {
-        //   if(stickUp_R === true) dir = 1;
-        //   else if (stickDown_R) dir = -1;
-
-        //   increaseGripDistance(dir * 30 * delta)
-        // }     
       }
     }
 
@@ -311,23 +309,28 @@ export default function PortalArm(type, path, ...props) {
   return(
     <group ref={ref}>
 
-      <KariTable >
       {/* <Table loader={loader}> */}
-        <Arm ref={armRef} loader={loader} depth={6} angles={armAngles} positions={[armPos,...armGeometries]}>
-          <Gripper ref={gripperRef} loader={loader} geoConfig={gripperGeometries} />
-        </Arm>
+      <KariTable >
+        <group ref={robotCoordinateRef} rotation={[0.3,40 * Math.PI/180,0]} position={armPos}>
+        {/* <group ref={robotCoordinateRef} rotation={[0,4 * Math.PI/180,0]} position={armPos}> */}
+          
+          <Arm ref={armRef} loader={loader} depth={6} angles={armAngles} positions={armGeometries}>
+            <Gripper ref={gripperRef} loader={loader} geoConfig={gripperGeometries} />
+          </Arm>
+          
+          <BoundaryBox color="red" boundary={boundary} />
+
+          <ControlGuide ref={controlGuideRef}
+            // initialConfig={gripper} 
+          />
+
+        </group>
       </KariTable> 
       {/* </Table>  */}
       {/* <Table loader={loader} position={[1,0,0]}/>
       <Table loader={loader} position={[2,0,0]}/> */}
 
-      <group position={armPos}>
-        <BoundaryBox color="red" boundary={boundary} />
-      </group>
-
-      <ControlGuide ref={controlGuideRef}
-        // initialConfig={gripper} 
-      />
+      
 
       {/* <group ref={controlGuideRef}>
         <Box args={[0.2,0.01,0.01]} material-color="red"/>

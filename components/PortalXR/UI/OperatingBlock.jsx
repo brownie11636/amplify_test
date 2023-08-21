@@ -78,7 +78,7 @@ export default function OperatingBlock(props) {
         <AxisButton axisStr={"FIX\nALL"} type={"rotating"} args={[buttonArgs]} stateAttribute={UiStates.button} />
       </block>
       <block args={[{...innerContainerArgs, padding:0,}]}>
-        <block args={[{...innerContainerArgs, height:"100%", width:"55%", margin:0,}]}>
+        <block args={[{...innerContainerArgs, height:"100%", width:"45%", margin:0,}]}>
           <block args={[{...textContainerArgs, width:0.55,}]}>
             <text args={[{textAlign:"center",}]} _textContent-value={"align\naxes"}/>
           </block>       
@@ -86,11 +86,12 @@ export default function OperatingBlock(props) {
           <AxisButton axisStr={"Y"} type={"aligned"} args={[buttonArgs]} stateAttribute={UiStates.button} />
           <AxisButton axisStr={"Z"} type={"aligned"} args={[buttonArgs]} stateAttribute={UiStates.button} />
         </block>
-        <block args={[{...innerContainerArgs, height:"100%", width:"45%", margin:0,}]}>
-          <block args={[{...textContainerArgs, width:0.55,}]}>
+        <block args={[{...innerContainerArgs, height:"100%", width:"55%", margin:0,}]}>
+          <block args={[{...textContainerArgs, width:1.05, alignItems:"center"}]}>
             <text args={[{textAlign:"center",}]} _textContent-value={"coordinate"}/>
           </block>   
-          <CoordinateButton coordStr={"base"} args={[{...buttonArgs, width:0.5, }]} stateAttribute={UiStates.button} />
+          <CoordinateButton coordStr={"world"} args={[{...buttonArgs, width:0.6, }]} stateAttribute={UiStates.button} />
+          <CoordinateButton coordStr={"robot"} args={[{...buttonArgs, width:0.5, }]} stateAttribute={UiStates.button} />
           <CoordinateButton coordStr={"TCP"} args={[buttonArgs]} stateAttribute={UiStates.button} />
         </block>
       </block>
