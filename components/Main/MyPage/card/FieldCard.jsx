@@ -12,13 +12,15 @@ import { InputAddressItem } from "./InputAddressItem";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 
-export const FieldCard = ({}) => {
+export const FieldCard = ({ data }) => {
   const { data: session } = useSession();
   const CreateFieldItem = useRecoilValue(CreateFieldItemAtom);
   const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
   const setVisibleDeleteModal = useSetRecoilState(DeleteFieldModalAtom);
   const [deleteFieldData, setDeleteFieldData] = useRecoilState(DeleteFieldDataAtom);
-  useEffect(() => {}, [deleteFieldData, CreateFieldItem, CheckedFieldItem]);
+  useEffect(() => {
+    console.log(data);
+  }, [deleteFieldData, CreateFieldItem, CheckedFieldItem]);
   return (
     <>
       <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative ">

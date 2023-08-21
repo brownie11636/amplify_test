@@ -18,6 +18,9 @@ const MyPage = () => {
   const FieldSelectedRadio = useRecoilValue(FieldSelectedRadioAtom);
   const [visibleDeleteModal, setVisibleDeleteModal] = useRecoilState(DeleteFieldModalAtom);
   useEffect(() => {
+    console.log(deleteFieldData);
+  }, [deleteFieldData]);
+  useEffect(() => {
     getField();
   }, [FieldSelectedRadio]);
   const getField = async () => {

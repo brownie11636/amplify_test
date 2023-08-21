@@ -1,17 +1,14 @@
-
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "./main.module.css";
 import DeviceListItem from "./deviceListItem";
-import AddModulePopup from './AddDevicePopup'; // Import the popup component
+import AddModulePopup from "./AddDevicePopup"; // Import the popup component
 import axios from "axios";
 import { useSession } from "next-auth/react";
 
-
 const PltModuleManager = (props) => {
   // Sample data for devices and tasks (replace with your actual data)
-  const [moduleList, setModuleList] = useState([
-  ]);
+  const [moduleList, setModuleList] = useState([]);
 
   const [isAddModulePopupVisible, setAddModulePopupVisible] = useState(false);
   const handleAddModulePopup = () => {
@@ -22,19 +19,18 @@ const PltModuleManager = (props) => {
     setAddModulePopupVisible(false);
   };
 
-
   console.log("Is admin");
   const { data: session } = useSession();
-  if(session?.token?.user?.affiliation === "admin"){
+  if (session?.token?.user?.affiliation === "admin") {
     console.log("admin mode");
-  }else{
-    console.log("node-admin mode:",session?.token?.user?.affiliation)
+  } else {
+    console.log("node-admin mode:", session?.token?.user?.affiliation);
   }
 
   const onSelect = (selectedItem) => {
     props.onSelect(selectedItem);
     console.log("onSelect in the module");
-  }
+  };
 
   useEffect(() => {
     // Simulate fetching data or changing the list dynamically
@@ -48,9 +44,13 @@ const PltModuleManager = (props) => {
       // setModuleList(response.data?.data);
 
       // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-      const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/list", {
-        filter:props.filter
-      });
+      // const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/list", {
+      const fetchedDevices = await axios.post(
+        "https://localhost:3333/api/portalfetch/module/list",
+        {
+          filter: props.filter,
+        }
+      );
       console.log(fetchedDevices?.data?.data);
       setModuleList(fetchedDevices?.data?.data?.reverse());
     };
@@ -58,16 +58,17 @@ const PltModuleManager = (props) => {
     fetchDevices();
   }, [session]); // Empty dependency array to run the effect only once
 
-
   return (
     <div className={styles.section}>
       <div className={styles.header}>
         <h2>Manage Devices</h2>
-        <button className={styles.addButton} onClick={handleAddModulePopup}>+</button>
+        <button className={styles.addButton} onClick={handleAddModulePopup}>
+          +
+        </button>
       </div>
       <div className={styles.list}>
-        {moduleList.map((device, index) => (
-          <DeviceListItem key={index} device={device} onClickModule={onSelect}/>
+        {moduleList?.map((device, index) => (
+          <DeviceListItem key={index} device={device} onClickModule={onSelect} />
         ))}
       </div>
 
@@ -76,8 +77,7 @@ const PltModuleManager = (props) => {
           <AddModulePopup onClose={handleCloseAddModulePopup} />
         </div>
       )}
-      </div>
-
+    </div>
   );
 };
 

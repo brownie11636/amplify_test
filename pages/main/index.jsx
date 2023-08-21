@@ -1,18 +1,16 @@
-
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import MainLayout from "../../components/Main/MainLayout";
 import { useSearchParams } from "next/navigation";
 import styles from "./main.module.css";
 import DeviceListItem from "./deviceListItem";
 import TaskListItem from "./taskListItem";
-import AddModulePopup from './AddDevicePopup'; // Import the popup component
-import AddTaskPopup from './AddTaskPopup'; // Import the popup component
+import AddModulePopup from "./AddDevicePopup"; // Import the popup component
+import AddTaskPopup from "./AddTaskPopup"; // Import the popup component
 import axios from "axios";
 import { useSession } from "next-auth/react";
 
-import PltModuleRoster from './PltModuleRoster';
-import PltTaskRoster from './PltTaskRoster';
-
+import PltModuleRoster from "./PltModuleRoster";
+import PltTaskRoster from "./PltTaskRoster";
 
 const Main = () => {
   // Sample data for devices and tasks (replace with your actual data)
@@ -25,9 +23,15 @@ const Main = () => {
     // { alias: 'Device 6', serialNumber: '67890' , type: 'Robot', manufacturer: 'Universal Robots'},
   ]);
 
-
   const [taskList, setTasks] = useState([
-    { id:"TN000-FAKE-0000", alias: 'TeleoperationTset', config: 'Robot', status: 'Universal Robots', descriptions:"not yet", createdAt:"2023...today"},
+    {
+      id: "TN000-FAKE-0000",
+      alias: "TeleoperationTset",
+      config: "Robot",
+      status: "Universal Robots",
+      descriptions: "not yet",
+      createdAt: "2023...today",
+    },
   ]);
 
   const [isAddModulePopupVisible, setAddModulePopupVisible] = useState(false);
@@ -50,31 +54,28 @@ const Main = () => {
 
   const handleSearch = (serialNumber) => {
     // Implement search logic here
-    console.log('Searching for serial number:', serialNumber);
+    console.log("Searching for serial number:", serialNumber);
     // Close the popup after performing the search
     // handleCloseAddModulePopup();
   };
-
 
   // const router = useRouter();
   // useEffect(() => {
   //   router.push(`/main`);
   // }, []);
 
-
   console.log("Is admin");
   const { data: session } = useSession();
-  if(session?.token?.user?.affiliation === "admin"){
+  if (session?.token?.user?.affiliation === "admin") {
     console.log("admin mode");
-  }else{
-    console.log("node-admin mode:",session?.token?.user?.affiliation)
+  } else {
+    console.log("node-admin mode:", session?.token?.user?.affiliation);
   }
 
   // console.log(
   //   session?.token?.user?.affiliation === "admin" ? "logged in admin mode" : session?.token?.user?.affiliation
   // );
   // const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
-
 
   useEffect(() => {
     // Simulate fetching data or changing the list dynamically
@@ -88,17 +89,22 @@ const Main = () => {
       // setModuleList(response.data?.data);
 
       // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-      const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/module-list", {
-        filter:{}
-      });
+      // const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/module-list", {
+      const fetchedDevices = await axios.post(
+        "https://localhost:3333/api/portalfetch/module/module-list",
+        {
+          filter: {},
+        }
+      );
       console.log(fetchedDevices?.data?.data);
       setModuleList(fetchedDevices?.data?.data?.reverse());
     };
 
     const fetchTasks = async () => {
       // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-      const fetchedTasks = await axios.post("https://localhost:3333/fetch/v0.1/task/list", {
-        filter:{}
+      // const fetchedTasks = await axios.post("https://localhost:3333/fetch/v0.1/task/list", {
+      const fetchedTasks = await axios.post("https://localhost:3333/api/portalfetch/task/list", {
+        filter: {},
       });
       console.log(fetchedTasks?.data?.data);
 
@@ -112,15 +118,12 @@ const Main = () => {
     fetchTasks();
   }, [session]); // Empty dependency array to run the effect only once
 
-
-
-
   return (
     <MainLayout>
-        <div className={styles.container}>
-          <PltModuleRoster/>
-          <PltTaskRoster/>
-        </div>
+      <div className={styles.container}>
+        <PltModuleRoster />
+        <PltTaskRoster />
+      </div>
     </MainLayout>
   );
 };
