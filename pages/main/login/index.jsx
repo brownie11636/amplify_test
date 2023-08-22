@@ -198,4 +198,5 @@ const aaa = {
   ],
   individual: true,
   advertising: false,
+  useBasicUnsubscribeMsg: true,
 };
