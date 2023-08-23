@@ -3,6 +3,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
 export default NextAuth({
   providers: [
     CredentialsProvider({
@@ -18,7 +19,7 @@ export default NextAuth({
           return { id: "admin", name: "test", affiliation: "admin" };
         }
         const response = await axios.post(
-          "https://localhost:3333/api/mongo/login",
+          baseURL + "/api/mongo/login",
           {
             id: credentials.id,
             password: credentials.password,

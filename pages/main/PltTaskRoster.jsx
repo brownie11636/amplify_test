@@ -35,23 +35,33 @@ const PltTaskManager = () => {
     console.log("node-admin mode:", session?.token?.user?.affiliation);
   }
 
+  const [baseURL, setBaseURL] = useState();
   useEffect(() => {
-    // Simulate fetching data or changing the list dynamically
-    // For example, fetchDevices and fetchTasks could be API calls
-    const fetchTasks = async () => {
-      // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-      // const fetchedTasks = await axios.post("https://localhost:3333/fetch/v0.1/task/list", {
-      const fetchedTasks = await axios.post("https://localhost:3333/api/portalfetch/task/list", {
-        filter: {},
-      });
-      console.log(fetchedTasks?.data?.data);
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    if (baseURL) {
+      // Simulate fetching data or changing the list dynamically
+      // For example, fetchDevices and fetchTasks could be API calls
+      const fetchTasks = async () => {
+        // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
+        // const fetchedTasks = await axios.post(baseURL+"/fetch/v0.1/task/list", {
+        const fetchedTasks = await axios.post(baseURL + "/api/portalfetch/task/list", {
+          filter: {},
+        });
+        console.log(fetchedTasks?.data?.data);
 
-      // Fetch tasks from an API and update the tasks state
-      setTasks(fetchedTasks?.data?.data?.reverse());
-    };
+        // Fetch tasks from an API and update the tasks state
+        setTasks(fetchedTasks?.data?.data?.reverse());
+      };
 
-    fetchTasks();
-  }, [session]); // Empty dependency array to run the effect only once
+      fetchTasks();
+    }
+  }, [baseURL]); // Empty dependency array to run the effect only once
 
   return (
     <div className={styles.section}>

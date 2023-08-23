@@ -1,13 +1,21 @@
 import { useRouter } from "next/router";
 import { InputTextItem } from "./InputTextItem";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 // import { RobotCard2Submit } from "./RobotCard2";
 export const Camera = () => {
   const router = useRouter();
   const pathName = router.pathname;
   const { data: session } = useSession();
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
   useEffect(() => {
     console.log("session");
     console.log(session);
@@ -34,7 +42,7 @@ export const Camera = () => {
     const detailAddress = venderAddress[2].value;
     const data = {
       companyNumber:
-        session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
+        session?.token?.user?.affiliation === "admin" ? "admin" : session?.token?.user?.affiliation,
       id,
       serialNumber,
       nickName,
@@ -49,7 +57,7 @@ export const Camera = () => {
       detailAddress,
     };
     console.log(data);
-    const res = await axios.post("https://localhost:3333/api/mongo/robot", data);
+    const res = await axios.post(baseURL + "/api/mongo/robot", data);
     console.log(res);
     if (res.data.result === 1) {
       alert("등록되었습니다.");

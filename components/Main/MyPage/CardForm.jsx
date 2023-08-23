@@ -498,6 +498,14 @@ const Company = ({ data }) => {
   const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
   const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
   const CheckedAccountItem = useRecoilValue(CheckedAccountItemAtom);
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
   useEffect(() => {
     if (session) {
       setSessionUser(session?.token?.user);
@@ -598,7 +606,7 @@ const Company = ({ data }) => {
                   detailAddress,
                 };
                 console.log(data);
-                const res = await axios.post("https://localhost:3333/api/mongo/company", data);
+                const res = await axios.post(baseURL + "/api/mongo/company", data);
                 console.log(res);
                 if (res.data.result === 1) {
                   alert("등록되었습니다.");
@@ -636,7 +644,7 @@ const Company = ({ data }) => {
                   detailAddress,
                 };
                 console.log(data);
-                const res = await axios.put("https://localhost:3333/api/mongo/company", data);
+                const res = await axios.put(baseURL + "/api/mongo/company", data);
                 console.log(res);
                 if (res.data.result === 1) {
                   alert("수정되었습니다.");
@@ -659,7 +667,7 @@ const Company = ({ data }) => {
               onClick={() => {
                 setVisibleDeleteModal(true);
                 setDeleteApiUrl(
-                  `https://localhost:3333/api/mongo/company?companyNumber=${CheckedCompanyItem?.companyNumber}`
+                  baseURL + `/api/mongo/company?companyNumber=${CheckedCompanyItem?.companyNumber}`
                 );
               }}
             >
@@ -689,6 +697,14 @@ const Part = ({ data, sub, isCreate }) => {
   );
   const [selectedTaskInAccount, setSelectedTaskInAccount] =
     useRecoilState(SelectedTaskInAccountAtom);
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
   useEffect(() => {
     if (session) {
       setSessionUser(session?.token?.user);
@@ -864,7 +880,7 @@ const Part = ({ data, sub, isCreate }) => {
                   task,
                 };
                 console.log(data);
-                const res = await axios.post("https://localhost:3333/api/mongo/createPart", data);
+                const res = await axios.post(baseURL + "/api/mongo/createPart", data);
                 console.log(res);
                 if (res.data.result === 1) {
                   alert("등록되었습니다.");
@@ -923,7 +939,7 @@ const Part = ({ data, sub, isCreate }) => {
                     task,
                   };
                   console.log(data);
-                  const res = await axios.put("https://localhost:3333/api/mongo/createPart", data);
+                  const res = await axios.put(baseURL + "/api/mongo/createPart", data);
                   console.log(res);
                   if (res.data.result === 1) {
                     alert("수정되었습니다.");
@@ -946,9 +962,7 @@ const Part = ({ data, sub, isCreate }) => {
               className="flex text[#222222] text-base underline cursor-pointer mt-[2.625rem]"
               onClick={() => {
                 setVisibleDeleteModal(true);
-                setDeleteApiUrl(
-                  `https://localhost:3333/api/mongo/user?id=${CheckedAccountItem?.id}`
-                );
+                setDeleteApiUrl(baseURL + `/api/mongo/user?id=${CheckedAccountItem?.id}`);
               }}
             >
               계정삭제

@@ -27,6 +27,14 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
     CheckedEngineerAndOperatorItemAtom
   );
   const [selectedRobot, setSelectedRobot] = useState();
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
   useEffect(() => {
     getRobot();
   }, [session]);
@@ -57,7 +65,7 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
   }, [value, robotItemList, CreateFieldItem, CheckedTaskItem]);
 
   const getRobot = async () => {
-    const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
+    const response = await axios.post(baseURL + "/api/mongo/robotList", {
       companyNumber:
         session?.token?.user?.affiliation === "admin" ? "admin" : session?.token?.user?.affiliation,
     });
@@ -131,7 +139,7 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
                 task: document.getElementById("tasks").value,
               };
               console.log(data);
-              const res = await axios.put("https://localhost:3333/api/mongo/task", data);
+              const res = await axios.put(baseURL+"/api/mongo/task", data);
               console.log(res);
               if (res.data.result === 1) {
                 alert("등록되었습니다.");
@@ -237,7 +245,7 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
                         };
                         console.log(data);
                         const res = await axios.put(
-                          "https://localhost:3333/api/mongo/robotIntoEngineerAndOperator",
+                          baseURL+"/api/mongo/robotIntoEngineerAndOperator",
                           data
                         );
                         console.log(res);

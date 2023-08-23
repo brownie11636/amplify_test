@@ -72,51 +72,60 @@ const Main = () => {
     console.log("node-admin mode:", session?.token?.user?.affiliation);
   }
 
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
   // console.log(
   //   session?.token?.user?.affiliation === "admin" ? "logged in admin mode" : session?.token?.user?.affiliation
   // );
   // const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
 
   useEffect(() => {
-    // Simulate fetching data or changing the list dynamically
-    // For example, fetchDevices and fetchTasks could be API calls
-    const fetchDevices = async () => {
-      const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
-        companyNumber:
-          session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
-      });
-      console.log(response.data?.data);
-      // setModuleList(response.data?.data);
+    if (baseURL) {
+      // Simulate fetching data or changing the list dynamically
+      // For example, fetchDevices and fetchTasks could be API calls
+      const fetchDevices = async () => {
+        const response = await axios.post(baseURL + "/api/mongo/robotList", {
+          companyNumber:
+            session?.token?.user?.affiliation === "admin"
+              ? "admin"
+              : session?.token?.user?.affiliation,
+        });
+        console.log(response.data?.data);
+        // setModuleList(response.data?.data);
 
-      // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-      // const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/module-list", {
-      const fetchedDevices = await axios.post(
-        "https://localhost:3333/api/portalfetch/module/module-list",
-        {
+        // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
+        // const fetchedDevices = await axios.post(baseURL+"/fetch/v0.1/module/module-list", {
+        const fetchedDevices = await axios.post(baseURL + "/api/portalfetch/module/module-list", {
           filter: {},
-        }
-      );
-      console.log(fetchedDevices?.data?.data);
-      setModuleList(fetchedDevices?.data?.data?.reverse());
-    };
+        });
+        console.log(fetchedDevices?.data?.data);
+        setModuleList(fetchedDevices?.data?.data?.reverse());
+      };
 
-    const fetchTasks = async () => {
-      // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-      // const fetchedTasks = await axios.post("https://localhost:3333/fetch/v0.1/task/list", {
-      const fetchedTasks = await axios.post("https://localhost:3333/api/portalfetch/task/list", {
-        filter: {},
-      });
-      console.log(fetchedTasks?.data?.data);
+      const fetchTasks = async () => {
+        // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
+        // const fetchedTasks = await axios.post(baseURL+"/fetch/v0.1/task/list", {
+        const fetchedTasks = await axios.post(baseURL + "/api/portalfetch/task/list", {
+          filter: {},
+        });
+        console.log(fetchedTasks?.data?.data);
 
-      // Fetch tasks from an API and update the tasks state
-      // const fetchedTasks = await fetchTasksFromAPI();
-      // const fetchedTasks = ['Task 1', 'Task 2', 'Task 3'];
-      setTasks(fetchedTasks?.data?.data?.reverse());
-    };
+        // Fetch tasks from an API and update the tasks state
+        // const fetchedTasks = await fetchTasksFromAPI();
+        // const fetchedTasks = ['Task 1', 'Task 2', 'Task 3'];
+        setTasks(fetchedTasks?.data?.data?.reverse());
+      };
 
-    fetchDevices();
-    fetchTasks();
-  }, [session]); // Empty dependency array to run the effect only once
+      fetchDevices();
+      fetchTasks();
+    }
+  }, [session, baseURL]); // Empty dependency array to run the effect only once
 
   return (
     <MainLayout>

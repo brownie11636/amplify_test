@@ -7,12 +7,20 @@ const DevicePopup = ({ onClose, onSearch }) => {
   const [fetchedData, setFetchedData] = useState(null);
   const [password, setPassword] = useState("");
 
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
   const handleSearch = async () => {
     // Call the onSearch function and pass the serialNumber
     // const data = await onSearch(serialNumber);
     // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-    // const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/list", {
-    const fetchedDevices = await axios.post("https://localhost:3333/api/portalfetch/module/list", {
+    // const fetchedDevices = await axios.post(baseURL+"/fetch/v0.1/module/list", {
+    const fetchedDevices = await axios.post(baseURL + "/api/portalfetch/module/list", {
       filter: { serialNumber: serialNumber },
     });
 

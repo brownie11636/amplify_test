@@ -22,6 +22,14 @@ export const EngineerAndOperator = ({ children }) => {
   const [checkedEngineerAndOperator, setCheckedEngineerAndOperator] = useRecoilState(
     CheckedEngineerAndOperatorItemAtom
   );
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
   useEffect(() => {
     getEngineerAndOperator();
   }, [CheckedTaskItem, CheckedFieldItem]);
@@ -54,7 +62,7 @@ export const EngineerAndOperator = ({ children }) => {
   }, [session, value, engineerAndOperator, CheckedTaskItem]);
 
   const getEngineerAndOperator = async (e) => {
-    const res = await axios.post("https://localhost:3333/api/mongo/engineerAndOperator", {
+    const res = await axios.post(baseURL + "/api/mongo/engineerAndOperator", {
       taskCount: CheckedTaskItem,
       fieldIndex: CheckedFieldItem?.index,
       companyNumber:
