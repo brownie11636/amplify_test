@@ -35,7 +35,7 @@ export default function KariTable({loader, children, ...props}){
 
   return (
     <group ref={ref} >
-      <group rotation={[0,-4 * Math.PI/180,0]} >
+      {/* <group rotation={[0,-4 * Math.PI/180,0]} > */}
         <Box args={[0.23, 0.935, 0.23]} position={[0, 0.935/2, 0]} material-wireframe />
         <Box args={[0.23, 0.935, 0.23]} position={[0, 0.935/2, 0]} material-color="gray" material-transparent material-opacity={0.5} />
 
@@ -52,7 +52,7 @@ export default function KariTable({loader, children, ...props}){
           </Box> 
 
         </Box> 
-      </group>
+      {/* </group> */}
       {children}
     </group>
   )

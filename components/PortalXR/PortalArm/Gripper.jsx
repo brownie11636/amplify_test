@@ -69,6 +69,8 @@ const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...prop
       (state)=>state.gripAngleRatio,
       (ratio)=>gripByAngleRatio(ratio, ref.current)
     );
+
+    ref.current[0].name = "gripper_BASE"
     
     return () => {
       unsubGripDistance();

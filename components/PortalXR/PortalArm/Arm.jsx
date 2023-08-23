@@ -66,11 +66,13 @@ const Arm = forwardRef( function Arm ({loader, index=0, angles=[0,0,0,0,0,0], po
         // console.log(state)
         // vrLog(toString(angles))
       for (let i=0; i<6; i++){
-        forwardedRef.current[i + 2].rotation.fromArray(rotAxes[i].map((val) => val * angles[i]))
+        forwardedRef.current[i + 1].rotation.fromArray(rotAxes[i].map((val) => val * angles[i]))
       }
     })
     console.log("arm index:",index)
     console.log("poses",props.positions)
+
+    forwardedRef.current[0].name = "robot_BASE";
 
     return () => unsubAngles();
   },[])
@@ -85,14 +87,13 @@ const Arm = forwardRef( function Arm ({loader, index=0, angles=[0,0,0,0,0,0], po
   })
 
   return (
-    <group ref={el => forwardedRef.current[0] = el}>
-      <Model ref={el => (forwardedRef.current[1] = el)} loader={loader} position={positions[0]} modelConfig={ArmConfigs[0]}>
-        <Model ref={el => (forwardedRef.current[2] = el)} loader={loader} position={positions[1]} modelConfig={ArmConfigs[1]}>
-          <Model ref={el => (forwardedRef.current[3] = el)} loader={loader} position={positions[2]} modelConfig={ArmConfigs[2]}>
-            <Model ref={el => (forwardedRef.current[4] = el)}loader={loader} position={positions[3]} modelConfig={ArmConfigs[3]}>
-              <Model ref={el => (forwardedRef.current[5] = el)} loader={loader} position={positions[4]} modelConfig={ArmConfigs[4]}>
-                <Model ref={el => (forwardedRef.current[6] = el)} loader={loader} position={positions[5]} modelConfig={ArmConfigs[5]}>
-                  <Model ref={el => (forwardedRef.current[7] = el)} loader={loader} position={positions[6]} modelConfig={ArmConfigs[6]}>
+      <Model ref={el => (forwardedRef.current[0] = el)} loader={loader} modelConfig={ArmConfigs[0]}>
+        <Model ref={el => (forwardedRef.current[1] = el)} loader={loader} modelConfig={ArmConfigs[1]} position={positions[0]} >
+          <Model ref={el => (forwardedRef.current[2] = el)} loader={loader} modelConfig={ArmConfigs[2]} position={positions[1]} >
+            <Model ref={el => (forwardedRef.current[3] = el)} loader={loader} modelConfig={ArmConfigs[3]} position={positions[2]} >
+              <Model ref={el => (forwardedRef.current[4] = el)} loader={loader} modelConfig={ArmConfigs[4]} position={positions[3]} >
+                <Model ref={el => (forwardedRef.current[5] = el)} loader={loader} modelConfig={ArmConfigs[5]} position={positions[4]} >
+                  <Model ref={el => (forwardedRef.current[6] = el)} loader={loader} modelConfig={ArmConfigs[6]} position={positions[5]} >
                     {children}
                   </Model>
                 </Model>
@@ -101,7 +102,6 @@ const Arm = forwardRef( function Arm ({loader, index=0, angles=[0,0,0,0,0,0], po
           </Model>
         </Model>
       </Model>
-    </group>
   )
 })
 
