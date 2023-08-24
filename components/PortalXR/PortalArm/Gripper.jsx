@@ -35,11 +35,11 @@ const gripperGeometries = [
 //   8   1   4   4     (left)  ⎟     ⎿ RUB_ASM
 // */
 
-const gripperConfigs = setGripperConfigs();
 const gripperPositions = setGripperPositions();
 
 const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...props},ref) {
-
+  
+  const gripperConfigs = setGripperConfigs("KARI");
   // const ref = useRef([]);
   const guideRef = useRef();
 
@@ -160,7 +160,7 @@ function setGripperPositions() {
   return positions_
 }
 
-function setGripperConfigs() {
+function setGripperConfigs(type) {
   const configs_ = []
 
     for (let i = 0; i<9; i++){
@@ -180,8 +180,11 @@ function setGripperConfigs() {
   
       if ( i === 0 ) configs_[i].path = `/3d_models/portalarm/UR5e_ver/ALLZERO/RH-P12-RN/GLTFs/${i}.gltf`;
       else {
-        if (k === 1) configs_[i].path = `/3d_models/portalarm/UR5e_ver/ALLZERO/RH-P12-RN/GLTFs/${k}-${j}.gltf`;
-        else configs_[i].path = `/3d_models/portalarm/UR5e_ver/ALLZERO/RH-P12-RN/GLTFs/${k}.gltf`;
+        if (k === 1 || (type === "KARI" && k === 4)) {
+          configs_[i].path = `/3d_models/portalarm/UR5e_ver/ALLZERO/RH-P12-RN/GLTFs/${k}-${j}.gltf`;
+        } else {
+          configs_[i].path = `/3d_models/portalarm/UR5e_ver/ALLZERO/RH-P12-RN/GLTFs/${k}.gltf`;
+        }
       }
     }  
     return configs_
