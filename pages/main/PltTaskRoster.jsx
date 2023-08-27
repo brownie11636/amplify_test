@@ -27,13 +27,19 @@ const PltTaskManager = () => {
     // handleCloseAddModulePopup();
   };
 
-  console.log("Is admin");
   const { data: session } = useSession();
-  if (session?.token?.user?.affiliation === "admin") {
-    console.log("admin mode");
-  } else {
-    console.log("node-admin mode:", session?.token?.user?.affiliation);
-  }
+  useEffect(() => {
+    if (!session?.token?.user?.affiliation) {
+      return;
+    } else {
+      console.log("Is admin");
+      if (session?.token?.user?.affiliation === "admin") {
+        console.log("admin mode");
+      } else {
+        console.log("node-admin mode:", session?.token?.user?.affiliation);
+      }
+    }
+  }, [session]);
 
   const [baseURL, setBaseURL] = useState();
   useEffect(() => {
@@ -53,7 +59,7 @@ const PltTaskManager = () => {
         const fetchedTasks = await axios.post(baseURL + "/api/portalfetch/task/list", {
           filter: {},
         });
-        console.log(fetchedTasks?.data?.data);
+        if (fetchedTasks?.data) console.log(fetchedTasks?.data?.data);
 
         // Fetch tasks from an API and update the tasks state
         setTasks(fetchedTasks?.data?.data?.reverse());

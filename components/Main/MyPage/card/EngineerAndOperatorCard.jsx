@@ -36,8 +36,10 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
     );
   }, []);
   useEffect(() => {
-    getRobot();
-  }, [session]);
+    if (baseURL) {
+      getRobot();
+    }
+  }, [session, baseURL]);
   useEffect(() => {
     let filtered = robotItemList;
     filtered = filtered?.filter((item) => {

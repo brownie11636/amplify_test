@@ -24,12 +24,24 @@ const MyPage = () => {
     getField();
   }, [FieldSelectedRadio]);
   const getField = async () => {
-    const response = await axios.get(
-      FieldSelectedRadio === "fieldList"
-        ? "https://localhost:3333/api/mongo/field"
-        : "https://localhost:3333/api/mongo/robot"
-    );
-    SetFieldItem(response.data?.data);
+    await axios
+      .get(
+        FieldSelectedRadio === "fieldList"
+          ? "https://localhost:3333/api/mongo/field"
+          : "https://localhost:3333/api/mongo/robot",
+        { headers: { Authorization: `${session?.token?.accessToken}` } }
+      )
+      .then((response) => {
+        console.log(response);
+        SetFieldItem(response.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err?.response?.status === 403) {
+          alert(err?.response?.data?.msg);
+          return router.push("/main/login");
+        }
+      });
   };
   const DeleteText = () => {
     return (

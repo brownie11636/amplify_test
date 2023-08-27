@@ -2,6 +2,8 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { use, useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { CompanyItemAtom } from "../../recoil/AtomStore";
+import { useSetRecoilState } from "recoil";
 
 const SideNavigator = () => {
   const [isAllSelected, setIsAllSelected] = useState(false);
@@ -9,7 +11,6 @@ const SideNavigator = () => {
   const router = useRouter();
   const pathName = router.pathname;
   const { data: session } = useSession();
-  console.log("(sideNavigator>session?:", session?.token?.user);
 
   // fetch data from server
   const navList = [
@@ -29,7 +30,11 @@ const SideNavigator = () => {
     }
     setAllGroupIsChecked(newArr);
   }, []);
-
+  useEffect(() => {
+    if (session) {
+      console.log("(sideNavigator>session?:", session);
+    }
+  }, [session]);
   return (
     <div className="flex flex-col justify-between items-center w-[300px] py-[48px] h-screen border-r border-[#D9D9D9] relative">
       <div className="w-full h-full">
@@ -187,7 +192,7 @@ const MyPageSideNavigator = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const pathName = router.pathname;
-
+  const setCompanyItem = useSetRecoilState(CompanyItemAtom);
   return (
     <ul className="w-full h-full">
       <div className=" px-[1.5625rem] py-[2.5rem]">
@@ -203,6 +208,7 @@ const MyPageSideNavigator = () => {
       <li
         className={`flex gap-[1.25rem] items-center w-[18.75rem] h-[3.125rem] pl-[1.5rem] cursor-pointer relative group`}
         onClick={() => {
+          setCompanyItem([]);
           router.push("/myPage/account");
         }}
       >

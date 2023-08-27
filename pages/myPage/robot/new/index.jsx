@@ -20,11 +20,30 @@ const New = () => {
     getRobot();
   }, [session]);
   const getRobot = async () => {
-    const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
-      companyNumber:
-        session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
-    });
-    SetRobotItemList(response.data?.data);
+    await axios
+      .post(
+        "https://localhost:3333/api/mongo/robotList",
+        {
+          companyNumber:
+            session?.token?.user?.affiliation === "admin"
+              ? "admin"
+              : session?.token?.user?.affiliation,
+        },
+        {
+          headers: { Authorization: `${session?.token?.accessToken}` },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        SetRobotItemList(response.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err?.response?.status === 403) {
+          alert(err?.response?.data?.msg);
+          return router.push("/main/login");
+        }
+      });
   };
   return (
     <MainLayout>

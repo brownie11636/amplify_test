@@ -1,8 +1,7 @@
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
 const Login = () => {
   const idRef = useRef();
   const pwRef = useRef();
@@ -20,16 +19,17 @@ const Login = () => {
       alert("아이디와 비밀번호를 입력해주세요.");
       return;
     }
-    await signIn("testLogin", {
+    const sign = await signIn("testLogin", {
       id: idValue,
       password: pwValue,
       redirect: false,
     })
       .then((res) => {
-        if (res.error) {
+        if (!res.ok) {
           alert("로그인에 실패하였습니다.");
           return;
         } else {
+          // alert("로그인에 성공하였습니다.");
           router.push("/main");
         }
       })
@@ -72,7 +72,7 @@ const Login = () => {
         >
           <Image src={`/images/main/logo.svg`} fill alt="" />
         </picture>
-        <div className="flex mt-[6.25rem]">
+        {/* <div className="flex mt-[6.25rem]">
           <label htmlFor="fieldList">
             <input
               type="radio"
@@ -106,7 +106,7 @@ const Login = () => {
               <span className="text-base">{"비밀번호 찾기"}</span>
             </div>
           </label>
-        </div>
+        </div> */}
         <div className="flex flex-col gap-[30px] mt-[100px]">
           <span className="w-[400px] h-[50px] flex">
             <input
@@ -178,25 +178,25 @@ const Login = () => {
 
 export default Login;
 
-const aaa = {
-  senderAddress: "no_reply@company.com",
-  title: "${customer_name}님 반갑습니다. ",
-  body: "귀하의 등급이 ${BEFORE_GRADE}에서 ${AFTER_GRADE}로 변경되었습니다.",
-  recipients: [
-    {
-      address: "hongildong@naver_.com",
-      name: "홍길동",
-      type: "R",
-      parameters: { customer_name: "홍길동", BEFORE_GRADE: "SILVER", AFTER_GRADE: "GOLD" },
-    },
-    {
-      address: "chulsoo@daum_.net",
-      name: null,
-      type: "R",
-      parameters: { customer_name: "철수", BEFORE_GRADE: "BRONZE", AFTER_GRADE: "SILVER" },
-    },
-  ],
-  individual: true,
-  advertising: false,
-  useBasicUnsubscribeMsg: true,
-};
+// const aaa = {
+//   senderAddress: "no_reply@company.com",
+//   title: "${customer_name}님 반갑습니다. ",
+//   body: "귀하의 등급이 ${BEFORE_GRADE}에서 ${AFTER_GRADE}로 변경되었습니다.",
+//   recipients: [
+//     {
+//       address: "hongildong@naver_.com",
+//       name: "홍길동",
+//       type: "R",
+//       parameters: { customer_name: "홍길동", BEFORE_GRADE: "SILVER", AFTER_GRADE: "GOLD" },
+//     },
+//     {
+//       address: "chulsoo@daum_.net",
+//       name: null,
+//       type: "R",
+//       parameters: { customer_name: "철수", BEFORE_GRADE: "BRONZE", AFTER_GRADE: "SILVER" },
+//     },
+//   ],
+//   individual: true,
+//   advertising: false,
+//   useBasicUnsubscribeMsg: true,
+// };

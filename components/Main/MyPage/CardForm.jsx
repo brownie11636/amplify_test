@@ -57,13 +57,10 @@ const CardForm = ({ data, company, type }) => {
 
   const checkedEngineerAndOperator = useSetRecoilState(CheckedEngineerAndOperatorItemAtom);
 
-  useEffect(() => {}, [
-    CheckedCompanyItem,
-    CreateFieldItem,
-    CheckedFieldItem,
-    CheckedAccountItem,
-    session,
-  ]);
+  useEffect(() => {
+    console.log("CheckedCompanyItem");
+    console.log(CheckedCompanyItem);
+  }, [CheckedCompanyItem, CreateFieldItem, CheckedFieldItem, CheckedAccountItem, session]);
   return (
     <>
       <Head>
@@ -111,7 +108,7 @@ const CompanyList = ({ data }) => {
   const { data: session } = useSession();
   const [sessionUser, setSessionUser] = useState(null);
   const [value, setValue] = useState("");
-  const [filteredArray, setFilteredArray] = useState();
+  const [filteredArray, setFilteredArray] = useState([]);
   const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
   const createAccountItem = useRecoilValue(CreateAccountItemAtom);
   const checkedAccountItem = useRecoilValue(CheckedAccountItemAtom);
@@ -147,14 +144,18 @@ const CompanyList = ({ data }) => {
     }
   }, [checkedAccountItem, CheckedCompanyItem]);
   useEffect(() => {
-    let filtered = data;
-    if (value) {
-      filtered = filtered.filter((item) => {
-        return item.companyName.includes(value);
-      });
-      setFilteredArray(filtered);
-    } else {
-      setFilteredArray(data);
+    if (data) {
+      let filtered = data;
+      if (value) {
+        filtered = filtered.filter((item) => {
+          return item.companyName.includes(value);
+        });
+        console.log(filtered);
+        setFilteredArray(filtered);
+      } else {
+        console.log(data);
+        setFilteredArray(data);
+      }
     }
   }, [value, data]);
   return (
@@ -232,6 +233,7 @@ const CompanyList = ({ data }) => {
                         setCheckedAccountItem(null);
                         target.classList.remove("hidden");
                       } else {
+                        setCheckedAccountItem(null);
                         target.classList.add("hidden");
                       }
                     }}
@@ -711,7 +713,8 @@ const Part = ({ data, sub, isCreate }) => {
     }
   }, [session]);
   useEffect(() => {
-    console.log(CheckedCompanyItem);
+    console.log("selectedFieldInAccount");
+    console.log(selectedFieldInAccount);
     if (!CheckedAccountItem) {
       document
         ?.querySelector(".userCard")
@@ -808,6 +811,7 @@ const Part = ({ data, sub, isCreate }) => {
               id="selectField"
               key={selectedFieldInAccount}
               defaultValue={selectedFieldInAccount ? selectedFieldInAccount[0]?.index : 0}
+              value={selectedFieldInAccount}
               onChange={(e) => {
                 setSelectedFieldInAccount(e.target.value);
                 setSelectedTaskInAccount(
@@ -817,7 +821,7 @@ const Part = ({ data, sub, isCreate }) => {
                 );
               }}
             >
-              <option value="0">공정 선택</option>
+              <option value="0">현장 선택</option>
               {CheckedCompanyItem?.fields?.map((item, index) => {
                 return (
                   <option value={item?.index} key={`selectField${index}`}>

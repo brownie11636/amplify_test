@@ -64,13 +64,19 @@ const Main = () => {
   //   router.push(`/main`);
   // }, []);
 
-  console.log("Is admin");
   const { data: session } = useSession();
-  if (session?.token?.user?.affiliation === "admin") {
-    console.log("admin mode");
-  } else {
-    console.log("node-admin mode:", session?.token?.user?.affiliation);
-  }
+  useEffect(() => {
+    if (!session?.token?.user?.affiliation) {
+      return;
+    } else {
+      console.log("Is admin");
+      if (session?.token?.user?.affiliation === "admin") {
+        console.log("admin mode");
+      } else {
+        console.log("node-admin mode:", session?.token?.user?.affiliation);
+      }
+    }
+  }, [session]);
 
   const [baseURL, setBaseURL] = useState();
   useEffect(() => {
@@ -96,7 +102,7 @@ const Main = () => {
               ? "admin"
               : session?.token?.user?.affiliation,
         });
-        console.log(response.data?.data);
+        if (response.data?.data) console.log(response.data?.data);
         // setModuleList(response.data?.data);
 
         // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
@@ -104,7 +110,7 @@ const Main = () => {
         const fetchedDevices = await axios.post(baseURL + "/api/portalfetch/module/module-list", {
           filter: {},
         });
-        console.log(fetchedDevices?.data?.data);
+        if (fetchedDevices?.data) console.log(fetchedDevices?.data?.data);
         setModuleList(fetchedDevices?.data?.data?.reverse());
       };
 
@@ -114,7 +120,7 @@ const Main = () => {
         const fetchedTasks = await axios.post(baseURL + "/api/portalfetch/task/list", {
           filter: {},
         });
-        console.log(fetchedTasks?.data?.data);
+        if (fetchedTasks?.data) console.log(fetchedTasks?.data?.data);
 
         // Fetch tasks from an API and update the tasks state
         // const fetchedTasks = await fetchTasksFromAPI();

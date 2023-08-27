@@ -44,7 +44,7 @@ module.exports = (phase) => {
         NEXT_PUBLIC_API_URL: "https://localhost:3333",
         NEXT_PUBLIC_API_URL_WWW: "https://localhost:3333",
       },
-      reactStrictMode: true,
+      reactStrictMode: false,
       ...defaultConfig,
     };
   }
@@ -55,7 +55,7 @@ module.exports = (phase) => {
         NEXT_PUBLIC_API_URL: "", // ex) https://example.com
         NEXT_PUBLIC_API_URL_WWW: "", // ex) https://www.example.com
       },
-      reactStrictMode: true,
+      reactStrictMode: false,
       ...defaultConfig,
     };
   }
@@ -66,7 +66,7 @@ module.exports = (phase) => {
         NEXT_PUBLIC_API_URL: "", // ex) https://example.com
         NEXT_PUBLIC_API_URL_WWW: "", // ex) https://www.example.com
       },
-      reactStrictMode: true,
+      reactStrictMode: false,
       ...defaultConfig,
     };
   }

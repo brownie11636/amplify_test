@@ -32,10 +32,22 @@ const Account = () => {
     }
   }, [session]);
   const getCompany = async () => {
-    const response = await axios.get(
-      `https://localhost:3333/api/mongo/company?affiliation=${session?.token?.user?.affiliation}`
-    );
-    setCompanyItem(response.data?.data);
+    await axios
+      .get(
+        `https://localhost:3333/api/mongo/company?affiliation=${session?.token?.user?.affiliation}`,
+        { headers: { Authorization: `${session?.token?.accessToken}` } }
+      )
+      .then((response) => {
+        console.log(response);
+        setCompanyItem(response.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err?.response?.status === 403) {
+          alert(err?.response?.data?.msg);
+          return router.push("/main/login");
+        }
+      });
   };
   return (
     <MainLayout>
@@ -59,7 +71,9 @@ const Account = () => {
     </MainLayout>
   );
 };
+
 export default Account;
+
 const ChangePasswordModal = ({ visible, setVisible }) => {
   const router = useRouter();
   const passwordRef = useRef();

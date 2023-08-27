@@ -1,4 +1,6 @@
-import { atom } from "recoil";
+import { RecoilEnv, atom } from "recoil";
+
+RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false;
 
 export const CompanyItemAtom = atom({
   key: "CompanyItemAtom",
@@ -134,6 +136,6 @@ export const ChangePasswordModalAtom = atom({
   default: false,
 });
 export const ChangePasswordDataAtom = atom({
-  key: "ChangePasswordDataAtom",
+  key: `ChangePasswordDataAtom`,
   default: null,
 });

@@ -19,13 +19,7 @@ const PltModuleManager = (props) => {
     setAddModulePopupVisible(false);
   };
 
-  console.log("Is admin");
   const { data: session } = useSession();
-  if (session?.token?.user?.affiliation === "admin") {
-    console.log("admin mode");
-  } else {
-    console.log("node-admin mode:", session?.token?.user?.affiliation);
-  }
 
   const onSelect = (selectedItem) => {
     props.onSelect(selectedItem);
@@ -33,6 +27,20 @@ const PltModuleManager = (props) => {
   };
 
   const [baseURL, setBaseURL] = useState();
+
+  useEffect(() => {
+    if (!session?.token?.user?.affiliation) {
+      return;
+    } else {
+      console.log("Is admin");
+      if (session?.token?.user?.affiliation === "admin") {
+        console.log("admin mode");
+      } else {
+        console.log("node-admin mode:", session?.token?.user?.affiliation);
+      }
+    }
+  }, [session]);
+
   useEffect(() => {
     setBaseURL(
       typeof window !== "undefined" && window?.location.href.includes("www")
@@ -51,7 +59,7 @@ const PltModuleManager = (props) => {
               ? "admin"
               : session?.token?.user?.affiliation,
         });
-        console.log(response.data?.data);
+        if (response.data?.data) console.log(response.data?.data);
         // setModuleList(response.data?.data);
 
         // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
@@ -59,7 +67,7 @@ const PltModuleManager = (props) => {
         const fetchedDevices = await axios.post(baseURL + "/api/portalfetch/module/list", {
           filter: props.filter,
         });
-        console.log(fetchedDevices?.data?.data);
+        if (fetchedDevices?.data) console.log(fetchedDevices?.data?.data);
         setModuleList(fetchedDevices?.data?.data?.reverse());
       };
 

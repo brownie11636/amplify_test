@@ -25,8 +25,21 @@ const New = ({}) => {
     getCompany();
   }, []);
   const getCompany = async () => {
-    const response = await axios.get("https://localhost:3333/api/mongo/company");
-    SetCompanyItem(response.data?.data);
+    await axios
+      .get("https://localhost:3333/api/mongo/company", {
+        headers: { Authorization: `${session?.token?.accessToken}` },
+      })
+      .then((response) => {
+        console.log(response);
+        SetCompanyItem(response.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err?.response?.status === 403) {
+          alert(err?.response?.data?.msg);
+          return router.push("/main/login");
+        }
+      });
   };
   return (
     <MainLayout>

@@ -27,25 +27,21 @@ export default NextAuth({
           { httpsAgent: new https.Agent({ rejectUnauthorized: false }) }
         );
         if (!response) {
-          console.log(response.data);
           return null;
         } else {
-          const { index, id, name, affiliation, part } = response.data.user;
-          return { index, id, name, affiliation, part };
+          return response.data;
         }
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account, profile, isNewUser }) {
+    async jwt({ token, user, account }) {
       if (user) {
-        token.user = user;
+        token = { ...token, ...user };
       }
       return token;
     },
     async session(session, user, token, trigger) {
-      console.log(user);
-      console.log(token);
       return session;
     },
   },

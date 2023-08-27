@@ -31,8 +31,10 @@ export const EngineerAndOperator = ({ children }) => {
     );
   }, []);
   useEffect(() => {
-    getEngineerAndOperator();
-  }, [CheckedTaskItem, CheckedFieldItem]);
+    if (baseURL) {
+      getEngineerAndOperator();
+    }
+  }, [CheckedTaskItem, CheckedFieldItem, baseURL]);
   useEffect(() => {
     console.log("engineerAndOperator");
     console.log(engineerAndOperator);
