@@ -116,7 +116,7 @@ const Main = () => {
   const fetchModuleList = async () => {
     // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
     await axios
-      .post(baseURL + "/api/fetch/v0.1/module/module-list", {
+      .post(baseURL + "/api/fetch/v0.1/module/list", {
         filter: {},
       })
       .then((res) => {
