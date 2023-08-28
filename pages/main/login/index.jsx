@@ -1,10 +1,10 @@
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
-
+import { setCookie, deleteCookie } from "cookies-next";
 const Login = () => {
   const idRef = useRef();
   const pwRef = useRef();
@@ -15,9 +15,15 @@ const Login = () => {
   const router = useRouter();
   const { data: session } = useSession();
   useEffect(() => {
-    document.getElementById("idRef").focus();
-  }, []);
+    if (session) {
+      console.log(session);
+    }
+  }, [session]);
 
+  useEffect(() => {
+    document.getElementById("idRef").focus();
+    deleteCookie("next-auth.session-token");
+  }, []);
   const submit = async (e) => {
     e.preventDefault();
     if (idValue === "" || pwValue === "") {
@@ -183,11 +189,20 @@ const Login = () => {
 
         <button
           className="mt-[2rem]"
-          onClick={(e) => {
+          onClick={async (e) => {
             e.preventDefault();
-            signIn("google", { callbackUrl: `${window.location.origin}/main/join` });
+            signIn(
+              "google"
+              // { callbackUrl: `${window.location.origin}/main/join` }
+            )
+              .then((res) => {
+                console.log(res);
+                // router.push("/main/join");
+              })
+              .then((e) => {
+                console.log(e);
+              });
             // signIn("google", { redirect: false });
-            router.push("/main/join");
           }}
         >
           <span>Google Login</span>

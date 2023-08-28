@@ -82,7 +82,7 @@ export const FieldList = ({ children, data }) => {
             }}
           />
           <span className="absolute top-[32%] right-[5.7142857142857%] flex w-[1.125rem] h-[1.125rem] cursor-pointer">
-            <Image src={`/images/main/mypage/search.svg`} fill alt="" />
+            <Image src={`/images/main/myPage/search.svg`} fill alt="" />
           </span>
         </div>
         <button

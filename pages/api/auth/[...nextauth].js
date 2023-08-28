@@ -9,14 +9,6 @@ export default NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-
-      async authorize(credentials, req) {
-        console.log(credentials);
-        // const response = await axios.post("/join", {
-        //   id: credentials.email,
-        //   password: credentials.password,
-        // });
-      },
     }),
     CredentialsProvider({
       id: "testLogin",
@@ -31,9 +23,8 @@ export default NextAuth({
         if (credentials.id === "admin" && credentials.password === "123") {
           return {
             id: "admin",
-            name: "test",
             accessToken: "admin",
-            user: { affiliation: "admin" },
+            user: { name: "admin", affiliation: "admin" },
           };
         }
         const response = await axios.post(
@@ -57,7 +48,23 @@ export default NextAuth({
       console.log(token, user, account);
       if (account?.provider === "google") {
         if (user) {
-          token.user = user;
+          const account = await axios.get(
+            baseURL + `/api/mongo/user?name=${user.name}&email=${user.email}&id=${user.id}`
+          );
+          if (account?.data) {
+            token.user = { ...user, ...account.data };
+          } else {
+            await axios
+              .get(baseURL + `/api/mongo/token?name=${user.name}&email=${user.email}`)
+              .then((res) => {
+                console.log(res.data);
+                token.user = { ...user, ...res.data };
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+            token.user = { ...user, from: "google" };
+          }
         }
         return token;
       } else {

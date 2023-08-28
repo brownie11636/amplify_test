@@ -56,7 +56,7 @@ const Main = () => {
 
   const handleSearch = (serialNumber) => {
     // Implement search logic here
-    console.log("Searching for serial number:", serialNumber);
+    // console.log("Searching for serial number:", serialNumber);
     // Close the popup after performing the search
     // handleCloseAddModulePopup();
   };
@@ -68,15 +68,14 @@ const Main = () => {
 
   const { data: session } = useSession();
   useEffect(() => {
-    console.log(session);
     if (!session?.token?.user?.affiliation) {
       return;
     } else {
-      console.log("Is admin");
+      // console.log("Is admin");
       if (session?.token?.user?.affiliation === "admin") {
-        console.log("admin mode");
+        // console.log("admin mode");
       } else {
-        console.log("node-admin mode:", session?.token?.user?.affiliation);
+        // console.log("node-admin mode:", session?.token?.user?.affiliation);
       }
     }
   }, [session]);
@@ -111,11 +110,11 @@ const Main = () => {
             { headers: { Authorization: `${session?.token?.accessToken}` } }
           )
           .then((res) => {
-            console.log(res?.data?.data);
+            // console.log(res?.data?.data);
             // setModuleList(res?.data?.data?);
           })
           .catch((err) => {
-            console.log(err);
+            // console.log(err);
             if (err?.response?.status === 403) {
               alert(err?.response?.data?.msg);
               router.push("/main/login");
@@ -133,11 +132,11 @@ const Main = () => {
             { headers: { Authorization: `${session?.token?.accessToken}` } }
           )
           .then((res) => {
-            console.log(res?.data?.data);
+            // console.log(res?.data?.data);
             setModuleList(res?.data?.data?.reverse());
           })
           .catch((err) => {
-            console.log(err);
+            // console.log(err);
             if (err?.response?.status === 403) {
               alert(err?.response?.data?.msg);
               router.push("/main/login");
@@ -155,11 +154,11 @@ const Main = () => {
             { headers: { Authorization: `${session?.token?.accessToken}` } }
           )
           .then((res) => {
-            console.log(res?.data?.data);
+            // console.log(res?.data?.data);
             setTasks(res?.data?.data?.reverse());
           })
           .catch((err) => {
-            console.log(err);
+            // console.log(err);
             if (err?.response?.status === 403) {
               alert(err?.response?.data?.msg);
               router.push("/main/login");

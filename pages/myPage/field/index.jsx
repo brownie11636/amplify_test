@@ -78,13 +78,14 @@ const MyPage = () => {
         visible={visibleDeleteModal}
         setVisible={setVisibleDeleteModal}
         Text={DeleteText}
-        url={"https://localhost:3333/api/mongo/field"}
+        url={baseURL + "/api/mongo/field"}
         data={deleteFieldData}
       />
     </MainLayout>
   );
 };
 const DeleteModal = ({ visible, setVisible, Text, url, data }) => {
+  const { data: session } = useSession();
   const setCreateFieldItem = useSetRecoilState(CreateFieldItemAtom);
   const setCheckedFieldItem = useSetRecoilState(CheckedFieldItemAtom);
   return (

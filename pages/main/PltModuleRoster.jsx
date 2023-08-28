@@ -25,7 +25,7 @@ const PltModuleManager = (props) => {
 
   const onSelect = (selectedItem) => {
     props.onSelect(selectedItem);
-    console.log("onSelect in the module");
+    // console.log("onSelect in the module");
   };
 
   const [baseURL, setBaseURL] = useState();
@@ -34,11 +34,11 @@ const PltModuleManager = (props) => {
     if (!session?.token?.user?.affiliation) {
       return;
     } else {
-      console.log("Is admin");
+      // console.log("Is admin");
       if (session?.token?.user?.affiliation === "admin") {
-        console.log("admin mode");
+        // console.log("admin mode");
       } else {
-        console.log("node-admin mode:", session?.token?.user?.affiliation);
+        // console.log("node-admin mode:", session?.token?.user?.affiliation);
       }
     }
   }, [session]);
@@ -67,10 +67,10 @@ const PltModuleManager = (props) => {
             { headers: { Authorization: `${session?.token?.accessToken}` } }
           )
           .then((res) => {
-            console.log(res?.data?.data);
+            // console.log(res?.data?.data);
           })
           .catch((err) => {
-            console.log(err);
+            // console.log(err);
             if (err?.response?.status === 403) {
               alert(err?.response?.data?.msg);
               router.push("/main/login");
@@ -89,11 +89,11 @@ const PltModuleManager = (props) => {
             { headers: { Authorization: `${session?.token?.accessToken}` } }
           )
           .then((res) => {
-            console.log(res?.data?.data);
+            // console.log(res?.data?.data);
             setModuleList(res?.data?.data?.reverse());
           })
           .catch((err) => {
-            console.log(err);
+            // console.log(err);
             if (err?.response?.status === 403) {
               alert(err?.response?.data?.msg);
               router.push("/main/login");

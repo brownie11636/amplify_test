@@ -34,7 +34,7 @@ export const EngineerAndOperator = ({ children }) => {
     if (baseURL && session?.token?.accessToken) {
       getEngineerAndOperator();
     }
-  }, [CheckedTaskItem, CheckedFieldItem, baseURL]);
+  }, [session, CheckedTaskItem, CheckedFieldItem, baseURL]);
   useEffect(() => {
     let filtered = engineerAndOperator;
     filtered = filtered?.filter((item) => {
