@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MainLayout from "../../../../components/Main/MainLayout";
 import CardForm from "../../../../components/Main/MyPage/CardForm";
 import { useSession } from "next-auth/react";
@@ -16,9 +16,19 @@ const New = () => {
   const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
   const setCheckedRobotItem = useSetRecoilState(CheckedRobotItemAtom);
   setCheckedRobotItem();
+  const [baseURL, setBaseURL] = useState();
   useEffect(() => {
-    getRobot();
-  }, [session]);
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    if (baseURL) {
+      getRobot();
+    }
+  }, [session, baseURL]);
   const getRobot = async () => {
     await axios
       .post(

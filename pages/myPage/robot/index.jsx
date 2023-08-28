@@ -24,7 +24,7 @@ const RobotList = () => {
     );
   }, []);
   useEffect(() => {
-    if (baseURL && session?.token?.accessToken) {
+    if (baseURL) {
       getRobot();
     }
   }, [session, baseURL]);

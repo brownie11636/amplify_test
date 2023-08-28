@@ -21,12 +21,22 @@ const New = ({}) => {
   const selectedTask = useRecoilValue(SelectedTaskAtom);
 
   setCheckedRobotItem();
+  const [baseURL, setBaseURL] = useState();
   useEffect(() => {
-    getCompany();
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
   }, []);
+  useEffect(() => {
+    if (baseURL) {
+      getCompany();
+    }
+  }, [session, baseURL]);
   const getCompany = async () => {
     await axios
-      .get("https://localhost:3333/api/mongo/company", {
+      .get(baseURL + "/api/mongo/company", {
         headers: { Authorization: `${session?.token?.accessToken}` },
       })
       .then((response) => {

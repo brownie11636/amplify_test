@@ -45,25 +45,30 @@ export default NextAuth({
   ],
   callbacks: {
     async jwt({ token, user, account }) {
-      console.log(token, user, account);
       if (account?.provider === "google") {
         if (user) {
           const account = await axios.get(
-            baseURL + `/api/mongo/user?name=${user.name}&email=${user.email}&id=${user.id}`
+            baseURL + `/api/mongo/user?name=${user.name}&email=${user.email}`,
+            { httpsAgent: new https.Agent({ rejectUnauthorized: false }) }
           );
-          if (account?.data) {
-            token.user = { ...user, ...account.data };
+          if (account?.data?.result === 0) {
+            token.user = { ...user, from: "google", registered: false };
           } else {
             await axios
-              .get(baseURL + `/api/mongo/token?name=${user.name}&email=${user.email}`)
+              .post(
+                baseURL + `/api/mongo/login`,
+                { id: account?.data?.data?.id, from: "google" },
+                { httpsAgent: new https.Agent({ rejectUnauthorized: false }) }
+              )
               .then((res) => {
-                console.log(res.data);
-                token.user = { ...user, ...res.data };
+                delete account.data.data.password;
+                token = { ...token, accessToken: res.data.accessToken };
+                token.user = { ...account.data.data, from: "google", registered: true };
+                // console.log(res);
               })
               .catch((err) => {
-                console.log(err);
+                // console.log(err);
               });
-            token.user = { ...user, from: "google" };
           }
         }
         return token;

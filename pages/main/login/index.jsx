@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { setCookie, deleteCookie } from "cookies-next";
+import axios from "axios";
 const Login = () => {
   const idRef = useRef();
   const pwRef = useRef();
@@ -191,10 +192,7 @@ const Login = () => {
           className="mt-[2rem]"
           onClick={async (e) => {
             e.preventDefault();
-            signIn(
-              "google"
-              // { callbackUrl: `${window.location.origin}/main/join` }
-            )
+            signIn("google", { callbackUrl: `${window.location.origin}/main/join` })
               .then((res) => {
                 console.log(res);
                 // router.push("/main/join");

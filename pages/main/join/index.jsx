@@ -22,54 +22,16 @@ import Head from "next/head";
 import axios from "axios";
 import { InputTextItem } from "../../../components/Main/MyPage/card/InputTextItem";
 import { InputAddressItem } from "../../../components/Main/MyPage/card/InputAddressItem";
+import { useRouter } from "next/router";
 
 const Join = () => {
   const { data: session } = useSession();
-  const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
-  const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
-  const CheckedAccountItem = useRecoilValue(CheckedAccountItemAtom);
-
-  const CreateFieldItem = useRecoilValue(CreateFieldItemAtom);
-  const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
-  const [companyItem, setCompanyItem] = useRecoilState(CompanyItemAtom);
-  const [baseURL, setBaseURL] = useState();
-  const [partItem, setPartItem] = useState({});
+  const router = useRouter();
   useEffect(() => {
-    setBaseURL(
-      typeof window !== "undefined" && window?.location.href.includes("www")
-        ? process.env.NEXT_PUBLIC_API_URL_WWW
-        : process.env.NEXT_PUBLIC_API_URL
-    );
-  }, []);
-  useEffect(() => {
-    console.log("session");
-    console.log(session);
-    if (baseURL) {
-      getCompany();
+    if (session?.token?.user?.registered === true) {
+      router.push("/myPage/account");
     }
-  }, [session, baseURL]);
-  const getCompany = async () => {
-    await axios
-      .get(`https://localhost:3333/api/mongo/company?affiliation=admin`, {
-        headers: { Authorization: `${session?.token?.accessToken}` },
-      })
-      .then((response) => {
-        console.log("response");
-        console.log(response);
-        setCompanyItem(response.data?.data);
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err?.response?.status === 403) {
-          alert(err?.response?.data?.msg);
-          return router.push("/main/login");
-        }
-      });
-  };
-  useEffect(() => {
-    console.log("CheckedCompanyItem");
-    console.log(CheckedCompanyItem);
-  }, [CheckedCompanyItem, CreateFieldItem, CheckedFieldItem, CheckedAccountItem, session]);
+  }, [session]);
   return (
     <main className="flex w-full h-fit justify-center py-[200px] bg-[#F2F2F2]">
       <Head>
@@ -105,6 +67,8 @@ const Part = ({ defaultName, defaultEmail }) => {
     );
   }, []);
   useEffect(() => {
+    console.log("session");
+    console.log(session);
     if (session?.token?.user) {
       setSessionUser(session?.token?.user);
     }
@@ -249,6 +213,7 @@ const Part = ({ defaultName, defaultEmail }) => {
               const email = targetArr[5]?.value;
               const field = document.getElementById("selectField")?.value;
               const task = document.getElementById("selectTask")?.value;
+              const from = document.getElementById("from")?.value;
               if (password !== password2) {
                 targetArr[2].focus();
                 return alert("비밀번호가 일치하지 않습니다.");
@@ -263,15 +228,16 @@ const Part = ({ defaultName, defaultEmail }) => {
                 email,
                 field,
                 task,
+                from,
               };
               console.log(data);
-              const res = await axios.post(baseURL + "/api/mongo/createPart", data, {
+              const res = await axios.post(baseURL + "/api/mongo/join", data, {
                 headers: { Authorization: `${session?.token?.accessToken}` },
               });
               console.log(res);
               if (res.data.result === 1) {
                 alert("등록되었습니다.");
-                return window.location.reload();
+                return (window.location.href = "/main/login");
               } else if (res.data.result === 0) {
                 return alert(res.data.msg);
               }

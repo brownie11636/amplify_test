@@ -35,9 +35,7 @@ const Account = () => {
     );
   }, []);
   useEffect(() => {
-    console.log("session");
-    console.log(session);
-    if (baseURL && session?.token?.accessToken) {
+    if (baseURL) {
       getCompany();
     }
   }, [session, baseURL]);

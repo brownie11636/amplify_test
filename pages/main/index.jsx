@@ -94,7 +94,8 @@ const Main = () => {
   // const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
 
   useEffect(() => {
-    if (baseURL && session?.token?.accessToken) {
+    console.log(baseURL);
+    if (baseURL) {
       // Simulate fetching data or changing the list dynamically
       // For example, fetchDevices and fetchTasks could be API calls
       const fetchDevices = async () => {
@@ -114,9 +115,8 @@ const Main = () => {
             // setModuleList(res?.data?.data?);
           })
           .catch((err) => {
-            // console.log(err);
+            console.log(err);
             if (err?.response?.status === 403) {
-              alert(err?.response?.data?.msg);
               router.push("/main/login");
             }
           });
@@ -138,7 +138,6 @@ const Main = () => {
           .catch((err) => {
             // console.log(err);
             if (err?.response?.status === 403) {
-              alert(err?.response?.data?.msg);
               router.push("/main/login");
             }
           });
@@ -160,7 +159,6 @@ const Main = () => {
           .catch((err) => {
             // console.log(err);
             if (err?.response?.status === 403) {
-              alert(err?.response?.data?.msg);
               router.push("/main/login");
             }
           });

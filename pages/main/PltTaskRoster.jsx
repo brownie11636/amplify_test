@@ -52,7 +52,7 @@ const PltTaskManager = () => {
     );
   }, []);
   useEffect(() => {
-    if (baseURL && session?.token?.accessToken) {
+    if (baseURL) {
       // Simulate fetching data or changing the list dynamically
       // For example, fetchDevices and fetchTasks could be API calls
       const fetchTasks = async () => {
@@ -73,7 +73,6 @@ const PltTaskManager = () => {
           .catch((err) => {
             // console.log(err);
             if (err?.response?.status === 403) {
-              alert(err?.response?.data?.msg);
               router.push("/main/login");
             }
           });

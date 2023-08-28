@@ -33,7 +33,7 @@ const MyPage = () => {
     );
   }, []);
   useEffect(() => {
-    if (baseURL && session?.token?.accessToken) {
+    if (baseURL) {
       getField();
     }
   }, [session, FieldSelectedRadio, baseURL]);
