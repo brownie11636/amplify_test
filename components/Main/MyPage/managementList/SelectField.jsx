@@ -169,12 +169,16 @@ export const SelectField = ({}) => {
                   alert("현장을 선택해주세요.");
                   return;
                 }
-                const res = await axios.post(baseURL + "/api/mongo/robot/batch", {
-                  task: selectedTask,
-                  fieldIndex: selectedField?.index,
-                  companyNumber: selectedCompany?.companyNumber,
-                  robotId: selectedRobot?.id,
-                });
+                const res = await axios.post(
+                  baseURL + "/api/mongo/robot/batch",
+                  {
+                    task: selectedTask,
+                    fieldIndex: selectedField?.index,
+                    companyNumber: selectedCompany?.companyNumber,
+                    robotId: selectedRobot?.id,
+                  },
+                  { headers: { Authorization: `${session?.token?.accessToken}` } }
+                );
                 console.log(res);
                 if (res) {
                   alert("배치가 완료되었습니다.");

@@ -32,10 +32,7 @@ export const RobotCard2 = ({ children, data, company, type }) => {
         : process.env.NEXT_PUBLIC_API_URL
     );
   }, []);
-  useEffect(() => {
-    console.log("checkedRobotItem?.field");
-    console.log(checkedRobotItem);
-  }, [robotItemList, createRobotSelectedField, checkedRobotItem]);
+  useEffect(() => {}, [robotItemList, createRobotSelectedField, checkedRobotItem]);
   return (
     <>
       <div className="py-[2.625rem] w-fit h-fit bg-white relative">
@@ -188,7 +185,9 @@ export const RobotCard2 = ({ children, data, company, type }) => {
                     venderEmail,
                   };
                   console.log(data);
-                  const res = await axios.put(baseURL + "/api/mongo/robot", data);
+                  const res = await axios.put(baseURL + "/api/mongo/robot", data, {
+                    headers: { Authorization: `${session?.token?.accessToken}` },
+                  });
                   console.log(res);
                   if (res.data.result === 1) {
                     alert("수정되었습니다.");

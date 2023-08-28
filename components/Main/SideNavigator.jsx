@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { use, useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
-import { CompanyItemAtom } from "../../recoil/AtomStore";
+import { CompanyItemAtom, FieldItemAtom } from "../../recoil/AtomStore";
 import { useSetRecoilState } from "recoil";
 
 const SideNavigator = () => {
@@ -43,7 +43,7 @@ const SideNavigator = () => {
             className="font-['NotoSans'] font-medium text-2xl text-[#222222] w-fit select-none cursor-pointer"
             onClick={() => router.push("/main")}
           >
-            {session?.token?.user.name}님,
+            {session?.token?.user?.name}님,
             <br /> 안녕하세요.
           </span>
           <div className="mt-[40px] flex items-center">
@@ -193,6 +193,7 @@ const MyPageSideNavigator = () => {
   const router = useRouter();
   const pathName = router.pathname;
   const setCompanyItem = useSetRecoilState(CompanyItemAtom);
+  const SetFieldItem = useSetRecoilState(FieldItemAtom);
   return (
     <ul className="w-full h-full">
       <div className=" px-[1.5625rem] py-[2.5rem]">
@@ -227,6 +228,7 @@ const MyPageSideNavigator = () => {
       <li
         className={`flex gap-[1.25rem] items-center w-[18.75rem] h-[3.125rem] pl-[1.5rem] cursor-pointer relative group`}
         onClick={() => {
+          SetFieldItem([]);
           router.push("/myPage/field");
         }}
       >

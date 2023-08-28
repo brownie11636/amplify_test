@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MainLayout from "../../../components/Main/MainLayout";
 import CardForm from "../../../components/Main/MyPage/CardForm";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -11,8 +11,12 @@ import {
   FieldSelectedRadioAtom,
 } from "../../../recoil/AtomStore";
 import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const MyPage = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [fieldItem, SetFieldItem] = useRecoilState(FieldItemAtom);
   const deleteFieldData = useRecoilValue(DeleteFieldDataAtom);
   const FieldSelectedRadio = useRecoilValue(FieldSelectedRadioAtom);
@@ -20,9 +24,19 @@ const MyPage = () => {
   useEffect(() => {
     console.log(deleteFieldData);
   }, [deleteFieldData]);
+  const [baseURL, setBaseURL] = useState();
   useEffect(() => {
-    getField();
-  }, [FieldSelectedRadio]);
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    if (baseURL && session?.token?.accessToken) {
+      getField();
+    }
+  }, [session, FieldSelectedRadio, baseURL]);
   const getField = async () => {
     await axios
       .get(
@@ -32,11 +46,9 @@ const MyPage = () => {
         { headers: { Authorization: `${session?.token?.accessToken}` } }
       )
       .then((response) => {
-        console.log(response);
         SetFieldItem(response.data?.data);
       })
       .catch((err) => {
-        console.log(err);
         if (err?.response?.status === 403) {
           alert(err?.response?.data?.msg);
           return router.push("/main/login");
@@ -95,9 +107,13 @@ const DeleteModal = ({ visible, setVisible, Text, url, data }) => {
             <button
               className="w-[12.5rem] h-[2.5rem] bg-white"
               onClick={async () => {
-                const res = await axios.delete(`${url}`, {
-                  data,
-                });
+                const res = await axios.delete(
+                  `${url}`,
+                  {
+                    data,
+                  },
+                  { headers: { Authorization: `${session?.token?.accessToken}` } }
+                );
                 if (res.data.result === 1) {
                   setCreateFieldItem(true);
                   setCheckedFieldItem(null);

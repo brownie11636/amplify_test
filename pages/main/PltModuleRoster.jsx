@@ -5,8 +5,10 @@ import DeviceListItem from "./deviceListItem";
 import AddModulePopup from "./AddDevicePopup"; // Import the popup component
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const PltModuleManager = (props) => {
+  const router = useRouter();
   // Sample data for devices and tasks (replace with your actual data)
   const [moduleList, setModuleList] = useState([]);
 
@@ -49,26 +51,54 @@ const PltModuleManager = (props) => {
     );
   }, []);
   useEffect(() => {
-    if (baseURL) {
+    if (baseURL && session?.token?.accessToken) {
       // Simulate fetching data or changing the list dynamically
       // For example, fetchDevices and fetchTasks could be API calls
       const fetchDevices = async () => {
-        const response = await axios.post(baseURL + "/api/mongo/robotList", {
-          companyNumber:
-            session?.token?.user?.affiliation === "admin"
-              ? "admin"
-              : session?.token?.user?.affiliation,
-        });
-        if (response.data?.data) console.log(response.data?.data);
+        await axios
+          .post(
+            baseURL + "/api/mongo/robotList",
+            {
+              companyNumber:
+                session?.token?.user?.affiliation === "admin"
+                  ? "admin"
+                  : session?.token?.user?.affiliation,
+            },
+            { headers: { Authorization: `${session?.token?.accessToken}` } }
+          )
+          .then((res) => {
+            console.log(res?.data?.data);
+          })
+          .catch((err) => {
+            console.log(err);
+            if (err?.response?.status === 403) {
+              alert(err?.response?.data?.msg);
+              router.push("/main/login");
+            }
+          });
+
         // setModuleList(response.data?.data);
 
         // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-        // const fetchedDevices = await axios.post(baseURL+"/fetch/v0.1/module/list", {
-        const fetchedDevices = await axios.post(baseURL + "/api/portalfetch/module/list", {
-          filter: props.filter,
-        });
-        if (fetchedDevices?.data) console.log(fetchedDevices?.data?.data);
-        setModuleList(fetchedDevices?.data?.data?.reverse());
+        await axios
+          .post(
+            baseURL + "/fetch/v0.1/module/list",
+            {
+              filter: props.filter,
+            },
+            { headers: { Authorization: `${session?.token?.accessToken}` } }
+          )
+          .then((res) => {
+            console.log(res?.data?.data);
+            setModuleList(res?.data?.data?.reverse());
+          })
+          .catch((err) => {
+            console.log(err);
+            if (err?.response?.status === 403) {
+              alert(err?.response?.data?.msg);
+              router.push("/main/login");
+            }
+          });
       };
 
       fetchDevices();

@@ -68,6 +68,7 @@ const Main = () => {
 
   const { data: session } = useSession();
   useEffect(() => {
+    console.log(session);
     if (!session?.token?.user?.affiliation) {
       return;
     } else {
@@ -93,64 +94,82 @@ const Main = () => {
   // );
   // const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
 
-  // Simulate fetching data or changing the list dynamically
-  // For example, fetchDevices and fetchTasks could be API calls
-  const fetchDevices = async () => {
-    await axios
-      .post(baseURL + "/api/mongo/robotList", {
-        companyNumber:
-          session?.token?.user?.affiliation === "admin"
-            ? "admin"
-            : session?.token?.user?.affiliation,
-      })
-      .then((res) => {
-        console.log(res?.data?.data);
-        // setModuleList(res?.data?.data?);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert(err?.response?.data?.msg);
-        // return router.push(`/main/login`);
-      });
-  };
-  const fetchModuleList = async () => {
-    // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-    await axios
-      .post(baseURL + "/api/fetch/v0.1/module/list", {
-        filter: {},
-      })
-      .then((res) => {
-        console.log(res?.data?.data);
-        setModuleList(res?.data?.data?.reverse());
-      })
-      .catch((err) => {
-        console.log(err);
-        alert(err?.response?.data?.msg);
-        return router.push(`/main/login`);
-      });
-  };
-  const fetchTasks = async () => {
-    // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-    await axios
-      .post(baseURL + "/api/fetch/v0.1/task/list", {
-        filter: {},
-      })
-      .then((res) => {
-        console.log(res?.data?.data);
-        setTasks(res?.data?.data?.reverse());
-      })
-      .catch((err) => {
-        console.log(err);
-        alert(err?.response?.data?.msg);
-        return router.push(`/main/login`);
-      });
-
-    // Fetch tasks from an API and update the tasks state
-    // const fetchedTasks = await fetchTasksFromAPI();
-    // const fetchedTasks = ['Task 1', 'Task 2', 'Task 3'];
-  };
   useEffect(() => {
-    if (baseURL) {
+    if (baseURL && session?.token?.accessToken) {
+      // Simulate fetching data or changing the list dynamically
+      // For example, fetchDevices and fetchTasks could be API calls
+      const fetchDevices = async () => {
+        await axios
+          .post(
+            baseURL + "/api/mongo/robotList",
+            {
+              companyNumber:
+                session?.token?.user?.affiliation === "admin"
+                  ? "admin"
+                  : session?.token?.user?.affiliation,
+            },
+            { headers: { Authorization: `${session?.token?.accessToken}` } }
+          )
+          .then((res) => {
+            console.log(res?.data?.data);
+            // setModuleList(res?.data?.data?);
+          })
+          .catch((err) => {
+            console.log(err);
+            if (err?.response?.status === 403) {
+              alert(err?.response?.data?.msg);
+              router.push("/main/login");
+            }
+          });
+      };
+      const fetchModuleList = async () => {
+        // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
+        await axios
+          .post(
+            baseURL + "/fetch/v0.1/module/list",
+            {
+              filter: {},
+            },
+            { headers: { Authorization: `${session?.token?.accessToken}` } }
+          )
+          .then((res) => {
+            console.log(res?.data?.data);
+            setModuleList(res?.data?.data?.reverse());
+          })
+          .catch((err) => {
+            console.log(err);
+            if (err?.response?.status === 403) {
+              alert(err?.response?.data?.msg);
+              router.push("/main/login");
+            }
+          });
+      };
+      const fetchTasks = async () => {
+        // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
+        await axios
+          .post(
+            baseURL + "/fetch/v0.1/task/list",
+            {
+              filter: {},
+            },
+            { headers: { Authorization: `${session?.token?.accessToken}` } }
+          )
+          .then((res) => {
+            console.log(res?.data?.data);
+            setTasks(res?.data?.data?.reverse());
+          })
+          .catch((err) => {
+            console.log(err);
+            if (err?.response?.status === 403) {
+              alert(err?.response?.data?.msg);
+              router.push("/main/login");
+            }
+          });
+
+        // Fetch tasks from an API and update the tasks state
+        // const fetchedTasks = await fetchTasksFromAPI();
+        // const fetchedTasks = ['Task 1', 'Task 2', 'Task 3'];
+      };
       fetchDevices();
       fetchModuleList();
       fetchTasks();
@@ -160,8 +179,8 @@ const Main = () => {
   return (
     <MainLayout>
       <div className={styles.container}>
-        {/* <PltModuleRoster />
-        <PltTaskRoster /> */}
+        <PltModuleRoster />
+        <PltTaskRoster />
       </div>
     </MainLayout>
   );

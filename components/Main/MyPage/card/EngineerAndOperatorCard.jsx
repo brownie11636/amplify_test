@@ -36,42 +36,46 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
     );
   }, []);
   useEffect(() => {
-    if (baseURL) {
+    if (baseURL && session?.token?.accessToken) {
       getRobot();
     }
   }, [session, baseURL]);
   useEffect(() => {
-    let filtered = robotItemList;
-    filtered = filtered?.filter((item) => {
-      console.log("item");
-      console.log(item);
-      console.log("item.field", "CheckedFieldItem?.index");
-      console.log(item.field, CheckedFieldItem?.index);
-      console.log("item.tasks", "CheckedTaskItem");
-      console.log(item.tasks, CheckedTaskItem);
-      if (
-        parseInt(item.field) === CheckedFieldItem?.index &&
-        parseInt(item.tasks) === CheckedTaskItem
-      ) {
-        return item;
-      }
-    });
-    if (value) {
+    if (robotItemList) {
+      console.log("robotItemList");
+      console.log(robotItemList);
+      let filtered = robotItemList?.robots || [];
       filtered = filtered?.filter((item) => {
-        return item?.nickName?.includes(value);
+        if (
+          parseInt(item.field) === CheckedFieldItem?.index &&
+          parseInt(item.tasks) === CheckedTaskItem
+        ) {
+          return item;
+        }
       });
-      setFilteredArray(filtered);
-    } else {
-      setFilteredArray(filtered);
+      if (value) {
+        filtered = filtered?.filter((item) => {
+          return item?.nickName?.includes(value);
+        });
+        setFilteredArray(filtered);
+      } else {
+        setFilteredArray(filtered);
+      }
     }
-  }, [value, robotItemList, CreateFieldItem, CheckedTaskItem]);
+  }, [session, value, robotItemList, CheckedTaskItem]);
 
   const getRobot = async () => {
-    const response = await axios.post(baseURL + "/api/mongo/robotList", {
-      companyNumber:
-        session?.token?.user?.affiliation === "admin" ? "admin" : session?.token?.user?.affiliation,
-    });
-    SetRobotItemList(response.data?.data);
+    const response = await axios.post(
+      baseURL + "/api/mongo/robotList",
+      {
+        companyNumber:
+          session?.token?.user?.affiliation === "admin"
+            ? "admin"
+            : session?.token?.user?.affiliation,
+      },
+      { headers: { Authorization: `${session?.token?.accessToken}` } }
+    );
+    SetRobotItemList(response.data?.data?.robots);
   };
   return (
     <>
@@ -140,9 +144,7 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
                 fieldIndex: CheckedFieldItem.index,
                 task: document.getElementById("tasks").value,
               };
-              console.log(data);
               const res = await axios.put(baseURL+"/api/mongo/task", data);
-              console.log(res);
               if (res.data.result === 1) {
                 alert("등록되었습니다.");
                 window.location.reload();
@@ -192,7 +194,6 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
                   <button
                     className="flex justify-center items-center gap-[0.625rem] w-[5.25rem] h-[2.5rem] bg-[#182A5B]"
                     onClick={async (e) => {
-                      console.log(checkedEngineerAndOperator);
                       if (item?.sub === "삭제") {
                         if (!selectedRobot) {
                           alert("삭제할 로봇을 선택해주세요.");
@@ -212,7 +213,6 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
                         //       data,
                         //     })
                         //     .then((res) => {
-                        //       console.log(res);
                         //       if (res.data.result === 1) {
                         //         alert("삭제되었습니다.");
                         //         window.location.reload();
@@ -245,12 +245,10 @@ export const EngineerAndOperatorCard = ({ children, data }) => {
                           tasks: checkedTaskItem,
                           robotId: selectedRobot.id,
                         };
-                        console.log(data);
                         const res = await axios.put(
                           baseURL+"/api/mongo/robotIntoEngineerAndOperator",
                           data
                         );
-                        console.log(res);
                         if (res.data.result === 1) {
                           alert("수정되었습니다.");
                           window.location.reload();

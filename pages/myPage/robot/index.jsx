@@ -24,12 +24,12 @@ const RobotList = () => {
     );
   }, []);
   useEffect(() => {
-    if (baseURL) {
+    if (baseURL && session?.token?.accessToken) {
       getRobot();
     }
   }, [session, baseURL]);
   const getRobot = async () => {
-    const response = await axios
+    await axios
       .post(
         `${baseURL}/api/mongo/robotList`,
         {
@@ -62,7 +62,7 @@ const RobotList = () => {
           <span className="flex pl-[60px] pt-[60px] text-white text-xl"></span>
         </div>
         <div className="relative w-fit -top-[48px] left-[60px]">
-          <CardForm data={robotItemList} company={companyItem} type={3} />
+          <CardForm data={robotItemList?.robots} company={companyItem} type={3} />
         </div>
       </section>
     </MainLayout>

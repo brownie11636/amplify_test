@@ -84,12 +84,16 @@ export const PopRobot = ({}) => {
                             //   alert("공정을 선택해주세요");
                             //   return;
                             // }
-                            const res = await axios.post(baseURL + "/api/mongo/robot/pop", {
-                              robotId: item?.id,
-                              task: selectedTask,
-                              fieldIndex: selectedField?.index,
-                              companyNumber: selectedCompany?.companyNumber,
-                            });
+                            const res = await axios.post(
+                              baseURL + "/api/mongo/robot/pop",
+                              {
+                                robotId: item?.id,
+                                task: selectedTask,
+                                fieldIndex: selectedField?.index,
+                                companyNumber: selectedCompany?.companyNumber,
+                              },
+                              { headers: { Authorization: `${session?.token?.accessToken}` } }
+                            );
                             console.log(res);
                             if (res?.data?.result === 1) {
                               alert("수거 성공");

@@ -5,8 +5,10 @@ import TaskListItem from "./taskListItem";
 import AddTaskPopup from "./AddTaskPopup"; // Import the popup component
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const PltTaskManager = () => {
+  const router = useRouter();
   const [taskList, setTasks] = useState([
     // { id:"TN000-FAKE-0000", alias: 'TeleoperationTset', config: 'Robot', status: 'Universal Robots', descriptions:"not yet", createdAt:"2023...today"},
   ]);
@@ -50,19 +52,33 @@ const PltTaskManager = () => {
     );
   }, []);
   useEffect(() => {
-    if (baseURL) {
+    if (baseURL && session?.token?.accessToken) {
       // Simulate fetching data or changing the list dynamically
       // For example, fetchDevices and fetchTasks could be API calls
       const fetchTasks = async () => {
         // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
         // const fetchedTasks = await axios.post(baseURL+"/fetch/v0.1/task/list", {
-        const fetchedTasks = await axios.post(baseURL + "/api/portalfetch/task/list", {
-          filter: {},
-        });
-        if (fetchedTasks?.data) console.log(fetchedTasks?.data?.data);
+        await axios
+          .post(
+            baseURL + "/fetch/v0.1/task/list",
+            {
+              filter: {},
+            },
+            { headers: { Authorization: `${session?.token?.accessToken}` } }
+          )
+          .then((res) => {
+            console.log(res?.data?.data);
+            setTasks(res?.data?.data?.reverse());
+          })
+          .catch((err) => {
+            console.log(err);
+            if (err?.response?.status === 403) {
+              alert(err?.response?.data?.msg);
+              router.push("/main/login");
+            }
+          });
 
         // Fetch tasks from an API and update the tasks state
-        setTasks(fetchedTasks?.data?.data?.reverse());
       };
 
       fetchTasks();

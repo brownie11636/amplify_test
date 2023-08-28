@@ -1,14 +1,19 @@
 import { signIn, useSession } from "next-auth/react";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
+
 const Login = () => {
   const idRef = useRef();
   const pwRef = useRef();
   const [idValue, setIdValue] = useState("");
   const [pwValue, setPwValue] = useState("");
+  const [autoLogin, setAutoLogin] = useState(false);
   const [findPassValue, setFindPassValue] = useState("fieldList");
   const router = useRouter();
+  const { data: session } = useSession();
   useEffect(() => {
     document.getElementById("idRef").focus();
   }, []);
@@ -47,6 +52,7 @@ const Login = () => {
             await signIn("testLogin", {
               id: "admin",
               password: "123",
+              autoLogin,
               redirect: false,
             })
               .then((res) => {
@@ -164,6 +170,9 @@ const Login = () => {
               type="checkbox"
               id="autoLogin"
               className="w-[16px] h-[16px] rounded-none bg-transparent"
+              onChange={(e) => {
+                setAutoLogin(e.target.checked);
+              }}
             />
             <label htmlFor="autoLogin">
               <span className="text-[#222222]">자동로그인</span>
@@ -171,6 +180,18 @@ const Login = () => {
           </div>
           <span className="text-[#222222] underline">아이디/비밀번호 찾기</span>
         </div>
+
+        <button
+          className="mt-[2rem]"
+          onClick={(e) => {
+            e.preventDefault();
+            signIn("google", { callbackUrl: `${window.location.origin}/main/join` });
+            // signIn("google", { redirect: false });
+            router.push("/main/join");
+          }}
+        >
+          <span>Google Login</span>
+        </button>
       </div>
     </main>
   );

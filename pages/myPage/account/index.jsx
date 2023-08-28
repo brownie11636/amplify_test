@@ -1,7 +1,7 @@
 import MainLayout from "../../../components/Main/MainLayout";
 import { useRouter } from "next/router";
 import CardForm from "../../../components/Main/MyPage/CardForm";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
@@ -26,11 +26,21 @@ const Account = () => {
     : router.pathname.includes("field")
     ? "현장관리"
     : "로봇관리";
+  const [baseURL, setBaseURL] = useState();
   useEffect(() => {
-    if (session) {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    console.log("session");
+    console.log(session);
+    if (baseURL && session?.token?.accessToken) {
       getCompany();
     }
-  }, [session]);
+  }, [session, baseURL]);
   const getCompany = async () => {
     await axios
       .get(
@@ -38,6 +48,7 @@ const Account = () => {
         { headers: { Authorization: `${session?.token?.accessToken}` } }
       )
       .then((response) => {
+        console.log("response");
         console.log(response);
         setCompanyItem(response.data?.data);
       })

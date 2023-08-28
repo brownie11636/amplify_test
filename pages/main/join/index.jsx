@@ -1,46 +1,29 @@
-"use client";
-import Image from "next/image";
-import React, { Children, cloneElement, isValidElement, useEffect, useRef, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+
+import Image from "next/image";
+
 import {
   ChangePasswordModalAtom,
   CheckedAccountItemAtom,
   CheckedCompanyItemAtom,
-  CheckedEngineerAndOperatorItemAtom,
   CheckedFieldItemAtom,
-  CheckedTaskItemAtom,
+  CompanyItemAtom,
   CreateAccountItemAtom,
   CreateFieldItemAtom,
   DeleteApiUriAtom,
   DeleteModalAtom,
-  FieldSelectedRadioAtom,
-  SelectedCompanyAtom,
-  SelectedFieldAtom,
   SelectedFieldInAccountAtom,
   SelectedPartItemAtom,
-  SelectedRobotAtom,
-  SelectedTaskAtom,
   SelectedTaskInAccountAtom,
 } from "../../../recoil/AtomStore";
 import Head from "next/head";
 import axios from "axios";
-import { FieldList } from "./card/FieldList";
-import { EngineerAndOperator } from "./card/EngineerAndOperator";
-import { InputAddressItem } from "./card/InputAddressItem";
-import { FieldCard } from "./card/FieldCard";
-import { InputTextItem } from "./card/InputTextItem";
-import { EngineerAndOperatorCard } from "./card/EngineerAndOperatorCard";
-import { RobotList } from "./card/RobotList";
-import { RobotCard } from "./card/RobotCard";
-import { RobotCard2 } from "./card/RobotCard2";
-import { Camera } from "./card/Camera";
-import { useSession } from "next-auth/react";
-import { SelectRobot } from "./managementList/SelectRobot";
-import { SelectCompany } from "./managementList/SelectCompany";
-import { PopRobot } from "./managementList/PopRobot";
-import { SelectField } from "./managementList/SelectField";
+import { InputTextItem } from "../../../components/Main/MyPage/card/InputTextItem";
+import { InputAddressItem } from "../../../components/Main/MyPage/card/InputAddressItem";
 
-const CardForm = ({ data, company, type }) => {
+const Join = () => {
   const { data: session } = useSession();
   const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
   const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
@@ -48,60 +31,64 @@ const CardForm = ({ data, company, type }) => {
 
   const CreateFieldItem = useRecoilValue(CreateFieldItemAtom);
   const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
-  const FieldSelectedRadio = useRecoilValue(FieldSelectedRadioAtom);
-
-  const selectedRobot = useRecoilValue(SelectedRobotAtom);
-  const selectedCompany = useRecoilValue(SelectedCompanyAtom);
-  const selectedField = useRecoilValue(SelectedFieldAtom);
-  const selectedTask = useRecoilValue(SelectedTaskAtom);
-
-  const checkedEngineerAndOperator = useSetRecoilState(CheckedEngineerAndOperatorItemAtom);
-
+  const [companyItem, setCompanyItem] = useRecoilState(CompanyItemAtom);
+  const [baseURL, setBaseURL] = useState();
+  const [partItem, setPartItem] = useState({});
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    console.log("session");
+    console.log(session);
+    if (baseURL) {
+      getCompany();
+    }
+  }, [session, baseURL]);
+  const getCompany = async () => {
+    await axios
+      .get(`https://localhost:3333/api/mongo/company?affiliation=admin`, {
+        headers: { Authorization: `${session?.token?.accessToken}` },
+      })
+      .then((response) => {
+        console.log("response");
+        console.log(response);
+        setCompanyItem(response.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err?.response?.status === 403) {
+          alert(err?.response?.data?.msg);
+          return router.push("/main/login");
+        }
+      });
+  };
   useEffect(() => {
     console.log("CheckedCompanyItem");
     console.log(CheckedCompanyItem);
   }, [CheckedCompanyItem, CreateFieldItem, CheckedFieldItem, CheckedAccountItem, session]);
   return (
-    <>
+    <main className="flex w-full h-fit justify-center py-[200px] bg-[#F2F2F2]">
       <Head>
         <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" async />
       </Head>
-      {type === 1 ? (
-        <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
-          <CompanyList data={data} />
-          <Company data={CheckedCompanyItem} isCreate={CreateAccountItem} />
-          <Part data={CheckedAccountItem} isCreate={CreateAccountItem} />
-        </div>
-      ) : type === 2 ? (
-        <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
-          <FieldList data={data} />
-          {FieldSelectedRadio === "fieldList" ? <FieldCard data={data} /> : <RobotCard />}
-
-          <EngineerAndOperator />
-          <EngineerAndOperatorCard data={checkedEngineerAndOperator} />
-        </div>
-      ) : type === 3 ? (
-        <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
-          <RobotList data={data} type={type}></RobotList>
-          <RobotCard2 company={company} type={type} />
-        </div>
-      ) : type === 4 ? (
-        <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
-          <RobotCard2 data={data} />
-          <Camera />
-        </div>
-      ) : type === 5 ? (
-        <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
-          <SelectRobot />
-          {selectedRobot ? <SelectCompany /> : null}
-          {selectedCompany ? <SelectField /> : null}
-          <PopRobot />
-        </div>
-      ) : null}
-    </>
+      <div className="flex gap-[3.75rem] w-fit">
+        <CompanyList data={companyItem} />
+        <Company data={CheckedCompanyItem} isCreate={CreateAccountItem} />
+        <Part
+          data={CheckedAccountItem}
+          isCreate={CreateAccountItem}
+          defaultName={session?.token?.user?.name}
+          defaultEmail={session?.token?.user?.email}
+        />
+      </div>
+    </main>
   );
 };
-export default CardForm;
+export default Join;
 
 const CompanyList = ({ data }) => {
   const searchRef = useRef(null);
@@ -178,21 +165,19 @@ const CompanyList = ({ data }) => {
             <Image src={`/images/main/mypage/search.svg`} fill alt="" />
           </span>
         </div>
-        {sessionUser?.affiliation === "admin" ? (
-          <button
-            className="flex justify-center items-center gap-[0.625rem] w-full h-[2.625rem] my-[1.125rem] bg-[#182A5B]"
-            onClick={async (e) => {
-              setCreateAccountItem(true);
-              setCheckedCompanyItem(null);
-              setCheckedAccountItem(null);
-            }}
-          >
-            <picture className="w-[0.75rem] h-[0.75rem] top-[0.0625rem] relative">
-              <Image src={`/images/main/mypage/plus.svg`} fill alt="" />
-            </picture>
-            <span className="text-white">신규등록</span>
-          </button>
-        ) : null}
+        <button
+          className="flex justify-center items-center gap-[0.625rem] w-full h-[2.625rem] my-[1.125rem] bg-[#182A5B]"
+          onClick={async (e) => {
+            setCreateAccountItem(true);
+            setCheckedCompanyItem(null);
+            setCheckedAccountItem(null);
+          }}
+        >
+          <picture className="w-[0.75rem] h-[0.75rem] top-[0.0625rem] relative">
+            <Image src={`/images/main/mypage/plus.svg`} fill alt="" />
+          </picture>
+          <span className="text-white">신규등록</span>
+        </button>
       </div>
       <div className="py-[1.125rem]">
         <ul className="flex flex-col h-fit">
@@ -583,120 +568,57 @@ const Company = ({ data }) => {
             address={data?.address}
             detailAddress={data?.detailAddress}
           />
-          {CreateAccountItem &&
-          (sessionUser?.part === "admin" || sessionUser?.affiliation === "admin") ? (
-            <button
-              className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
-              onClick={async () => {
-                const companyName = document.getElementById("companyName").value;
-                const userNumber = document.getElementById("userNumber").value;
-                const companyNumber = document.getElementById("companyNumber").value;
-                const phoneNumber = document.getElementById("phoneNumber").value;
-                const companyAddress = document
-                  .getElementById("companyAddress")
-                  ?.querySelectorAll("input");
-                const zipCode = companyAddress[0].value;
-                const address = companyAddress[1].value;
-                const detailAddress = companyAddress[2].value;
-                const data = {
-                  companyName,
-                  userNumber,
-                  companyNumber,
-                  phoneNumber,
-                  zipCode,
-                  address,
-                  detailAddress,
-                };
-                console.log(data);
-                const res = await axios.post(baseURL + "/api/mongo/company", data, {
-                  headers: { Authorization: `${session?.token?.accessToken}` },
-                });
-                console.log(res);
-                if (res.data.result === 1) {
-                  alert("등록되었습니다.");
-                  window.location.reload();
-                }
-              }}
-            >
-              <picture className="relative w-[0.875rem] h-[0.75rem]">
-                <Image src={`/images/main/myPage/check.svg`} fill alt="" />
-              </picture>
-              <span className="text-base text-white">등록</span>
-            </button>
-          ) : sessionUser?.part === "admin" || sessionUser?.affiliation === "admin" ? (
-            <button
-              className="w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center"
-              onClick={async () => {
-                const companyName = document.getElementById("companyName").value;
-                const userNumber = document.getElementById("userNumber").value;
-                const companyNumber = document.getElementById("companyNumber").value;
-                const phoneNumber = document.getElementById("phoneNumber").value;
-                const companyAddress = document
-                  .getElementById("companyAddress")
-                  ?.querySelectorAll("input");
-                const zipCode = companyAddress[0].value;
-                const address = companyAddress[1].value;
-                const detailAddress = companyAddress[2].value;
-                const data = {
-                  index: CheckedCompanyItem?.index,
-                  companyName,
-                  userNumber,
-                  companyNumber,
-                  phoneNumber,
-                  zipCode,
-                  address,
-                  detailAddress,
-                };
-                console.log(data);
-                const res = await axios.put(baseURL + "/api/mongo/company", data, {
-                  headers: { Authorization: `${session?.token?.accessToken}` },
-                });
-                console.log(res);
-                if (res.data.result === 1) {
-                  alert("수정되었습니다.");
-                  window.location.reload();
-                } else {
-                  alert("수정에 실패하였습니다.");
-                }
-              }}
-            >
-              <picture className="relative w-[0.875rem] h-[0.75rem]">
-                <Image src={`/images/main/myPage/edit.svg`} fill alt="" />
-              </picture>
-              <span className="text-white">수정</span>
-            </button>
-          ) : null}
-          {CreateAccountItem ? null : sessionUser?.part === "admin" ||
-            sessionUser?.affiliation === "admin" ? (
-            <span
-              className="flex text[#222222] text-base underline cursor-pointer mt-[2rem]"
-              onClick={() => {
-                setVisibleDeleteModal(true);
-                setDeleteApiUrl(
-                  baseURL + `/api/mongo/company?companyNumber=${CheckedCompanyItem?.companyNumber}`
-                );
-              }}
-            >
-              계정삭제
-            </span>
-          ) : null}
+          <button
+            className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
+            onClick={async () => {
+              const companyName = document.getElementById("companyName").value;
+              const userNumber = document.getElementById("userNumber").value;
+              const companyNumber = document.getElementById("companyNumber").value;
+              const phoneNumber = document.getElementById("phoneNumber").value;
+              const companyAddress = document
+                .getElementById("companyAddress")
+                ?.querySelectorAll("input");
+              const zipCode = companyAddress[0].value;
+              const address = companyAddress[1].value;
+              const detailAddress = companyAddress[2].value;
+              const data = {
+                companyName,
+                userNumber,
+                companyNumber,
+                phoneNumber,
+                zipCode,
+                address,
+                detailAddress,
+              };
+              console.log(data);
+              const res = await axios.post(baseURL + "/api/mongo/company", data, {
+                headers: { Authorization: `${session?.token?.accessToken}` },
+              });
+              console.log(res);
+              if (res.data.result === 1) {
+                alert("등록되었습니다.");
+                window.location.reload();
+              }
+            }}
+          >
+            <picture className="relative w-[0.875rem] h-[0.75rem]">
+              <Image src={`/images/main/myPage/check.svg`} fill alt="" />
+            </picture>
+            <span className="text-base text-white">등록</span>
+          </button>
         </div>
       </div>
     </>
   );
 };
 
-const Part = ({ data, sub, isCreate }) => {
-  const searchRef = useRef(null);
+const Part = ({ data, defaultName, defaultEmail }) => {
   const { data: session } = useSession();
   const [sessionUser, setSessionUser] = useState(null);
-  const setVisibleDeleteModal = useSetRecoilState(DeleteModalAtom);
-  const setDeleteApiUrl = useSetRecoilState(DeleteApiUriAtom);
-  const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
   const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
   const CheckedAccountItem = useRecoilValue(CheckedAccountItemAtom);
   const SelectedPartItem = useRecoilValue(SelectedPartItemAtom);
-  const setVisibleChangePasswordModal = useSetRecoilState(ChangePasswordModalAtom);
+  const setSelectedPartItem = useSetRecoilState(SelectedPartItemAtom);
 
   const [selectedFieldInAccount, setSelectedFieldInAccount] = useRecoilState(
     SelectedFieldInAccountAtom
@@ -752,19 +674,19 @@ const Part = ({ data, sub, isCreate }) => {
               <Image src={`/images/main/myPage/folder.svg`} fill alt="" draggable={false} />
             </picture>
             <span id="part" className="text-[#222222] text-lg">
-              {sessionUser?.part === "admin" || sessionUser?.affiliation === "admin" ? (
-                <select name="selectedPart" value={SelectedPartItem || "admin"} id="selectedPart">
-                  <option value="admin">관리자</option>
-                  <option value="engineer">엔지니어</option>
-                  <option value="operator">오퍼레이터</option>
-                </select>
-              ) : CheckedAccountItem?.part === "admin" ? (
-                "관리자"
-              ) : CheckedAccountItem?.part === "engineer" ? (
-                "엔지니어"
-              ) : CheckedAccountItem?.part === "operator" ? (
-                "오퍼레이터"
-              ) : null}
+              <select
+                name="selectedPart"
+                value={SelectedPartItem}
+                defaultValue={"admin"}
+                id="selectedPart"
+                onChange={(e) => {
+                  setSelectedPartItem(e.target.value);
+                }}
+              >
+                <option value="admin">관리자</option>
+                <option value="engineer">엔지니어</option>
+                <option value="operator">오퍼레이터</option>
+              </select>
             </span>
           </div>
           <InputTextItem
@@ -773,28 +695,25 @@ const Part = ({ data, sub, isCreate }) => {
             value={CheckedAccountItem ? data?.id : ""}
             placeholder={"영문자+숫자, 20자제한, 특수기호 금지"}
           />
-          {CheckedAccountItem ? null : (
-            <>
-              <InputTextItem
-                title="비밀번호"
-                id={"password"}
-                type="password"
-                value={CheckedAccountItem ? data?.password : ""}
-                placeholder={"영문자+숫자, 20자 제한"}
-              />
-              <InputTextItem
-                title="비밀번호 확인"
-                id={"passwordCheck"}
-                type="password"
-                value={""}
-                placeholder={"비밀번호를 한번 더 입력"}
-              />
-            </>
-          )}
+          <InputTextItem
+            title="비밀번호"
+            id={"password"}
+            type="password"
+            value={CheckedAccountItem ? data?.password : ""}
+            placeholder={"영문자+숫자, 20자 제한"}
+          />
+          <InputTextItem
+            title="비밀번호 확인"
+            id={"passwordCheck"}
+            type="password"
+            value={""}
+            placeholder={"비밀번호를 한번 더 입력"}
+          />
           <InputTextItem
             id="name"
             title="이름"
-            value={CheckedAccountItem ? data?.name : ""}
+            defaultValue={defaultName}
+            value={CheckedAccountItem ? data?.name : defaultName}
             placeholder={"이름 입력"}
           />
           <InputTextItem
@@ -806,10 +725,11 @@ const Part = ({ data, sub, isCreate }) => {
           <InputTextItem
             id="email"
             title="이메일"
-            value={CheckedAccountItem ? data?.email : ""}
+            defaultValue={defaultEmail}
+            value={CheckedAccountItem ? data?.email : defaultEmail}
             placeholder={"이메일 주소를 끝까지 입력"}
           />
-          <div className="flex flex-col gap-[1rem] mt-[2.625rem]">
+          {/* <div className="flex flex-col gap-[1rem] mt-[2.625rem]">
             <select
               name="selectField"
               id="selectField"
@@ -834,157 +754,77 @@ const Part = ({ data, sub, isCreate }) => {
                 );
               })}
             </select>
-            {/* {!selectedTaskInAccount ? null : ( */}
-            <select name="selectTask" id="selectTask">
-              {[
-                ...Array(
-                  parseInt(selectedTaskInAccount && selectedTaskInAccount[0]?.processCount) || 10
-                ).keys(),
-              ]?.map((item, index) => {
-                return (
-                  <option value={item + 1} key={`selectTask${index}`}>
-                    {`제 ${item + 1} 공정`}
-                  </option>
-                );
-              })}
-            </select>
-            {/* )} */}
-          </div>
-          {!CheckedAccountItem &&
-          (sessionUser?.affiliation === "admin" || sessionUser?.part === "admin") ? (
-            <button
-              className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
-              onClick={async (e) => {
-                const targetArr = e.target.parentNode.parentNode?.querySelectorAll("input");
-                for (const item of targetArr) {
-                  if (item.value === "") {
-                    return alert("빈칸을 모두 채워주세요.");
-                  } else {
-                    continue;
-                  }
+            {!selectedTaskInAccount ? null : (
+              <select name="selectTask" id="selectTask">
+                {[
+                  ...Array(
+                    parseInt(selectedTaskInAccount && selectedTaskInAccount[0]?.processCount) || 10
+                  ).keys(),
+                ]?.map((item, index) => {
+                  return (
+                    <option value={item + 1} key={`selectTask${index}`}>
+                      {`제 ${item + 1} 공정`}
+                    </option>
+                  );
+                })}
+              </select>
+            )}
+          </div> */}
+          <button
+            className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
+            onClick={async (e) => {
+              const targetArr = e.target.parentNode.parentNode?.querySelectorAll("input");
+              for (const item of targetArr) {
+                if (item.value === "") {
+                  return alert("빈칸을 모두 채워주세요.");
+                } else {
+                  continue;
                 }
-                const part = document.getElementById("selectedPart")?.value;
-                const id = targetArr[0]?.value;
-                const password = targetArr[1]?.value;
-                const password2 = targetArr[2]?.value;
-                const name = targetArr[3]?.value;
-                const phone = targetArr[4]?.value;
-                const email = targetArr[5]?.value;
-                const field = document.getElementById("selectField")?.value;
-                const task = document.getElementById("selectTask")?.value;
-                if (password !== password2) {
-                  targetArr[2].focus();
-                  return alert("비밀번호가 일치하지 않습니다.");
-                }
-                const data = {
-                  companyNumber: CheckedCompanyItem?.companyNumber,
-                  part,
-                  id,
-                  password,
-                  name,
-                  phone,
-                  email,
-                  field,
-                  task,
-                };
-                console.log(data);
-                const res = await axios.post(baseURL + "/api/mongo/createPart", data, {
-                  headers: { Authorization: `${session?.token?.accessToken}` },
-                });
-                console.log(res);
-                if (res.data.result === 1) {
-                  alert("등록되었습니다.");
-                  return window.location.reload();
-                } else if (res.data.result === 0) {
-                  return alert(res.data.msg);
-                }
-              }}
-            >
-              <picture className="relative w-[0.875rem] h-[0.75rem]">
-                <Image src={`/images/main/myPage/check.svg`} fill alt="" />
-              </picture>
-              <span className="text-base text-white">등록</span>
-            </button>
-          ) : CheckedAccountItem &&
-            (sessionUser?.affiliation === "admin" ||
-              sessionUser?.part === "admin" ||
-              sessionUser?.id === CheckedAccountItem?.id) ? (
-            <div className="flex w-[17.5rem] h-[2.5rem] mt-[4.375rem] ">
-              <button
-                className="select-none w-[8.75rem] h-[2.5rem]  border border-[#182A5B] border-solid flex justify-center items-center"
-                onClick={async (e) => {
-                  setVisibleChangePasswordModal(true);
-                }}
-              >
-                <span>비밀번호 초기화</span>
-              </button>
-              <button
-                className="w-[8.75rem] h-[2.5rem]  border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center"
-                onClick={async (e) => {
-                  const targetArr = e.target.parentNode.parentNode?.querySelectorAll("input");
-                  for (const item of targetArr) {
-                    if (item.value === "") {
-                      return alert("빈칸을 모두 채워주세요.");
-                    } else {
-                      continue;
-                    }
-                  }
-                  const part = document.getElementById("selectedPart")?.value;
-                  const id = document.getElementById("userId")?.value;
-                  const name = document.getElementById("name")?.value;
-                  const phone = document.getElementById("phone")?.value;
-                  const email = document.getElementById("email")?.value;
-                  const field = document.getElementById("selectField")?.value;
-                  const task = document.getElementById("selectTask")?.value;
-                  const data = {
-                    index: CheckedAccountItem?.index,
-                    companyNumber: CheckedCompanyItem?.companyNumber,
-                    currentPart: CheckedAccountItem?.part,
-                    part,
-                    id,
-                    name,
-                    phone,
-                    email,
-                    field,
-                    task,
-                  };
-                  console.log(data);
-                  const res = await axios.put(baseURL + "/api/mongo/createPart", data, {
-                    headers: { Authorization: `${session?.token?.accessToken}` },
-                  });
-                  console.log(res);
-                  if (res.data.result === 1) {
-                    alert("수정되었습니다.");
-                    return window.location.reload();
-                  } else if (res.data.result === 0) {
-                    return alert(res.data.msg);
-                  }
-                }}
-              >
-                <picture className="relative w-[0.875rem] h-[0.75rem]">
-                  <Image src={`/images/main/myPage/edit.svg`} fill alt="" />
-                </picture>
-                <span className="text-white">수정</span>
-              </button>
-            </div>
-          ) : null}
-          {CreateAccountItem ? null : sessionUser?.part === "admin" ||
-            sessionUser?.affiliation === "admin" ? (
-            <span
-              className="flex text[#222222] text-base underline cursor-pointer mt-[2.625rem]"
-              onClick={() => {
-                setVisibleDeleteModal(true);
-                setDeleteApiUrl(baseURL + `/api/mongo/user?id=${CheckedAccountItem?.id}`);
-              }}
-            >
-              계정삭제
-            </span>
-          ) : null}
+              }
+              const part = document.getElementById("selectedPart")?.value;
+              const id = targetArr[0]?.value;
+              const password = targetArr[1]?.value;
+              const password2 = targetArr[2]?.value;
+              const name = targetArr[3]?.value;
+              const phone = targetArr[4]?.value;
+              const email = targetArr[5]?.value;
+              const field = document.getElementById("selectField")?.value;
+              const task = document.getElementById("selectTask")?.value;
+              if (password !== password2) {
+                targetArr[2].focus();
+                return alert("비밀번호가 일치하지 않습니다.");
+              }
+              const data = {
+                companyNumber: CheckedCompanyItem?.companyNumber,
+                part,
+                id,
+                password,
+                name,
+                phone,
+                email,
+                field,
+                task,
+              };
+              console.log(data);
+              const res = await axios.post(baseURL + "/api/mongo/createPart", data, {
+                headers: { Authorization: `${session?.token?.accessToken}` },
+              });
+              console.log(res);
+              if (res.data.result === 1) {
+                alert("등록되었습니다.");
+                return window.location.reload();
+              } else if (res.data.result === 0) {
+                return alert(res.data.msg);
+              }
+            }}
+          >
+            <picture className="relative w-[0.875rem] h-[0.75rem]">
+              <Image src={`/images/main/myPage/check.svg`} fill alt="" />
+            </picture>
+            <span className="text-base text-white">등록</span>
+          </button>
         </div>
       </div>
     </>
   );
 };
-
-// 0.0625rem convert to rem = 0.0625rem
-// 68

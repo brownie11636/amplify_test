@@ -134,7 +134,9 @@ export const FieldCard = ({ data }) => {
                   processCount,
                 };
                 console.log(data);
-                const res = await axios.post(baseURL + "/api/mongo/field", data);
+                const res = await axios.post(baseURL + "/api/mongo/field", data, {
+                  headers: { Authorization: `${session?.token?.accessToken}` },
+                });
                 console.log(res);
                 if (res.data.result === 1) {
                   alert("등록되었습니다.");
@@ -181,7 +183,9 @@ export const FieldCard = ({ data }) => {
                   processCount,
                 };
                 console.log(data);
-                const res = await axios.put(baseURL + `/api/mongo/field`, data);
+                const res = await axios.put(baseURL + `/api/mongo/field`, data, {
+                  headers: { Authorization: `${session?.token?.accessToken}` },
+                });
                 if (res.data.result === 1) {
                   alert("수정되었습니다.");
                   window.location.reload();

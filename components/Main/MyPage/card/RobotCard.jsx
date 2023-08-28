@@ -100,7 +100,9 @@ export const RobotCard = ({ children, data }) => {
                   detailAddress,
                 };
                 console.log(data);
-                const res = await axios.post(baseURL + "/api/mongo/field", data);
+                const res = await axios.post(baseURL + "/api/mongo/field", data, {
+                  headers: { Authorization: `${session?.token?.accessToken}` },
+                });
                 console.log(res);
                 if (res.data.result === 1) {
                   alert("등록되었습니다.");
