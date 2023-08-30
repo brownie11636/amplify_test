@@ -49,7 +49,6 @@ const Login = () => {
         console.log(err);
       });
   };
-  const sendMail = async () => {};
   return (
     <main className="flex w-full h-full justify-center items-center py-[200px] bg-[#F2F2F2]">
       <div className="flex flex-col items-center relative">
@@ -64,6 +63,7 @@ const Login = () => {
             })
               .then((res) => {
                 if (res.error) {
+                  console.log(res);
                   alert("로그인에 실패하였습니다.");
                   return;
                 } else {
