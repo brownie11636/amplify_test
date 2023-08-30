@@ -10,8 +10,12 @@ import { useSession } from "next-auth/react";
 
 const PltTaskManager = () => {
 
-  const [taskList, setTasks] = useState([
-    // { id:"TN000-FAKE-0000", alias: 'TeleoperationTset', config: 'Robot', status: 'Universal Robots', descriptions:"not yet", createdAt:"2023...today"},
+  const [taskApps, setTaskApps] = useState([
+    { name:"Teleoperation", description: 'robot operation', version: 'v0.1'},
+    { name:"PTS-cambot", description: 'camera and robot', version: 'v0.1'},
+    { name:"WebRTC 2D", description: 'ordinary streaming', version: 'v0.1'},
+    { name:"WebRTC Streovision", description: '2ch streaming', version: 'v0.1'},
+    { name:"WebRTC 3D", description: 'depthview', version: 'v0.1'},
   ]);
 
   const [isAddTaskPopupVisible, setAddTaskPopupVisible] = useState(false);
@@ -47,28 +51,20 @@ const PltTaskManager = () => {
       });
       console.log(fetchedTasks?.data?.data);
 
+
       // Fetch tasks from an API and update the tasks state
-      setTasks(fetchedTasks?.data?.data?.reverse());
+      setTaskApps(fetchedTasks?.data?.data?.reverse());
     };
     fetchTasks();
   }, [session]); // Empty dependency array to run the effect only once
 
   return (
     <div className={styles.section}>
-      <div className={styles.header}>
-        <h2>Manage Tasks</h2>
-        <button className={styles.addButton} onClick={handleAddTaskPopup}>+</button>
-      </div>
       <div className={styles.list}>
-        {taskList.map((task, index) => (
+        {taskApps.map((task, index) => (
           <TaskListItem key={index} task={task} />
         ))}
       </div>
-      {isAddTaskPopupVisible && (
-        <div className={styles.overlay}>
-          <AddTaskPopup onClose={handleCloseAddTaskPopup} onSearch={handleSearch} />
-        </div>
-      )}
     </div>
   );
 };

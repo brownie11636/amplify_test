@@ -3,11 +3,12 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 
+const TAG = "NextAuth";
+
 export default NextAuth({
   providers: [
     CredentialsProvider({
-      id: "testLogin",
-      name: "testLogin",
+      id: "portal301APIserver",
       type: "credentials",
       credentials: {
         id: { label: "ID", type: "text" },
@@ -18,7 +19,8 @@ export default NextAuth({
           return { id: "admin", name: "test", affiliation: "admin" };
         }
         const response = await axios.post(
-          "https://localhost:3333/api/mongo/login",
+          // "https://localhost:3333/api/mongo/login",
+          "https://localhost:3333/identityapi/signin",
           {
             id: credentials.id,
             password: credentials.password,
@@ -26,11 +28,12 @@ export default NextAuth({
           { httpsAgent: new https.Agent({ rejectUnauthorized: false }) }
         );
         if (!response) {
-          console.log(response.data);
           return null;
         } else {
-          const { index, id, name, affiliation, part } = response.data.user;
-          return { index, id, name, affiliation, part };
+          const { index, id, nickname, email, affiliation } = response.data.user;
+          // console.log(TAG,"response.data success");
+          // console.log(TAG,response.data);
+          return { index, id, nickname, email, affiliation };
         }
       },
     }),
@@ -40,16 +43,15 @@ export default NextAuth({
       if (user) {
         token.user = user;
       }
+      token.accessToken = "0000";
       return token;
     },
     async session(session, user, token, trigger) {
-      console.log(user);
-      console.log(token);
       return session;
     },
   },
   pages: {
-    signIn: "/main/login",
+    signIn: "/user/signin",
   },
   secret: process.env.NEXT_AUTH_SECRET,
 });

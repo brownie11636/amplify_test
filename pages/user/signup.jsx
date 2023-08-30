@@ -1,6 +1,11 @@
 import { React, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styles from "/styles/registrationTest.module.css";
+import { signIn } from "next-auth/react";
+import Image from "next/image";
+
+
+
 
 export default function RegistrationRoot() {
   const router = useRouter();
@@ -38,42 +43,42 @@ export default function RegistrationRoot() {
     }
   }, [email]);
 
-  useEffect(() => {
-    if (isEmail) {
-      const handler = setTimeout(async () => {
-        let response = await fetch("https://localhost:3333/registration/email-check", {
-          method: "POST",
-          body: JSON.stringify({ email }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+  // useEffect(() => {
+  //   if (isEmail) {
+  //     const handler = setTimeout(async () => {
+  //       let response = await fetch("https://localhost:3333/registration/email-check", {
+  //         method: "POST",
+  //         body: JSON.stringify({ email }),
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       });
 
-        let status = response.status;
-        if (status === 200) {
-          setEmailMessage("사용 가능한 이메일입니다.");
-          setEmailCheck(true);
-          setEmailMessageColor("green");
-        } else if (status === 409) {
-          setEmailMessage("이미 사용중인 이메일입니다.");
-          setEmailCheck(false);
-          setEmailMessageColor("red");
-        } else if (status === 500) {
-          setEmailMessage("서버에 에러가 발생했습니다");
-          setEmailCheck(false);
-          setEmailMessageColor("red");
-        } else {
-          setEmailMessage("알 수 없는 오류가 발생했습니다");
-          setEmailCheck(false);
-          setEmailMessageColor("red");
-        }
-      }, 50);
+  //       let status = response.status;
+  //       if (status === 200) {
+  //         setEmailMessage("사용 가능한 이메일입니다.");
+  //         setEmailCheck(true);
+  //         setEmailMessageColor("green");
+  //       } else if (status === 409) {
+  //         setEmailMessage("이미 사용중인 이메일입니다.");
+  //         setEmailCheck(false);
+  //         setEmailMessageColor("red");
+  //       } else if (status === 500) {
+  //         setEmailMessage("서버에 에러가 발생했습니다");
+  //         setEmailCheck(false);
+  //         setEmailMessageColor("red");
+  //       } else {
+  //         setEmailMessage("알 수 없는 오류가 발생했습니다");
+  //         setEmailCheck(false);
+  //         setEmailMessageColor("red");
+  //       }
+  //     }, 50);
 
-      return () => {
-        clearTimeout(handler);
-      };
-    }
-  }, [email, isEmail]);
+  //     return () => {
+  //       clearTimeout(handler);
+  //     };
+  //   }
+  // }, [email, isEmail]);
 
   const [nickname, setNickname] = useState("");
   const onChangeNickname = (event) => {
@@ -92,44 +97,44 @@ export default function RegistrationRoot() {
     }
   }, [nickname]);
 
-  useEffect(() => {
-    if (isNickname) {
-      const handler = setTimeout(async () => {
-        let response = await fetch("https://localhost:3333/registration/nickname-check", {
-          method: "POST",
-          body: JSON.stringify({
-            nickname,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+  // useEffect(() => {
+  //   if (isNickname) {
+  //     const handler = setTimeout(async () => {
+  //       let response = await fetch("https://localhost:3333/registration/nickname-check", {
+  //         method: "POST",
+  //         body: JSON.stringify({
+  //           nickname,
+  //         }),
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       });
 
-        let status = response.status;
-        if (status === 200) {
-          setNicknameMessage("사용 가능한 닉네임입니다.");
-          setNicknameCheck(true);
-          setNicknameMessageColor("green");
-        } else if (status === 409) {
-          setNicknameMessage("이미 사용중인 닉네임입니다.");
-          setNicknameCheck(false);
-          setNicknameMessageColor("red");
-        } else if (status === 500) {
-          setNicknameMessage("서버에 에러가 발생했습니다");
-          setNicknameCheck(false);
-          setNicknameMessageColor("red");
-        } else {
-          setNicknameMessage("알 수 없는 오류가 발생했습니다");
-          setNicknameCheck(false);
-          setNicknameMessageColor("red");
-        }
-      }, 50);
+  //       let status = response.status;
+  //       if (status === 200) {
+  //         setNicknameMessage("사용 가능한 닉네임입니다.");
+  //         setNicknameCheck(true);
+  //         setNicknameMessageColor("green");
+  //       } else if (status === 409) {
+  //         setNicknameMessage("이미 사용중인 닉네임입니다.");
+  //         setNicknameCheck(false);
+  //         setNicknameMessageColor("red");
+  //       } else if (status === 500) {
+  //         setNicknameMessage("서버에 에러가 발생했습니다");
+  //         setNicknameCheck(false);
+  //         setNicknameMessageColor("red");
+  //       } else {
+  //         setNicknameMessage("알 수 없는 오류가 발생했습니다");
+  //         setNicknameCheck(false);
+  //         setNicknameMessageColor("red");
+  //       }
+  //     }, 50);
 
-      return () => {
-        clearTimeout(handler);
-      };
-    }
-  }, [nickname, isNickname]);
+  //     return () => {
+  //       clearTimeout(handler);
+  //     };
+  //   }
+  // }, [nickname, isNickname]);
 
   const [password, setPassword] = useState("");
   const onChangePassword = (event) => {
@@ -187,13 +192,22 @@ export default function RegistrationRoot() {
   }
 
   async function registrationSubmit() {
-    if (isEmail && isNickname && isPassword && emailCheck && nicknameCheck && passwordCheck) {
-      const response = await fetch("https://localhost:3333/registration/add", {
+    // if (isEmail && isNickname && isPassword && emailCheck && nicknameCheck && passwordCheck) {
+    if (passwordCheck) {
+      console.log(JSON.stringify({
+        id:email,
+        nickname,
+        password,
+        email
+      }));
+
+      const response = await fetch("https://localhost:3333/identityapi/signup", {
         method: "POST",
         body: JSON.stringify({
-          email,
+          id:email,
           nickname,
           password,
+          email
         }),
         headers: {
           "Content-Type": "application/json",
@@ -201,7 +215,8 @@ export default function RegistrationRoot() {
       });
       const status = response.status;
       if (status === 200) {
-        router.push("/");
+        console.log("signed up!")
+        // router.push("/");
       } else {
         console.log("server issue");
       }
@@ -212,8 +227,17 @@ export default function RegistrationRoot() {
   }
 
   return (
-    <div>
-      <div className={styles.login}>
+    <main className="flex w-full h-full justify-center items-center py-[200px] bg-[#F2F2F2]">
+      <div className="flex flex-col items-center relative">
+        <picture
+          className="flex relative w-[300px] h-[75px] cursor-pointer"
+          onClick={() => {
+            router.push("/main");
+          }}
+        >
+          <Image src={`/images/main/logo.svg`} fill alt="" />
+        </picture>
+        <div className={styles.login}>
         <h1>Registration</h1>
         <div className={styles.login_id}>
           <h4>E-mail</h4>
@@ -249,6 +273,9 @@ export default function RegistrationRoot() {
           <input type="submit" value="submit" onClick={registrationSubmit} />
         </div>
       </div>
-    </div>
+
+
+      </div>
+    </main>
   );
 }

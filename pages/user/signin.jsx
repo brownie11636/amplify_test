@@ -26,6 +26,7 @@ const Login = () => {
           alert("로그인에 실패하였습니다.");
           return;
         } else {
+          console.log("sibal,",res);
           router.push("/main");
         }
       })

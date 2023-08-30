@@ -7,7 +7,7 @@ class PageBanner extends Component {
         let { pageTitle, homePageUrl, homePageText, activePageText, bgImgClass } = this.props;
 
         return (
-            <div className={`page-title-area ${bgImgClass}`}>
+            <div>
                 <div className="container">
                     <div className="page-title-content">
                         <h2>{pageTitle}</h2>

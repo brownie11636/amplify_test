@@ -23,12 +23,9 @@ const PltModuleManager = (props) => {
   };
 
 
-  console.log("Is admin");
   const { data: session } = useSession();
   if(session?.token?.user?.affiliation === "admin"){
-    console.log("admin mode");
   }else{
-    console.log("node-admin mode:",session?.token?.user?.affiliation)
   }
 
   const onSelect = (selectedItem) => {

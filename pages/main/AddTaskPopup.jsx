@@ -6,21 +6,16 @@ import DeviceListItem from "./deviceListItem";
 import PltModuleSelector from './PltModuleSelector';
 
 
-const DevicePopup = ({ onClose, onSearch }) => {
+const addTaskPopup = ({ onClose, onSearch }) => {
   const [serialNumber, setSerialNumber] = useState('dummy data');
-  const [isRobotSelectVisible, setIsRobotSelectVisible] = useState(false);
-  const [isDefaultRobotSelected, setIsDefaultRobotSelected] = useState(false);
-  const [isCameraSelectVisible, setIsCameraSelectVisible] = useState(false);
-  const [defaultRobot, setDefaultRobot] = useState();
   const [fetchedData, setFetchedData] = useState(null);
   const [password, setPassword] = useState('');
-  const filter = {};
-
-  const handleSearch = async () => {
+  
+  const handleCreate = async () => {
     // Call the onSearch function and pass the serialNumber
     // const data = await onSearch(serialNumber);
       // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-      const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/module-list", {
+      const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/list", {
         filter:{"serialNumber":serialNumber}
       });
 
@@ -28,31 +23,7 @@ const DevicePopup = ({ onClose, onSearch }) => {
     setFetchedData(fetchedDevices?.data?.data[0]);
   };
 
-  const handleRegister = () => {
-    // Implement registration logic here
-    console.log('Registering with password:', password);
-  };
-
-
-  const onAddDefaultRobotClick = () => {
-    setIsRobotSelectVisible(true);
-    console.log("robot clicked")
-  }
-  const onAddDefaultCameraClick = () => {
-    setIsCameraSelectVisible(true);
-    console.log("camera clicked")
-  }
-
-  const onSelectRobot = (selectedItem) => {
-    console.log("on select robot event");
-    console.log(selectedItem)
-    setIsRobotSelectVisible(false);
-    setDefaultRobot(selectedItem);
-  }
-  const onSelectCamera = () => {
-    console.log("on select camera event");
-  }
-
+  
   return (
     <div className={styles.popupContainer}>
       <h1>Create New Task</h1>
@@ -93,7 +64,7 @@ const DevicePopup = ({ onClose, onSearch }) => {
       </button>
       <h2>Enter Task Number</h2>
       <div className={styles.inputContainer}>
-        <button onClick={handleSearch} className={styles.searchButton}>
+        <button onClick={handleCreate} className={styles.searchButton}>
             Create
         </button>
       </div>
@@ -101,4 +72,4 @@ const DevicePopup = ({ onClose, onSearch }) => {
   );
 };
 
-export default DevicePopup;
+export default addTaskPopup;
