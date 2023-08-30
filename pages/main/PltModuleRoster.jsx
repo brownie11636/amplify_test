@@ -37,17 +37,17 @@ const PltModuleManager = (props) => {
     // Simulate fetching data or changing the list dynamically
     // For example, fetchDevices and fetchTasks could be API calls
     const fetchDevices = async () => {
-      const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
-        companyNumber:
-          session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
-      });
-      console.log(response.data?.data);
+      // const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
+      //   companyNumber:
+      //     session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
+      // });
+      // console.log(response.data?.data);
       // setModuleList(response.data?.data);
 
       // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
       const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/list", {
         filter:props.filter
-      });
+      },{headers: {Authorization: "admin"}});
       console.log(fetchedDevices?.data?.data);
       setModuleList(fetchedDevices?.data?.data?.reverse());
     };

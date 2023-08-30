@@ -3,6 +3,7 @@ import styles from './Popup.module.css';
 import axios from "axios";
 import PltModuleManager from './PltModuleRoster';
 import DeviceListItem from "./deviceListItem";
+import PltTaskAppSelector from './PltTaskAppSelector';
 import PltModuleSelector from './PltModuleSelector';
 
 
@@ -48,6 +49,10 @@ const addTaskPopup = ({ onClose, onSearch }) => {
               className={styles.inputField}
               autoComplete="off"
           />
+        </div>
+        <div>
+          <h3>Application2</h3>
+          <PltTaskAppSelector/>
         </div>
         <div>
           <h3>Default Robot:</h3>

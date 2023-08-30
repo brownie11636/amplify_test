@@ -44,8 +44,9 @@ const PltTaskManager = () => {
       // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
       const fetchedTasks = await axios.post("https://localhost:3333/fetch/v0.1/task/list", {
         filter:{}
-      });
-      console.log(fetchedTasks?.data?.data);
+      // },{headers: {Authorization: `Bearer ${session?.token?.token}`}});
+    },{headers: {Authorization: "admin"}});
+    console.log(fetchedTasks?.data?.data);
 
       // Fetch tasks from an API and update the tasks state
       setTasks(fetchedTasks?.data?.data?.reverse());

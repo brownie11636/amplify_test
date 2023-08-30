@@ -1,41 +1,41 @@
 import React, { useState } from 'react';
 import styles from './Popup.module.css';
 import axios from "axios";
-import PltModuleRoster from './PltModuleRoster';
-import DeviceListItem from "./deviceListItem";
+import PltTaskAppRoster from './PltTaskAppRoster';
+import PltTaskAppWrapper from './PlttaskAppWrapper';
 
-const PltModuleSelector = (props) => {
+const PltTaskAppSelector = (props) => {
   const [isSelectorVisible, setIsSelectorVisible] = useState(false);
-  const [selectedPltModule, setSelectedPltModule] = useState();
+  const [selectedPltTaskApp, setSelectedPltTaskApp] = useState();
     
-  const onAddDefaultRobotClick = () => {
+  const onAddTaskAppClicked = () => {
     setIsSelectorVisible(true);
-    console.log("robot clicked");
   }
 
-  const onSelectRobot = (selectedItem) => {
-    console.log("on select robot event");
+  const onSelectTaskApp = (selectedItem) => {
+    console.log("selectedItem");
     console.log(selectedItem);
     setIsSelectorVisible(false);
-    setSelectedPltModule(selectedItem);
+    setSelectedPltTaskApp(selectedItem);
+    console.log(selectedPltTaskApp)
     props.onSelect?props.onSelect(selectedItem):()=>{};
   }
   return (
         <div>
-          {!selectedPltModule &&
-            <div className={styles.plusIcon} onClick={onAddDefaultRobotClick}>
+          {!selectedPltTaskApp &&
+            <div className={styles.plusIcon} onClick={onAddTaskAppClicked}>
               <div className={styles.horizontalLine}></div>
               <div className={styles.verticalLine}></div>
             </div>
           }
-          {selectedPltModule &&
-            <DeviceListItem device={selectedPltModule}/>
+          {selectedPltTaskApp &&
+            <PltTaskAppWrapper taskApp={selectedPltTaskApp} />
           }
           {isSelectorVisible &&
-            (<PltModuleRoster filter={props.filter} onSelect={onSelectRobot}/>)
+            (<PltTaskAppRoster filter={props.filter} onSelect={onSelectTaskApp}/>)
           }
         </div>
   );
 };
 
-export default PltModuleSelector;
+export default PltTaskAppSelector;
