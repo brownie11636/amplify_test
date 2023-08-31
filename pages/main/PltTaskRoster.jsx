@@ -29,7 +29,6 @@ const PltTaskManager = ({ sessions }) => {
     // handleCloseAddModulePopup();
   };
 
-  const { data: session } = useSession();
   useEffect(() => {
     if (!sessions?.token?.user?.affiliation) {
       return;
@@ -41,7 +40,7 @@ const PltTaskManager = ({ sessions }) => {
         // console.log("node-admin mode:", sessions?.token?.user?.affiliation);
       }
     }
-  }, [session]);
+  }, [sessions]);
 
   const [baseURL, setBaseURL] = useState();
   useEffect(() => {
@@ -52,7 +51,7 @@ const PltTaskManager = ({ sessions }) => {
     );
   }, []);
   useEffect(() => {
-    if (baseURL) {
+    if (baseURL && sessions) {
       // Simulate fetching data or changing the list dynamically
       // For example, fetchDevices and fetchTasks could be API calls
       const fetchTasks = async () => {
@@ -71,7 +70,7 @@ const PltTaskManager = ({ sessions }) => {
             setTasks(res?.data?.data?.reverse());
           })
           .catch((err) => {
-            // console.log(err);
+            console.log(err);
           });
 
         // Fetch tasks from an API and update the tasks state
@@ -79,7 +78,7 @@ const PltTaskManager = ({ sessions }) => {
 
       fetchTasks();
     }
-  }, [baseURL]); // Empty dependency array to run the effect only once
+  }, [baseURL, sessions]); // Empty dependency array to run the effect only once
 
   return (
     <div className={styles.section}>
@@ -104,20 +103,3 @@ const PltTaskManager = ({ sessions }) => {
 };
 
 export default PltTaskManager;
-
-export const getServerSideProps = async (context) => {
-  const session = await getSession(context);
-  console.log(session);
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/main/login",
-        permanent: false,
-      },
-    };
-  } else {
-    return {
-      props: { sessions: session },
-    };
-  }
-};

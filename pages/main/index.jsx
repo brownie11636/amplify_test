@@ -11,10 +11,8 @@ import { getSession, useSession } from "next-auth/react";
 
 import PltModuleRoster from "./PltModuleRoster";
 import PltTaskRoster from "./PltTaskRoster";
-import { useRouter } from "next/router";
 
 const Main = ({ sessions }) => {
-  const router = useRouter();
   // Sample data for devices and tasks (replace with your actual data)
   const [moduleList, setModuleList] = useState([
     // { alias: 'Device 1', serialNumber: '12345' , type: 'Robot', manufacturer: 'Universal Robots'},
@@ -66,7 +64,6 @@ const Main = ({ sessions }) => {
   //   router.push(`/main`);
   // }, []);
 
-  const { data: session } = useSession();
   useEffect(() => {
     if (!sessions?.token?.user?.affiliation) {
       return;
@@ -78,10 +75,11 @@ const Main = ({ sessions }) => {
         // console.log("node-admin mode:", sessions?.token?.user?.affiliation);
       }
     }
-  }, [session]);
+  }, [sessions]);
 
   const [baseURL, setBaseURL] = useState();
   useEffect(() => {
+    console.log(process.env.NEXT_PUBLIC_API_URL);
     setBaseURL(
       typeof window !== "undefined" && window?.location.href.includes("www")
         ? process.env.NEXT_PUBLIC_API_URL_WWW
@@ -94,8 +92,7 @@ const Main = ({ sessions }) => {
   // const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
 
   useEffect(() => {
-    console.log(baseURL);
-    if (baseURL) {
+    if (baseURL && sessions) {
       // Simulate fetching data or changing the list dynamically
       // For example, fetchDevices and fetchTasks could be API calls
       const fetchDevices = async () => {
@@ -104,7 +101,7 @@ const Main = ({ sessions }) => {
             baseURL + "/api/mongo/robotList",
             {
               companyNumber:
-                sessionStorage?.token?.user?.affiliation === "admin"
+                sessions?.token?.user?.affiliation === "admin"
                   ? "admin"
                   : sessions?.token?.user?.affiliation,
             },
@@ -162,13 +159,13 @@ const Main = ({ sessions }) => {
       fetchModuleList();
       fetchTasks();
     }
-  }, [session, baseURL]); // Empty dependency array to run the effect only once
+  }, [sessions, baseURL]); // Empty dependency array to run the effect only once
 
   return (
     <MainLayout>
       <div className={styles.container}>
-        <PltModuleRoster />
-        <PltTaskRoster />
+        <PltModuleRoster sessions={sessions} test={1} />
+        <PltTaskRoster sessions={sessions} />
       </div>
     </MainLayout>
   );
@@ -178,7 +175,7 @@ export default Main;
 
 export const getServerSideProps = async (context) => {
   const session = await getSession(context);
-  console.log(session);
+  // console.log(session);
   if (!session) {
     return {
       redirect: {
