@@ -11,10 +11,10 @@ import {
   FieldSelectedRadioAtom,
 } from "../../../recoil/AtomStore";
 import axios from "axios";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
-const MyPage = () => {
+const MyPage = ({ sessions }) => {
   const { data: session } = useSession();
   const router = useRouter();
   const [fieldItem, SetFieldItem] = useRecoilState(FieldItemAtom);
@@ -33,7 +33,7 @@ const MyPage = () => {
     );
   }, []);
   useEffect(() => {
-    if (baseURL) {
+    if (baseURL && sessions) {
       getField();
     }
   }, [session, FieldSelectedRadio, baseURL]);
@@ -43,7 +43,7 @@ const MyPage = () => {
         FieldSelectedRadio === "fieldList"
           ? "https://localhost:3333/api/mongo/field"
           : "https://localhost:3333/api/mongo/robot",
-        { headers: { Authorization: `${session?.token?.accessToken}` } }
+        { headers: { Authorization: `${sessions?.token?.accessToken}` } }
       )
       .then((response) => {
         SetFieldItem(response.data?.data);
@@ -142,3 +142,20 @@ const DeleteModal = ({ visible, setVisible, Text, url, data }) => {
   );
 };
 export default MyPage;
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};

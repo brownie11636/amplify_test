@@ -11,9 +11,10 @@ import {
   DeleteApiUriAtom,
   DeleteModalAtom,
 } from "../../../recoil/AtomStore";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
-const Account = () => {
+const Account = ({ sessions }) => {
+  console.log(sessions);
   const router = useRouter();
   const { data: session } = useSession();
   const [companyItem, setCompanyItem] = useRecoilState(CompanyItemAtom);
@@ -35,7 +36,7 @@ const Account = () => {
     );
   }, []);
   useEffect(() => {
-    if (baseURL) {
+    if ((baseURL, sessions)) {
       getCompany();
     }
   }, [session, baseURL]);
@@ -43,7 +44,7 @@ const Account = () => {
     await axios
       .get(
         `https://localhost:3333/api/mongo/company?affiliation=${session?.token?.user?.affiliation}`,
-        { headers: { Authorization: `${session?.token?.accessToken}` } }
+        { headers: { Authorization: `${sessions?.token?.accessToken}` } }
       )
       .then((response) => {
         console.log("response");
@@ -205,4 +206,20 @@ const DeleteModal = ({ visible, setVisible, url }) => {
     </div>
   );
 };
-// 40px convert to rem =
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};

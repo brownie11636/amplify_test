@@ -4,10 +4,10 @@ import styles from "./main.module.css";
 import TaskListItem from "./taskListItem";
 import AddTaskPopup from "./AddTaskPopup"; // Import the popup component
 import axios from "axios";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
-const PltTaskManager = () => {
+const PltTaskManager = ({ sessions }) => {
   const router = useRouter();
   const [taskList, setTasks] = useState([
     // { id:"TN000-FAKE-0000", alias: 'TeleoperationTset', config: 'Robot', status: 'Universal Robots', descriptions:"not yet", createdAt:"2023...today"},
@@ -29,19 +29,18 @@ const PltTaskManager = () => {
     // handleCloseAddModulePopup();
   };
 
-  const { data: session } = useSession();
   useEffect(() => {
-    if (!session?.token?.user?.affiliation) {
+    if (!sessions?.token?.user?.affiliation) {
       return;
     } else {
       // console.log("Is admin");
-      if (session?.token?.user?.affiliation === "admin") {
+      if (sessions?.token?.user?.affiliation === "admin") {
         // console.log("admin mode");
       } else {
-        // console.log("node-admin mode:", session?.token?.user?.affiliation);
+        // console.log("node-admin mode:", sessions?.token?.user?.affiliation);
       }
     }
-  }, [session]);
+  }, [sessions]);
 
   const [baseURL, setBaseURL] = useState();
   useEffect(() => {
@@ -52,7 +51,7 @@ const PltTaskManager = () => {
     );
   }, []);
   useEffect(() => {
-    if (baseURL) {
+    if (baseURL && sessions) {
       // Simulate fetching data or changing the list dynamically
       // For example, fetchDevices and fetchTasks could be API calls
       const fetchTasks = async () => {
@@ -64,17 +63,14 @@ const PltTaskManager = () => {
             {
               filter: {},
             },
-            { headers: { Authorization: `${session?.token?.accessToken}` } }
+            { headers: { Authorization: `${sessions?.token?.accessToken}` } }
           )
           .then((res) => {
             // console.log(res?.data?.data);
             setTasks(res?.data?.data?.reverse());
           })
           .catch((err) => {
-            // console.log(err);
-            if (err?.response?.status === 403) {
-              router.push("/main/login");
-            }
+            console.log(err);
           });
 
         // Fetch tasks from an API and update the tasks state
@@ -82,7 +78,7 @@ const PltTaskManager = () => {
 
       fetchTasks();
     }
-  }, [baseURL]); // Empty dependency array to run the effect only once
+  }, [baseURL, sessions]); // Empty dependency array to run the effect only once
 
   return (
     <div className={styles.section}>

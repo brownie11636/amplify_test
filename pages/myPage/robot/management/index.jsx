@@ -11,8 +11,9 @@ import {
 } from "../../../../recoil/AtomStore";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import axios from "axios";
+import { getSession } from "next-auth/react";
 
-const New = ({}) => {
+const New = ({ sessions }) => {
   const [companyItem, SetCompanyItem] = useRecoilState(CompanyItemAtom);
   const setCheckedRobotItem = useSetRecoilState(CheckedRobotItemAtom);
   const selectedRobot = useRecoilValue(SelectedRobotAtom);
@@ -37,7 +38,7 @@ const New = ({}) => {
   const getCompany = async () => {
     await axios
       .get(baseURL + "/api/mongo/company", {
-        headers: { Authorization: `${session?.token?.accessToken}` },
+        headers: { Authorization: `${sessions?.token?.accessToken}` },
       })
       .then((response) => {
         console.log(response);
@@ -65,3 +66,20 @@ const New = ({}) => {
   );
 };
 export default New;
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};

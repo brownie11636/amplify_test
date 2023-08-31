@@ -7,14 +7,12 @@ import TaskListItem from "./taskListItem";
 import AddModulePopup from "./AddDevicePopup"; // Import the popup component
 import AddTaskPopup from "./AddTaskPopup"; // Import the popup component
 import axios from "axios";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 import PltModuleRoster from "./PltModuleRoster";
 import PltTaskRoster from "./PltTaskRoster";
-import { useRouter } from "next/router";
 
-const Main = () => {
-  const router = useRouter();
+const Main = ({ sessions }) => {
   // Sample data for devices and tasks (replace with your actual data)
   const [moduleList, setModuleList] = useState([
     // { alias: 'Device 1', serialNumber: '12345' , type: 'Robot', manufacturer: 'Universal Robots'},
@@ -66,22 +64,22 @@ const Main = () => {
   //   router.push(`/main`);
   // }, []);
 
-  const { data: session } = useSession();
   useEffect(() => {
-    if (!session?.token?.user?.affiliation) {
+    if (!sessions?.token?.user?.affiliation) {
       return;
     } else {
       // console.log("Is admin");
-      if (session?.token?.user?.affiliation === "admin") {
+      if (sessions?.token?.user?.affiliation === "admin") {
         // console.log("admin mode");
       } else {
-        // console.log("node-admin mode:", session?.token?.user?.affiliation);
+        // console.log("node-admin mode:", sessions?.token?.user?.affiliation);
       }
     }
-  }, [session]);
+  }, [sessions]);
 
   const [baseURL, setBaseURL] = useState();
   useEffect(() => {
+    console.log(process.env.NEXT_PUBLIC_API_URL);
     setBaseURL(
       typeof window !== "undefined" && window?.location.href.includes("www")
         ? process.env.NEXT_PUBLIC_API_URL_WWW
@@ -89,13 +87,12 @@ const Main = () => {
     );
   }, []);
   // console.log(
-  //   session?.token?.user?.affiliation === "admin" ? "logged in admin mode" : session?.token?.user?.affiliation
+  //   sessions?.token?.user?.affiliation === "admin" ? "logged in admin mode" : sessions?.token?.user?.affiliation
   // );
   // const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
 
   useEffect(() => {
-    console.log(baseURL);
-    if (baseURL) {
+    if (baseURL && sessions) {
       // Simulate fetching data or changing the list dynamically
       // For example, fetchDevices and fetchTasks could be API calls
       const fetchDevices = async () => {
@@ -104,11 +101,11 @@ const Main = () => {
             baseURL + "/api/mongo/robotList",
             {
               companyNumber:
-                session?.token?.user?.affiliation === "admin"
+                sessions?.token?.user?.affiliation === "admin"
                   ? "admin"
-                  : session?.token?.user?.affiliation,
+                  : sessions?.token?.user?.affiliation,
             },
-            { headers: { Authorization: `${session?.token?.accessToken}` } }
+            { headers: { Authorization: `${sessions?.token?.accessToken}` } }
           )
           .then((res) => {
             // console.log(res?.data?.data);
@@ -116,9 +113,6 @@ const Main = () => {
           })
           .catch((err) => {
             console.log(err);
-            if (err?.response?.status === 403) {
-              router.push("/main/login");
-            }
           });
       };
       const fetchModuleList = async () => {
@@ -129,7 +123,7 @@ const Main = () => {
             {
               filter: {},
             },
-            { headers: { Authorization: `${session?.token?.accessToken}` } }
+            { headers: { Authorization: `${sessions?.token?.accessToken}` } }
           )
           .then((res) => {
             // console.log(res?.data?.data);
@@ -137,9 +131,6 @@ const Main = () => {
           })
           .catch((err) => {
             // console.log(err);
-            if (err?.response?.status === 403) {
-              router.push("/main/login");
-            }
           });
       };
       const fetchTasks = async () => {
@@ -150,7 +141,7 @@ const Main = () => {
             {
               filter: {},
             },
-            { headers: { Authorization: `${session?.token?.accessToken}` } }
+            { headers: { Authorization: `${sessions?.token?.accessToken}` } }
           )
           .then((res) => {
             // console.log(res?.data?.data);
@@ -158,9 +149,6 @@ const Main = () => {
           })
           .catch((err) => {
             // console.log(err);
-            if (err?.response?.status === 403) {
-              router.push("/main/login");
-            }
           });
 
         // Fetch tasks from an API and update the tasks state
@@ -171,16 +159,33 @@ const Main = () => {
       fetchModuleList();
       fetchTasks();
     }
-  }, [session, baseURL]); // Empty dependency array to run the effect only once
+  }, [sessions, baseURL]); // Empty dependency array to run the effect only once
 
   return (
     <MainLayout>
       <div className={styles.container}>
-        <PltModuleRoster />
-        <PltTaskRoster />
+        <PltModuleRoster sessions={sessions} test={1} />
+        <PltTaskRoster sessions={sessions} />
       </div>
     </MainLayout>
   );
 };
 
 export default Main;
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  // console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};

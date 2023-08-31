@@ -4,7 +4,7 @@ import styles from "./main.module.css";
 import DeviceListItem from "./deviceListItem";
 import AddModulePopup from "./AddDevicePopup"; // Import the popup component
 import axios from "axios";
-import { useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 const PltModuleManager = (props) => {
@@ -21,8 +21,6 @@ const PltModuleManager = (props) => {
     setAddModulePopupVisible(false);
   };
 
-  const { data: session } = useSession();
-
   const onSelect = (selectedItem) => {
     props.onSelect(selectedItem);
     // console.log("onSelect in the module");
@@ -31,17 +29,17 @@ const PltModuleManager = (props) => {
   const [baseURL, setBaseURL] = useState();
 
   useEffect(() => {
-    if (!session?.token?.user?.affiliation) {
+    if (!props?.sessions?.token?.user?.affiliation) {
       return;
     } else {
       // console.log("Is admin");
-      if (session?.token?.user?.affiliation === "admin") {
+      if (props?.sessions?.token?.user?.affiliation === "admin") {
         // console.log("admin mode");
       } else {
-        // console.log("node-admin mode:", session?.token?.user?.affiliation);
+        // console.log("node-admin mode:", props?.sessions?.token?.user?.affiliation);
       }
     }
-  }, [session]);
+  }, [props?.sessions]);
 
   useEffect(() => {
     setBaseURL(
@@ -51,29 +49,27 @@ const PltModuleManager = (props) => {
     );
   }, []);
   useEffect(() => {
-    if (baseURL) {
+    if (baseURL && props?.sessions) {
       // Simulate fetching data or changing the list dynamically
       // For example, fetchDevices and fetchTasks could be API calls
       const fetchDevices = async () => {
+        console.log("fetchDevices");
         await axios
           .post(
             baseURL + "/api/mongo/robotList",
             {
               companyNumber:
-                session?.token?.user?.affiliation === "admin"
+                props?.sessions?.token?.user?.affiliation === "admin"
                   ? "admin"
-                  : session?.token?.user?.affiliation,
+                  : props?.sessions?.token?.user?.affiliation,
             },
-            { headers: { Authorization: `${session?.token?.accessToken}` } }
+            { headers: { Authorization: `${props?.sessions?.token?.accessToken}` } }
           )
           .then((res) => {
             // console.log(res?.data?.data);
           })
           .catch((err) => {
             // console.log(err);
-            if (err?.response?.status === 403) {
-              router.push("/main/login");
-            }
           });
 
         // setModuleList(response.data?.data);
@@ -85,7 +81,7 @@ const PltModuleManager = (props) => {
             {
               filter: props.filter,
             },
-            { headers: { Authorization: `${session?.token?.accessToken}` } }
+            { headers: { Authorization: `${props?.sessions?.token?.accessToken}` } }
           )
           .then((res) => {
             // console.log(res?.data?.data);
@@ -93,15 +89,12 @@ const PltModuleManager = (props) => {
           })
           .catch((err) => {
             // console.log(err);
-            if (err?.response?.status === 403) {
-              router.push("/main/login");
-            }
           });
       };
 
       fetchDevices();
     }
-  }, [session, baseURL]); // Empty dependency array to run the effect only once
+  }, [props?.sessions, baseURL]); // Empty dependency array to run the effect only once
 
   return (
     <div className={styles.section}>
