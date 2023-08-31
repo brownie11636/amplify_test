@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import styles from './Popup.module.css';
+import React, { useState } from "react";
+import styles from "./Popup.module.css";
 import axios from "axios";
-import PltModuleManager from './PltModuleRoster';
-import DeviceListItem from "./deviceListItem";
+import PltModuleManager from "./PltModuleRoster";
+import DeviceListItem from "./PltModuleUnit";
 import PltTaskAppSelector from './PltTaskAppSelector';
 import PltModuleSelector from './PltModuleSelector';
 
 
-const addTaskPopup = ({ onClose, onSearch }) => {
+const addTaskPopup = (props) => {
   // const [taskAlias, setTaskAlias] = useState('alias');
   const [fetchedData, setFetchedData] = useState(null);
   const [password, setPassword] = useState('');
-  // const [taskProfile, setTaskProfile] = useState({id:null,alias:null,app:{name:null,config:{camera:null,robot:null}}});
-  const [taskProfile, setTaskProfile] = useState({id:null,alias:null,app:{name:null}});
+  const [taskProfile, setTaskProfile] = useState({id:null,alias:null,app:{name:null,config:{camera:null,robot:null}}});
+  // const [taskProfile, setTaskProfile] = useState({id:null,alias:null,app:{name:null}});
 
 
   // Create random alias
@@ -68,7 +68,7 @@ const addTaskPopup = ({ onClose, onSearch }) => {
               autoComplete="off"
           />
         </div>
-        
+
         <div>
           <h3>Application</h3>
           <input
@@ -82,15 +82,15 @@ const addTaskPopup = ({ onClose, onSearch }) => {
         </div>
         <div>
           <h3>Default Robot:</h3>
-          <PltModuleSelector filter={{type:"robot"}} onSelect={onSelectCameraModule}/>
+          <PltModuleSelector filter={{type:"robot"}} onSelect={onSelectCameraModule} sessions={props.sessions}/>
         </div>
         <div>
         <h3>Default Camera:</h3>
-          <PltModuleSelector filter={{type:"camera"}} onSelect={onSelectRobotModule}/>
+          <PltModuleSelector filter={{type:"camera"}} onSelect={onSelectRobotModule} sessions={props.sessions}/>
         </div>
       </div>
 
-      <button onClick={onClose} className={styles.closeButton}>
+      <button onClick={props.onClose} className={styles.closeButton}>
         <span aria-hidden="true">×</span>
       </button>
       <h2>Enter Task Number</h2>

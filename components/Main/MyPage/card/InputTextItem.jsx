@@ -1,4 +1,7 @@
-export const InputTextItem = ({ title, type, id, value, placeholder }) => {
+import { useState } from "react";
+
+export const InputTextItem = ({ title, type, id, defaultValue, placeholder }) => {
+  const [inputValue, setInputValue] = useState(defaultValue);
   return (
     <div
       className={`flex flex-col w-full items-start justify-between ${
@@ -15,8 +18,11 @@ export const InputTextItem = ({ title, type, id, value, placeholder }) => {
           id={id}
           className="flex w-full h-[3.125rem] border-b border-b-[#182A5B] text-sm text-[#222222] pl-[1.125rem] focus:outline-none"
           placeholder={placeholder}
-          defaultValue={value ? value : ""}
-          // value={value ? value : ""}
+          defaultValue={defaultValue}
+          value={inputValue}
+          onChange={(e) => {
+            setInputValue(e.target.value);
+          }}
         />
         {id === "userId" ? (
           <span className="text-[#FF0000] text-xs absolute -bottom-[1.25rem] hidden">

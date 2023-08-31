@@ -29,7 +29,6 @@ export const FieldList = ({ children, data }) => {
       setFilteredArray([...data]);
     }
   }, [value, data]);
-  console.log(CheckedFieldItem);
   return (
     <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative">
       <div className="px-[2.625rem]">
@@ -83,7 +82,7 @@ export const FieldList = ({ children, data }) => {
             }}
           />
           <span className="absolute top-[32%] right-[5.7142857142857%] flex w-[1.125rem] h-[1.125rem] cursor-pointer">
-            <Image src={`/images/main/mypage/search.svg`} fill alt="" />
+            <Image src={`/images/main/myPage/search.svg`} fill alt="" />
           </span>
         </div>
         <button

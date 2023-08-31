@@ -11,8 +11,9 @@ import {
 } from "../../../../recoil/AtomStore";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import axios from "axios";
+import { getSession } from "next-auth/react";
 
-const New = ({}) => {
+const New = ({ sessions }) => {
   const [companyItem, SetCompanyItem] = useRecoilState(CompanyItemAtom);
   const setCheckedRobotItem = useSetRecoilState(CheckedRobotItemAtom);
   const selectedRobot = useRecoilValue(SelectedRobotAtom);
@@ -21,12 +22,35 @@ const New = ({}) => {
   const selectedTask = useRecoilValue(SelectedTaskAtom);
 
   setCheckedRobotItem();
+  const [baseURL, setBaseURL] = useState();
   useEffect(() => {
-    getCompany();
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
   }, []);
+  useEffect(() => {
+    if (baseURL) {
+      getCompany();
+    }
+  }, [session, baseURL]);
   const getCompany = async () => {
-    const response = await axios.get("https://localhost:3333/api/mongo/company");
-    SetCompanyItem(response.data?.data);
+    await axios
+      .get(baseURL + "/api/mongo/company", {
+        headers: { Authorization: `${sessions?.token?.accessToken}` },
+      })
+      .then((response) => {
+        console.log(response);
+        SetCompanyItem(response.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err?.response?.status === 403) {
+          alert(err?.response?.data?.msg);
+          return router.push("/main/login");
+        }
+      });
   };
   return (
     <MainLayout>
@@ -42,3 +66,20 @@ const New = ({}) => {
   );
 };
 export default New;
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};

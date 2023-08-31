@@ -1,7 +1,7 @@
 import MainLayout from "../../../components/Main/MainLayout";
 import { useRouter } from "next/router";
 import CardForm from "../../../components/Main/MyPage/CardForm";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
@@ -11,9 +11,10 @@ import {
   DeleteApiUriAtom,
   DeleteModalAtom,
 } from "../../../recoil/AtomStore";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
-const Account = () => {
+const Account = ({ sessions }) => {
+  console.log(sessions);
   const router = useRouter();
   const { data: session } = useSession();
   const [companyItem, setCompanyItem] = useRecoilState(CompanyItemAtom);
@@ -26,16 +27,37 @@ const Account = () => {
     : router.pathname.includes("field")
     ? "현장관리"
     : "로봇관리";
+  const [baseURL, setBaseURL] = useState();
   useEffect(() => {
-    if (session) {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    if ((baseURL, sessions)) {
       getCompany();
     }
-  }, [session]);
+  }, [session, baseURL]);
   const getCompany = async () => {
-    const response = await axios.get(
-      `https://localhost:3333/api/mongo/company?affiliation=${session?.token?.user?.affiliation}`
-    );
-    setCompanyItem(response.data?.data);
+    await axios
+      .get(
+        `https://localhost:3333/api/mongo/company?affiliation=${session?.token?.user?.affiliation}`,
+        { headers: { Authorization: `${sessions?.token?.accessToken}` } }
+      )
+      .then((response) => {
+        console.log("response");
+        console.log(response);
+        setCompanyItem(response.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err?.response?.status === 403) {
+          alert(err?.response?.data?.msg);
+          return router.push("/main/login");
+        }
+      });
   };
   return (
     <MainLayout>
@@ -59,7 +81,9 @@ const Account = () => {
     </MainLayout>
   );
 };
+
 export default Account;
+
 const ChangePasswordModal = ({ visible, setVisible }) => {
   const router = useRouter();
   const passwordRef = useRef();
@@ -182,4 +206,20 @@ const DeleteModal = ({ visible, setVisible, url }) => {
     </div>
   );
 };
-// 40px convert to rem =
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};

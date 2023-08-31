@@ -41,7 +41,8 @@ const gripperPositions = setGripperPositions();
 const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...props},ref) {
 
   // const ref = useRef([]);
-  
+  const guideRef = useRef();
+
   const rotations = useMemo(() => {
     let rotations = []
     for (let i = 0; i<9; i++){
@@ -69,6 +70,9 @@ const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...prop
       (state)=>state.gripAngleRatio,
       (ratio)=>gripByAngleRatio(ratio, ref.current)
     );
+
+    ref.current[0].name = "gripper_BASE"
+    // guideRef.current.position.set(new THREE.Vector3(0, 0, -0.1317))
     
     return () => {
       unsubGripDistance();
@@ -78,8 +82,17 @@ const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...prop
 
   useEffect(() => console.log("gripper is rendered"),)
 
+  let pos4 = new THREE.Vector3();
+  let pos8 = new THREE.Vector3();
+  let offset = new THREE.Vector3(0, 0, -0.03);
+
   useFrame((state,delta,XRFrame)=>{
-        
+    
+    // guideRef.current.position.addVectors(
+    //   ref.current[0].worldToLocal(ref.current[4].getWorldPosition(pos4)),
+    //   ref.current[0].worldToLocal(ref.current[8].getWorldPosition(pos8))
+    // ).multiplyScalar(0.5).add(offset);
+
     // if (gamepadRef.current.right.new.buttons[4] !== gamepadRef.current.right.prev.buttons[4] 
     //   && gamepadRef.current.right.new.buttons[4] > 0.8){
     //   ref.current[0].traverse((obj) => {
@@ -94,7 +107,7 @@ const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...prop
     // } else {
     //   let angle = RAD2DEG * Math.asin(( disa))
     // }
-  })
+  })   
   
   return(
     <>
@@ -118,6 +131,9 @@ const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...prop
         <group 
           ref={el=>(ref.current[9]=el)} //for control rotation offset
           rotation={[-0.5*Math.PI, 0, 0]} 
+        />
+        <axesHelper ref={guideRef} args={[1]} 
+        position={[0, 0, -0.1417]} //노즐 잡았을때 예상 
         />
       </Model>
     </>

@@ -25,9 +25,9 @@ export const useModeStore = create((set) => ({
 
   isSync: false,
 
-  coordinate: "world",
+  coordinate: "base",
   updateCoordinate: (coordStr) => set((state) => {
-    if ( coordStr === "world" || coordStr === "robot" || coordStr === "TCP"){
+    if ( coordStr === "base" || coordStr === "TCP"){
 
         return {coordinate: coordStr}
 
@@ -125,8 +125,6 @@ export const useModeStore = create((set) => ({
     axis: null,   // X Y Z
     index: null,  // 0 for X, 1 for Y, 2 for Z
   },
-
-
 
 
   // translateAxes: "XYZ",

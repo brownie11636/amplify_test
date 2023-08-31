@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "./main.module.css";
 import PltTaskUnit from "./PltTaskUnit";
@@ -8,7 +7,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import {useRouter } from "next/router";
 
-const PltTaskManager = () => {
+const PltTaskManager = ({ sessions }) => {
   const router = useRouter();
   const [taskList, setTasks] = useState([
     // { id:"TN000-FAKE-0000", alias: 'TeleoperationTset', config: 'Robot', status: 'Universal Robots', descriptions:"not yet", createdAt:"2023...today"},
@@ -25,16 +24,11 @@ const PltTaskManager = () => {
 
   const handleSearch = (serialNumber) => {
     // Implement search logic here
-    console.log('Searching for serial number:', serialNumber);
+    // console.log("Searching for serial number:", serialNumber);
     // Close the popup after performing the search
     // handleCloseAddModulePopup();
   };
 
-
-  const { data: session } = useSession();
-  // if(session?.token?.user?.affiliation === "admin"){
-  // }else{
-  // }
 
   const onSelect = (selectedItem) => {
     console.log("onSelect in the module");
@@ -46,7 +40,7 @@ const PltTaskManager = () => {
         console.log("Teleoperation");
         // router.push(`/main/PltTask/${selectedItem?.id}`);
       }else if(app.name === "PTS-cambot"){
-        console.log("router.push(/main/PltTaskPTS/${selectedItem?.id})");
+        console.log("router.push(/main/PltTaskPTS/)");
         router.push(`/myPage/account/`);
       }else{
         console.log("app not supported");
@@ -59,27 +53,63 @@ const PltTaskManager = () => {
 
 
   useEffect(() => {
-    // Simulate fetching data or changing the list dynamically
-    // For example, fetchDevices and fetchTasks could be API calls
-    const fetchTasks = async () => {
-      // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-      const fetchedTasks = await axios.post("https://localhost:3333/fetch/v0.1/task/list", {
-        filter:{}
-      // },{headers: {Authorization: `Bearer ${session?.token?.token}`}});
-    },{headers: {Authorization: "admin"}});
-    console.log(fetchedTasks?.data?.data);
+    if (!sessions?.token?.user?.affiliation) {
+      return;
+    } else {
+      // console.log("Is admin");
+      if (sessions?.token?.user?.affiliation === "admin") {
+        // console.log("admin mode");
+      } else {
+        // console.log("node-admin mode:", sessions?.token?.user?.affiliation);
+      }
+    }
+  }, [sessions]);
 
-      // Fetch tasks from an API and update the tasks state
-      setTasks(fetchedTasks?.data?.data?.reverse());
-    };
-    fetchTasks();
-  }, [session]); // Empty dependency array to run the effect only once
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    if (baseURL && sessions) {
+      // Simulate fetching data or changing the list dynamically
+      // For example, fetchDevices and fetchTasks could be API calls
+      const fetchTasks = async () => {
+        // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
+        // const fetchedTasks = await axios.post(baseURL+"/fetch/v0.1/task/list", {
+        await axios
+          .post(
+            baseURL + "/fetch/v0.1/task/list",
+            {
+              filter: {},
+            },
+            { headers: { Authorization: `${sessions?.token?.accessToken}` } }
+          )
+          .then((res) => {
+            // console.log(res?.data?.data);
+            setTasks(res?.data?.data?.reverse());
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+        // Fetch tasks from an API and update the tasks state
+      };
+
+      fetchTasks();
+    }
+  }, [baseURL, sessions]); // Empty dependency array to run the effect only once
 
   return (
     <div className={styles.section}>
       <div className={styles.header}>
         <h2>Manage Tasks</h2>
-        <button className={styles.addButton} onClick={handleAddTaskPopup}>+</button>
+        <button className={styles.addButton} onClick={handleAddTaskPopup}>
+          +
+        </button>
       </div>
       <div className={styles.list}>
         {taskList.map((task, index) => (
@@ -88,7 +118,7 @@ const PltTaskManager = () => {
       </div>
       {isAddTaskPopupVisible && (
         <div className={styles.overlay}>
-          <AddTaskPopup onClose={handleCloseAddTaskPopup} onSearch={handleSearch} />
+          <AddTaskPopup onClose={handleCloseAddTaskPopup} onSearch={handleSearch} sessions={sessions} />
         </div>
       )}
     </div>

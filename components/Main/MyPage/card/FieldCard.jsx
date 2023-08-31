@@ -12,13 +12,23 @@ import { InputAddressItem } from "./InputAddressItem";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 
-export const FieldCard = ({}) => {
+export const FieldCard = ({ data }) => {
   const { data: session } = useSession();
   const CreateFieldItem = useRecoilValue(CreateFieldItemAtom);
   const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
   const setVisibleDeleteModal = useSetRecoilState(DeleteFieldModalAtom);
   const [deleteFieldData, setDeleteFieldData] = useRecoilState(DeleteFieldDataAtom);
-  useEffect(() => {}, [deleteFieldData, CreateFieldItem, CheckedFieldItem]);
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    console.log(data);
+  }, [deleteFieldData, CreateFieldItem, CheckedFieldItem]);
   return (
     <>
       <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative ">
@@ -124,7 +134,9 @@ export const FieldCard = ({}) => {
                   processCount,
                 };
                 console.log(data);
-                const res = await axios.post("https://localhost:3333/api/mongo/field", data);
+                const res = await axios.post(baseURL + "/api/mongo/field", data, {
+                  headers: { Authorization: `${session?.token?.accessToken}` },
+                });
                 console.log(res);
                 if (res.data.result === 1) {
                   alert("등록되었습니다.");
@@ -171,7 +183,9 @@ export const FieldCard = ({}) => {
                   processCount,
                 };
                 console.log(data);
-                const res = await axios.put(`https://localhost:3333/api/mongo/field`, data);
+                const res = await axios.put(baseURL + `/api/mongo/field`, data, {
+                  headers: { Authorization: `${session?.token?.accessToken}` },
+                });
                 if (res.data.result === 1) {
                   alert("수정되었습니다.");
                   window.location.reload();

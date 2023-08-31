@@ -13,6 +13,14 @@ export const RobotCard = ({ children, data }) => {
   const { data: session } = useSession();
   const CreateFieldItem = useRecoilValue(CreateFieldItemAtom);
   const CheckedFieldItem = useRecoilValue(CheckedFieldItemAtom);
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
   return (
     <>
       <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative ">
@@ -92,7 +100,9 @@ export const RobotCard = ({ children, data }) => {
                   detailAddress,
                 };
                 console.log(data);
-                const res = await axios.post("https://localhost:3333/api/mongo/field", data);
+                const res = await axios.post(baseURL + "/api/mongo/field", data, {
+                  headers: { Authorization: `${session?.token?.accessToken}` },
+                });
                 console.log(res);
                 if (res.data.result === 1) {
                   alert("등록되었습니다.");

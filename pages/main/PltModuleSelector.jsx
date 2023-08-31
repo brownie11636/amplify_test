@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './Popup.module.css';
 import PltModuleRoster from './PltModuleRoster';
-import DeviceListItem from "./deviceListItem";
+import PltModuleUnit from "./PltModuleUnit";
 
 const PltModuleSelector = (props) => {
   const [isSelectorVisible, setIsSelectorVisible] = useState(false);
@@ -27,10 +27,10 @@ const PltModuleSelector = (props) => {
             </div>
           }
           {selectedPltTaskApp &&
-            <DeviceListItem device={selectedPltTaskApp}/>
+            <PltModuleUnit device={selectedPltTaskApp}/>
           }
           {isSelectorVisible &&
-            (<PltModuleRoster filter={props.filter} onSelect={onSelectRobot}/>)
+            (<PltModuleRoster filter={props.filter} onSelect={onSelectRobot} sessions={props.sessions}/>)
           }
         </div>
   );

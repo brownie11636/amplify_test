@@ -16,6 +16,14 @@ export const SelectField = ({}) => {
   const selectedCompany = useRecoilValue(SelectedCompanyAtom);
   const [selectedField, setSelectedField] = useRecoilState(SelectedFieldAtom);
   const [selectedTask, setSelectedTask] = useRecoilState(SelectedTaskAtom);
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
   return (
     <div
       className={`flex ${
@@ -161,12 +169,16 @@ export const SelectField = ({}) => {
                   alert("현장을 선택해주세요.");
                   return;
                 }
-                const res = await axios.post("https://localhost:3333/api/mongo/robot/batch", {
-                  task: selectedTask,
-                  fieldIndex: selectedField?.index,
-                  companyNumber: selectedCompany?.companyNumber,
-                  robotId: selectedRobot?.id,
-                });
+                const res = await axios.post(
+                  baseURL + "/api/mongo/robot/batch",
+                  {
+                    task: selectedTask,
+                    fieldIndex: selectedField?.index,
+                    companyNumber: selectedCompany?.companyNumber,
+                    robotId: selectedRobot?.id,
+                  },
+                  { headers: { Authorization: `${session?.token?.accessToken}` } }
+                );
                 console.log(res);
                 if (res) {
                   alert("배치가 완료되었습니다.");

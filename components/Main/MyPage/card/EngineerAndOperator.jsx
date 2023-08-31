@@ -22,16 +22,20 @@ export const EngineerAndOperator = ({ children }) => {
   const [checkedEngineerAndOperator, setCheckedEngineerAndOperator] = useRecoilState(
     CheckedEngineerAndOperatorItemAtom
   );
+  const [baseURL, setBaseURL] = useState();
   useEffect(() => {
-    getEngineerAndOperator();
-  }, [CheckedTaskItem, CheckedFieldItem]);
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
   useEffect(() => {
-    console.log("engineerAndOperator");
-    console.log(engineerAndOperator);
-    console.log("CheckedFieldItem");
-    console.log(CheckedFieldItem);
-    console.log("CheckedTaskItem");
-    console.log(CheckedTaskItem);
+    if (baseURL && session?.token?.accessToken) {
+      getEngineerAndOperator();
+    }
+  }, [session, CheckedTaskItem, CheckedFieldItem, baseURL]);
+  useEffect(() => {
     let filtered = engineerAndOperator;
     filtered = filtered?.filter((item) => {
       if (item.part === "admin") {
@@ -54,13 +58,18 @@ export const EngineerAndOperator = ({ children }) => {
   }, [session, value, engineerAndOperator, CheckedTaskItem]);
 
   const getEngineerAndOperator = async (e) => {
-    const res = await axios.post("https://localhost:3333/api/mongo/engineerAndOperator", {
-      taskCount: CheckedTaskItem,
-      fieldIndex: CheckedFieldItem?.index,
-      companyNumber:
-        session?.token?.user?.affiliation === "admin" ? "admin" : session?.token?.user?.affiliation,
-    });
-    console.log(res);
+    const res = await axios.post(
+      baseURL + "/api/mongo/engineerAndOperator",
+      {
+        taskCount: CheckedTaskItem,
+        fieldIndex: CheckedFieldItem?.index,
+        companyNumber:
+          session?.token?.user?.affiliation === "admin"
+            ? "admin"
+            : session?.token?.user?.affiliation,
+      },
+      { headers: { Authorization: `${session?.token?.accessToken}` } }
+    );
     setEngineerAndOperator(res?.data?.data);
   };
   return (

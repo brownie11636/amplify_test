@@ -1,16 +1,15 @@
-
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import MainLayout from "../../components/Main/MainLayout";
 import { useSearchParams } from "next/navigation";
 import styles from "./main.module.css";
 import axios from "axios";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 import PltModuleRoster from './PltModuleRoster';
 import PltTaskRoster from './PltTaskRoster';
 import {fetchApiEndpoint} from '../../toServer/API-AccessPoint';
 
-const Main = () => {
+const Main = ({sessions}) => {
   const { data: session } = useSession();
   console.log("token:",session?.token)
   if(session?.token?.user?.affiliation === "admin"){
@@ -19,44 +18,55 @@ const Main = () => {
     console.log("none-admin mode:",session?.token?.user)
   }
 
-  const fetchData = async () => {
-
-    try {
-      
-      // const response = await axios.post("https://localhost:3333/fetch/v0.1/module/auth",[],{
-      const response = await axios.post(fetchApiEndpoint+"/fetch/v0.1/module/auth",[],{
-          headers: {
-          authorization: `Bearer ${JSON.stringify(session?.token)}`,
-        }
-      });
-
-      // Handle the response
-      console.log(response.data);
-    } catch (error) {
-      // Handle errors
-      console.error("Error fetching data:", error);
-    }
-  };
-
-
-
-
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    console.log(process.env.NEXT_PUBLIC_API_URL);
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  // console.log(
+  //   sessions?.token?.user?.affiliation === "admin" ? "logged in admin mode" : sessions?.token?.user?.affiliation
+  // );
+  // const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
 
   useEffect(() => {
-  }, [session]); // Empty dependency array to run the effect only once
+    if (baseURL && sessions) {
+
+    }
+  }, [sessions, baseURL]); // Empty dependency array to run the effect only once
 
   return (
     <MainLayout>
+      <div className={styles.container}>
+        <PltModuleRoster sessions={sessions} />
+        <PltTaskRoster sessions={sessions} />
+      </div>
         <div>
           {/* Your component content */}
-          <button onClick={fetchData}>Fetch Data</button>
-        </div>
-        <div className={styles.container}>
-          <PltModuleRoster/>
-          <PltTaskRoster/>
+          {/* <button onClick={fetchData}>Fetch Data</button> */}
         </div>
     </MainLayout>
   );
 };
 
 export default Main;
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  // console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};

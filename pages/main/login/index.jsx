@@ -1,31 +1,48 @@
-import { signIn } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
-
+import Script from "next/script";
+import { useEffect, useRef, useState } from "react";
+import { setCookie, deleteCookie } from "cookies-next";
+import axios from "axios";
 const Login = () => {
   const idRef = useRef();
   const pwRef = useRef();
   const [idValue, setIdValue] = useState("");
   const [pwValue, setPwValue] = useState("");
+  const [autoLogin, setAutoLogin] = useState(false);
+  const [findPassValue, setFindPassValue] = useState("fieldList");
   const router = useRouter();
+  const { data: session } = useSession();
+  useEffect(() => {
+    if (session) {
+      console.log(session);
+    }
+  }, [session]);
 
+  useEffect(() => {
+    document.getElementById("idRef").focus();
+    deleteCookie("next-auth.session-token");
+  }, []);
   const submit = async (e) => {
     e.preventDefault();
     if (idValue === "" || pwValue === "") {
       alert("아이디와 비밀번호를 입력해주세요.");
       return;
     }
-    await signIn("portal301APIserver", {
+    // await signIn("portal301APIserver", {
+    const sign = await signIn("testLogin", {
       id: idValue,
       password: pwValue,
       redirect: false,
     })
       .then((res) => {
-        if (res.error) {
+        if (!res.ok) {
           alert("로그인에 실패하였습니다.");
           return;
         } else {
+          alert("로그인에 성공하였습니다.");
           router.push("/main");
         }
       })
@@ -42,10 +59,12 @@ const Login = () => {
             await signIn("portal301APIserver", {
               id: "admin",
               password: "123",
+              autoLogin,
               redirect: false,
             })
               .then((res) => {
                 if (res.error) {
+                  console.log(res);
                   alert("로그인에 실패하였습니다.");
                   return;
                 } else {
@@ -67,12 +86,48 @@ const Login = () => {
         >
           <Image src={`/images/main/logo.svg`} fill alt="" />
         </picture>
+        {/* <div className="flex mt-[6.25rem]">
+          <label htmlFor="fieldList">
+            <input
+              type="radio"
+              name="fieldRadioList"
+              id="fieldList"
+              className="peer hidden"
+              defaultChecked
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setFindPassValue(e.target.id);
+                }
+              }}
+            />
+            <div className="flex justify-center items-center cursor-pointer text-[#7D7D7D] border-b border-b-[#DCDCDC] w-[8.75rem] h-[2.5rem] peer-checked:border-b-[#182A5B] peer-checked:text-[#222222]">
+              <span className="text-base">{"아이디 찾기"}</span>
+            </div>
+          </label>
+          <label htmlFor="robotList">
+            <input
+              type="radio"
+              name="fieldRadioList"
+              id="robotList"
+              className="peer hidden"
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setFindPassValue(e.target.id);
+                }
+              }}
+            />
+            <div className="flex justify-center items-center cursor-pointer text-[#7D7D7D] border-b border-b-[#DCDCDC] w-[8.75rem] h-[2.5rem] peer-checked:border-b-[#182A5B] peer-checked:text-[#222222]">
+              <span className="text-base">{"비밀번호 찾기"}</span>
+            </div>
+          </label>
+        </div> */}
         <div className="flex flex-col gap-[30px] mt-[100px]">
           <span className="w-[400px] h-[50px] flex">
             <input
               type="text"
               placeholder="ID"
               ref={idRef}
+              id="idRef"
               className="w-full h-full flex text-[#182a5b] bg-white border-b border-solid border-b-[#182A5B] pl-[20px] placeholder-[#7d7d7d]"
               onChange={() => {
                 setIdValue(idRef.current.value);
@@ -123,6 +178,9 @@ const Login = () => {
               type="checkbox"
               id="autoLogin"
               className="w-[16px] h-[16px] rounded-none bg-transparent"
+              onChange={(e) => {
+                setAutoLogin(e.target.checked);
+              }}
             />
             <label htmlFor="autoLogin">
               <span className="text-[#222222]">자동로그인</span>
@@ -130,9 +188,50 @@ const Login = () => {
           </div>
           <span className="text-[#222222] underline">아이디/비밀번호 찾기</span>
         </div>
+
+        <button
+          className="mt-[2rem]"
+          onClick={async (e) => {
+            e.preventDefault();
+            signIn("google", { callbackUrl: `${window.location.origin}/main/join` })
+              .then((res) => {
+                console.log(res);
+                // router.push("/main/join");
+              })
+              .then((e) => {
+                console.log(e);
+              });
+            // signIn("google", { redirect: false });
+          }}
+        >
+          <span>Google Login</span>
+        </button>
       </div>
     </main>
   );
 };
 
 export default Login;
+
+// const aaa = {
+//   senderAddress: "no_reply@company.com",
+//   title: "${customer_name}님 반갑습니다. ",
+//   body: "귀하의 등급이 ${BEFORE_GRADE}에서 ${AFTER_GRADE}로 변경되었습니다.",
+//   recipients: [
+//     {
+//       address: "hongildong@naver_.com",
+//       name: "홍길동",
+//       type: "R",
+//       parameters: { customer_name: "홍길동", BEFORE_GRADE: "SILVER", AFTER_GRADE: "GOLD" },
+//     },
+//     {
+//       address: "chulsoo@daum_.net",
+//       name: null,
+//       type: "R",
+//       parameters: { customer_name: "철수", BEFORE_GRADE: "BRONZE", AFTER_GRADE: "SILVER" },
+//     },
+//   ],
+//   individual: true,
+//   advertising: false,
+//   useBasicUnsubscribeMsg: true,
+// };

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   CheckedCompanyItemAtom,
@@ -24,10 +24,15 @@ export const RobotCard2 = ({ children, data, company, type }) => {
   const createRobotSelectedField = useRecoilValue(CreateRobotSelectedFieldAtom);
   const checkedRobotItem = useRecoilValue(CheckedRobotItemAtom);
   const setRobotSelectRadio = useSetRecoilState(RobotSelectedRadioAtom);
+  const [baseURL, setBaseURL] = useState();
   useEffect(() => {
-    console.log("checkedRobotItem?.field");
-    console.log(checkedRobotItem);
-  }, [robotItemList, createRobotSelectedField, checkedRobotItem]);
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {}, [robotItemList, createRobotSelectedField, checkedRobotItem]);
   return (
     <>
       <div className="py-[2.625rem] w-fit h-fit bg-white relative">
@@ -180,7 +185,9 @@ export const RobotCard2 = ({ children, data, company, type }) => {
                     venderEmail,
                   };
                   console.log(data);
-                  const res = await axios.put("https://localhost:3333/api/mongo/robot", data);
+                  const res = await axios.put(baseURL + "/api/mongo/robot", data, {
+                    headers: { Authorization: `${session?.token?.accessToken}` },
+                  });
                   console.log(res);
                   if (res.data.result === 1) {
                     alert("수정되었습니다.");
@@ -242,7 +249,7 @@ export const RobotCard2Submit = async () => {
     detailAddress,
   };
   console.log(data);
-  // const res = await axios.post("https://localhost:3333/api/mongo/robot", data);
+  // const res = await axios.post(baseURL+"/api/mongo/robot", data);
   // console.log(res);
   // if (res.data.result === 1) {
   //   alert("등록되었습니다.");

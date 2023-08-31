@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MainLayout from "../../../components/Main/MainLayout";
 import CardForm from "../../../components/Main/MyPage/CardForm";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -11,22 +11,49 @@ import {
   FieldSelectedRadioAtom,
 } from "../../../recoil/AtomStore";
 import axios from "axios";
+import { getSession, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
-const MyPage = () => {
+const MyPage = ({ sessions }) => {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [fieldItem, SetFieldItem] = useRecoilState(FieldItemAtom);
   const deleteFieldData = useRecoilValue(DeleteFieldDataAtom);
   const FieldSelectedRadio = useRecoilValue(FieldSelectedRadioAtom);
   const [visibleDeleteModal, setVisibleDeleteModal] = useRecoilState(DeleteFieldModalAtom);
   useEffect(() => {
-    getField();
-  }, [FieldSelectedRadio]);
-  const getField = async () => {
-    const response = await axios.get(
-      FieldSelectedRadio === "fieldList"
-        ? "https://localhost:3333/api/mongo/field"
-        : "https://localhost:3333/api/mongo/robot"
+    console.log(deleteFieldData);
+  }, [deleteFieldData]);
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
     );
-    SetFieldItem(response.data?.data);
+  }, []);
+  useEffect(() => {
+    if (baseURL && sessions) {
+      getField();
+    }
+  }, [session, FieldSelectedRadio, baseURL]);
+  const getField = async () => {
+    await axios
+      .get(
+        FieldSelectedRadio === "fieldList"
+          ? "https://localhost:3333/api/mongo/field"
+          : "https://localhost:3333/api/mongo/robot",
+        { headers: { Authorization: `${sessions?.token?.accessToken}` } }
+      )
+      .then((response) => {
+        SetFieldItem(response.data?.data);
+      })
+      .catch((err) => {
+        if (err?.response?.status === 403) {
+          alert(err?.response?.data?.msg);
+          return router.push("/main/login");
+        }
+      });
   };
   const DeleteText = () => {
     return (
@@ -51,13 +78,14 @@ const MyPage = () => {
         visible={visibleDeleteModal}
         setVisible={setVisibleDeleteModal}
         Text={DeleteText}
-        url={"https://localhost:3333/api/mongo/field"}
+        url={baseURL + "/api/mongo/field"}
         data={deleteFieldData}
       />
     </MainLayout>
   );
 };
 const DeleteModal = ({ visible, setVisible, Text, url, data }) => {
+  const { data: session } = useSession();
   const setCreateFieldItem = useSetRecoilState(CreateFieldItemAtom);
   const setCheckedFieldItem = useSetRecoilState(CheckedFieldItemAtom);
   return (
@@ -80,9 +108,13 @@ const DeleteModal = ({ visible, setVisible, Text, url, data }) => {
             <button
               className="w-[12.5rem] h-[2.5rem] bg-white"
               onClick={async () => {
-                const res = await axios.delete(`${url}`, {
-                  data,
-                });
+                const res = await axios.delete(
+                  `${url}`,
+                  {
+                    data,
+                  },
+                  { headers: { Authorization: `${session?.token?.accessToken}` } }
+                );
                 if (res.data.result === 1) {
                   setCreateFieldItem(true);
                   setCheckedFieldItem(null);
@@ -110,3 +142,20 @@ const DeleteModal = ({ visible, setVisible, Text, url, data }) => {
   );
 };
 export default MyPage;
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};

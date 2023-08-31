@@ -1,30 +1,59 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MainLayout from "../../../components/Main/MainLayout";
 import { CompanyItemAtom, RobotItemListAtom } from "../../../recoil/AtomStore";
 import { useRecoilState } from "recoil";
 import CardForm from "../../../components/Main/MyPage/CardForm";
 import axios from "axios";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
-const RobotList = () => {
+const RobotList = ({ sessions }) => {
   const router = useRouter();
   const { data: session } = useSession();
   console.log(
-    session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation
+    session?.token?.user?.affiliation === "admin" ? "admin" : session?.token?.user?.affiliation
   );
   const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
   const [companyItem, setCompanyItem] = useRecoilState(CompanyItemAtom);
+  const [baseURL, setBaseURL] = useState();
   useEffect(() => {
-    getRobot();
-  }, [session]);
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    if (baseURL) {
+      getRobot();
+    }
+  }, [session, baseURL]);
   const getRobot = async () => {
-    const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
-      companyNumber:
-        session?.token?.user?.affiliation === "admin" ? "admin" : session?.token?.user?.affiliation,
-    });
-    SetRobotItemList(response.data?.data);
-    setCompanyItem(response.data?.company);
+    await axios
+      .post(
+        `${baseURL}/api/mongo/robotList`,
+        {
+          companyNumber:
+            session?.token?.user?.affiliation === "admin"
+              ? "admin"
+              : session?.token?.user?.affiliation,
+        },
+        {
+          headers: { Authorization: `${sessions?.token?.accessToken}` },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        SetRobotItemList(response.data?.data);
+        setCompanyItem(response.data?.company);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err?.response?.status === 403) {
+          alert(err?.response?.data?.msg);
+          return router.push("/main/login");
+        }
+      });
   };
   return (
     <MainLayout>
@@ -33,10 +62,27 @@ const RobotList = () => {
           <span className="flex pl-[60px] pt-[60px] text-white text-xl"></span>
         </div>
         <div className="relative w-fit -top-[48px] left-[60px]">
-          <CardForm data={robotItemList} company={companyItem} type={3} />
+          <CardForm data={robotItemList?.robots} company={companyItem} type={3} />
         </div>
       </section>
     </MainLayout>
   );
 };
 export default RobotList;
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};

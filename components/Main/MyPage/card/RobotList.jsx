@@ -11,7 +11,7 @@ import {
 export const RobotList = ({ children, data, type }) => {
   const searchRef = useRef();
   const [value, setValue] = useState("");
-  const [filteredArray, setFilteredArray] = useState();
+  const [filteredArray, setFilteredArray] = useState([]);
   const setCheckedRobotItem = useSetRecoilState(CheckedRobotItemAtom);
   useEffect(() => {
     if (value) {

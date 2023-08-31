@@ -57,13 +57,10 @@ const CardForm = ({ data, company, type }) => {
 
   const checkedEngineerAndOperator = useSetRecoilState(CheckedEngineerAndOperatorItemAtom);
 
-  useEffect(() => {}, [
-    CheckedCompanyItem,
-    CreateFieldItem,
-    CheckedFieldItem,
-    CheckedAccountItem,
-    session,
-  ]);
+  useEffect(() => {
+    console.log("CheckedCompanyItem");
+    console.log(CheckedCompanyItem);
+  }, [CheckedCompanyItem, CreateFieldItem, CheckedFieldItem, CheckedAccountItem, session]);
   return (
     <>
       <Head>
@@ -78,7 +75,7 @@ const CardForm = ({ data, company, type }) => {
       ) : type === 2 ? (
         <div className="flex gap-[3.75rem] min-w-[calc(100%_-_3.75rem)] w-fit">
           <FieldList data={data} />
-          {FieldSelectedRadio === "fieldList" ? <FieldCard /> : <RobotCard />}
+          {FieldSelectedRadio === "fieldList" ? <FieldCard data={data} /> : <RobotCard />}
 
           <EngineerAndOperator />
           <EngineerAndOperatorCard data={checkedEngineerAndOperator} />
@@ -106,467 +103,12 @@ const CardForm = ({ data, company, type }) => {
 };
 export default CardForm;
 
-const Company = ({ data }) => {
-  const { data: session } = useSession();
-  const setVisibleDeleteModal = useSetRecoilState(DeleteModalAtom);
-  const setDeleteApiUrl = useSetRecoilState(DeleteApiUriAtom);
-  const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
-  const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
-  const CheckedAccountItem = useRecoilValue(CheckedAccountItemAtom);
-  useEffect(() => {
-    if (CheckedCompanyItem) {
-      for (const key in CheckedCompanyItem) {
-        if (Object.hasOwnProperty.call(CheckedCompanyItem, key)) {
-          document.getElementById(`${key}`)
-            ? (document.getElementById(`${key}`).value = CheckedCompanyItem[key])
-            : null;
-        }
-      }
-    } else {
-      document
-        .querySelector(".companyList")
-        ?.querySelectorAll("input")
-        .forEach((element) => {
-          element.value = "";
-        });
-    }
-  }, [session, CheckedCompanyItem]);
-
-  return (
-    <>
-      <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative ">
-        <div className="companyList px-[2.625rem]">
-          {CreateAccountItem ? (
-            <div className="flex items-center gap-[1.125rem]">
-              <picture className="w-[1.375rem] h-[1.375rem] relative">
-                <Image src={`/images/main/myPage/company.svg`} fill alt="" draggable={false} />
-              </picture>
-              <input
-                type="text"
-                id="companyName"
-                className="text-sm py-[0.625rem] px-[1rem] border-b border-b-[#182A5B]"
-                placeholder="회사명 입력"
-              />
-            </div>
-          ) : (
-            <div className="flex items-center gap-[1.125rem] mb-[0.625rem]">
-              <picture className="w-[1.375rem] h-[1.375rem] relative">
-                <Image src={`/images/main/myPage/company.svg`} fill alt="" draggable={false} />
-              </picture>
-              <span id="companyName" className="text-[#222222] text-lg">
-                {data?.companyName}
-              </span>
-            </div>
-          )}
-          <InputTextItem
-            title="회원번호"
-            id="userNumber"
-            value={data?.userNumber}
-            placeholder={""}
-          />
-          <InputTextItem
-            title="사업자등록번호"
-            id="companyNumber"
-            value={data?.companyNumber}
-            placeholder={"'-'를 포함하여 입력"}
-          />
-          <InputTextItem
-            title="전화번호"
-            id="phoneNumber"
-            value={data?.phoneNumber}
-            placeholder={"'-'를 포함하여 입력"}
-          />
-          <InputAddressItem
-            title="회사주소"
-            id="companyAddress"
-            zipCode={data?.zipCode}
-            address={data?.address}
-            detailAddress={data?.detailAddress}
-          />
-          {CreateAccountItem &&
-          (session?.token?.user?.part === "admin" ||
-            session?.token?.user?.affiliation === "admin") ? (
-            <button
-              className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
-              onClick={async () => {
-                const companyName = document.getElementById("companyName").value;
-                const userNumber = document.getElementById("userNumber").value;
-                const companyNumber = document.getElementById("companyNumber").value;
-                const phoneNumber = document.getElementById("phoneNumber").value;
-                const companyAddress = document
-                  .getElementById("companyAddress")
-                  ?.querySelectorAll("input");
-                const zipCode = companyAddress[0].value;
-                const address = companyAddress[1].value;
-                const detailAddress = companyAddress[2].value;
-                const data = {
-                  companyName,
-                  userNumber,
-                  companyNumber,
-                  phoneNumber,
-                  zipCode,
-                  address,
-                  detailAddress,
-                };
-                console.log(data);
-                const res = await axios.post("https://localhost:3333/api/mongo/company", data);
-                console.log(res);
-                if (res.data.result === 1) {
-                  alert("등록되었습니다.");
-                  window.location.reload();
-                }
-              }}
-            >
-              <picture className="relative w-[0.875rem] h-[0.75rem]">
-                <Image src={`/images/main/myPage/check.svg`} fill alt="" />
-              </picture>
-              <span className="text-base text-white">등록</span>
-            </button>
-          ) : session?.token?.user?.part === "admin" ||
-            session?.token?.user?.affiliation === "admin" ? (
-            <button
-              className="w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center"
-              onClick={async () => {
-                const companyName = document.getElementById("companyName").value;
-                const userNumber = document.getElementById("userNumber").value;
-                const companyNumber = document.getElementById("companyNumber").value;
-                const phoneNumber = document.getElementById("phoneNumber").value;
-                const companyAddress = document
-                  .getElementById("companyAddress")
-                  ?.querySelectorAll("input");
-                const zipCode = companyAddress[0].value;
-                const address = companyAddress[1].value;
-                const detailAddress = companyAddress[2].value;
-                const data = {
-                  index: CheckedCompanyItem?.index,
-                  companyName,
-                  userNumber,
-                  companyNumber,
-                  phoneNumber,
-                  zipCode,
-                  address,
-                  detailAddress,
-                };
-                console.log(data);
-                const res = await axios.put("https://localhost:3333/api/mongo/company", data);
-                console.log(res);
-                if (res.data.result === 1) {
-                  alert("수정되었습니다.");
-                  window.location.reload();
-                } else {
-                  alert("수정에 실패하였습니다.");
-                }
-              }}
-            >
-              <picture className="relative w-[0.875rem] h-[0.75rem]">
-                <Image src={`/images/main/myPage/edit.svg`} fill alt="" />
-              </picture>
-              <span className="text-white">수정</span>
-            </button>
-          ) : null}
-          {CreateAccountItem ? null : session?.token?.user?.part === "admin" ||
-            session?.token?.user?.affiliation === "admin" ? (
-            <span
-              className="flex text[#222222] text-base underline cursor-pointer mt-[2rem]"
-              onClick={() => {
-                setVisibleDeleteModal(true);
-                setDeleteApiUrl(
-                  `https://localhost:3333/api/mongo/company?companyNumber=${CheckedCompanyItem?.companyNumber}`
-                );
-              }}
-            >
-              계정삭제
-            </span>
-          ) : null}
-        </div>
-      </div>
-    </>
-  );
-};
-
-const Part = ({ data, sub, isCreate }) => {
-  const searchRef = useRef(null);
-  const { data: session } = useSession();
-  const setVisibleDeleteModal = useSetRecoilState(DeleteModalAtom);
-  const setDeleteApiUrl = useSetRecoilState(DeleteApiUriAtom);
-  const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
-  const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
-  const CheckedAccountItem = useRecoilValue(CheckedAccountItemAtom);
-  const setVisibleChangePasswordModal = useSetRecoilState(ChangePasswordModalAtom);
-
-  const [selectedFieldInAccount, setSelectedFieldInAccount] = useRecoilState(
-    SelectedFieldInAccountAtom
-  );
-  const [selectedTaskInAccount, setSelectedTaskInAccount] =
-    useRecoilState(SelectedTaskInAccountAtom);
-  useEffect(() => {
-    if (!CheckedAccountItem) {
-      document
-        ?.querySelector(".userCard")
-        ?.querySelectorAll("input")
-        .forEach((element) => {
-          element.value = "";
-        });
-      document.querySelector(".userCard").value = "";
-    }
-  }, [CheckedAccountItem, selectedFieldInAccount, selectedTaskInAccount]);
-  useEffect(() => {
-    const password = document.getElementById("password");
-    const passwordCheck = document.getElementById("passwordCheck");
-    passwordCheck?.addEventListener("blur", () => {
-      if (password.value !== passwordCheck.value) {
-        passwordCheck.nextSibling.classList.remove("hidden");
-      }
-    });
-    passwordCheck?.addEventListener("keyup", () => {
-      if (password.value === passwordCheck.value) {
-        passwordCheck.nextSibling.classList.add("hidden");
-      }
-    });
-  }, []);
-  return (
-    <>
-      <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative">
-        <div className="userCard px-[2.625rem]">
-          <div className="flex items-center gap-[1.125rem]">
-            <picture className="w-[1.375rem] h-[1.375rem] relative">
-              <Image src={`/images/main/myPage/folder.svg`} fill alt="" draggable={false} />
-            </picture>
-            <span id="part" className="text-[#222222] text-lg">
-              {session?.token?.user?.part === "admin" ||
-              session?.token?.user?.affiliation === "admin" ? (
-                <select name="selectedPart" id="selectedPart">
-                  <option value="admin">관리자</option>
-                  <option value="engineer">엔지니어</option>
-                  <option value="operator">오퍼레이터</option>
-                </select>
-              ) : CheckedAccountItem?.part === "admin" ? (
-                "관리자"
-              ) : CheckedAccountItem?.part === "engineer" ? (
-                "엔지니어"
-              ) : CheckedAccountItem?.part === "operator" ? (
-                "오퍼레이터"
-              ) : null}
-            </span>
-          </div>
-          <InputTextItem
-            title="아이디"
-            id={"userId"}
-            value={CheckedAccountItem ? data?.id : ""}
-            placeholder={"영문자+숫자, 20자제한, 특수기호 금지"}
-          />
-          {CheckedAccountItem ? null : (
-            <>
-              <InputTextItem
-                title="비밀번호"
-                id={"password"}
-                type="password"
-                value={CheckedAccountItem ? data?.password : ""}
-                placeholder={"영문자+숫자, 20자 제한"}
-              />
-              <InputTextItem
-                title="비밀번호 확인"
-                id={"passwordCheck"}
-                type="password"
-                value={""}
-                placeholder={"비밀번호를 한번 더 입력"}
-              />
-            </>
-          )}
-          <InputTextItem
-            id="name"
-            title="이름"
-            value={CheckedAccountItem ? data?.name : ""}
-            placeholder={"이름 입력"}
-          />
-          <InputTextItem
-            id="phone"
-            title="연락처"
-            value={CheckedAccountItem ? data?.phone : ""}
-            placeholder={"'-'를 포함하여 입력"}
-          />
-          <InputTextItem
-            id="email"
-            title="이메일"
-            value={CheckedAccountItem ? data?.email : ""}
-            placeholder={"이메일 주소를 끝까지 입력"}
-          />
-          <div className="flex flex-col gap-[1rem] mt-[2.625rem]">
-            <select
-              name="selectField"
-              id="selectField"
-              key={selectedFieldInAccount}
-              defaultValue={selectedFieldInAccount ? selectedFieldInAccount[0]?.index : 0}
-              onChange={(e) => {
-                setSelectedFieldInAccount(e.target.value);
-                setSelectedTaskInAccount(
-                  CheckedCompanyItem?.fields?.filter((item) => {
-                    return item?.index === parseInt(e.target.value) ? item?.processCount : null;
-                  })
-                );
-              }}
-            >
-              <option value="0">공정 선택</option>
-              {CheckedCompanyItem?.fields?.map((item, index) => {
-                return (
-                  <option value={item?.index} key={`selectField${index}`}>
-                    {item?.fieldName}
-                  </option>
-                );
-              })}
-            </select>
-            {/* {!selectedTaskInAccount ? null : ( */}
-            <select name="selectTask" id="selectTask">
-              {[
-                ...Array(
-                  parseInt(selectedTaskInAccount && selectedTaskInAccount[0]?.processCount) || 10
-                ).keys(),
-              ]?.map((item, index) => {
-                return (
-                  <option value={item + 1} key={`selectTask${index}`}>
-                    {`제 ${item + 1} 공정`}
-                  </option>
-                );
-              })}
-            </select>
-            {/* )} */}
-          </div>
-          {!CheckedAccountItem?.part === "admin" ? (
-            <button
-              className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
-              onClick={async (e) => {
-                const targetArr = e.target.parentNode.parentNode?.querySelectorAll("input");
-                for (const item of targetArr) {
-                  if (item.value === "") {
-                    return alert("빈칸을 모두 채워주세요.");
-                  } else {
-                    continue;
-                  }
-                }
-                const part = document.getElementById("selectedPart")?.value;
-                const id = targetArr[0]?.value;
-                const password = targetArr[1]?.value;
-                const password2 = targetArr[2]?.value;
-                const name = targetArr[3]?.value;
-                const phone = targetArr[4]?.value;
-                const email = targetArr[5]?.value;
-                const field = document.getElementById("selectField")?.value;
-                const task = document.getElementById("selectTask")?.value;
-                if (password !== password2) {
-                  targetArr[2].focus();
-                  return alert("비밀번호가 일치하지 않습니다.");
-                }
-                const data = {
-                  companyNumber: CheckedCompanyItem?.companyNumber,
-                  part,
-                  id,
-                  password,
-                  name,
-                  phone,
-                  email,
-                  field,
-                  task,
-                };
-                console.log(data);
-                const res = await axios.post("https://localhost:3333/api/mongo/createPart", data);
-                console.log(res);
-                if (res.data.result === 1) {
-                  alert("등록되었습니다.");
-                  return window.location.reload();
-                } else if (res.data.result === 0) {
-                  return alert(res.data.msg);
-                }
-              }}
-            >
-              <picture className="relative w-[0.875rem] h-[0.75rem]">
-                <Image src={`/images/main/myPage/check.svg`} fill alt="" />
-              </picture>
-              <span className="text-base text-white">등록</span>
-            </button>
-          ) : session?.token?.user?.part === "admin" ||
-            session?.token?.user?.id === CheckedAccountItem?.id ? (
-            <div className="flex w-[17.5rem] h-[2.5rem] mt-[4.375rem] ">
-              <button
-                className="select-none w-[8.75rem] h-[2.5rem]  border border-[#182A5B] border-solid flex justify-center items-center"
-                onClick={async (e) => {
-                  setVisibleChangePasswordModal(true);
-                }}
-              >
-                <span>비밀번호 초기화</span>
-              </button>
-              <button
-                className="w-[8.75rem] h-[2.5rem]  border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center"
-                onClick={async (e) => {
-                  const targetArr = e.target.parentNode.parentNode?.querySelectorAll("input");
-                  for (const item of targetArr) {
-                    if (item.value === "") {
-                      return alert("빈칸을 모두 채워주세요.");
-                    } else {
-                      continue;
-                    }
-                  }
-                  const part = document.getElementById("selectedPart")?.value;
-                  const id = document.getElementById("userId")?.value;
-                  const name = document.getElementById("name")?.value;
-                  const phone = document.getElementById("phone")?.value;
-                  const email = document.getElementById("email")?.value;
-                  const field = document.getElementById("selectField")?.value;
-                  const task = document.getElementById("selectTask")?.value;
-                  const data = {
-                    index: CheckedAccountItem?.index,
-                    companyNumber: CheckedCompanyItem?.companyNumber,
-                    currentPart: CheckedAccountItem?.part,
-                    part,
-                    id,
-                    name,
-                    phone,
-                    email,
-                    field,
-                    task,
-                  };
-                  console.log(data);
-                  const res = await axios.put("https://localhost:3333/api/mongo/createPart", data);
-                  console.log(res);
-                  if (res.data.result === 1) {
-                    alert("수정되었습니다.");
-                    return window.location.reload();
-                  } else if (res.data.result === 0) {
-                    return alert(res.data.msg);
-                  }
-                }}
-              >
-                <picture className="relative w-[0.875rem] h-[0.75rem]">
-                  <Image src={`/images/main/myPage/edit.svg`} fill alt="" />
-                </picture>
-                <span className="text-white">수정</span>
-              </button>
-            </div>
-          ) : null}
-          {CreateAccountItem ? null : session?.token?.user?.part === "admin" ||
-            session?.token?.user?.affiliation === "admin" ? (
-            <span
-              className="flex text[#222222] text-base underline cursor-pointer mt-[2.625rem]"
-              onClick={() => {
-                setVisibleDeleteModal(true);
-                setDeleteApiUrl(
-                  `https://localhost:3333/api/mongo/user?id=${CheckedAccountItem?.id}`
-                );
-              }}
-            >
-              계정삭제
-            </span>
-          ) : null}
-        </div>
-      </div>
-    </>
-  );
-};
-
 const CompanyList = ({ data }) => {
   const searchRef = useRef(null);
   const { data: session } = useSession();
+  const [sessionUser, setSessionUser] = useState(null);
   const [value, setValue] = useState("");
-  const [filteredArray, setFilteredArray] = useState();
+  const [filteredArray, setFilteredArray] = useState([]);
   const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
   const createAccountItem = useRecoilValue(CreateAccountItemAtom);
   const checkedAccountItem = useRecoilValue(CheckedAccountItemAtom);
@@ -575,6 +117,11 @@ const CompanyList = ({ data }) => {
   const setCheckedAccountItem = useSetRecoilState(CheckedAccountItemAtom);
   const setCreateAccountItem = useSetRecoilState(CreateAccountItemAtom);
   const setSelectedPartItem = useSetRecoilState(SelectedPartItemAtom);
+  useEffect(() => {
+    if (session) {
+      setSessionUser(session?.token?.user);
+    }
+  }, [session]);
   useEffect(() => {
     if (checkedAccountItem) {
       const target = document?.querySelector(".userCard")?.querySelectorAll("input");
@@ -597,14 +144,18 @@ const CompanyList = ({ data }) => {
     }
   }, [checkedAccountItem, CheckedCompanyItem]);
   useEffect(() => {
-    let filtered = data;
-    if (value) {
-      filtered = filtered.filter((item) => {
-        return item.companyName.includes(value);
-      });
-      setFilteredArray(filtered);
-    } else {
-      setFilteredArray(data);
+    if (data) {
+      let filtered = data;
+      if (value) {
+        filtered = filtered.filter((item) => {
+          return item.companyName.includes(value);
+        });
+        console.log(filtered);
+        setFilteredArray(filtered);
+      } else {
+        console.log(data);
+        setFilteredArray(data);
+      }
     }
   }, [value, data]);
   return (
@@ -627,7 +178,7 @@ const CompanyList = ({ data }) => {
             <Image src={`/images/main/mypage/search.svg`} fill alt="" />
           </span>
         </div>
-        {session?.token?.user?.affiliation === "admin" ? (
+        {sessionUser?.affiliation === "admin" ? (
           <button
             className="flex justify-center items-center gap-[0.625rem] w-full h-[2.625rem] my-[1.125rem] bg-[#182A5B]"
             onClick={async (e) => {
@@ -682,6 +233,7 @@ const CompanyList = ({ data }) => {
                         setCheckedAccountItem(null);
                         target.classList.remove("hidden");
                       } else {
+                        setCheckedAccountItem(null);
                         target.classList.add("hidden");
                       }
                     }}
@@ -745,6 +297,7 @@ const CompanyList = ({ data }) => {
                               });
                               setSelectedPartItem(element.id);
                               if (e.target.checked) {
+                                setCheckedAccountItem(null);
                                 target.classList.remove("hidden");
                               } else {
                                 setCheckedAccountItem(null);
@@ -767,9 +320,6 @@ const CompanyList = ({ data }) => {
                                   <li
                                     key={`adminPart${index}${idx}${i}`}
                                     className="flex flex-col w-full min-h-[3.125rem] items-center pl-[0.875rem] cursor-pointer relative"
-                                    onClick={() => {
-                                      setCheckedAccountItem(el);
-                                    }}
                                   >
                                     <label
                                       htmlFor={`adminPart${index}${idx}${i}`}
@@ -798,9 +348,12 @@ const CompanyList = ({ data }) => {
                                       onChange={(e) => {
                                         document.getElementsByName(`users`).forEach((element) => {
                                           if (e.target.checked) {
+                                            setCheckedAccountItem(el);
                                             if (element !== e.target) {
                                               element.checked = false;
                                             }
+                                          } else {
+                                            setCheckedAccountItem(null);
                                           }
                                           if (!element.checked) {
                                             element.nextSibling.classList.add("hidden");
@@ -910,6 +463,7 @@ const CompanyList = ({ data }) => {
                                           }
                                           if (!element.checked) {
                                             element.nextSibling.classList.add("hidden");
+                                            setCheckedAccountItem(null);
                                           } else {
                                             element.nextSibling.classList.remove("hidden");
                                             setCheckedAccountItem(el);
@@ -937,5 +491,500 @@ const CompanyList = ({ data }) => {
     </div>
   );
 };
+
+const Company = ({ data }) => {
+  const { data: session } = useSession();
+  const [sessionUser, setSessionUser] = useState(null);
+  const setVisibleDeleteModal = useSetRecoilState(DeleteModalAtom);
+  const setDeleteApiUrl = useSetRecoilState(DeleteApiUriAtom);
+  const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
+  const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
+  const CheckedAccountItem = useRecoilValue(CheckedAccountItemAtom);
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    if (session) {
+      setSessionUser(session?.token?.user);
+    }
+  }, [session]);
+  useEffect(() => {
+    if (CheckedCompanyItem) {
+      for (const key in CheckedCompanyItem) {
+        if (Object.hasOwnProperty.call(CheckedCompanyItem, key)) {
+          document.getElementById(`${key}`)
+            ? (document.getElementById(`${key}`).value = CheckedCompanyItem[key])
+            : null;
+        }
+      }
+    } else {
+      document
+        .querySelector(".companyList")
+        ?.querySelectorAll("input")
+        .forEach((element) => {
+          element.value = "";
+        });
+    }
+  }, [session, CheckedCompanyItem]);
+
+  return (
+    <>
+      <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative ">
+        <div className="companyList px-[2.625rem]">
+          {CreateAccountItem ? (
+            <div className="flex items-center gap-[1.125rem]">
+              <picture className="w-[1.375rem] h-[1.375rem] relative">
+                <Image src={`/images/main/myPage/company.svg`} fill alt="" draggable={false} />
+              </picture>
+              <input
+                type="text"
+                id="companyName"
+                className="text-sm py-[0.625rem] px-[1rem] border-b border-b-[#182A5B]"
+                placeholder="회사명 입력"
+              />
+            </div>
+          ) : (
+            <div className="flex items-center gap-[1.125rem] mb-[0.625rem]">
+              <picture className="w-[1.375rem] h-[1.375rem] relative">
+                <Image src={`/images/main/myPage/company.svg`} fill alt="" draggable={false} />
+              </picture>
+              <span id="companyName" className="text-[#222222] text-lg">
+                {data?.companyName}
+              </span>
+            </div>
+          )}
+          <InputTextItem
+            title="회원번호"
+            id="userNumber"
+            value={data?.userNumber}
+            placeholder={""}
+          />
+          <InputTextItem
+            title="사업자등록번호"
+            id="companyNumber"
+            value={data?.companyNumber}
+            placeholder={"'-'를 포함하여 입력"}
+          />
+          <InputTextItem
+            title="전화번호"
+            id="phoneNumber"
+            value={data?.phoneNumber}
+            placeholder={"'-'를 포함하여 입력"}
+          />
+          <InputAddressItem
+            title="회사주소"
+            id="companyAddress"
+            zipCode={data?.zipCode}
+            address={data?.address}
+            detailAddress={data?.detailAddress}
+          />
+          {CreateAccountItem &&
+          (sessionUser?.part === "admin" || sessionUser?.affiliation === "admin") ? (
+            <button
+              className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
+              onClick={async () => {
+                const companyName = document.getElementById("companyName").value;
+                const userNumber = document.getElementById("userNumber").value;
+                const companyNumber = document.getElementById("companyNumber").value;
+                const phoneNumber = document.getElementById("phoneNumber").value;
+                const companyAddress = document
+                  .getElementById("companyAddress")
+                  ?.querySelectorAll("input");
+                const zipCode = companyAddress[0].value;
+                const address = companyAddress[1].value;
+                const detailAddress = companyAddress[2].value;
+                const data = {
+                  companyName,
+                  userNumber,
+                  companyNumber,
+                  phoneNumber,
+                  zipCode,
+                  address,
+                  detailAddress,
+                };
+                console.log(data);
+                const res = await axios.post(baseURL + "/api/mongo/company", data, {
+                  headers: { Authorization: `${session?.token?.accessToken}` },
+                });
+                console.log(res);
+                if (res.data.result === 1) {
+                  alert("등록되었습니다.");
+                  window.location.reload();
+                }
+              }}
+            >
+              <picture className="relative w-[0.875rem] h-[0.75rem]">
+                <Image src={`/images/main/myPage/check.svg`} fill alt="" />
+              </picture>
+              <span className="text-base text-white">등록</span>
+            </button>
+          ) : sessionUser?.part === "admin" || sessionUser?.affiliation === "admin" ? (
+            <button
+              className="w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center"
+              onClick={async () => {
+                const companyName = document.getElementById("companyName").value;
+                const userNumber = document.getElementById("userNumber").value;
+                const companyNumber = document.getElementById("companyNumber").value;
+                const phoneNumber = document.getElementById("phoneNumber").value;
+                const companyAddress = document
+                  .getElementById("companyAddress")
+                  ?.querySelectorAll("input");
+                const zipCode = companyAddress[0].value;
+                const address = companyAddress[1].value;
+                const detailAddress = companyAddress[2].value;
+                const data = {
+                  index: CheckedCompanyItem?.index,
+                  companyName,
+                  userNumber,
+                  companyNumber,
+                  phoneNumber,
+                  zipCode,
+                  address,
+                  detailAddress,
+                };
+                console.log(data);
+                const res = await axios.put(baseURL + "/api/mongo/company", data, {
+                  headers: { Authorization: `${session?.token?.accessToken}` },
+                });
+                console.log(res);
+                if (res.data.result === 1) {
+                  alert("수정되었습니다.");
+                  window.location.reload();
+                } else {
+                  alert("수정에 실패하였습니다.");
+                }
+              }}
+            >
+              <picture className="relative w-[0.875rem] h-[0.75rem]">
+                <Image src={`/images/main/myPage/edit.svg`} fill alt="" />
+              </picture>
+              <span className="text-white">수정</span>
+            </button>
+          ) : null}
+          {CreateAccountItem ? null : sessionUser?.part === "admin" ||
+            sessionUser?.affiliation === "admin" ? (
+            <span
+              className="flex text[#222222] text-base underline cursor-pointer mt-[2rem]"
+              onClick={() => {
+                setVisibleDeleteModal(true);
+                setDeleteApiUrl(
+                  baseURL + `/api/mongo/company?companyNumber=${CheckedCompanyItem?.companyNumber}`
+                );
+              }}
+            >
+              계정삭제
+            </span>
+          ) : null}
+        </div>
+      </div>
+    </>
+  );
+};
+
+const Part = ({ data, sub, isCreate }) => {
+  const searchRef = useRef(null);
+  const { data: session } = useSession();
+  const [sessionUser, setSessionUser] = useState(null);
+  const setVisibleDeleteModal = useSetRecoilState(DeleteModalAtom);
+  const setDeleteApiUrl = useSetRecoilState(DeleteApiUriAtom);
+  const CreateAccountItem = useRecoilValue(CreateAccountItemAtom);
+  const CheckedCompanyItem = useRecoilValue(CheckedCompanyItemAtom);
+  const CheckedAccountItem = useRecoilValue(CheckedAccountItemAtom);
+  const SelectedPartItem = useRecoilValue(SelectedPartItemAtom);
+  const setVisibleChangePasswordModal = useSetRecoilState(ChangePasswordModalAtom);
+
+  const [selectedFieldInAccount, setSelectedFieldInAccount] = useRecoilState(
+    SelectedFieldInAccountAtom
+  );
+  const [selectedTaskInAccount, setSelectedTaskInAccount] =
+    useRecoilState(SelectedTaskInAccountAtom);
+  const [baseURL, setBaseURL] = useState();
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    if (session) {
+      setSessionUser(session?.token?.user);
+    }
+  }, [session]);
+  useEffect(() => {
+    console.log("selectedFieldInAccount");
+    console.log(selectedFieldInAccount);
+    if (!CheckedAccountItem) {
+      document
+        ?.querySelector(".userCard")
+        ?.querySelectorAll("input")
+        .forEach((element) => {
+          element.value = "";
+        });
+      document.querySelector(".userCard").value = "";
+    }
+  }, [CheckedAccountItem, CheckedCompanyItem, selectedFieldInAccount, selectedTaskInAccount]);
+  useEffect(() => {
+    const password = document.getElementById("password");
+    const passwordCheck = document.getElementById("passwordCheck");
+    passwordCheck?.addEventListener("blur", () => {
+      if (password.value !== passwordCheck.value) {
+        passwordCheck.nextSibling.classList.remove("hidden");
+      }
+    });
+    passwordCheck?.addEventListener("keyup", () => {
+      if (password.value === passwordCheck.value) {
+        passwordCheck.nextSibling.classList.add("hidden");
+      }
+    });
+  }, []);
+  return (
+    <>
+      <div className="py-[2.625rem] w-[22.5rem] h-fit bg-white relative">
+        <div className="userCard px-[2.625rem]">
+          <div className="flex items-center gap-[1.125rem]">
+            <picture className="w-[1.375rem] h-[1.375rem] relative">
+              <Image src={`/images/main/myPage/folder.svg`} fill alt="" draggable={false} />
+            </picture>
+            <span id="part" className="text-[#222222] text-lg">
+              {sessionUser?.part === "admin" || sessionUser?.affiliation === "admin" ? (
+                <select name="selectedPart" value={SelectedPartItem || "admin"} id="selectedPart">
+                  <option value="admin">관리자</option>
+                  <option value="engineer">엔지니어</option>
+                  <option value="operator">오퍼레이터</option>
+                </select>
+              ) : CheckedAccountItem?.part === "admin" ? (
+                "관리자"
+              ) : CheckedAccountItem?.part === "engineer" ? (
+                "엔지니어"
+              ) : CheckedAccountItem?.part === "operator" ? (
+                "오퍼레이터"
+              ) : null}
+            </span>
+          </div>
+          <InputTextItem
+            title="아이디"
+            id={"userId"}
+            value={CheckedAccountItem ? data?.id : ""}
+            placeholder={"영문자+숫자, 20자제한, 특수기호 금지"}
+          />
+          {CheckedAccountItem ? null : (
+            <>
+              <InputTextItem
+                title="비밀번호"
+                id={"password"}
+                type="password"
+                value={CheckedAccountItem ? data?.password : ""}
+                placeholder={"영문자+숫자, 20자 제한"}
+              />
+              <InputTextItem
+                title="비밀번호 확인"
+                id={"passwordCheck"}
+                type="password"
+                value={""}
+                placeholder={"비밀번호를 한번 더 입력"}
+              />
+            </>
+          )}
+          <InputTextItem
+            id="name"
+            title="이름"
+            value={CheckedAccountItem ? data?.name : ""}
+            placeholder={"이름 입력"}
+          />
+          <InputTextItem
+            id="phone"
+            title="연락처"
+            value={CheckedAccountItem ? data?.phone : ""}
+            placeholder={"'-'를 포함하여 입력"}
+          />
+          <InputTextItem
+            id="email"
+            title="이메일"
+            value={CheckedAccountItem ? data?.email : ""}
+            placeholder={"이메일 주소를 끝까지 입력"}
+          />
+          <div className="flex flex-col gap-[1rem] mt-[2.625rem]">
+            <select
+              name="selectField"
+              id="selectField"
+              key={selectedFieldInAccount}
+              defaultValue={selectedFieldInAccount ? selectedFieldInAccount[0]?.index : 0}
+              value={selectedFieldInAccount}
+              onChange={(e) => {
+                setSelectedFieldInAccount(e.target.value);
+                setSelectedTaskInAccount(
+                  CheckedCompanyItem?.fields?.filter((item) => {
+                    return item?.index === parseInt(e.target.value) ? item?.processCount : null;
+                  })
+                );
+              }}
+            >
+              <option value="0">현장 선택</option>
+              {CheckedCompanyItem?.fields?.map((item, index) => {
+                return (
+                  <option value={item?.index} key={`selectField${index}`}>
+                    {item?.fieldName}
+                  </option>
+                );
+              })}
+            </select>
+            {/* {!selectedTaskInAccount ? null : ( */}
+            <select name="selectTask" id="selectTask">
+              {[
+                ...Array(
+                  parseInt(selectedTaskInAccount && selectedTaskInAccount[0]?.processCount) || 10
+                ).keys(),
+              ]?.map((item, index) => {
+                return (
+                  <option value={item + 1} key={`selectTask${index}`}>
+                    {`제 ${item + 1} 공정`}
+                  </option>
+                );
+              })}
+            </select>
+            {/* )} */}
+          </div>
+          {!CheckedAccountItem &&
+          (sessionUser?.affiliation === "admin" || sessionUser?.part === "admin") ? (
+            <button
+              className="flex w-full h-[2.5rem] mt-[4.375rem] gap-[0.875rem] justify-center items-center bg-[#182A5B]"
+              onClick={async (e) => {
+                const targetArr = e.target.parentNode.parentNode?.querySelectorAll("input");
+                for (const item of targetArr) {
+                  if (item.value === "") {
+                    return alert("빈칸을 모두 채워주세요.");
+                  } else {
+                    continue;
+                  }
+                }
+                const part = document.getElementById("selectedPart")?.value;
+                const id = targetArr[0]?.value;
+                const password = targetArr[1]?.value;
+                const password2 = targetArr[2]?.value;
+                const name = targetArr[3]?.value;
+                const phone = targetArr[4]?.value;
+                const email = targetArr[5]?.value;
+                const field = document.getElementById("selectField")?.value;
+                const task = document.getElementById("selectTask")?.value;
+                if (password !== password2) {
+                  targetArr[2].focus();
+                  return alert("비밀번호가 일치하지 않습니다.");
+                }
+                const data = {
+                  companyNumber: CheckedCompanyItem?.companyNumber,
+                  part,
+                  id,
+                  password,
+                  name,
+                  phone,
+                  email,
+                  field,
+                  task,
+                };
+                console.log(data);
+                const res = await axios.post(baseURL + "/api/mongo/createPart", data, {
+                  headers: { Authorization: `${session?.token?.accessToken}` },
+                });
+                console.log(res);
+                if (res.data.result === 1) {
+                  alert("등록되었습니다.");
+                  return window.location.reload();
+                } else if (res.data.result === 0) {
+                  return alert(res.data.msg);
+                }
+              }}
+            >
+              <picture className="relative w-[0.875rem] h-[0.75rem]">
+                <Image src={`/images/main/myPage/check.svg`} fill alt="" />
+              </picture>
+              <span className="text-base text-white">등록</span>
+            </button>
+          ) : CheckedAccountItem &&
+            (sessionUser?.affiliation === "admin" ||
+              sessionUser?.part === "admin" ||
+              sessionUser?.id === CheckedAccountItem?.id) ? (
+            <div className="flex w-[17.5rem] h-[2.5rem] mt-[4.375rem] ">
+              <button
+                className="select-none w-[8.75rem] h-[2.5rem]  border border-[#182A5B] border-solid flex justify-center items-center"
+                onClick={async (e) => {
+                  setVisibleChangePasswordModal(true);
+                }}
+              >
+                <span>비밀번호 초기화</span>
+              </button>
+              <button
+                className="w-[8.75rem] h-[2.5rem]  border bg-[#182A5B] border-[#182A5B] border-solid flex justify-center items-center"
+                onClick={async (e) => {
+                  const targetArr = e.target.parentNode.parentNode?.querySelectorAll("input");
+                  for (const item of targetArr) {
+                    if (item.value === "") {
+                      return alert("빈칸을 모두 채워주세요.");
+                    } else {
+                      continue;
+                    }
+                  }
+                  const part = document.getElementById("selectedPart")?.value;
+                  const id = document.getElementById("userId")?.value;
+                  const name = document.getElementById("name")?.value;
+                  const phone = document.getElementById("phone")?.value;
+                  const email = document.getElementById("email")?.value;
+                  const field = document.getElementById("selectField")?.value;
+                  const task = document.getElementById("selectTask")?.value;
+                  const data = {
+                    index: CheckedAccountItem?.index,
+                    companyNumber: CheckedCompanyItem?.companyNumber,
+                    currentPart: CheckedAccountItem?.part,
+                    part,
+                    id,
+                    name,
+                    phone,
+                    email,
+                    field,
+                    task,
+                  };
+                  console.log(data);
+                  const res = await axios.put(baseURL + "/api/mongo/createPart", data, {
+                    headers: { Authorization: `${session?.token?.accessToken}` },
+                  });
+                  console.log(res);
+                  if (res.data.result === 1) {
+                    alert("수정되었습니다.");
+                    return window.location.reload();
+                  } else if (res.data.result === 0) {
+                    return alert(res.data.msg);
+                  }
+                }}
+              >
+                <picture className="relative w-[0.875rem] h-[0.75rem]">
+                  <Image src={`/images/main/myPage/edit.svg`} fill alt="" />
+                </picture>
+                <span className="text-white">수정</span>
+              </button>
+            </div>
+          ) : null}
+          {CreateAccountItem ? null : sessionUser?.part === "admin" ||
+            sessionUser?.affiliation === "admin" ? (
+            <span
+              className="flex text[#222222] text-base underline cursor-pointer mt-[2.625rem]"
+              onClick={() => {
+                setVisibleDeleteModal(true);
+                setDeleteApiUrl(baseURL + `/api/mongo/user?id=${CheckedAccountItem?.id}`);
+              }}
+            >
+              계정삭제
+            </span>
+          ) : null}
+        </div>
+      </div>
+    </>
+  );
+};
+
 // 0.0625rem convert to rem = 0.0625rem
 // 68

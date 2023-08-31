@@ -1,17 +1,16 @@
-
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "./main.module.css";
-import DeviceListItem from "./deviceListItem";
-import AddModulePopup from './AddDevicePopup'; // Import the popup component
+import PltModuleUnit from "./PltModuleUnit";
+import AddModulePopup from "./AddDevicePopup"; // Import the popup component
 import axios from "axios";
-import { useSession } from "next-auth/react";
-
+import { getSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const PltModuleManager = (props) => {
+  const router = useRouter();
   // Sample data for devices and tasks (replace with your actual data)
-  const [moduleList, setModuleList] = useState([
-  ]);
+  const [moduleList, setModuleList] = useState([]);
 
   const [isAddModulePopupVisible, setAddModulePopupVisible] = useState(false);
   const handleAddModulePopup = () => {
@@ -22,49 +21,72 @@ const PltModuleManager = (props) => {
     setAddModulePopupVisible(false);
   };
 
-
-  const { data: session } = useSession();
-  if(session?.token?.user?.affiliation === "admin"){
-  }else{
-  }
-
   const onSelect = (selectedItem) => {
     props.onSelect(selectedItem);
-    console.log("onSelect in the module");
-  }
+    // console.log("onSelect in the module");
+  };
+
+  const [baseURL, setBaseURL] = useState();
 
   useEffect(() => {
-    // Simulate fetching data or changing the list dynamically
-    // For example, fetchDevices and fetchTasks could be API calls
-    const fetchDevices = async () => {
-      // const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
-      //   companyNumber:
-      //     session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
-      // });
-      // console.log(response.data?.data);
-      // setModuleList(response.data?.data);
+    if (!props?.sessions?.token?.user?.affiliation) {
+      return;
+    } else {
+      // console.log("Is admin");
+      if (props?.sessions?.token?.user?.affiliation === "admin") {
+        // console.log("admin mode");
+      } else {
+        // console.log("node-admin mode:", props?.sessions?.token?.user?.affiliation);
+      }
+    }
+  }, [props?.sessions]);
 
-      // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-      const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/list", {
-        filter:props.filter
-      },{headers: {Authorization: "admin"}});
-      console.log(fetchedDevices?.data?.data);
-      setModuleList(fetchedDevices?.data?.data?.reverse());
-    };
+  useEffect(() => {
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    console.log("baseURL:", baseURL);
+    if (baseURL && props?.sessions) {
+      // Simulate fetching data or changing the list dynamically
+      // For example, fetchDevices and fetchTasks could be API calls
+      const fetchPltModules = async () => {
+        // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
+        await axios
+          .post(
+            baseURL + "/fetch/v0.1/module/list",
+            {
+              filter: props.filter,
+            },
+            { headers: { Authorization: `${props?.sessions?.token?.accessToken}` } }
+          )
+          .then((res) => {
+            // console.log(res?.data?.data);
+            setModuleList(res?.data?.data?.reverse());
+          })
+          .catch((err) => {
+            // console.log(err);
+          },{headers: {Authorization: "admin"}});
+      };
 
-    fetchDevices();
-  }, [session]); // Empty dependency array to run the effect only once
-
+      fetchPltModules();
+    }
+  }, [props?.sessions, baseURL]); // Empty dependency array to run the effect only once
 
   return (
     <div className={styles.section}>
       <div className={styles.header}>
         <h2>Manage Devices</h2>
-        <button className={styles.addButton} onClick={handleAddModulePopup}>+</button>
+        <button className={styles.addButton} onClick={handleAddModulePopup}>
+          +
+        </button>
       </div>
       <div className={styles.list}>
-        {moduleList.map((device, index) => (
-          <DeviceListItem key={index} device={device} onClickModule={onSelect}/>
+        {moduleList?.map((device, index) => (
+          <PltModuleUnit key={index} device={device} onClickModule={onSelect} />
         ))}
       </div>
 
@@ -73,8 +95,7 @@ const PltModuleManager = (props) => {
           <AddModulePopup onClose={handleCloseAddModulePopup} />
         </div>
       )}
-      </div>
-
+    </div>
   );
 };
 

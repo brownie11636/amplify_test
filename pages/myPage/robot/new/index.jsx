@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MainLayout from "../../../../components/Main/MainLayout";
 import CardForm from "../../../../components/Main/MyPage/CardForm";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { CheckedRobotItemAtom, RobotItemListAtom } from "../../../../recoil/AtomStore";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import axios from "axios";
 
-const New = () => {
+const New = ({ sessions }) => {
   const router = useRouter();
   const { data: session } = useSession();
   console.log(
@@ -16,15 +16,44 @@ const New = () => {
   const [robotItemList, SetRobotItemList] = useRecoilState(RobotItemListAtom);
   const setCheckedRobotItem = useSetRecoilState(CheckedRobotItemAtom);
   setCheckedRobotItem();
+  const [baseURL, setBaseURL] = useState();
   useEffect(() => {
-    getRobot();
-  }, [session]);
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
+  }, []);
+  useEffect(() => {
+    if (baseURL) {
+      getRobot();
+    }
+  }, [session, baseURL]);
   const getRobot = async () => {
-    const response = await axios.post("https://localhost:3333/api/mongo/robotList", {
-      companyNumber:
-        session?.token?.user?.affiliation === "admin" ? "123" : session?.token?.user?.affiliation,
-    });
-    SetRobotItemList(response.data?.data);
+    await axios
+      .post(
+        "https://localhost:3333/api/mongo/robotList",
+        {
+          companyNumber:
+            session?.token?.user?.affiliation === "admin"
+              ? "admin"
+              : session?.token?.user?.affiliation,
+        },
+        {
+          headers: { Authorization: `${sessions?.token?.accessToken}` },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        SetRobotItemList(response.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err?.response?.status === 403) {
+          alert(err?.response?.data?.msg);
+          return router.push("/main/login");
+        }
+      });
   };
   return (
     <MainLayout>
@@ -40,3 +69,20 @@ const New = () => {
   );
 };
 export default New;
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};
