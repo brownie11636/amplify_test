@@ -6,6 +6,7 @@ import AddTaskPopup from './AddTaskPopup'; // Import the popup component
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import {useRouter } from "next/router";
+import { useTaskAppStore } from "../../store/zustand/taskApp";
 
 const PltTaskManager = ({ sessions }) => {
   const router = useRouter();
@@ -42,6 +43,9 @@ const PltTaskManager = ({ sessions }) => {
       }else if(app.name === "cambot"){
         router.push(`/task/cambot/`);
       }else if(app.name === "webRtc2d"){
+        //convert selectedItem to Json
+        sessionStorage.setItem("taskAppConfig", JSON.stringify(selectedItem));
+        // useTaskAppStore.setState({socketID: selectedItem});
         router.push(`/task/webRtc2d/`);
       }else if(app.name === "webRtcStreo"){
         router.push(`/task/webRtc2d/`);
