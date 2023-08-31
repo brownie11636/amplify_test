@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from 'react'
 import { useSearchParams } from "next/navigation";
 import styles from "./main.module.css";
-import TaskListItem from "./taskListItem";
+import PltTaskUnit from "./PltTaskUnit";
 import AddTaskPopup from './AddTaskPopup'; // Import the popup component
 import axios from "axios";
 import { useSession } from "next-auth/react";
-
+import {useRouter } from "next/router";
 
 const PltTaskManager = () => {
-
+  const router = useRouter();
   const [taskList, setTasks] = useState([
     // { id:"TN000-FAKE-0000", alias: 'TeleoperationTset', config: 'Robot', status: 'Universal Robots', descriptions:"not yet", createdAt:"2023...today"},
   ]);
@@ -35,6 +35,27 @@ const PltTaskManager = () => {
   // if(session?.token?.user?.affiliation === "admin"){
   // }else{
   // }
+
+  const onSelect = (selectedItem) => {
+    console.log("onSelect in the module");
+    console.log(selectedItem);
+    if(selectedItem.app){
+      const app = JSON.parse(selectedItem.app)
+      console.log(app);
+      if(app.name === "Teleoperation"){
+        console.log("Teleoperation");
+        // router.push(`/main/PltTask/${selectedItem?.id}`);
+      }else if(app.name === "PTS-cambot"){
+        console.log("router.push(/main/PltTaskPTS/${selectedItem?.id})");
+        router.push(`/myPage/account/`);
+      }else{
+        console.log("app not supported");
+      }
+    }else{
+      console.log(" No app");
+    }
+    // router.push(`/main/PltTask/${selectedItem?.id}`);
+  }
 
 
   useEffect(() => {
@@ -62,7 +83,7 @@ const PltTaskManager = () => {
       </div>
       <div className={styles.list}>
         {taskList.map((task, index) => (
-          <TaskListItem key={index} task={task} />
+          <PltTaskUnit key={index} task={task} onSelect={onSelect}/>
         ))}
       </div>
       {isAddTaskPopupVisible && (

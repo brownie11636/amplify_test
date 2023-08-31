@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styles from './Popup.module.css';
 import axios from "axios";
 import PltTaskAppRoster from './PltTaskAppRoster';
-import PltTaskAppWrapper from './PlttaskAppWrapper';
+import PltTaskAppUnit from './PltTaskAppUnit';
 
 const PltTaskAppSelector = (props) => {
   const [isSelectorVisible, setIsSelectorVisible] = useState(false);
@@ -13,8 +13,6 @@ const PltTaskAppSelector = (props) => {
   }
 
   const onSelectTaskApp = (selectedItem) => {
-    console.log("selectedItem");
-    console.log(selectedItem);
     setIsSelectorVisible(false);
     setSelectedPltTaskApp(selectedItem);
     console.log(selectedPltTaskApp)
@@ -29,7 +27,7 @@ const PltTaskAppSelector = (props) => {
             </div>
           }
           {selectedPltTaskApp &&
-            <PltTaskAppWrapper taskApp={selectedPltTaskApp} />
+            <PltTaskAppUnit taskApp={selectedPltTaskApp} />
           }
           {isSelectorVisible &&
             (<PltTaskAppRoster filter={props.filter} onSelect={onSelectTaskApp}/>)

@@ -11,8 +11,8 @@ const addTaskPopup = ({ onClose, onSearch }) => {
   // const [taskAlias, setTaskAlias] = useState('alias');
   const [fetchedData, setFetchedData] = useState(null);
   const [password, setPassword] = useState('');
-  // const [taskProfile, setTaskProfile] = useState({id:null,alias:null,App:{name:null,config:{camera:null,robot:null}}});
-  const [taskProfile, setTaskProfile] = useState({id:null,alias:null,app:{name:null,config:{camera:null,robot:null}}});
+  // const [taskProfile, setTaskProfile] = useState({id:null,alias:null,app:{name:null,config:{camera:null,robot:null}}});
+  const [taskProfile, setTaskProfile] = useState({id:null,alias:null,app:{name:null}});
 
 
   // Create random alias
@@ -36,7 +36,7 @@ const addTaskPopup = ({ onClose, onSearch }) => {
   };
 
   const onSelectTaskApp = (selectedItem) => {
-    taskProfile.app.name = selectedItem;
+    taskProfile.app = selectedItem;
     setTaskProfile(taskProfile);
     console.log(taskProfile);
   }
