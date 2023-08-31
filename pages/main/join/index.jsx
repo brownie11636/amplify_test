@@ -1,4 +1,4 @@
-import { signIn, useSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
@@ -24,7 +24,7 @@ import { InputTextItem } from "../../../components/Main/MyPage/card/InputTextIte
 import { InputAddressItem } from "../../../components/Main/MyPage/card/InputAddressItem";
 import { useRouter } from "next/router";
 
-const Join = () => {
+const Join = ({ sessions }) => {
   const { data: session } = useSession();
   const router = useRouter();
   useEffect(() => {
@@ -33,14 +33,21 @@ const Join = () => {
     }
   }, [session]);
   return (
-    <main className="flex w-full h-fit justify-center py-[200px] bg-[#F2F2F2]">
-      <Head>
-        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" async />
-      </Head>
-      <div className="flex gap-[3.75rem] w-fit">
-        <Part defaultName={session?.token?.user?.name} defaultEmail={session?.token?.user?.email} />
-      </div>
-    </main>
+    <>
+      {sessions ? null : (
+        <main className="flex w-full h-fit justify-center py-[200px] bg-[#F2F2F2]">
+          <Head>
+            <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" async />
+          </Head>
+          <div className="flex gap-[3.75rem] w-fit">
+            <Part
+              defaultName={session?.token?.user?.name}
+              defaultEmail={session?.token?.user?.email}
+            />
+          </div>
+        </main>
+      )}
+    </>
   );
 };
 export default Join;
@@ -252,4 +259,21 @@ const Part = ({ defaultName, defaultEmail }) => {
       </div>
     </>
   );
+};
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
 };

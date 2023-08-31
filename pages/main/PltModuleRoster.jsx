@@ -4,10 +4,10 @@ import styles from "./main.module.css";
 import DeviceListItem from "./deviceListItem";
 import AddModulePopup from "./AddDevicePopup"; // Import the popup component
 import axios from "axios";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
-const PltModuleManager = (props) => {
+const PltModuleManager = (props, { sessions }) => {
   const router = useRouter();
   // Sample data for devices and tasks (replace with your actual data)
   const [moduleList, setModuleList] = useState([]);
@@ -31,14 +31,14 @@ const PltModuleManager = (props) => {
   const [baseURL, setBaseURL] = useState();
 
   useEffect(() => {
-    if (!session?.token?.user?.affiliation) {
+    if (!sessions?.token?.user?.affiliation) {
       return;
     } else {
       // console.log("Is admin");
-      if (session?.token?.user?.affiliation === "admin") {
+      if (sessions?.token?.user?.affiliation === "admin") {
         // console.log("admin mode");
       } else {
-        // console.log("node-admin mode:", session?.token?.user?.affiliation);
+        // console.log("node-admin mode:", sessions?.token?.user?.affiliation);
       }
     }
   }, [session]);
@@ -60,20 +60,17 @@ const PltModuleManager = (props) => {
             baseURL + "/api/mongo/robotList",
             {
               companyNumber:
-                session?.token?.user?.affiliation === "admin"
+                sessions?.token?.user?.affiliation === "admin"
                   ? "admin"
-                  : session?.token?.user?.affiliation,
+                  : sessions?.token?.user?.affiliation,
             },
-            { headers: { Authorization: `${session?.token?.accessToken}` } }
+            { headers: { Authorization: `${sessions?.token?.accessToken}` } }
           )
           .then((res) => {
             // console.log(res?.data?.data);
           })
           .catch((err) => {
             // console.log(err);
-            if (err?.response?.status === 403) {
-              router.push("/main/login");
-            }
           });
 
         // setModuleList(response.data?.data);
@@ -85,7 +82,7 @@ const PltModuleManager = (props) => {
             {
               filter: props.filter,
             },
-            { headers: { Authorization: `${session?.token?.accessToken}` } }
+            { headers: { Authorization: `${sessions?.token?.accessToken}` } }
           )
           .then((res) => {
             // console.log(res?.data?.data);
@@ -93,9 +90,6 @@ const PltModuleManager = (props) => {
           })
           .catch((err) => {
             // console.log(err);
-            if (err?.response?.status === 403) {
-              router.push("/main/login");
-            }
           });
       };
 
@@ -127,3 +121,20 @@ const PltModuleManager = (props) => {
 };
 
 export default PltModuleManager;
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};

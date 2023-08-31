@@ -5,9 +5,9 @@ import { CompanyItemAtom, RobotItemListAtom } from "../../../recoil/AtomStore";
 import { useRecoilState } from "recoil";
 import CardForm from "../../../components/Main/MyPage/CardForm";
 import axios from "axios";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
-const RobotList = () => {
+const RobotList = ({ sessions }) => {
   const router = useRouter();
   const { data: session } = useSession();
   console.log(
@@ -39,7 +39,7 @@ const RobotList = () => {
               : session?.token?.user?.affiliation,
         },
         {
-          headers: { Authorization: `${session?.token?.accessToken}` },
+          headers: { Authorization: `${sessions?.token?.accessToken}` },
         }
       )
       .then((response) => {
@@ -69,3 +69,20 @@ const RobotList = () => {
   );
 };
 export default RobotList;
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};

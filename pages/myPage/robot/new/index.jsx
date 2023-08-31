@@ -2,12 +2,12 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import MainLayout from "../../../../components/Main/MainLayout";
 import CardForm from "../../../../components/Main/MyPage/CardForm";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { CheckedRobotItemAtom, RobotItemListAtom } from "../../../../recoil/AtomStore";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import axios from "axios";
 
-const New = () => {
+const New = ({ sessions }) => {
   const router = useRouter();
   const { data: session } = useSession();
   console.log(
@@ -40,7 +40,7 @@ const New = () => {
               : session?.token?.user?.affiliation,
         },
         {
-          headers: { Authorization: `${session?.token?.accessToken}` },
+          headers: { Authorization: `${sessions?.token?.accessToken}` },
         }
       )
       .then((response) => {
@@ -69,3 +69,20 @@ const New = () => {
   );
 };
 export default New;
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/main/login",
+        permanent: false,
+      },
+    };
+  } else {
+    return {
+      props: { sessions: session },
+    };
+  }
+};
