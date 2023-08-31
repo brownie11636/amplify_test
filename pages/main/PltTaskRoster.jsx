@@ -36,12 +36,17 @@ const PltTaskManager = ({ sessions }) => {
     if(selectedItem.app){
       const app = JSON.parse(selectedItem.app)
       console.log(app);
-      if(app.name === "Teleoperation"){
-        console.log("Teleoperation");
+      if(app.name === "remoteXR"){
+        router.push(`/task/remoteXr/`);
         // router.push(`/main/PltTask/${selectedItem?.id}`);
-      }else if(app.name === "PTS-cambot"){
-        console.log("router.push(/main/PltTaskPTS/)");
-        router.push(`/myPage/account/`);
+      }else if(app.name === "cambot"){
+        router.push(`/task/cambot/`);
+      }else if(app.name === "webRtc2d"){
+        router.push(`/task/webRtc2d/`);
+      }else if(app.name === "webRtcStreo"){
+        router.push(`/task/webRtc2d/`);
+      }else if(app.name === "webRtc3d"){
+        router.push(`/task/webRtc2d/`);
       }else{
         console.log("app not supported");
       }

@@ -10,11 +10,11 @@ import { useSession } from "next-auth/react";
 const PltTaskManager = (props) => {
 
   const [taskApps, setTaskApps] = useState([
-    { name:"Teleoperation", description: 'robot operation', version: 'v0.1', config:{camera:null,robot:null}},
-    { name:"PTS-cambot", description: 'camera and robot', version: 'v0.1', config:{camera:null,robot:null}},
-    { name:"WebRTC 2D", description: 'ordinary streaming', version: 'v0.1', config:{camera:null,robot:null}},
-    { name:"WebRTC Streovision", description: '2ch streaming', version: 'v0.1', config:{camera:null,robot:null}},
-    { name:"WebRTC 3D", description: 'depthview', version: 'v0.1', config:{camera:null,robot:null}},
+    { name:"remoteXr", description: 'robot operation', version: 'v0.1', config:{camera:null,robot:null}},
+    { name:"cambot", description: 'camera and robot', version: 'v0.1', config:{camera:null,robot:null}},
+    { name:"webRtc2d", description: 'ordinary streaming', version: 'v0.1', config:{camera:null,robot:null}},
+    { name:"webRtcStreo", description: '2ch streaming', version: 'v0.1', config:{camera:null,robot:null}},
+    { name:"webRtc3d", description: 'depthview', version: 'v0.1', config:{camera:null,robot:null}},
   ]);
 
   // const { data: session } = useSession();
