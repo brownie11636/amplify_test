@@ -8,23 +8,49 @@ import PltModuleSelector from './PltModuleSelector';
 
 
 const addTaskPopup = ({ onClose, onSearch }) => {
-  const [serialNumber, setSerialNumber] = useState('dummy data');
+  // const [taskAlias, setTaskAlias] = useState('alias');
   const [fetchedData, setFetchedData] = useState(null);
   const [password, setPassword] = useState('');
-  
+  // const [taskProfile, setTaskProfile] = useState({id:null,alias:null,App:{name:null,config:{camera:null,robot:null}}});
+  const [taskProfile, setTaskProfile] = useState({id:null,alias:null,app:{name:null,config:{camera:null,robot:null}}});
+
+
+  // Create random alias
+
+
+  // taskProfile.alias = "";
+  //create random serial id with alphabet and numbers
+  taskProfile.id = "TN000-"+Math.random().toString(36).substring(2, 6)+"-"+Math.random().toString(36).substring(2, 6)+"-"+Math.random().toString(36).substring(2, 6)+"-"+Math.random().toString(36).substring(2, 6);
+  // + Math.random().toString(36).substring(2, 15);
+  console.log("taskProfile.id:", taskProfile.id)
+
+
+
   const handleCreate = async () => {
+    console.log("handleCreate:", taskProfile);
     // Call the onSearch function and pass the serialNumber
     // const data = await onSearch(serialNumber);
       // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-      const fetchedDevices = await axios.post("https://localhost:3333/fetch/v0.1/module/list", {
-        filter:{"serialNumber":serialNumber}
-      });
-
-    console.log(fetchedDevices?.data?.data)
-    setFetchedData(fetchedDevices?.data?.data[0]);
+    const response = await axios.post("https://localhost:3333/fetch/v0.1/task/create", {profile:taskProfile}, {headers: {Authorization: "admin"}});
+    console.log(response)
   };
 
-  
+  const onSelectTaskApp = (selectedItem) => {
+    taskProfile.app.name = selectedItem;
+    setTaskProfile(taskProfile);
+    console.log(taskProfile);
+  }
+
+  const onSelectCameraModule = (selectedItem) => {
+    taskProfile.app.config.camera = selectedItem;
+    setTaskProfile(taskProfile);
+    console.log(taskProfile);
+  }
+  const onSelectRobotModule = (selectedItem) => {
+    taskProfile.app.config.robot = selectedItem;
+    setTaskProfile(taskProfile);
+    console.log(taskProfile);
+  }
   return (
     <div className={styles.popupContainer}>
       <h1>Create New Task</h1>
@@ -33,8 +59,11 @@ const addTaskPopup = ({ onClose, onSearch }) => {
           <h3>Alias</h3>
           <input
               type="text"
-              value={serialNumber}
-              onChange={(e) => setSerialNumber(e.target.value)}
+              value={taskProfile.alias}
+              onChange={(e) => {
+                taskProfile.alias = e.target.value;
+                setTaskProfile(taskProfile);
+              }}
               className={styles.inputField}
               autoComplete="off"
           />
@@ -44,23 +73,20 @@ const addTaskPopup = ({ onClose, onSearch }) => {
           <h3>Application</h3>
           <input
               type="text"
-              value={serialNumber}
-              onChange={(e) => setSerialNumber(e.target.value)}
+              value={"filter(not supported)"}
+              onChange={(e) => {}}
               className={styles.inputField}
               autoComplete="off"
           />
-        </div>
-        <div>
-          <h3>Application2</h3>
-          <PltTaskAppSelector/>
+          <PltTaskAppSelector  onSelect={onSelectTaskApp}/>
         </div>
         <div>
           <h3>Default Robot:</h3>
-          <PltModuleSelector filter={{type:"robot"}}/>
+          <PltModuleSelector filter={{type:"robot"}} onSelect={onSelectCameraModule}/>
         </div>
         <div>
         <h3>Default Camera:</h3>
-          <PltModuleSelector filter={{type:"camera"}}/>
+          <PltModuleSelector filter={{type:"camera"}} onSelect={onSelectRobotModule}/>
         </div>
       </div>
 
