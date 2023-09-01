@@ -7,7 +7,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import {useRouter } from "next/router";
 
-const PltTaskManager = ({ sessions }) => {
+const PltTaskRoster = ({ sessions }) => {
   const router = useRouter();
   const [taskList, setTasks] = useState([
     // { id:"TN000-FAKE-0000", alias: 'TeleoperationTset', config: 'Robot', status: 'Universal Robots', descriptions:"not yet", createdAt:"2023...today"},
@@ -133,4 +133,4 @@ const PltTaskManager = ({ sessions }) => {
   );
 };
 
-export default PltTaskManager;
+export default PltTaskRoster;

@@ -27,68 +27,46 @@ const WebrtcContainer = () => {
   const socketOn = useRef(false);
     
     useEffect(() =>{
-      if(commClient.sockets[socketNsp].id === undefined){
+      if(commClient.sockets[socketNsp].id === undefined)
+      {
         commClient.sockets[socketNsp].on("connect", () => {
-          console.log("initiated socket.id:",commClient.sockets[socketNsp].id);
-          commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
-          commClient.fetchServices().then((res) => {
-            updateServicesSelect(res.services);
-          });
+          console.log("Initiated Socket ID:",commClient.sockets[socketNsp].id);
+          commClient.connectModule();
+          // commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
+          // commClient.fetchServices().then((res) => {
+          //   updateServicesSelect(res.services);
+          // });
           portalRTC.current = new PortalRTC(commClient);
         });
-      } else {
-        console.log("socket.id:",commClient.sockets[socketNsp].id);
-        commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
-        commClient.fetchServices().then((res) => {
-          updateServicesSelect(res.services);
-        });
+      } 
+      else
+      {
+        console.log("Socket ID :",commClient.sockets[socketNsp].id);
+        commClient.connectModule();
+        // commClient.setOnServicesUpdate(updateServicesSelect, updateJoinedServicesSelect, socketNsp)
+        // commClient.fetchServices().then((res) => {
+        //   updateServicesSelect(res.services);
+        // });
         portalRTC.current = new PortalRTC(commClient);
       }
   
       return () => {
   
     }},[]);
-
-  const updateServicesSelect = (servicesJSON) => {
-    console.log('%c updateServicesSelect, received JSON \n', `color: ${"white"}; background: ${"black"}`, servicesJSON);
     
-    svcSlt.current.options.length = 1;
-    for ( const [key, value] of Object.entries(Object(servicesJSON))){
-      const option = document.createElement("option");
-      option.innerText = `${value.service_id}`;
-      option.value = `${value.service_id}`;
-      option.key = value.service_id;
-      
-      svcSlt.current.append(option);
-    }
-  }
-  
-  const updateJoinedServicesSelect = (joinedServicesJSON) => {
-    console.log('%c updateJoinedServicesSelect, received JSON \n', `color: ${"white"}; background: ${"black"}`, joinedServicesJSON);
-    
-    joinedSvcSlt.current.options.length = 1;
-    for ( const [key, value] of Object.entries(Object(joinedServicesJSON))){
-      const option = document.createElement("option");
-      option.innerText = `${value.service_id} : isHost - ${value.is_host}`;
-      option.value = `${value.service_id}`;
-      option.key = value.service_id;
-      joinedSvcSlt.current.append(option);
-    }
-  }
-
-  const startWebrtcStreaming = (streamMode, selected) => {
+  const startWebrtcStreaming = (streamMode) => {
     if (!portalRTC.current.localVideo){
       portalRTC.current.localVideo = localVideo.current;
     }
     console.log(portalRTC.remoteVideos)
     // console.log(portalRTC.remoteVideos.hasOwnProperty(toString(selected)))
-    if(portalRTC.current.remoteVideos[selected]) {
-      console.log('return');
-      return;
-    }
-    portalRTC.current.remoteVideos[selected] = remoteVideo.current;
+    // if(portalRTC.current.remoteVideos) {
+    //   console.log('return');
+    //   return;
+    // }
+    portalRTC.current.remoteVideos[0] = remoteVideo.current;
 
-    portalRTC.current.startStreaming(selected, streamMode).then(value => {
+    portalRTC.current.startStreaming(commClient.profile2).then(value => {
       console.log('isStart? >>>', value);
      });
   }
@@ -130,12 +108,9 @@ const WebrtcContainer = () => {
         <button 
         className="text-white w-[130px] h-[40px] bg-[#182a5b]" 
         onClick={() => {
-          let selected = joinedSvcSlt.current.options[joinedSvcSlt.current.selectedIndex].value;
-          if (selected === 'field') {
-            if (!streamMode.isViewer) alert('plz select the joined service list');
-            return;      
-          }
-          startWebrtcStreaming(streamMode, selected);
+          startWebrtcStreaming(streamMode);
+          // startWebrtcStreaming(streamMode, taskID);
+
         }}
         >start streaming</button>        
         <button 

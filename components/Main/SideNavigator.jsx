@@ -43,7 +43,7 @@ const SideNavigator = () => {
             className="font-['NotoSans'] font-medium text-2xl text-[#222222] w-fit select-none cursor-pointer"
             onClick={() => router.push("/main")}
           >
-            {session?.token?.user.nickname}님,<br/> 안녕하세요.
+            {session?.token?.user?.nickname}님,<br/> 안녕하세요.
           </span>
           <div className="mt-[40px] flex items-center">
             <span

@@ -109,11 +109,10 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
 
   }
 
-  async startStreaming(serviceId, config) {
-    console.log('startStreaming config >>', config);
+  async startStreaming(targetProfile) {
+    console.log('startStreaming config >>', targetProfile);
 
-    let targetServiceId = serviceId;
-    let targetServiceHostId;
+    let targetServiceId = targetProfile.serialNumber;
     //requestIsPloite(targetServiceId);
     //this.polite = await this.comm.emit('webrtc:isHost', targetServiceId)
     try {
@@ -140,8 +139,6 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
           console.log("OverconstrainedError")
           break;
       }
-
-
     }
     // error event 종류에 따라 분기
 
@@ -157,6 +154,7 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
       return;
     }
     */
+   console.log('aaaaa')
     const promise = new Promise((resolve) => {
       this.comm.emit('webrtc:isConnection', this.id, targetServiceId, (res) => {
         resolve(res);
@@ -169,6 +167,7 @@ export default class PortalRTC { // RTC 관련 기능 - 시그널링 관련 (프
         console.log('you already have webRTC connection about this service host');
       }
       else {
+        console.log('sssssss')
         this.comm.emit('get service host', targetServiceId, (res) => {
           targetServiceHostId = res;
 
