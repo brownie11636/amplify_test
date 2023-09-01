@@ -70,7 +70,7 @@ const RobotList = ({ sessions }) => {
 };
 export default RobotList;
 
-export const getServerSideProps = async (context) => {
+export const getInitialProps = async (context) => {
   const session = await getSession(context);
   console.log(session);
   if (!session) {

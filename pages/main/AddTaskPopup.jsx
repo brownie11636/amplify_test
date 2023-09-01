@@ -82,11 +82,11 @@ const addTaskPopup = (props) => {
         </div>
         <div>
           <h3>Default Robot:</h3>
-          <PltModuleSelector filter={{type:"robot"}} onSelect={onSelectCameraModule} sessions={props.sessions}/>
+          <PltModuleSelector filter={{type:"robot"}} onSelect={onSelectRobotModule} sessions={props.sessions}/>
         </div>
         <div>
         <h3>Default Camera:</h3>
-          <PltModuleSelector filter={{type:"camera"}} onSelect={onSelectRobotModule} sessions={props.sessions}/>
+          <PltModuleSelector filter={{type:"camera"}} onSelect={onSelectCameraModule} sessions={props.sessions}/>
         </div>
       </div>
 

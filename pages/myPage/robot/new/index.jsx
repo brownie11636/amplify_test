@@ -70,7 +70,7 @@ const New = ({ sessions }) => {
 };
 export default New;
 
-export const getServerSideProps = async (context) => {
+export const getInitialProps = async (context) => {
   const session = await getSession(context);
   console.log(session);
   if (!session) {

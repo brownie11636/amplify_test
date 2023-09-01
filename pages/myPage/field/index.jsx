@@ -143,7 +143,7 @@ const DeleteModal = ({ visible, setVisible, Text, url, data }) => {
 };
 export default MyPage;
 
-export const getServerSideProps = async (context) => {
+export const getInitialProps = async (context) => {
   const session = await getSession(context);
   console.log(session);
   if (!session) {

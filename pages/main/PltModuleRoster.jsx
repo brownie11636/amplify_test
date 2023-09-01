@@ -22,8 +22,7 @@ const PltModuleManager = (props) => {
   };
 
   const onSelect = (selectedItem) => {
-    props.onSelect(selectedItem);
-    // console.log("onSelect in the module");
+    props.onSelect?props.onSelect(selectedItem):()=>{console.log("onSelect in the module:", selectedItem)};
   };
 
   const [baseURL, setBaseURL] = useState();

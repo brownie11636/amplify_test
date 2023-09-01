@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import MainLayout from "../../../../components/Main/MainLayout";
 import CardForm from "../../../../components/Main/MyPage/CardForm";
 import {
@@ -34,7 +34,7 @@ const New = ({ sessions }) => {
     if (baseURL) {
       getCompany();
     }
-  }, [session, baseURL]);
+  }, [sessions, baseURL]);
   const getCompany = async () => {
     await axios
       .get(baseURL + "/api/mongo/company", {
@@ -67,7 +67,7 @@ const New = ({ sessions }) => {
 };
 export default New;
 
-export const getServerSideProps = async (context) => {
+export const getInitialProps = async (context) => {
   const session = await getSession(context);
   console.log(session);
   if (!session) {

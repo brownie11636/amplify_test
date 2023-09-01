@@ -34,12 +34,13 @@ const PltTaskManager = ({ sessions }) => {
     console.log("onSelect in the module");
     console.log(selectedItem);
     if(selectedItem.app){
-      const app = JSON.parse(selectedItem.app)
+      const app = JSON.parse(selectedItem.app);
       console.log(app);
       if(app.name === "remoteXR"){
         router.push(`/task/remoteXr/`);
         // router.push(`/main/PltTask/${selectedItem?.id}`);
       }else if(app.name === "cambot"){
+        sessionStorage.setItem("taskAppConfig", JSON.stringify(selectedItem));
         router.push(`/task/cambot/`);
       }else if(app.name === "webRtc2d"){
         //convert selectedItem to Json
