@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware"
+// import { grip } from "../../components/PortalXR/PortalArm/Gripper"
 
 /**
  * store for control data that frequently change 
@@ -9,25 +10,39 @@ export const useControlStore = create(
 
     actualAngles_q: {},
 
-    gripDistance: 50,   //0~105
+    minGripDistance: 0.042,   // 42mm for grip KARI nozzle
+    maxGripDistance: 0.115,    // 
+    gripDistance: 0.05,   // 0~115mm (0 ~ 0.115)
     increaseGripDistance:(number) => set((state)=>{
+      let newDistance;
+      if (state.gripDistance + number > state.maxGripDistance) {
+        newDistance = state.maxGripDistance;
 
-      if (state.gripDistance + number > 100) return {gripDistance: 100}
-      
-      if (state.gripDistance + number < 5) return {gripDistance: 5}
+      } else if (state.gripDistance + number < state.minGripDistance) {
+        newDistance = state.minGripDistance;
 
-      return {gripDistance: state.gripDistance + number}
+      } else {
+        newDistance = state.gripDistance + number;
+      }
+      // let newRatio = grip.distanceToRatio(newDistance);
+      return {gripDistance: newDistance}
+      // return {gripDistance: newDistance, gripRatio: newRatio}
     }),
 
-    gripAngleRatio: 500,  // 0 (opened) ~ 1000 (closed)  angle -> -4.03 ~ 58.3 
-    increaseGripAngleRatio:(number) => set((state)=>{
-
-      if (state.gripAngleRatio + number > 998) return {gripAngleRatio: 998}
-      
-      if (state.gripAngleRatio + number < 2) return {gripAngleRatio: 2}
-
-      return {gripAngleRatio: state.gripAngleRatio + number}
-    }),
+    // gripRatio is set by gripper component subscribing gripDistance
+    gripRatio: 500,  // 0 (opened) ~ 740 (closed)  angle -> -4.024064 ~ 59.277210 
+    // increaseGripRatio:(number) => set((state)=>{
+    //   let newRatio
+    //   if (state.gripRatio + number > 740) {
+    //     newRatio = 740;
+    //   } else if (state.gripRatio + number < 0) {
+    //     newRatio = 0;
+    //   } else {
+    //     newRatio = state.gripDistance + number;
+    //   }
+    //   let newDistance = grip.ratioToDistance(newRatio);
+    //   return {gripDistance: newDistance, gripRatio: newRatio}
+    // }),
     // updateActualAngles_q: (angles) => set({actualAngles_q: angles}),
 
     consoleLogs: [],

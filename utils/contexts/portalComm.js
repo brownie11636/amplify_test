@@ -7,7 +7,7 @@ import { PortalCommClient_v0_1 } from "../../libs/portal/portalComm_v0.1.js";
 import { socketPoint, socketPoint_dev, socketNsp } from "../../toServer/API-AccessPoint";
 
 const SOCKET_SERVER_URL = socketPoint
-// const SOCKET_SERVER_URL = socketPoint_dev;
+// const SOCKET_SERVER_URL = s ˜  ocketPoint_dev;
 
 const SOCKET_NSP = socketNsp;
 

@@ -22,6 +22,9 @@ export default function MyControl({ ...props}) {
   
   const rightController = useController('right');
 
+  const increaseGripDistance = useControlStore((state)=>state.increaseGripDistance);
+
+  const squeezePressed_R = useRef(useXRGamepadStore.getState().squeezePressed_R)
   const stickUp_R = useRef(useXRGamepadStore.getState().stickUp_R)
   const stickDown_R = useRef(useXRGamepadStore.getState().stickDown_R)
 
@@ -42,6 +45,7 @@ export default function MyControl({ ...props}) {
     )
 
     const unsubXRGamepadStore = useXRGamepadStore.subscribe((_) => {
+      squeezePressed_R.current = _.squeezePressed_R
       stickUp_R.current = _.stickUp_R;
       stickDown_R.current = _.stickDown_R;
     })
@@ -61,6 +65,19 @@ export default function MyControl({ ...props}) {
 
       }
       if(controllerMode.current === "operating"){
+        
+        // gripper control
+        if (stickUp_R.current) {
+          vrLog("open")
+          // increaseGripAngleRatio(-300 * delta)
+          increaseGripDistance(0.03 * delta)
+        } else if (stickDown_R.current) {
+          increaseGripDistance(-0.03 * delta)
+        }
+        
+        if (squeezePressed_R.current === true){  //squeeze
+        }
+          
 
       }
       if(controllerMode.current === "setting"){

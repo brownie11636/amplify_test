@@ -35,11 +35,11 @@ const gripperGeometries = [
 //   8   1   4   4     (left)  ⎟     ⎿ RUB_ASM
 // */
 
-const gripperConfigs = setGripperConfigs();
 const gripperPositions = setGripperPositions();
 
 const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...props},ref) {
-
+  
+  const gripperConfigs = setGripperConfigs("KARI");
   // const ref = useRef([]);
   const guideRef = useRef();
 
@@ -59,24 +59,34 @@ const Gripper = forwardRef(function Gripper({loader, geoConfig, children,...prop
   useEffect(()=>{
     
     // grip(50, ref.current);
-    gripByAngleRatio(useControlStore.getState().gripAngleRatio, ref.current)
-    
+    let ratio = useControlStore.getState().gripRatio;
+    grip.byRatio(ratio, ref.current)
+    useControlStore.setState({gripDistance: grip.ratioToDistance(ratio)})
+    // grip.byAngle(0, ref.current)
+    // grip.byDistance(0.01, ref.current)
+    // grip.byRatio(0, ref.current)
     const unsubGripDistance = useControlStore.subscribe(
       (state)=>state.gripDistance,
-      (distance)=>grip(distance, ref.current)
+      (distance)=>{
+        grip.byDistance(distance, ref.current);
+        useControlStore.setState({gripRatio: grip.distanceToRatio(distance)})
+      }
     );
     
-    const unsubGripAngleRatio = useControlStore.subscribe(
-      (state)=>state.gripAngleRatio,
-      (ratio)=>gripByAngleRatio(ratio, ref.current)
-    );
+    // const unsubGripRatio = useControlStore.subscribe(
+    //   (state)=>state.gripRatio,
+    //   (ratio)=>{
+    //     grip.byRatio(ratio, ref.current);
+        
+    //   }
+    // );
 
     ref.current[0].name = "gripper_BASE"
     // guideRef.current.position.set(new THREE.Vector3(0, 0, -0.1317))
     
     return () => {
       unsubGripDistance();
-      unsubGripAngleRatio();
+      // unsubGripRatio();
     }
   },[])
 
@@ -160,7 +170,7 @@ function setGripperPositions() {
   return positions_
 }
 
-function setGripperConfigs() {
+function setGripperConfigs(type) {
   const configs_ = []
 
     for (let i = 0; i<9; i++){
@@ -180,57 +190,88 @@ function setGripperConfigs() {
   
       if ( i === 0 ) configs_[i].path = `/3d_models/portalarm/UR5e_ver/ALLZERO/RH-P12-RN/GLTFs/${i}.gltf`;
       else {
-        if (k === 1) configs_[i].path = `/3d_models/portalarm/UR5e_ver/ALLZERO/RH-P12-RN/GLTFs/${k}-${j}.gltf`;
-        else configs_[i].path = `/3d_models/portalarm/UR5e_ver/ALLZERO/RH-P12-RN/GLTFs/${k}.gltf`;
+        if (k === 1 || (type === "KARI" && k === 4)) {
+          configs_[i].path = `/3d_models/portalarm/UR5e_ver/ALLZERO/RH-P12-RN/GLTFs/${k}-${j}.gltf`;
+        } else {
+          configs_[i].path = `/3d_models/portalarm/UR5e_ver/ALLZERO/RH-P12-RN/GLTFs/${k}.gltf`;
+        }
       }
     }  
     return configs_
 }
 
-const grip = (distance, gripperLinks, type = "ROBOTIS_RH-P12-RN") => {
-  if ( type === "ROBOTIS_RH-P12-RN" ){
-    if ( distance < 1 || distance > 99) {
-    // if ( distance < 1 || distance > 105) {
-      console.error("gripper: out of range", distance);
-      return;
-    } else {
-      // console.log("gripDistance:", distance)
-      let angle = RAD2DEG * Math.asin(( distance - 8 ) / 2 / 57);
-      for (let i = 1; i < 8; i++ ){
-        let j = Math.floor((i - 1)/4);
-        let k = 1 + (i - 1)% 4
-        let rot = 2 * (j - 0.5) * angle * DEG2RAD; 
-        if ( k < 3) gripperLinks[i].rotation.y = rot; 
-        else if (k === 3) gripperLinks[i].rotation.y = angle * DEG2RAD;
+const grip = {
+
+  maxAngle: 59.277210,  //degree
+  minAngle: -4.024064,  //degree    
+
+  byAngle: (angleRad, gripperLinks, type = "ROBOTIS_RH-P12-RN") => {
+    if ( type === "ROBOTIS_RH-P12-RN" ){
+      if ( angleRad * RAD2DEG < grip.minAngle || angleRad * RAD2DEG > grip.maxAngle) {
+      // if ( distance < 1 || distance > 105) {
+        console.error("gripper: out of range, ", angleRad * RAD2DEG, " degree");
+        return;
+      } else {
+        console.log("gripAngle:", angleRad * RAD2DEG)
+        //angleDeg === -4 closed angleDeg === 60 open
+        for (let i = 1; i < 8; i++ ){
+          let j = Math.floor((i - 1)/4);
+          let k = 1 + (i - 1)% 4
+          let rot = 2 * (j - 0.5) * angleRad; 
+          if ( k < 3) gripperLinks[i].rotation.y = rot; 
+          else if (k === 3) gripperLinks[i].rotation.y = angleRad;
+        } 
       } 
-    } 
-  } else {
-    console.error("not registed gripper");
-    return;
+    } else {
+      console.error("not registed gripper");
+      return;
+    }
+  },
+
+  /**
+   * control gripper by distance between gripper's finger 
+   * (without end tip, even the default rubber base) 
+   * (unit: m)
+   * (ROBOTIS_RH-P12-RN: max = 0.116, min = 0.002)
+   */
+  byDistance: (distance, gripperLinks, type = "ROBOTIS_RH-P12-RN") => {
+    grip.byAngle(grip.distanceToAngle(distance), gripperLinks, type);
+  },  
+
+  /**
+   * control gripper by custom ratio 
+   * (ROBOTIS_RH-P12-RN: max = 740, min = 0, linear to angle)
+   */
+  byRatio: (ratio, gripperLinks, type = "ROBOTIS_RH-P12-RN") => {
+    grip.byAngle(grip.ratioToAngle(ratio), gripperLinks, type);
+  },
+
+  ratioToDistance: (ratio) => {
+    return grip.angleToDistance(grip.ratioToAngle(ratio));
+  },
+
+  distanceToRatio: (distance) => {
+    return grip.angleToRatio(grip.distanceToAngle(distance));
+  },
+
+  angleToDistance: (angleRad) => {
+    return 2 * (0.008 + 0.001 + 0.057 * Math.sin(angleRad));
+  },
+
+  distanceToAngle: (distance) => {
+    return Math.asin((( distance / 2 ) - 0.008 - 0.001) / 0.057 );
+  },
+
+  angleToRatio: (angleRad) => {
+    return (grip.maxAngle - angleRad * RAD2DEG) * 740 / (grip.maxAngle - grip.minAngle);
+  },
+
+  ratioToAngle: (ratio) => {
+    console.log(( grip.maxAngle - ratio * (grip.maxAngle - grip.minAngle) / 740 ))
+    return ( grip.maxAngle - ratio * (grip.maxAngle - grip.minAngle) / 740 ) * DEG2RAD;
   }
 }
 
-const gripByAngleRatio = (angleRatio, gripperLinks, type = "ROBOTIS_RH-P12-RN") => {
-  if ( type === "ROBOTIS_RH-P12-RN" ){
-    if ( angleRatio < 1 || angleRatio > 999) {
-    // if ( distance < 1 || distance > 105) {
-      console.error("gripper: out of range", distance);
-      return;
-    } else {
-      // console.log("gripDistance:", distance)
-      let angle = -4.02+(58.3+4.02)*(1000-angleRatio)/1000;   //angle === -4.02 closed angle === 58.3 open
-      for (let i = 1; i < 8; i++ ){
-        let j = Math.floor((i - 1)/4);
-        let k = 1 + (i - 1)% 4
-        let rot = 2 * (j - 0.5) * angle * DEG2RAD; 
-        if ( k < 3) gripperLinks[i].rotation.y = rot; 
-        else if (k === 3) gripperLinks[i].rotation.y = angle * DEG2RAD;
-      } 
-    } 
-  } else {
-    console.error("not registed gripper");
-    return;
-  }
-}
 
 export default Gripper;
+// export { grip };
