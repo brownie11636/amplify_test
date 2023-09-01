@@ -3,7 +3,6 @@ import { PortalCommContext, commClient } from '../../utils/contexts/portalComm.j
 import WebrtcContainer from  "../../components/Webrtc/webRTC.container.jsx"
 import RTCvideo from "../../components/Services/VideoPanel.js";
 import MainLayout from "../../components/Main/MainLayout.jsx"
-import { useTaskAppStore } from "../../store/zustand/taskApp.js";
 
 // import dynamic from 'next/dynamic'
 // const Scene = dynamic(() => import("../../components/Canvas/Scene"), { ssr: true })

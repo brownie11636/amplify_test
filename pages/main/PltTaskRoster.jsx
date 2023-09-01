@@ -6,7 +6,6 @@ import AddTaskPopup from './AddTaskPopup'; // Import the popup component
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import {useRouter } from "next/router";
-import { useTaskAppStore } from "../../store/zustand/taskApp";
 
 const PltTaskManager = ({ sessions }) => {
   const router = useRouter();
