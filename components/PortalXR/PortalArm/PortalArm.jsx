@@ -18,6 +18,7 @@ import Table from "./Table"
 import KariTable from "./KariTable"
 import Arm from "./Arm"
 import Gripper from "./Gripper"
+import { grip } from "./Gripper"
 import ControlGuide from "./ControlGuide"
 
 // import Box from './boxes'
@@ -64,8 +65,8 @@ export default function PortalArm(type, path, ...props) {
 
   const gripDistanceRef = useRef(useControlStore.getState().gripDistance)
   const increaseGripDistance = useControlStore((state)=>state.increaseGripDistance);
-  const gripAngleRatioRef = useRef(useControlStore.getState().gripAngleRatio)
-  const increaseGripAngleRatio = useControlStore((state)=>state.increaseGripAngleRatio);
+  const gripRatioRef = useRef(useControlStore.getState().gripRatio)
+  const increaseGripRatio = useControlStore((state)=>state.increaseGripRatio);
 
   const rightController = useController('right');
   const leftController = useController('left');
@@ -146,11 +147,11 @@ export default function PortalArm(type, path, ...props) {
     })    
     
     const unsubControlStore = useControlStore.subscribe(
-      (state)=>state.gripAngleRatio,
+      (state)=>state.gripRatio,
       // (state)=>state.gripDistance,
-      (gripAngleRatio) => {        
+      (gripRatio) => {        
       // (gripDistance) => {        
-        gripAngleRatioRef.current = gripAngleRatio
+        gripRatioRef.current = gripRatio
         
         // vrLog("gripDistance")
         // vrLog(gripDistance)
@@ -271,13 +272,7 @@ export default function PortalArm(type, path, ...props) {
             // console.log(typeof rot[0], typeof rot[1], typeof rot[2])
             // vrLog("rot x: "+rot[0]+", y: "+rot[1]+",z: "+rot[2]);
 
-            if (stickUp_R.current) {
-              // vrLog("open")
-              increaseGripAngleRatio(-300 * delta)
-              
-            } else if (stickDown_R.current) {
-              increaseGripAngleRatio(300 * delta)
-            }
+
 
             packet = { 
               from: commClientV01.socket.id, 
@@ -286,7 +281,7 @@ export default function PortalArm(type, path, ...props) {
                 type:"set_pos", 
                 data:{
                   arm:[...pos,...rot],
-                  grip: Math.floor(gripAngleRatioRef.current) 
+                  grip: Math.floor(gripRatioRef.current) 
                 }
               }
             } 
@@ -315,7 +310,8 @@ export default function PortalArm(type, path, ...props) {
         {/* <group ref={robotCoordinateRef} rotation={[0,4 * Math.PI/180,0]} position={armPos}> */}
           
           <Arm ref={armRef} loader={loader} depth={6} angles={armAngles} positions={armGeometries}>
-            <Gripper ref={gripperRef} loader={loader} geoConfig={gripperGeometries} />
+            <Gripper ref={gripperRef} loader={loader} type={"KARI"} geoConfig={gripperGeometries} />
+            {/* <Gripper ref={gripperRef} loader={loader} type={"defualt"} geoConfig={gripperGeometries} /> */}
           </Arm>
           
           <BoundaryBox color="red" boundary={boundary} />
