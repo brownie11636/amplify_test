@@ -27,7 +27,7 @@ module.exports = (phase) => {
       includePaths: [path.join(__dirname, "styles")],
     },
     trailingSlash: true,
-    distDir: "build",
+    // distDir: "build",
     optimizeFonts: false,
     images: {
       unoptimized: true,
