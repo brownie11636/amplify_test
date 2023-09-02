@@ -32,10 +32,10 @@ module.exports = (phase) => {
     images: {
       unoptimized: true,
     },
-    webpack: (config) => {
-      config.plugins.push(new DotenvWebpackPlugin({ silent: true }));
-      return config;
-    },
+    // webpack: (config) => {
+    //   config.plugins.push(new DotenvWebpackPlugin({ silent: true }));
+    //   return config;
+    // },
   };
   // when npm run dev
   if (phase === PHASE_DEVELOPMENT_SERVER) {
@@ -43,6 +43,7 @@ module.exports = (phase) => {
       env: {
         NEXT_PUBLIC_API_URL: "https://localhost:3333",
         NEXT_PUBLIC_API_URL_WWW: "https://localhost:3333",
+        // NEXTAUTH_URL:"http://localhost:3000/"
       },
       reactStrictMode: false,
       ...defaultConfig,

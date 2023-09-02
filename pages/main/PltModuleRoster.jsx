@@ -25,7 +25,11 @@ const PltModuleManager = (props) => {
     props.onSelect?props.onSelect(selectedItem):()=>{console.log("onSelect in the module:", selectedItem)};
   };
 
-  const [baseURL, setBaseURL] = useState();
+  const [baseURL, setBaseURL] = useState(
+    typeof window !== "undefined" && window?.location.href.includes("www")
+      ? process.env.NEXT_PUBLIC_API_URL_WWW
+      : process.env.NEXT_PUBLIC_API_URL
+  );
 
   useEffect(() => {
     if (!props?.sessions?.token?.user?.affiliation) {
@@ -41,11 +45,11 @@ const PltModuleManager = (props) => {
   }, [props?.sessions]);
 
   useEffect(() => {
-    setBaseURL(
-      typeof window !== "undefined" && window?.location.href.includes("www")
-        ? process.env.NEXT_PUBLIC_API_URL_WWW
-        : process.env.NEXT_PUBLIC_API_URL
-    );
+    // setBaseURL(
+    //   typeof window !== "undefined" && window?.location.href.includes("www")
+    //     ? process.env.NEXT_PUBLIC_API_URL_WWW
+    //     : process.env.NEXT_PUBLIC_API_URL
+    // );
   }, []);
   useEffect(() => {
     console.log("baseURL:", baseURL);
