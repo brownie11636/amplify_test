@@ -7,8 +7,7 @@
     "dev": "next dev -p 3000",
     "dev-https": "next-dev-https -s --port 3000",
     "build": "next build",
-    "start": "next start",
-    // "export": "next export"
+    "start": "next start"
   },
   "author": "EnvyTheme.com",
   "license": "ISC",
