@@ -14,7 +14,11 @@ const addTaskPopup = (props) => {
   const [taskProfile, setTaskProfile] = useState({id:null,alias:null,app:{name:null,config:{camera:null,robot:null}}});
   // const [taskProfile, setTaskProfile] = useState({id:null,alias:null,app:{name:null}});
 
-
+  const [baseURL, setBaseURL] = useState(
+    typeof window !== "undefined" && window?.location.href.includes("www")
+      ? process.env.NEXT_PUBLIC_API_URL_WWW
+      : process.env.NEXT_PUBLIC_API_URL
+  );
   // Create random alias
 
 
@@ -31,7 +35,8 @@ const addTaskPopup = (props) => {
     // Call the onSearch function and pass the serialNumber
     // const data = await onSearch(serialNumber);
       // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
-    const response = await axios.post("https://localhost:3333/fetch/v0.1/task/create", {profile:taskProfile}, {headers: {Authorization: "admin"}});
+    const response = await axios.post(baseURL + "/fetch/v0.1/module/list", {profile:taskProfile}, {headers: {Authorization: "admin"}});
+    // const response = await axios.post("https://localhost:3333/fetch/v0.1/task/create", {profile:taskProfile}, {headers: {Authorization: "admin"}});
     console.log(response)
   };
 
