@@ -63,11 +63,11 @@ const PltModuleManager = (props) => {
             { headers: { Authorization: `${props?.sessions?.token?.accessToken}` } }
           )
           .then((res) => {
-            // console.log(res?.data?.data);
+            console.log(res?.data?.data);
             setModuleList(res?.data?.data?.reverse());
           })
           .catch((err) => {
-            // console.log(err);
+            console.log(err);
           },{headers: {Authorization: "admin"}});
       };
 
