@@ -54,7 +54,7 @@ const Main = ({sessions}) => {
 
 export default Main;
 
-export const getInitialProps = async (context) => {
+export const getSeverSideProps = async (context) => {
   const session = await getSession(context);
   // console.log(session);
   if (!session) {
