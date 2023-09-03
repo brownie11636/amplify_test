@@ -38,6 +38,7 @@ export default NextAuth({
           },
           { httpsAgent: new https.Agent({ rejectUnauthorized: false }) }
         );
+        console.log(response)
         if (!response) {
           return null;
         } else {
