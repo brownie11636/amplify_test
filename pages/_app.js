@@ -19,7 +19,7 @@ import { store } from "../store";
 import "./globals.css";
 import { RecoilRoot } from "recoil";
 
-export default class MyApp extends App ({Component, pageProps: { session, ...pageProps }}) {
+export default class MyApp extends App {
   // // Preloader
   // state = {
   //     loading: true
@@ -36,10 +36,10 @@ export default class MyApp extends App ({Component, pageProps: { session, ...pag
   // }
 
   render() {
-    // const { Component, pageProps } = this.props;
+    const { Component, pageProps } = this.props;
     return (
       <>
-        <SessionProvider session={session}>
+        <SessionProvider session={pageProps.session}>
           <ReduxProvider store={store}>
             <RecoilRoot>
               {/* <PersistGate loading={null} persistor={persistor}> */}
