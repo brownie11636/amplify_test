@@ -26,9 +26,9 @@ const PltModuleManager = (props) => {
   };
 
   const [baseURL, setBaseURL] = useState(
-    typeof window !== "undefined" && window?.location.href.includes("www")
-      ? process.env.NEXT_PUBLIC_API_URL_WWW
-      : process.env.NEXT_PUBLIC_API_URL
+    // typeof window !== "undefined" && window?.location.href.includes("www")
+    //   ? process.env.NEXT_PUBLIC_API_URL_WWW
+    //   : process.env.NEXT_PUBLIC_API_URL
   );
 
   useEffect(() => {
@@ -45,11 +45,11 @@ const PltModuleManager = (props) => {
   }, [props?.sessions]);
 
   useEffect(() => {
-    // setBaseURL(
-    //   typeof window !== "undefined" && window?.location.href.includes("www")
-    //     ? process.env.NEXT_PUBLIC_API_URL_WWW
-    //     : process.env.NEXT_PUBLIC_API_URL
-    // );
+    setBaseURL(
+      typeof window !== "undefined" && window?.location.href.includes("www")
+        ? process.env.NEXT_PUBLIC_API_URL_WWW
+        : process.env.NEXT_PUBLIC_API_URL
+    );
   }, []);
   useEffect(() => {
     console.log("baseURL:", baseURL);
@@ -57,6 +57,7 @@ const PltModuleManager = (props) => {
       // Simulate fetching data or changing the list dynamically
       // For example, fetchDevices and fetchTasks could be API calls
       const fetchPltModules = async () => {
+        console.log("hihi")
         // curl -k -X POST -H "Content-Type: application/json" -d '{"filter":{}}' https://localhost:3333/portalfetch/module-list
         await axios
           .post(
