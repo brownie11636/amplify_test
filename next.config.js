@@ -55,8 +55,8 @@ module.exports = (phase) => {
       env: {
         // NEXT_PUBLIC_API_URL: "https://localhost:3333",
         // NEXT_PUBLIC_API_URL_WWW: "https://localhost:3333",
-        // NEXT_PUBLIC_API_URL: "https://api.portal301.com", // ex) https://example.com
-        // NEXT_PUBLIC_API_URL_WWW: "https://api.portal301.com", // ex) https://www.example.com
+        NEXT_PUBLIC_API_URL: "https://api.portal301.com", // ex) https://example.com
+        NEXT_PUBLIC_API_URL_WWW: "https://api.portal301.com", // ex) https://www.example.com
       },
       reactStrictMode: false,
       ...defaultConfig,
