@@ -41,7 +41,8 @@ const Main = ({sessions}) => {
   return (
     <MainLayout>
       <div className={styles.container}>
-        <PltModuleRoster sessions={sessions} />
+        <PltModuleRoster />
+        {/* <PltModuleRoster sessions={sessions} /> */}
         <PltTaskRoster sessions={sessions} />
       </div>
         <div>

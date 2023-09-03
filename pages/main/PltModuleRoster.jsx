@@ -4,11 +4,13 @@ import styles from "./main.module.css";
 import PltModuleUnit from "./PltModuleUnit";
 import AddModulePopup from "./AddDevicePopup"; // Import the popup component
 import axios from "axios";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 const PltModuleManager = (props) => {
   const router = useRouter();
+  const { data: session } = useSession()
+
   // Sample data for devices and tasks (replace with your actual data)
   const [moduleList, setModuleList] = useState([]);
 
@@ -32,17 +34,17 @@ const PltModuleManager = (props) => {
   );
 
   useEffect(() => {
-    if (!props?.sessions?.token?.user?.affiliation) {
+    if (!session.token?.user?.affiliation) {
       return;
     } else {
       // console.log("Is admin");
-      if (props?.sessions?.token?.user?.affiliation === "admin") {
+      if (session.token?.user?.affiliation === "admin") {
         // console.log("admin mode");
       } else {
         // console.log("node-admin mode:", props?.sessions?.token?.user?.affiliation);
       }
     }
-  }, [props?.sessions]);
+  }, [session]);
 
   useEffect(() => {
     setBaseURL(
@@ -54,7 +56,7 @@ const PltModuleManager = (props) => {
   useEffect(() => {
     console.log("baseURL:", baseURL);
     console.log(props);
-    if (baseURL && props?.sessions) {
+    if (baseURL && session) {
       // Simulate fetching data or changing the list dynamically
       // For example, fetchDevices and fetchTasks could be API calls
       const fetchPltModules = async () => {
@@ -66,7 +68,7 @@ const PltModuleManager = (props) => {
             {
               filter: props.filter,
             },
-            { headers: { Authorization: `${props?.sessions?.token?.accessToken}` } }
+            { headers: { Authorization: `${session.token?.accessToken}` } }
           )
           .then((res) => {
             console.log(res?.data?.data);
@@ -79,7 +81,7 @@ const PltModuleManager = (props) => {
 
       fetchPltModules();
     }
-  }, [props?.sessions, baseURL]); // Empty dependency array to run the effect only once
+  }, [session, baseURL]); // Empty dependency array to run the effect only once
 
   return (
     <div className={styles.section}>
