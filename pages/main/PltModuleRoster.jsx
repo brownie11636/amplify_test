@@ -53,6 +53,7 @@ const PltModuleManager = (props) => {
   }, []);
   useEffect(() => {
     console.log("baseURL:", baseURL);
+    console.log(props);
     if (baseURL && props?.sessions) {
       // Simulate fetching data or changing the list dynamically
       // For example, fetchDevices and fetchTasks could be API calls
